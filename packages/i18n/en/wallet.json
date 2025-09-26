@@ -1,0 +1,11 @@
+{
+  "wallet": "Wallet",
+  "balance": "Balance",
+  "topup": "Top up",
+  "withdraw": "Withdraw",
+  "history": "History",
+  "ref": "Ref",
+  "type": "Type",
+  "in": "In",
+  "out": "Out"
+}

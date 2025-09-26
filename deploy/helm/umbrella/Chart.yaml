@@ -1,0 +1,16 @@
+apiVersion: v2
+name: arman-umbrella
+description: Umbrella chart for full ArmanVarzesh stack
+type: application
+version: 0.1.0
+dependencies:
+  - name: backend
+    version: 0.1.0
+    repository: "file://../charts/backend"
+  - name: vitrin-site
+    version: 0.1.0
+    repository: "file://../charts/vitrin-site"
+  - name: service
+    alias: sample
+    version: 0.1.0
+    repository: "file://../charts/service"

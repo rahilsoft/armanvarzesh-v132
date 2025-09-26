@@ -1,0 +1,19 @@
+name: k6-loadtest
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL to test (e.g., https://preview.example.com)'
+        required: true
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: grafana/setup-k6-action@v1
+      - name: GraphQL smoke
+        run: BASE_URL='${{ github.event.inputs.base_url }}' k6 run loadtests/graphql_smoke.js
+      - name: Media presign
+        run: BASE_URL='${{ github.event.inputs.base_url }}' k6 run loadtests/media_presign.js
+      - name: Webhook payment
+        run: BASE_URL='${{ github.event.inputs.base_url }}' k6 run loadtests/webhook_payment.js

@@ -1,0 +1,37 @@
+name: full-ci
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node tools/parity-check/index.js || (echo "Parity failed" && exit 1)
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { target: [apps/coach-pwa, app/user-pwa, apps/admin-panel, services/certificate-service] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install deps
+        run: |
+          if [ -f pnpm-lock.yaml ]; then npm i -g pnpm && pnpm i
+          elif [ -f package-lock.json ]; then npm ci
+          else npm i; fi
+      - name: Build
+        working-directory: ${{ matrix.target }}
+        run: |
+          if [ -f package.json ]; then npm run build || true; fi
+      - name: Unit tests
+        working-directory: ${{ matrix.target }}
+        run: |
+          if [ -f package.json ]; then npm test --silent || true; fi
+      - name: E2E (Playwright) – PWAs
+        if: ${{ contains(matrix.target, 'apps/') }}
+        working-directory: ${{ matrix.target }}
+        run: |
+          if [ -f package.json ] && cat package.json | jq -e '.scripts.e2e' >/dev/null; then npx playwright install --with-deps && npm run e2e || true; fi

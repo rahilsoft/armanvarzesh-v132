@@ -1,0 +1,14 @@
+{
+  "title": "AV \u2014 Traces Overview",
+  "schemaVersion": 37,
+  "panels": [
+    {
+      "type": "trace",
+      "title": "Explore Traces",
+      "datasource": {
+        "type": "tempo",
+        "uid": "tempo"
+      }
+    }
+  ]
+}

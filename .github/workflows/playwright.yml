@@ -1,0 +1,28 @@
+name: playwright
+on: [push, pull_request]
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install deps
+        run: pnpm install
+      - name: Build site
+        working-directory: app/site
+        run: pnpm build
+      - name: Start site
+        working-directory: app/site
+        run: pnpm start -p 3001 &
+      - name: Install browsers
+        working-directory: app/site
+        run: pnpm exec playwright install --with-deps
+      - name: Run Playwright tests
+        working-directory: app/site
+        env:
+          SITE_URL: http://127.0.0.1:3001
+        run: pnpm run test:e2e

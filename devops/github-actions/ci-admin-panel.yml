@@ -1,0 +1,27 @@
+
+name: Admin Panel CI
+
+on:
+  push:
+    paths:
+      - admin-panel/**
+      - tests/admin-panel/**
+  pull_request:
+    paths:
+      - admin-panel/**
+      - tests/admin-panel/**
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+        working-directory: apps/armanfit-admin
+      - run: npm run test
+        working-directory: apps/armanfit-admin
+      - run: npm run test:coverage
+        working-directory: apps/armanfit-admin

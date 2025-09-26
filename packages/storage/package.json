@@ -1,0 +1,39 @@
+{
+  "name": "@arman/storage",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"No tests yet\" && exit 0",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "start": "node dist/index.js || node dist/server.js || node dist/main.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts || node dist/index.js",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "@types/node": "^20.12.12",
+    "tsup": "^8.0.1"
+  },
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

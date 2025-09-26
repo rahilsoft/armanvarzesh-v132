@@ -1,0 +1,83 @@
+# Build Readiness (Phase 5)
+
+| Path | name | lint | typecheck | test | build | start |
+|---|---|---|---|---|---|---|
+| armanvarzesh v81 | `armanvarzesh-monorepo` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/activity-subgraph | `@arman/activity-subgraph` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/armanfit-admin | `@arman/armanfit-admin` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/backend | `@arman/backend` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/client-pwa | `@arman/user-pwa` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/coach-app | `@arman/coach-app` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/coach-pwa | `@arman/coach-pwa` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/live-subgraph | `@arman/live-subgraph` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/media-worker | `@arman/media-worker` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/social-subgraph | `@arman/social-subgraph` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/user-app | `@arman/user-app` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/apps/vitrin-site | `@arman/vitrin-site` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/async-utils | `@arman/async-utils` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/auth | `@arman/auth` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/auth-kit | `@arman/auth-kit` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/awards-engine | `@arman/awards-engine` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/cache-std | `@arman/cache-std` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/client-live | `@arman/client-live` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/contracts | `@arman/contracts` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/contracts-tests | `@arman/contracts-tests` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/env-config | `@arman/env-config` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/graphql | `@arman/graphql` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/graphql-dataloader | `@arman/graphql-dataloader` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/graphql-utils | `@arman/graphql-utils` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/http-client | `@arman/http-client` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/infra | `@arman/infra` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/integration | `@arman/integration` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/integrations | `@arman/integrations` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/integrations/livekit | `@arman/integrations-livekit` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/libs | `@arman/libs` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/observability | `@arman/observability` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/observability-sdk | `@arman/observability-sdk` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/resilience | `@arman/resilience` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/security-middleware | `@arman/security-middleware` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/service-kit | `@arman/service-kit` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/shared | `@arman/shared` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/state | `@arman/state` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/storage | `@arman/storage` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/theme | `@arman/theme` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/training-load-engine | `@arman/training-load-engine` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/ui | `@arman/ui` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/ui-components | `@arman/ui-components` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/ui-kit-live | `@arman/ui-kit-live` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/ui-tokens | `@arman/ui-tokens` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/utils | `@arman/utils` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/packages/web-core | `@arman/web-core` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/affiliate-service | `affiliate-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/ai-service | `ai-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/analytics-collector | `@arman/analytics-collector` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/analytics-service | `@arman/analytics-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/api-gateway | `api-gateway` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/assessment-service | `assessment-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/assessments-service | `@arman/assessments-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/auth-service | `auth-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/booking-service | `@arman/booking-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/certificate-service | `@arman/certificate-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/challenges-service | `challenges-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/chat-service | `chat-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/coaches-service | `coaches-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/content-service | `content-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/courses-service | `courses-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/marketplace-service | `marketplace-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/media-worker | `@arman/media-worker__media-worker` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/monitoring-service | `monitoring-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/notifications-service | `notifications-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/nutrition-service | `nutrition-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/payments-service | `payments-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/physio-service | `@arman/physio-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/predictive-service | `predictive-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/reward-service | `reward-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/rewards-service | `@arman/rewards-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/users-service | `users-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/vip-service | `vip-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/workers | `@arman/workers` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/workers/bullmq-worker | `bullmq-worker` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| armanvarzesh v81/services/workouts-service | `workouts-service` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| packages/contracts/notifications | `@contracts/notifications` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| packages/contracts/nutrition | `@contracts/nutrition` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| packages/sdk | `@arman/sdk` | ✅ | ✅ | ✅ | ✅ | ✅ |

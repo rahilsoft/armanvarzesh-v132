@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Nutrition API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /nutrition/v1/users/{userId}/meal-plan:
+    get:
+      summary: Get meal plan
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Meal plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealPlan'
+    put:
+      summary: Set meal plan
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MealPlan'
+      responses:
+        '204': { description: updated }
+  /nutrition/v1/users/{userId}/meals:
+    get:
+      summary: List meals
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/MealEntry' }
+    post:
+      summary: Add meal entry
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MealEntry'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    MacroTargets:
+      type: object
+      required: [calories, protein, carbs, fat]
+      properties:
+        calories: { type: number }
+        protein: { type: number }
+        carbs: { type: number }
+        fat: { type: number }
+    MealEntry:
+      type: object
+      required: [id, userId, date, items, createdAt]
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        date: { type: string, format: date }
+        items:
+          type: array
+          items:
+            type: object
+            required: [itemId, grams]
+            properties:
+              itemId: { type: string }
+              grams: { type: number }
+        createdAt: { type: string, format: date-time }
+    MealPlan:
+      type: object
+      required: [id, userId, items, createdAt]
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        targets: { $ref: '#/components/schemas/MacroTargets' }
+        items:
+          type: array
+          items:
+            type: object
+            required: [itemId, grams]
+            properties:
+              itemId: { type: string }
+              grams: { type: number }
+        createdAt: { type: string, format: date-time }

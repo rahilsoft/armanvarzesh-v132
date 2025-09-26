@@ -1,0 +1,29 @@
+# ci/codemagic-snippet.yml
+# Paste the 'scripts' part into your Codemagic workflow, or call: bash ci/build_backend.sh
+workflows:
+  web-and-backend:
+    name: Build Backend (via script)
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        NODE_VERSION: "20.11.1"
+      node: ${NODE_VERSION}
+    scripts:
+      - name: Setup pnpm via Corepack
+        script: |
+          set -e
+          corepack enable
+          corepack use pnpm@10.0.0
+          node -v && pnpm -v
+      - name: Install workspace
+        script: |
+          pnpm install --frozen-lockfile=false
+      - name: Prisma generate
+        script: |
+          bash ci/prisma_generate.sh
+      - name: Build backend (Nest + SWC + type-check)
+        script: |
+          bash ci/build_backend.sh
+    cache:
+      cache_paths:
+        - ~/.pnpm-store

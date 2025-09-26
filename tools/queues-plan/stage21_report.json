@@ -1,0 +1,10 @@
+{
+  "service": "services/rewards-service",
+  "jobs": [
+    "test",
+    "resize",
+    "transcode",
+    "process-exercise"
+  ],
+  "note": "enable with AV_WIRE_QUEUES=1"
+}

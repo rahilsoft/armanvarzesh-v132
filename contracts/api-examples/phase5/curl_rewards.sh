@@ -1,0 +1,1 @@
+curl "$API/v1/rewards" 

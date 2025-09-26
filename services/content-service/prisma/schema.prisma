@@ -1,0 +1,133 @@
+
+
+model SpecialistMeta {
+  languages      String?   // comma separated e.g. fa,en
+  thumbnailUrl   String?
+  specialistId   String  @id
+  role           ServiceType?
+  tags           String?
+  genderFocus    String?    // male|female|any
+  minAge         Int?
+  maxAge         Int?
+  activeAt       DateTime?
+  bio            String?
+  introVideoUrl  String?
+  updatedAt      DateTime @updatedAt
+  @@index([specialistId])  // added by phase5
+}
+
+
+
+model SpecialistScoreHistory {
+  id           String   @id @default(cuid())
+  specialistId String
+  role         ServiceType
+  totalScore   Float
+  metrics      Json?
+  at           DateTime @default(now())
+  @@index([specialistId, role, at])
+}
+
+
+
+model MediaJob {
+  id        String   @id @default(cuid())
+  kind      String   // THUMBNAIL|TRANSCODE
+  url       String
+  status    String   @default("PENDING") // PENDING|RUNNING|DONE|ERROR
+  result    Json?
+  error     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+}
+
+
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+model Food {
+  id        String   @id @default(cuid())
+  nameFa    String
+  nameEn    String?
+  calories  Float    // per 100g
+  protein   Float    // per 100g
+  carbs     Float    // per 100g
+  fat       Float    // per 100g
+  unitsJson Json?    // e.g. {"cup":240,"tbsp":15,"egg":50}
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+}
+
+model NutritionTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  goal      String?
+  json      Json
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NutritionPlan {
+  id         String   @id @default(cuid())
+  userId     String
+  createdBy  String
+  startDate  DateTime
+  weeks      Int
+  status     String   @default("ACTIVE")
+  json       Json     // full calendar with meals & items & totals
+  totalsJson Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  @@index([userId, status])
+}
+
+model MealLog {
+  id        String   @id @default(cuid())
+  userId    String
+  planId    String
+  dayIndex  Int
+  mealKey   String   // breakfast|snack|lunch|dinner|...
+  checked   Boolean  @default(false)
+  photoUrl  String?
+  aiJson    Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId, planId, dayIndex, mealKey])
+}
+
+model NotificationTask {
+  id        String   @id @default(cuid())
+  userId    String
+  planId    String?
+  type      String   // MEAL_REMINDER|WATER_REMINDER
+  dueAt     DateTime
+  payload   Json?
+  status    String   @default("PENDING") // PENDING|SENT|CANCELLED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId, dueAt])
+  @@index([planId])  // added by phase5
+}
+
+
+model DeviceToken {
+  id             String   @id @default(cuid())
+  userId         String
+  platform       String   // ios|android|web
+  token          String   @unique
+  enabled        Boolean  @default(true)
+  lastSeenAt     DateTime @default(now())
+  lastNotifiedAt DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  @@index([userId])
+}

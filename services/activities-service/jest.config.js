@@ -1,0 +1,1 @@
+module.exports = { testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)','**/e2e/**/*.test.ts'], transform: {}, };

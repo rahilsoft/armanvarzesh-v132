@@ -1,0 +1,1 @@
+export const useCan = ()=>({ allow: ()=>true })

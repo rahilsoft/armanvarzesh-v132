@@ -1,0 +1,1 @@
+curl "$API/v1/health/hydration?from=2025-08-01&to=2025-08-30" -H "Authorization: Bearer $TOKEN" 

@@ -1,0 +1,730 @@
+{
+  "counts": {
+    "gql_server_ops": 6,
+    "gql_client_ops": 70,
+    "rest_server_routes": 43,
+    "rest_client_calls": 38,
+    "unused_gql_server_ops": 6,
+    "missing_gql_server_ops": 70,
+    "client_unresolved_rest_calls": 38
+  },
+  "samples": {
+    "unused_gql_server_ops": [
+      "Amount",
+      "Authority",
+      "cursor",
+      "q",
+      "t",
+      "userId"
+    ],
+    "missing_gql_server_ops": [
+      "AddNote",
+      "ArchiveClient",
+      "AssignPlan",
+      "BookReservation",
+      "CancelReservation",
+      "Client",
+      "ClientNotes",
+      "Clients",
+      "CoachAvailability",
+      "CoachReservations",
+      "CreateAdmin",
+      "CreateAvailability",
+      "CreateChallenge",
+      "CreateCoach",
+      "CreateNotification",
+      "CreateNutritionPlan",
+      "CreatePayment",
+      "CreateProduct",
+      "CreateReward",
+      "CreateSurvey",
+      "CreateUser",
+      "CreateWorkout",
+      "DailySummary",
+      "DeleteUser",
+      "DeleteWorkout",
+      "DuplicatePlan",
+      "Exercises",
+      "FoodSearch",
+      "GetAdmins",
+      "GetAnalytics",
+      "GetChallenge",
+      "GetChallenges",
+      "GetChat",
+      "GetCoach",
+      "GetCoaches",
+      "GetNotifications",
+      "GetNutritionPlans",
+      "GetPayment",
+      "GetPayments",
+      "GetProducts"
+    ],
+    "client_unresolved_rest_calls": [
+      "GET /affiliate",
+      "GET /ai",
+      "GET /analytics",
+      "GET /api/affiliate",
+      "GET /api/ai",
+      "GET /api/analytics",
+      "GET /api/assessments",
+      "GET /api/booking",
+      "GET /api/certificate",
+      "GET /api/chat",
+      "GET /api/coaches",
+      "GET /api/courses",
+      "GET /api/marketplace",
+      "GET /api/metrics",
+      "GET /api/monitoring",
+      "GET /api/notifications",
+      "GET /api/nutrition",
+      "GET /api/payments",
+      "GET /api/physio",
+      "GET /api/rewards",
+      "GET /api/vip",
+      "GET /api/workouts",
+      "GET /assessments",
+      "GET /booking",
+      "GET /certificate",
+      "GET /chat",
+      "GET /coaches",
+      "GET /courses",
+      "GET /fcm/send",
+      "GET /marketplace",
+      "GET /monitoring",
+      "GET /notifications",
+      "GET /nutrition",
+      "GET /payments",
+      "GET /physio",
+      "GET /rewards",
+      "GET /vip",
+      "GET /workouts"
+    ]
+  },
+  "details": {
+    "gql_server": {
+      "cursor": [
+        "apps/backend/src/payments/payments.controller.ts"
+      ],
+      "Authority": [
+        "apps/backend/src/payments/controllers/payments.controller.ts"
+      ],
+      "Amount": [
+        "apps/backend/src/payments/controllers/payments.controller.ts"
+      ],
+      "userId": [
+        "apps/backend/src/bff-web/bff-web.controller.ts",
+        "apps/backend/src/bff-mobile/bff-mobile.controller.ts",
+        "apps/backend/src/bff/bff.controller.ts"
+      ],
+      "t": [
+        "services/certificate-service/src/certificate/certificate.controller.ts"
+      ],
+      "q": [
+        "services/workouts-service/src/workouts-service.controller.ts",
+        "services/workouts-service/src/workouts/workouts.controller.ts"
+      ]
+    },
+    "gql_client": {
+      "Workouts": [
+        "packages/web-core/src/hooks.ts"
+      ],
+      "CreateWorkout": [
+        "packages/web-core/src/hooks.ts",
+        "apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts"
+      ],
+      "CreateNotification": [
+        "apps/armanfit-admin/src/graphql/mutations/notification.mutations.ts"
+      ],
+      "CreatePayment": [
+        "apps/armanfit-admin/src/graphql/mutations/payment.mutations.ts"
+      ],
+      "CreateNutritionPlan": [
+        "apps/armanfit-admin/src/graphql/mutations/nutrition.mutations.ts"
+      ],
+      "CreateUser": [
+        "apps/armanfit-admin/src/graphql/mutations/user.mutations.ts"
+      ],
+      "UpdateUser": [
+        "apps/armanfit-admin/src/graphql/mutations/user.mutations.ts"
+      ],
+      "DeleteUser": [
+        "apps/armanfit-admin/src/graphql/mutations/user.mutations.ts"
+      ],
+      "CreateChallenge": [
+        "apps/armanfit-admin/src/graphql/mutations/challenge.mutations.ts"
+      ],
+      "UpdateWorkout": [
+        "apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts"
+      ],
+      "DeleteWorkout": [
+        "apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts"
+      ],
+      "LogActualWorkout": [
+        "apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts"
+      ],
+      "CreateCoach": [
+        "apps/armanfit-admin/src/graphql/mutations/coach.mutations.ts"
+      ],
+      "CreateAdmin": [
+        "apps/armanfit-admin/src/graphql/mutations/admin.mutations.ts"
+      ],
+      "CreateReward": [
+        "apps/armanfit-admin/src/graphql/mutations/reward.mutations.ts"
+      ],
+      "UpdateAnalytics": [
+        "apps/armanfit-admin/src/graphql/mutations/analytics.mutations.ts"
+      ],
+      "CreateProduct": [
+        "apps/armanfit-admin/src/graphql/mutations/product.mutations.ts"
+      ],
+      "UpdateWallet": [
+        "apps/armanfit-admin/src/graphql/mutations/wallet.mutations.ts"
+      ],
+      "CreateSurvey": [
+        "apps/armanfit-admin/src/graphql/mutations/survey.mutations.ts"
+      ],
+      "GetNutritionPlans": [
+        "apps/armanfit-admin/src/graphql/queries/nutrition.queries.ts"
+      ],
+      "GetAdmins": [
+        "apps/armanfit-admin/src/graphql/queries/admin.queries.ts"
+      ],
+      "GetCoaches": [
+        "apps/armanfit-admin/src/graphql/queries/coach.queries.ts"
+      ],
+      "GetCoach": [
+        "apps/armanfit-admin/src/graphql/queries/coach.queries.ts"
+      ],
+      "GetUsers": [
+        "apps/armanfit-admin/src/graphql/queries/user.queries.ts"
+      ],
+      "GetUser": [
+        "apps/armanfit-admin/src/graphql/queries/user.queries.ts"
+      ],
+      "GetWorkouts": [
+        "apps/armanfit-admin/src/graphql/queries/workout.queries.ts"
+      ],
+      "GetWorkout": [
+        "apps/armanfit-admin/src/graphql/queries/workout.queries.ts"
+      ],
+      "GetUserWorkouts": [
+        "apps/armanfit-admin/src/graphql/queries/workout.queries.ts"
+      ],
+      "GetProducts": [
+        "apps/armanfit-admin/src/graphql/queries/product.queries.ts"
+      ],
+      "GetAnalytics": [
+        "apps/armanfit-admin/src/graphql/queries/analytics.queries.ts"
+      ],
+      "GetRewards": [
+        "apps/armanfit-admin/src/graphql/queries/reward.queries.ts"
+      ],
+      "GetWallets": [
+        "apps/armanfit-admin/src/graphql/queries/wallet.queries.ts"
+      ],
+      "GetSurveys": [
+        "apps/armanfit-admin/src/graphql/queries/survey.queries.ts"
+      ],
+      "GetChallenges": [
+        "apps/armanfit-admin/src/graphql/queries/challenge.queries.ts"
+      ],
+      "GetChallenge": [
+        "apps/armanfit-admin/src/graphql/queries/challenge.queries.ts"
+      ],
+      "GetPayments": [
+        "apps/armanfit-admin/src/graphql/queries/payment.queries.ts"
+      ],
+      "GetPayment": [
+        "apps/armanfit-admin/src/graphql/queries/payment.queries.ts"
+      ],
+      "GetNotifications": [
+        "apps/armanfit-admin/src/graphql/queries/notification.queries.ts"
+      ],
+      "CreateAvailability": [
+        "apps/coach-app/graphql/mutations/availability.mutations.ts"
+      ],
+      "SendMessage": [
+        "apps/coach-app/graphql/mutations/chat.mutations.ts",
+        "apps/user-app/graphql/mutations/chat.mutations.ts"
+      ],
+      "SendAttachment": [
+        "apps/coach-app/graphql/mutations/chat.mutations.ts",
+        "apps/user-app/graphql/mutations/chat.mutations.ts"
+      ],
+      "Plans": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "Plan": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "UpsertPlan": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "DuplicatePlan": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "PublishPlan": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "AssignPlan": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "Exercises": [
+        "apps/coach-app/graphql/queries/plans.queries.ts"
+      ],
+      "LoginCoach": [
+        "apps/coach-app/graphql/queries/auth.queries.ts"
+      ],
+      "RegisterCoach": [
+        "apps/coach-app/graphql/queries/auth.queries.ts"
+      ],
+      "Refresh": [
+        "apps/coach-app/graphql/queries/auth.queries.ts"
+      ],
+      "GetChat": [
+        "apps/coach-app/graphql/queries/chat.queries.ts",
+        "apps/user-app/graphql/queries/chat.queries.ts"
+      ],
+      "Clients": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "Client": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "UpsertClient": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "ArchiveClient": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "AddNote": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "ClientNotes": [
+        "apps/coach-app/graphql/queries/clients.queries.ts"
+      ],
+      "CoachAvailability": [
+        "apps/coach-app/graphql/queries/availability.queries.ts"
+      ],
+      "CoachReservations": [
+        "apps/coach-app/graphql/queries/availability.queries.ts"
+      ],
+      "MessageReceived": [
+        "apps/coach-app/graphql/subscriptions/chat.subs.ts",
+        "apps/user-app/graphql/subscriptions/chat.subs.ts"
+      ],
+      "MarkNotificationRead": [
+        "apps/user-app/graphql/mutations/notification.mutations.ts"
+      ],
+      "MarkAllNotificationsRead": [
+        "apps/user-app/graphql/mutations/notification.mutations.ts"
+      ],
+      "LogMeal": [
+        "apps/user-app/graphql/mutations/nutrition.mutations.ts"
+      ],
+      "BookReservation": [
+        "apps/user-app/graphql/mutations/reservation.mutations.ts"
+      ],
+      "CancelReservation": [
+        "apps/user-app/graphql/mutations/reservation.mutations.ts"
+      ],
+      "FoodSearch": [
+        "apps/user-app/graphql/queries/nutrition.queries.ts"
+      ],
+      "DailySummary": [
+        "apps/user-app/graphql/queries/nutrition.queries.ts"
+      ],
+      "UserReservations": [
+        "apps/user-app/graphql/queries/reservation.queries.ts"
+      ],
+      "NotificationReceived": [
+        "apps/user-app/graphql/subscriptions/notification.subs.ts"
+      ]
+    },
+    "rest_server": {
+      ":id": [
+        "apps/backend/src/corporate/controllers/corporate.controller.ts",
+        "apps/backend/src/payments/controllers/payments.controller.ts",
+        "apps/backend/src/workouts/controllers/workouts.controller.ts",
+        "apps/backend/src/coaches/controllers/coaches.controller.ts",
+        "apps/backend/src/experiments/controllers/experiments.controller.ts",
+        "apps/backend/src/challenges/controllers/challenges.controller.ts",
+        "apps/backend/src/marketplace/controllers/marketplace.controller.ts",
+        "apps/backend/src/admin/controllers/admin.controller.ts",
+        "apps/backend/src/cms/controllers/cms.controller.ts",
+        "apps/backend/src/support/controllers/support.controller.ts",
+        "apps/backend/src/users/controllers/users.controller.ts",
+        "apps/backend/src/live/controllers/live.controller.ts",
+        "apps/backend/src/payroll/controllers/payroll.controller.ts",
+        "apps/backend/src/survey/controllers/survey.controller.ts",
+        "apps/backend/src/nutrition/controllers/nutrition.controller.ts",
+        "services/rewards-service/src/rewards.controller.ts",
+        "services/rewards-service/src/rewards.controller.ts",
+        "services/rewards-service/src/rewards.controller.ts",
+        "services/physio-service/src/physio.controller.ts",
+        "services/physio-service/src/physio.controller.ts",
+        "services/physio-service/src/physio.controller.ts",
+        "services/assessments-service/src/assessments.controller.ts",
+        "services/assessments-service/src/assessments.controller.ts",
+        "services/assessments-service/src/assessments.controller.ts",
+        "services/analytics-service/src/analytics.controller.ts",
+        "services/analytics-service/src/analytics.controller.ts",
+        "services/analytics-service/src/analytics.controller.ts",
+        "services/notifications-service/src/notifications-service.controller.ts",
+        "services/notifications-service/src/notifications/notifications.controller.ts",
+        "services/workouts-service/src/workouts-service.controller.ts",
+        "services/workouts-service/src/workouts-service.controller.ts",
+        "services/workouts-service/src/workouts-service.controller.ts",
+        "services/workouts-service/src/workouts/workouts.controller.ts",
+        "services/booking-service/src/booking.controller.ts",
+        "services/booking-service/src/booking.controller.ts",
+        "services/booking-service/src/booking.controller.ts"
+      ],
+      "/metrics": [
+        "apps/backend/src/metrics/metrics.controller.ts",
+        "services/payments-service/src/metrics/metrics.controller.ts",
+        "services/predictive-service/src/main.ts",
+        "services/predictive-service/src/metrics/metrics.controller.ts",
+        "services/ai-service/src/main.ts",
+        "services/ai-service/src/metrics/metrics.controller.ts",
+        "services/vip-service/src/main.ts",
+        "services/vip-service/src/metrics/metrics.controller.ts",
+        "services/nutrition-service/src/main.ts",
+        "services/nutrition-service/src/metrics/metrics.controller.ts",
+        "services/reward-service/src/main.ts",
+        "services/reward-service/src/metrics/metrics.controller.ts",
+        "services/chat-service/src/main.ts",
+        "services/chat-service/src/metrics/metrics.controller.ts",
+        "services/marketplace-service/src/main.ts",
+        "services/marketplace-service/src/metrics/metrics.controller.ts",
+        "services/assessment-service/src/main.ts",
+        "services/assessment-service/src/metrics/metrics.controller.ts",
+        "services/monitoring-service/src/main.ts",
+        "services/monitoring-service/src/metrics/metrics.controller.ts",
+        "services/coaches-service/src/main.ts",
+        "services/coaches-service/src/metrics/metrics.controller.ts",
+        "services/notifications-service/src/metrics/metrics.controller.ts",
+        "services/workouts-service/src/metrics/metrics.controller.ts",
+        "services/auth-service/src/main.ts",
+        "services/auth-service/src/metrics/metrics.controller.ts",
+        "services/content-service/src/metrics/metrics.controller.ts",
+        "services/challenges-service/src/main.ts",
+        "services/challenges-service/src/metrics/metrics.controller.ts",
+        "services/courses-service/src/main.ts",
+        "services/courses-service/src/metrics/metrics.controller.ts",
+        "services/users-service/src/main.ts",
+        "services/users-service/src/metrics/metrics.controller.ts",
+        "services/affiliate-service/src/main.ts",
+        "services/affiliate-service/src/metrics/metrics.controller.ts"
+      ],
+      "webhook": [
+        "apps/backend/src/payments/webhook.controller.ts",
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "verify/callback": [
+        "apps/backend/src/payments/controllers/payments.controller.ts"
+      ],
+      "audit": [
+        "apps/backend/src/security/controllers/security.controller.ts"
+      ],
+      "jwks.json": [
+        "apps/backend/src/auth/jwks.controller.ts"
+      ],
+      "login": [
+        "apps/backend/src/auth/auth.controller.ts",
+        "apps/backend/src/auth/admin.controller.ts",
+        "services/auth-service/src/auth/auth.controller.ts"
+      ],
+      "refresh": [
+        "apps/backend/src/auth/auth.controller.ts",
+        "services/auth-service/src/auth/auth.controller.ts"
+      ],
+      "logout": [
+        "apps/backend/src/auth/auth.controller.ts"
+      ],
+      "reserve": [
+        "apps/backend/src/reservations/reservations.controller.ts"
+      ],
+      "cancel": [
+        "apps/backend/src/reservations/reservations.controller.ts"
+      ],
+      "home": [
+        "apps/backend/src/bff-web/bff-web.controller.ts"
+      ],
+      ":userId": [
+        "apps/backend/src/leaderboard/controllers/leaderboard.controller.ts",
+        "apps/backend/src/wallet/controllers/wallet.controller.ts",
+        "apps/backend/src/notifications/controllers/notifications.controller.ts"
+      ],
+      "/healthz": [
+        "apps/backend/src/common/controllers/health.controller.ts",
+        "services/content-service/src/health.controller.ts"
+      ],
+      "/readyz": [
+        "apps/backend/src/common/controllers/health.controller.ts"
+      ],
+      "dashboard": [
+        "apps/backend/src/bff-mobile/bff-mobile.controller.ts",
+        "apps/backend/src/bff/bff.controller.ts"
+      ],
+      "token": [
+        "apps/backend/src/livekit/livekit.controller.ts"
+      ],
+      "room/create": [
+        "apps/backend/src/livekit/livekit.controller.ts"
+      ],
+      "room/delete": [
+        "apps/backend/src/livekit/livekit.controller.ts"
+      ],
+      "egress/start": [
+        "apps/backend/src/livekit/livekit.controller.ts"
+      ],
+      "egress/stop": [
+        "apps/backend/src/livekit/livekit.controller.ts"
+      ],
+      "confirm": [
+        "apps/backend/src/media/media-upload.controller.ts",
+        "services/auth-service/src/auth/password-reset.controller.ts"
+      ],
+      "healthz": [
+        "services/rewards-service/src/health.controller.ts",
+        "services/physio-service/src/health.controller.ts",
+        "services/assessments-service/src/health.controller.ts",
+        "services/analytics-service/src/health.controller.ts",
+        "services/booking-service/src/health.controller.ts"
+      ],
+      "readyz": [
+        "services/rewards-service/src/health.controller.ts",
+        "services/physio-service/src/health.controller.ts",
+        "services/assessments-service/src/health.controller.ts",
+        "services/analytics-service/src/health.controller.ts",
+        "services/booking-service/src/health.controller.ts"
+      ],
+      "metrics": [
+        "services/rewards-service/src/health.controller.ts",
+        "services/physio-service/src/health.controller.ts",
+        "services/assessments-service/src/health.controller.ts",
+        "services/analytics-service/src/health.controller.ts",
+        "services/booking-service/src/health.controller.ts"
+      ],
+      "products": [
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "orders/:id": [
+        "services/payments-service/src/payments-service.controller.ts"
+      ],
+      "coupons": [
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "orders": [
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "intent/:orderId": [
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "plans": [
+        "services/payments-service/src/payments-service.controller.ts"
+      ],
+      "subscriptions": [
+        "services/payments-service/src/payments-service.controller.ts",
+        "services/payments-service/src/payments/payments.controller.ts"
+      ],
+      "verify": [
+        "services/certificate-service/src/certificate/certificate.controller.ts",
+        "services/auth-service/src/auth/totp.controller.ts"
+      ],
+      "issue": [
+        "services/certificate-service/src/certificate/certificate.controller.ts"
+      ],
+      "email": [
+        "services/notifications-service/src/notifications-service.controller.ts",
+        "services/notifications-service/src/notifications/notifications.controller.ts"
+      ],
+      "sms": [
+        "services/notifications-service/src/notifications-service.controller.ts",
+        "services/notifications-service/src/notifications/notifications.controller.ts"
+      ],
+      "push": [
+        "services/notifications-service/src/notifications-service.controller.ts",
+        "services/notifications-service/src/notifications/notifications.controller.ts"
+      ],
+      "enable": [
+        "services/auth-service/src/auth/totp.controller.ts"
+      ],
+      "disable": [
+        "services/auth-service/src/auth/totp.controller.ts"
+      ],
+      "me": [
+        "services/auth-service/src/auth/auth.controller.ts"
+      ],
+      "register": [
+        "services/auth-service/src/auth/auth.controller.ts"
+      ],
+      "request": [
+        "services/auth-service/src/auth/password-reset.controller.ts"
+      ],
+      "/ready": [
+        "services/content-service/src/health.controller.ts"
+      ]
+    },
+    "rest_client": {
+      "GET /api/metrics?name=": [
+        "apps/vitrin-site/app/admin/experiments/page.tsx"
+      ],
+      "GET /assessments": [
+        "apps/coach-app/src/features/assessments/index.tsx",
+        "apps/user-app/src/features/assessments/index.tsx"
+      ],
+      "GET /payments": [
+        "apps/coach-app/src/features/payments/index.tsx",
+        "apps/user-app/src/features/payments/index.tsx"
+      ],
+      "GET /vip": [
+        "apps/coach-app/src/features/vip/index.tsx",
+        "apps/user-app/src/features/vip/index.tsx"
+      ],
+      "GET /certificate": [
+        "apps/coach-app/src/features/certificate/index.tsx",
+        "apps/user-app/src/features/certificate/index.tsx"
+      ],
+      "GET /chat": [
+        "apps/coach-app/src/features/chat/index.tsx",
+        "apps/user-app/src/features/chat/index.tsx"
+      ],
+      "GET /booking": [
+        "apps/coach-app/src/features/booking/index.tsx",
+        "apps/user-app/src/features/booking/index.tsx"
+      ],
+      "GET /workouts": [
+        "apps/coach-app/src/features/workouts/index.tsx",
+        "apps/user-app/src/features/workouts/index.tsx"
+      ],
+      "GET /physio": [
+        "apps/coach-app/src/features/physio/index.tsx",
+        "apps/user-app/src/features/physio/index.tsx"
+      ],
+      "GET /coaches": [
+        "apps/coach-app/src/features/coaches/index.tsx",
+        "apps/user-app/src/features/coaches/index.tsx"
+      ],
+      "GET /marketplace": [
+        "apps/coach-app/src/features/marketplace/index.tsx",
+        "apps/user-app/src/features/marketplace/index.tsx"
+      ],
+      "GET /rewards": [
+        "apps/coach-app/src/features/rewards/index.tsx",
+        "apps/user-app/src/features/rewards/index.tsx"
+      ],
+      "GET /courses": [
+        "apps/coach-app/src/features/courses/index.tsx",
+        "apps/user-app/src/features/courses/index.tsx"
+      ],
+      "GET /ai": [
+        "apps/coach-app/src/features/ai/index.tsx",
+        "apps/user-app/src/features/ai/index.tsx"
+      ],
+      "GET /affiliate": [
+        "apps/coach-app/src/features/affiliate/index.tsx",
+        "apps/user-app/src/features/affiliate/index.tsx"
+      ],
+      "GET /monitoring": [
+        "apps/coach-app/src/features/monitoring/index.tsx",
+        "apps/user-app/src/features/monitoring/index.tsx"
+      ],
+      "GET /nutrition": [
+        "apps/coach-app/src/features/nutrition/index.tsx",
+        "apps/user-app/src/features/nutrition/index.tsx"
+      ],
+      "GET /notifications": [
+        "apps/coach-app/src/features/notifications/index.tsx",
+        "apps/user-app/src/features/notifications/index.tsx"
+      ],
+      "GET /analytics": [
+        "apps/coach-app/src/features/analytics/index.tsx",
+        "apps/user-app/src/features/analytics/index.tsx"
+      ],
+      "GET /api/assessments": [
+        "apps/user-pwa/src/features/assessments/index.tsx",
+        "apps/coach-pwa/src/features/assessments/index.tsx"
+      ],
+      "GET /api/payments": [
+        "apps/user-pwa/src/features/payments/index.tsx",
+        "apps/coach-pwa/src/features/payments/index.tsx"
+      ],
+      "GET /api/vip": [
+        "apps/user-pwa/src/features/vip/index.tsx",
+        "apps/coach-pwa/src/features/vip/index.tsx"
+      ],
+      "GET /api/certificate": [
+        "apps/user-pwa/src/features/certificate/index.tsx",
+        "apps/coach-pwa/src/features/certificate/index.tsx"
+      ],
+      "GET /api/chat": [
+        "apps/user-pwa/src/features/chat/index.tsx",
+        "apps/coach-pwa/src/features/chat/index.tsx"
+      ],
+      "GET /api/booking": [
+        "apps/user-pwa/src/features/booking/index.tsx",
+        "apps/coach-pwa/src/features/booking/index.tsx"
+      ],
+      "GET /api/workouts": [
+        "apps/user-pwa/src/features/workouts/index.tsx",
+        "apps/coach-pwa/src/features/workouts/index.tsx"
+      ],
+      "GET /api/physio": [
+        "apps/user-pwa/src/features/physio/index.tsx",
+        "apps/coach-pwa/src/features/physio/index.tsx"
+      ],
+      "GET /api/coaches": [
+        "apps/user-pwa/src/features/coaches/index.tsx",
+        "apps/coach-pwa/src/features/coaches/index.tsx"
+      ],
+      "GET /api/marketplace": [
+        "apps/user-pwa/src/features/marketplace/index.tsx",
+        "apps/coach-pwa/src/features/marketplace/index.tsx"
+      ],
+      "GET /api/rewards": [
+        "apps/user-pwa/src/features/rewards/index.tsx",
+        "apps/coach-pwa/src/features/rewards/index.tsx"
+      ],
+      "GET /api/courses": [
+        "apps/user-pwa/src/features/courses/index.tsx",
+        "apps/coach-pwa/src/features/courses/index.tsx"
+      ],
+      "GET /api/ai": [
+        "apps/user-pwa/src/features/ai/index.tsx",
+        "apps/coach-pwa/src/features/ai/index.tsx"
+      ],
+      "GET /api/affiliate": [
+        "apps/user-pwa/src/features/affiliate/index.tsx",
+        "apps/coach-pwa/src/features/affiliate/index.tsx"
+      ],
+      "GET /api/monitoring": [
+        "apps/user-pwa/src/features/monitoring/index.tsx",
+        "apps/coach-pwa/src/features/monitoring/index.tsx"
+      ],
+      "GET /api/nutrition": [
+        "apps/user-pwa/src/features/nutrition/index.tsx",
+        "apps/coach-pwa/src/features/nutrition/index.tsx"
+      ],
+      "GET /api/notifications": [
+        "apps/user-pwa/src/features/notifications/index.tsx",
+        "apps/coach-pwa/src/features/notifications/index.tsx"
+      ],
+      "GET /api/analytics": [
+        "apps/user-pwa/src/features/analytics/index.tsx",
+        "apps/coach-pwa/src/features/analytics/index.tsx"
+      ],
+      "GET https://fcm.googleapis.com/fcm/send": [
+        "services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+name: vitrin-lighthouse
+on:
+  workflow_run:
+    workflows: ["vitrin-ci"]
+    types:
+      - completed
+jobs:
+  lhci:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+      - name: Build Vitrin
+        run: pnpm --filter vitrin-site build
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: apps/vitrin-site/lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

@@ -1,0 +1,2064 @@
+{
+  "gql_map_detailed": [
+    {
+      "operation": "AddNote",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 39,
+            "snippet": "export const ARCHIVE_CLIENT = gql`\n  mutation ArchiveClient($id:ID!){\n    archiveClient(id:$id)\n  }\n`;\n\nexport const ADD_NOTE = gql`\n  mutation AddNote($clientId:ID!, $body:String!){\n    addClientNote(clientId:$clientId, body:$body){\n      id body createdAt author { id name }\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Amount",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/controllers/payments.controller.ts",
+            "line": 23,
+            "snippet": "  @Get(':id')\n  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Payment> {\n    return this.paymentsService.findOne(id);\n  }\n\n  @Get('verify/callback')\n  async verifyCallback(@Query('Authority') authority: string, @Query('Amount') amount: string): Promise<{ success: boolean }> {\n    const ok = await this.paymentsService.verify(authority, Number(amount));\n    return { success: ok };\n  }\n}"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    },
+    {
+      "operation": "ArchiveClient",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 33,
+            "snippet": "export const UPSERT_CLIENT = gql`\n  mutation UpsertClient($input:UpsertClientInput!){\n    upsertClient(input:$input){ id name email avatar status }\n  }\n`;\n\nexport const ARCHIVE_CLIENT = gql`\n  mutation ArchiveClient($id:ID!){\n    archiveClient(id:$id)\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "AssignPlan",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 50,
+            "snippet": "export const PUBLISH_PLAN = gql`\n  mutation PublishPlan($id:ID!){\n    publishPlan(id:$id){ id status version updatedAt }\n  }\n`;\n\nexport const ASSIGN_PLAN = gql`\n  mutation AssignPlan($planId:ID!, $clientId:ID!, $startDate:String!, $sessionsPerWeek:Int!, $restDays:[String!]!, $durationDays:Int!){\n    assignPlan(planId:$planId, clientId:$clientId, startDate:$startDate, sessionsPerWeek:$sessionsPerWeek, restDays:$restDays, durationDays:$durationDays){ id planId clientId startDate sessionsPerWeek restDays durationDays }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Authority",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/controllers/payments.controller.ts",
+            "line": 23,
+            "snippet": "  @Get(':id')\n  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Payment> {\n    return this.paymentsService.findOne(id);\n  }\n\n  @Get('verify/callback')\n  async verifyCallback(@Query('Authority') authority: string, @Query('Amount') amount: string): Promise<{ success: boolean }> {\n    const ok = await this.paymentsService.verify(authority, Number(amount));\n    return { success: ok };\n  }\n}"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    },
+    {
+      "operation": "BookReservation",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const BOOK_RESERVATION = gql`\n  mutation BookReservation($input: CreateReservationInput!) {\n    bookReservation(input: $input) { id coachId slotId status startsAt endsAt }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CancelReservation",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts",
+            "line": 9,
+            "snippet": "export const BOOK_RESERVATION = gql`\n  mutation BookReservation($input: CreateReservationInput!) {\n    bookReservation(input: $input) { id coachId slotId status startsAt endsAt }\n  }\n`;\n\nexport const CANCEL_RESERVATION = gql`\n  mutation CancelReservation($id: String!) {\n    cancelReservation(id: $id)\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Client",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 14,
+            "snippet": "      pageInfo{ endCursor hasNextPage }\n      total\n    }\n  }\n`;\n\nexport const CLIENT_BY_ID = gql`\n  query Client($id:ID!){\n    client(id:$id){\n      id name email avatar phone status height weight birthday\n      goals { id title note createdAt }\n      notes { id body createdAt author { id name } }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "ClientNotes",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 47,
+            "snippet": "    addClientNote(clientId:$clientId, body:$body){\n      id body createdAt author { id name }\n    }\n  }\n`;\n\nexport const CLIENT_NOTES = gql`\n  query ClientNotes($clientId:ID!, $cursor:String, $limit:Int){\n    clientNotes(clientId:$clientId, cursor:$cursor, limit:$limit){\n      edges{ id body createdAt author { id name } }\n      pageInfo{ endCursor hasNextPage }\n    }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Clients",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CLIENTS_LIST = gql`\n  query Clients($search:String, $cursor:String, $limit:Int){\n    clients(search:$search, cursor:$cursor, limit:$limit){\n      edges{ id name email avatar status lastActiveAt }\n      pageInfo{ endCursor hasNextPage }\n      total"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CoachAvailability",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const COACH_AVAILABILITY = gql`\n  query CoachAvailability($coachId: String!) {\n    coachAvailability(coachId: $coachId) {\n      id coachId start end recurrence createdAt\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CoachReservations",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts",
+            "line": 11,
+            "snippet": "    coachAvailability(coachId: $coachId) {\n      id coachId start end recurrence createdAt\n    }\n  }\n`;\n\nexport const COACH_RESERVATIONS = gql`\n  query CoachReservations($coachId: String!) {\n    coachReservations(coachId: $coachId) {\n      id userId startsAt endsAt status createdAt\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateAdmin",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/admin.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_ADMIN = gql`\n  mutation CreateAdmin($input: AdminInput!) {\n    createAdmin(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateAvailability",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/availability.mutations.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const CREATE_AVAILABILITY = gql`\n  mutation CreateAvailability($input: CreateAvailabilityInput!) {\n    createAvailability(input: $input) { id coachId start end recurrence }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateChallenge",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/challenge.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_CHALLENGE = gql`\n  mutation CreateChallenge($input: ChallengeInput!) {\n    createChallenge(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateCoach",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/coach.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_COACH = gql`\n  mutation CreateCoach($input: CoachInput!) {\n    createCoach(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateNotification",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/notification.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_NOTIFICATION = gql`\n  mutation CreateNotification($input: NotificationInput!) {\n    createNotification(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateNutritionPlan",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/nutrition.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_NUTRITION_PLAN = gql`\n  mutation CreateNutritionPlan($input: NutritionPlanInput!) {\n    createNutritionPlan(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreatePayment",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/payment.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_PAYMENT = gql`\n  mutation CreatePayment($input: PaymentInput!) {\n    createPayment(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateProduct",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/product.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_PRODUCT = gql`\n  mutation CreateProduct($input: ProductInput!) {\n    createProduct(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateReward",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/reward.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_REWARD = gql`\n  mutation CreateReward($input: RewardInput!) {\n    createReward(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateSurvey",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/survey.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_SURVEY = gql`\n  mutation CreateSurvey($input: SurveyInput!) {\n    createSurvey(input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateUser",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_USER = gql`\n  mutation CreateUser($input: UserInput!) {\n    createUser(input: $input) { id }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "CreateWorkout",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+            "line": 4,
+            "snippet": "import { gql, useQuery, useMutation } from '@apollo/client';\n\nexport const Q_WORKOUTS = gql`query Workouts{ workouts{ id name } }`;\nexport const M_CREATE_WORKOUT = gql`mutation CreateWorkout($input:WorkoutInput!){ createWorkout(input:$input){ id name } }`;\n// NOTE: Map these to your exact backend schema.\n\nexport function useWorkouts(){\n  const q = useQuery(Q_WORKOUTS);\n  return q;"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+            "line": 6,
+            "snippet": "import { gql } from \"@apollo/client\";\n\n// Create a new workout for a specific user. Accepts the user ID and a\n// CreateWorkoutInput containing planned metrics (title, duration, sets, reps, weight)\n// and optional fields (date, rpe, notes, mediaUrl). Returns the newly created workout ID.\nexport const CREATE_WORKOUT = gql`\n  mutation CreateWorkout($userId: Int!, $input: CreateWorkoutInput!) {\n    createWorkout(userId: $userId, input: $input) {\n      id\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "DailySummary",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const FOOD_SEARCH = gql`query FoodSearch($q:String!){ foodSearch(q:$q){ id title protein carbs fat calories } }`;\nexport const DAILY_SUMMARY = gql`query DailySummary($userId:Int!, $dateISO:String!){ userDailyNutrition(userId:$userId, dateISO:$dateISO){ calories protein carbs fat } }`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "DeleteUser",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+            "line": 16,
+            "snippet": "export const UPDATE_USER = gql`\n  mutation UpdateUser($id: Int!, $input: UserInput!) {\n    updateUser(id: $id, input: $input) { id }\n  }\n`;\n\nexport const DELETE_USER = gql`\n  mutation DeleteUser($id: Int!) {\n    deleteUser(id: $id)\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "DeleteWorkout",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+            "line": 25,
+            "snippet": "      id\n    }\n  }\n`;\n\n// Delete a workout by its ID. Returns true if removed.\nexport const DELETE_WORKOUT = gql`\n  mutation DeleteWorkout($id: Int!) {\n    deleteWorkout(id: $id)\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "DuplicatePlan",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 38,
+            "snippet": "    upsertPlan(input:$input){\n      id title description status version updatedAt\n    }\n  }\n`;\n\nexport const DUPLICATE_PLAN = gql`\n  mutation DuplicatePlan($id:ID!){\n    duplicatePlan(id:$id){ id title description status version }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Exercises",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 56,
+            "snippet": "export const ASSIGN_PLAN = gql`\n  mutation AssignPlan($planId:ID!, $clientId:ID!, $startDate:String!, $sessionsPerWeek:Int!, $restDays:[String!]!, $durationDays:Int!){\n    assignPlan(planId:$planId, clientId:$clientId, startDate:$startDate, sessionsPerWeek:$sessionsPerWeek, restDays:$restDays, durationDays:$durationDays){ id planId clientId startDate sessionsPerWeek restDays durationDays }\n  }\n`;\n\nexport const EXERCISE_LIBRARY = gql`\n  query Exercises($search:String, $muscle:String, $equipment:String, $cursor:String, $limit:Int){\n    exercises(search:$search, muscle:$muscle, equipment:$equipment, cursor:$cursor, limit:$limit){\n      edges{ id name muscleGroup equipment media }\n      pageInfo{ endCursor hasNextPage }\n      total"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "FoodSearch",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const FOOD_SEARCH = gql`query FoodSearch($q:String!){ foodSearch(q:$q){ id title protein carbs fat calories } }`;\nexport const DAILY_SUMMARY = gql`query DailySummary($userId:Int!, $dateISO:String!){ userDailyNutrition(userId:$userId, dateISO:$dateISO){ calories protein carbs fat } }`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetAdmins",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/admin.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_ADMINS = gql`\n  query GetAdmins {\n    admins {\n      id\n      name\n      email"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetAnalytics",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/analytics.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_ANALYTICS = gql`\n  query GetAnalytics {\n    analytics {\n      users\n      payments\n      challenges"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetChallenge",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+            "line": 14,
+            "snippet": "      title\n      participants\n    }\n  }\n`;\n\nexport const GET_CHALLENGE = gql`\n  query GetChallenge($id: Int!) {\n    challenge(id: $id) {\n      id\n      title\n      participants"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetChallenges",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_CHALLENGES = gql`\n  query GetChallenges {\n    challenges {\n      id\n      title\n      participants"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetChat",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/chat.queries.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const GET_CHAT = gql`\n  query GetChat($userA:Int!, $userB:Int!) {\n    getChat(userA:$userA, userB:$userB) {\n      id senderId receiverId content attachmentId createdAt\n    }\n  }"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/chat.queries.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const GET_CHAT = gql`\n  query GetChat($userA:Int!, $userB:Int!) {\n    getChat(userA:$userA, userB:$userB) {\n      id senderId receiverId content attachmentId createdAt\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetCoach",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+            "line": 14,
+            "snippet": "      name\n      email\n    }\n  }\n`;\n\nexport const GET_COACH = gql`\n  query GetCoach($id: Int!) {\n    coach(id: $id) {\n      id\n      name\n      email"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetCoaches",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_COACHES = gql`\n  query GetCoaches {\n    coaches {\n      id\n      name\n      email"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetNotifications",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/notification.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_NOTIFICATIONS = gql`\n  query GetNotifications {\n    notifications {\n      id\n      text\n      createdAt"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetNutritionPlans",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/nutrition.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_NUTRITION_PLANS = gql`\n  query GetNutritionPlans {\n    nutritionPlans {\n      id\n      title\n      calories"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetPayment",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+            "line": 15,
+            "snippet": "      amount\n      status\n    }\n  }\n`;\n\nexport const GET_PAYMENT = gql`\n  query GetPayment($id: Int!) {\n    payment(id: $id) {\n      id\n      user\n      amount"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetPayments",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_PAYMENTS = gql`\n  query GetPayments {\n    payments {\n      id\n      user\n      amount"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetProducts",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/product.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_PRODUCTS = gql`\n  query GetProducts {\n    products {\n      id\n      title\n      price"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetRewards",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/reward.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_REWARDS = gql`\n  query GetRewards {\n    rewards {\n      id\n      title\n      xp"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetSurveys",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/survey.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_SURVEYS = gql`\n  query GetSurveys {\n    surveys {\n      id\n      question\n    }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetUser",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+            "line": 15,
+            "snippet": "      email\n      role\n    }\n  }\n`;\n\nexport const GET_USER = gql`\n  query GetUser($id: Int!) {\n    user(id: $id) {\n      id\n      name\n      email"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetUserWorkouts",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+            "line": 40,
+            "snippet": "      userId\n    }\n  }\n`;\n\n// Fetch workouts for a specific user.\nexport const GET_USER_WORKOUTS = gql`\n  query GetUserWorkouts($userId: Int!) {\n    userWorkouts(userId: $userId) {\n      id\n      title\n      duration"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetUsers",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_USERS = gql`\n  query GetUsers {\n    users {\n      id\n      name\n      email"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetWallets",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/wallet.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_WALLETS = gql`\n  query GetWallets {\n    wallets {\n      id\n      user\n      balance"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetWorkout",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+            "line": 22,
+            "snippet": "      mediaUrl\n      userId\n    }\n  }\n`;\n\nexport const GET_WORKOUT = gql`\n  query GetWorkout($id: Int!) {\n    workout(id: $id) {\n      id\n      title\n      duration"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "GetWorkouts",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+            "line": 5,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\n// Fetch all workouts across all users. Use sparingly in admin dashboards.\nexport const GET_WORKOUTS = gql`\n  query GetWorkouts {\n    workouts {\n      id\n      title\n      duration"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "LogActualWorkout",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+            "line": 34,
+            "snippet": "  }\n`;\n\n// Log the actual performance data for a workout. Accepts the workout ID\n// and an UpdateWorkoutInput containing metrics like sets, reps, weight, RPE,\n// notes and mediaUrl. Returns the updated workout ID.\nexport const LOG_ACTUAL_WORKOUT = gql`\n  mutation LogActualWorkout($id: Int!, $input: UpdateWorkoutInput!) {\n    logActual(id: $id, input: $input) {\n      id\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "LogMeal",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/nutrition.mutations.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const LOG_MEAL = gql`mutation LogMeal($input:LogMealInput!){ logMeal(input:$input){ id userId foodId grams createdAt } }`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "LoginCoach",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const LOGIN_COACH = gql`\n  mutation LoginCoach($email:String!,$password:String!){\n    login(email:$email, password:$password){\n      token\n      coach { id email name role }\n      refreshToken"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "MarkAllNotificationsRead",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts",
+            "line": 9,
+            "snippet": "export const MARK_NOTIFICATION_READ = gql`\n  mutation MarkNotificationRead($id: Int!) {\n    markNotificationRead(id: $id) { id read text createdAt }\n  }\n`;\n\nexport const MARK_ALL_NOTIFICATIONS_READ = gql`\n  mutation MarkAllNotificationsRead($userId: Int!) {\n    markAllNotificationsRead(userId: $userId)\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "MarkNotificationRead",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const MARK_NOTIFICATION_READ = gql`\n  mutation MarkNotificationRead($id: Int!) {\n    markNotificationRead(id: $id) { id read text createdAt }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "MessageReceived",
+      "server": {},
+      "client": {
+        "kind": "subscription",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/subscriptions/chat.subs.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const MESSAGE_RECEIVED = gql`\n  subscription MessageReceived($userId: Int!) {\n    messageReceived(userId: $userId) { id senderId receiverId content attachmentId createdAt }\n  }\n`;"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/subscriptions/chat.subs.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const MESSAGE_RECEIVED = gql`\n  subscription MessageReceived($userId: Int!) {\n    messageReceived(userId: $userId) { id senderId receiverId content attachmentId createdAt }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "NotificationReceived",
+      "server": {},
+      "client": {
+        "kind": "subscription",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/subscriptions/notification.subs.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const NOTIFICATION_RECEIVED = gql`\n  subscription NotificationReceived($userId: Int!) {\n    notificationReceived(userId: $userId) {\n      id\n      text\n      read"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Plan",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 14,
+            "snippet": "      pageInfo{ endCursor hasNextPage }\n      total\n    }\n  }\n`;\n\nexport const PLAN_BY_ID = gql`\n  query Plan($id:ID!){\n    plan(id:$id){\n      id title description status version updatedAt\n      days{\n        id order title"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Plans",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const PLANS_LIST = gql`\n  query Plans($cursor:String, $limit:Int, $search:String){\n    plans(cursor:$cursor, limit:$limit, search:$search){\n      edges{ id title description status version updatedAt assignedCount }\n      pageInfo{ endCursor hasNextPage }\n      total"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "PublishPlan",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 44,
+            "snippet": "export const DUPLICATE_PLAN = gql`\n  mutation DuplicatePlan($id:ID!){\n    duplicatePlan(id:$id){ id title description status version }\n  }\n`;\n\nexport const PUBLISH_PLAN = gql`\n  mutation PublishPlan($id:ID!){\n    publishPlan(id:$id){ id status version updatedAt }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Refresh",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+            "line": 26,
+            "snippet": "      refreshToken\n      expiresAt\n    }\n  }\n`;\n\nexport const REFRESH_TOKEN = gql`\n  mutation Refresh($refreshToken:String!){\n    refresh(refreshToken:$refreshToken){\n      token\n      expiresAt\n    }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "RegisterCoach",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+            "line": 15,
+            "snippet": "      refreshToken\n      expiresAt\n    }\n  }\n`;\n\nexport const REGISTER_COACH = gql`\n  mutation RegisterCoach($input:RegisterInput!){\n    register(input:$input){\n      token\n      coach { id email name role }\n      refreshToken"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "SendAttachment",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts",
+            "line": 7,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`\n  mutation SendAttachment($input: SendAttachmentInput!) {\n    sendAttachment(input: $input) { id senderId receiverId attachmentId createdAt }\n  }\n`;"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/chat.mutations.ts",
+            "line": 7,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`\n  mutation SendAttachment($input: SendAttachmentInput!) {\n    sendAttachment(input: $input) { id senderId receiverId attachmentId createdAt }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "SendMessage",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/chat.mutations.ts",
+            "line": 2,
+            "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpdateAnalytics",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/analytics.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const UPDATE_ANALYTICS = gql`\n  mutation UpdateAnalytics($input: AnalyticsInput!) {\n    updateAnalytics(input: $input) { users }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpdateUser",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+            "line": 10,
+            "snippet": "export const CREATE_USER = gql`\n  mutation CreateUser($input: UserInput!) {\n    createUser(input: $input) { id }\n  }\n`;\n\nexport const UPDATE_USER = gql`\n  mutation UpdateUser($id: Int!, $input: UserInput!) {\n    updateUser(id: $id, input: $input) { id }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpdateWallet",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/wallet.mutations.ts",
+            "line": 4,
+            "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const UPDATE_WALLET = gql`\n  mutation UpdateWallet($id: Int!, $input: WalletInput!) {\n    updateWallet(id: $id, input: $input) { id }\n  }\n`;"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpdateWorkout",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+            "line": 16,
+            "snippet": "    }\n  }\n`;\n\n// Update an existing workout by its ID. Only provided fields in the\n// input will be changed. Returns the updated workout ID.\nexport const UPDATE_WORKOUT = gql`\n  mutation UpdateWorkout($id: Int!, $input: UpdateWorkoutInput!) {\n    updateWorkout(id: $id, input: $input) {\n      id\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpsertClient",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+            "line": 27,
+            "snippet": "      metrics { date weight bodyFat muscleMass }\n      lastActiveAt\n    }\n  }\n`;\n\nexport const UPSERT_CLIENT = gql`\n  mutation UpsertClient($input:UpsertClientInput!){\n    upsertClient(input:$input){ id name email avatar status }\n  }\n`;\n"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UpsertPlan",
+      "server": {},
+      "client": {
+        "kind": "mutation",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+            "line": 30,
+            "snippet": "        }\n      }\n    }\n  }\n`;\n\nexport const UPSERT_PLAN = gql`\n  mutation UpsertPlan($input:UpsertPlanInput!){\n    upsertPlan(input:$input){\n      id title description status version updatedAt\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "UserReservations",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/reservation.queries.ts",
+            "line": 3,
+            "snippet": "import { gql } from \"@apollo/client\";\n\nexport const USER_RESERVATIONS = gql`\n  query UserReservations($userId: String!) {\n    userReservations(userId: $userId) {\n      id coachId startsAt endsAt status createdAt\n    }\n  }"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "Workouts",
+      "server": {},
+      "client": {
+        "kind": "query",
+        "uses": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+            "line": 3,
+            "snippet": "import { gql, useQuery, useMutation } from '@apollo/client';\n\nexport const Q_WORKOUTS = gql`query Workouts{ workouts{ id name } }`;\nexport const M_CREATE_WORKOUT = gql`mutation CreateWorkout($input:WorkoutInput!){ createWorkout(input:$input){ id name } }`;\n// NOTE: Map these to your exact backend schema.\n\nexport function useWorkouts(){\n  const q = useQuery(Q_WORKOUTS);"
+          }
+        ]
+      },
+      "status": "UNRESOLVED_CLIENT_OP"
+    },
+    {
+      "operation": "cursor",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/payments.controller.ts",
+            "line": 28,
+            "snippet": "    const res = await (this.payments as any).create({ ...body, idempotencyKey: body.idempotencyKey || idem || undefined });\n    return { ok: true, data: res };\n  }\n\n  @Get()\n  @HttpCode(HttpStatus.OK)\n  async listMine(@Query() q: ListPaymentsDto, @Headers('x-user-id') xUser?: string) limit = '20', @Query('cursor') cursor?: string, @Headers('x-user-id') xUser?: string) {\n    // Try to read from auth context if available; fallback to header for demo\n    const userId = xUser || 'demo-user';\n    if (typeof (this.payments as any).listByUser === 'function') {\n      const out = await (this.payments as any).listByUser({ userId, limit: Number(q?.limit||20), cursor: q?.cursor });\n      return { ok: true, data: out.items, nextCursor: out.nextCursor };"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    },
+    {
+      "operation": "q",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts-service.controller.ts",
+            "line": 12,
+            "snippet": "@ApiBearerAuth()\n@Controller('workouts')\nexport class Workouts_serviceController {\n  constructor(private readonly svc: WorkoutsService) {}\n\n  @Get()\n  list(@Query('q') q?: string) {\n    return this.svc.list(q);\n  }\n\n  @Post()\n  create(@Body() dto: any) {"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts/workouts.controller.ts",
+            "line": 9,
+            "snippet": "\n@Controller('workouts')\nexport class WorkoutsController {\n  constructor(private readonly svc: WorkoutsService) {}\n\n  @Get()\n  list(@Query('q') q?: string) {\n    return this.svc.list(q);\n  }\n\n  @Get(':id')\n  get(@Param('id') id: string) {"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    },
+    {
+      "operation": "t",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/certificate/certificate.controller.ts",
+            "line": 18,
+            "snippet": "  @UseGuards(RolesGuard)\n  async issue(@Body() body: any) {\n    return this.svc.issueCertificate(body);\n  }\n\n  @Get('verify')\n  verify(@Query('t') t: string) {\n    return this.svc.verify(t);\n  }\n}"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    },
+    {
+      "operation": "userId",
+      "server": {
+        "kind": "Query",
+        "defs": [
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff-web/bff-web.controller.ts",
+            "line": 8,
+            "snippet": "import { PrismaService } from '../database/prisma.service';\n\n@Controller('bff-web')\nexport class BffWebController {\n  constructor(private prisma: PrismaService) {}\n  @Get('home')\n  async home(@Query('userId') userId: string) {\n    const [user, workouts] = await Promise.all([\n      (this.prisma as any).user.findUnique({ where: { id: userId } }),\n      (this.prisma as any).workout.findMany({ where: { userId }, take: 5, orderBy: { date: 'desc' } }),\n    ]);\n    return { user: { id: user?.id, name: user?.name }, recentWorkouts: workouts };"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff-mobile/bff-mobile.controller.ts",
+            "line": 8,
+            "snippet": "import { PrismaService } from '../database/prisma.service';\n\n@Controller('bff-mobile')\nexport class BffMobileController {\n  constructor(private prisma: PrismaService) {}\n  @Get('dashboard')\n  async dashboard(@Query('userId') userId: string) {\n    const [workouts, notifications] = await Promise.all([\n      (this.prisma as any).workout.findMany({ where: { userId }, take: 3, orderBy: { date: 'desc' } }),\n      (this.prisma as any).notification?.findMany?.({ where: { userId }, take: 5, orderBy: { createdAt: 'desc' } }) || []\n    ]);\n    return { recentWorkouts: workouts, notifications };"
+          },
+          {
+            "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff/bff.controller.ts",
+            "line": 9,
+            "snippet": "\n@Controller('bff')\nexport class BffController {\n  constructor(private prisma: PrismaService) {}\n  // Aggregate few quick stats for dashboard in one request\n  @Get('dashboard')\n  async dashboard(@Query('userId') userId: string) {\n    const [workouts, upcoming, notifications] = await Promise.all([\n      (this.prisma as any).workout.count({ where: { userId } }),\n      (this.prisma as any).session?.findMany?.({ where: { userId, date: { gte: new Date() } }, take: 5 }) ?? [],\n      (this.prisma as any).notification?.findMany?.({ where: { userId }, take: 5 }) ?? [],\n    ]);"
+          }
+        ]
+      },
+      "client": {},
+      "status": "UNUSED_SERVER_OP"
+    }
+  ],
+  "UNUSED_GRAPHQL_OPERATIONS": [
+    {
+      "operation": "Amount",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/controllers/payments.controller.ts",
+          "line": 23,
+          "snippet": "  @Get(':id')\n  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Payment> {\n    return this.paymentsService.findOne(id);\n  }\n\n  @Get('verify/callback')\n  async verifyCallback(@Query('Authority') authority: string, @Query('Amount') amount: string): Promise<{ success: boolean }> {\n    const ok = await this.paymentsService.verify(authority, Number(amount));\n    return { success: ok };\n  }\n}"
+        }
+      ]
+    },
+    {
+      "operation": "Authority",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/controllers/payments.controller.ts",
+          "line": 23,
+          "snippet": "  @Get(':id')\n  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Payment> {\n    return this.paymentsService.findOne(id);\n  }\n\n  @Get('verify/callback')\n  async verifyCallback(@Query('Authority') authority: string, @Query('Amount') amount: string): Promise<{ success: boolean }> {\n    const ok = await this.paymentsService.verify(authority, Number(amount));\n    return { success: ok };\n  }\n}"
+        }
+      ]
+    },
+    {
+      "operation": "cursor",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/payments.controller.ts",
+          "line": 28,
+          "snippet": "    const res = await (this.payments as any).create({ ...body, idempotencyKey: body.idempotencyKey || idem || undefined });\n    return { ok: true, data: res };\n  }\n\n  @Get()\n  @HttpCode(HttpStatus.OK)\n  async listMine(@Query() q: ListPaymentsDto, @Headers('x-user-id') xUser?: string) limit = '20', @Query('cursor') cursor?: string, @Headers('x-user-id') xUser?: string) {\n    // Try to read from auth context if available; fallback to header for demo\n    const userId = xUser || 'demo-user';\n    if (typeof (this.payments as any).listByUser === 'function') {\n      const out = await (this.payments as any).listByUser({ userId, limit: Number(q?.limit||20), cursor: q?.cursor });\n      return { ok: true, data: out.items, nextCursor: out.nextCursor };"
+        }
+      ]
+    },
+    {
+      "operation": "q",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts-service.controller.ts",
+          "line": 12,
+          "snippet": "@ApiBearerAuth()\n@Controller('workouts')\nexport class Workouts_serviceController {\n  constructor(private readonly svc: WorkoutsService) {}\n\n  @Get()\n  list(@Query('q') q?: string) {\n    return this.svc.list(q);\n  }\n\n  @Post()\n  create(@Body() dto: any) {"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts/workouts.controller.ts",
+          "line": 9,
+          "snippet": "\n@Controller('workouts')\nexport class WorkoutsController {\n  constructor(private readonly svc: WorkoutsService) {}\n\n  @Get()\n  list(@Query('q') q?: string) {\n    return this.svc.list(q);\n  }\n\n  @Get(':id')\n  get(@Param('id') id: string) {"
+        }
+      ]
+    },
+    {
+      "operation": "t",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/certificate/certificate.controller.ts",
+          "line": 18,
+          "snippet": "  @UseGuards(RolesGuard)\n  async issue(@Body() body: any) {\n    return this.svc.issueCertificate(body);\n  }\n\n  @Get('verify')\n  verify(@Query('t') t: string) {\n    return this.svc.verify(t);\n  }\n}"
+        }
+      ]
+    },
+    {
+      "operation": "userId",
+      "kind": "Query",
+      "defs": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff-web/bff-web.controller.ts",
+          "line": 8,
+          "snippet": "import { PrismaService } from '../database/prisma.service';\n\n@Controller('bff-web')\nexport class BffWebController {\n  constructor(private prisma: PrismaService) {}\n  @Get('home')\n  async home(@Query('userId') userId: string) {\n    const [user, workouts] = await Promise.all([\n      (this.prisma as any).user.findUnique({ where: { id: userId } }),\n      (this.prisma as any).workout.findMany({ where: { userId }, take: 5, orderBy: { date: 'desc' } }),\n    ]);\n    return { user: { id: user?.id, name: user?.name }, recentWorkouts: workouts };"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff-mobile/bff-mobile.controller.ts",
+          "line": 8,
+          "snippet": "import { PrismaService } from '../database/prisma.service';\n\n@Controller('bff-mobile')\nexport class BffMobileController {\n  constructor(private prisma: PrismaService) {}\n  @Get('dashboard')\n  async dashboard(@Query('userId') userId: string) {\n    const [workouts, notifications] = await Promise.all([\n      (this.prisma as any).workout.findMany({ where: { userId }, take: 3, orderBy: { date: 'desc' } }),\n      (this.prisma as any).notification?.findMany?.({ where: { userId }, take: 5, orderBy: { createdAt: 'desc' } }) || []\n    ]);\n    return { recentWorkouts: workouts, notifications };"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/bff/bff.controller.ts",
+          "line": 9,
+          "snippet": "\n@Controller('bff')\nexport class BffController {\n  constructor(private prisma: PrismaService) {}\n  // Aggregate few quick stats for dashboard in one request\n  @Get('dashboard')\n  async dashboard(@Query('userId') userId: string) {\n    const [workouts, upcoming, notifications] = await Promise.all([\n      (this.prisma as any).workout.count({ where: { userId } }),\n      (this.prisma as any).session?.findMany?.({ where: { userId, date: { gte: new Date() } }, take: 5 }) ?? [],\n      (this.prisma as any).notification?.findMany?.({ where: { userId }, take: 5 }) ?? [],\n    ]);"
+        }
+      ]
+    }
+  ],
+  "UNRESOLVED_CLIENT_OPERATIONS": [
+    {
+      "operation": "AddNote",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 39,
+          "snippet": "export const ARCHIVE_CLIENT = gql`\n  mutation ArchiveClient($id:ID!){\n    archiveClient(id:$id)\n  }\n`;\n\nexport const ADD_NOTE = gql`\n  mutation AddNote($clientId:ID!, $body:String!){\n    addClientNote(clientId:$clientId, body:$body){\n      id body createdAt author { id name }\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "ArchiveClient",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 33,
+          "snippet": "export const UPSERT_CLIENT = gql`\n  mutation UpsertClient($input:UpsertClientInput!){\n    upsertClient(input:$input){ id name email avatar status }\n  }\n`;\n\nexport const ARCHIVE_CLIENT = gql`\n  mutation ArchiveClient($id:ID!){\n    archiveClient(id:$id)\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "AssignPlan",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 50,
+          "snippet": "export const PUBLISH_PLAN = gql`\n  mutation PublishPlan($id:ID!){\n    publishPlan(id:$id){ id status version updatedAt }\n  }\n`;\n\nexport const ASSIGN_PLAN = gql`\n  mutation AssignPlan($planId:ID!, $clientId:ID!, $startDate:String!, $sessionsPerWeek:Int!, $restDays:[String!]!, $durationDays:Int!){\n    assignPlan(planId:$planId, clientId:$clientId, startDate:$startDate, sessionsPerWeek:$sessionsPerWeek, restDays:$restDays, durationDays:$durationDays){ id planId clientId startDate sessionsPerWeek restDays durationDays }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "BookReservation",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const BOOK_RESERVATION = gql`\n  mutation BookReservation($input: CreateReservationInput!) {\n    bookReservation(input: $input) { id coachId slotId status startsAt endsAt }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "CancelReservation",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts",
+          "line": 9,
+          "snippet": "export const BOOK_RESERVATION = gql`\n  mutation BookReservation($input: CreateReservationInput!) {\n    bookReservation(input: $input) { id coachId slotId status startsAt endsAt }\n  }\n`;\n\nexport const CANCEL_RESERVATION = gql`\n  mutation CancelReservation($id: String!) {\n    cancelReservation(id: $id)\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "Client",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 14,
+          "snippet": "      pageInfo{ endCursor hasNextPage }\n      total\n    }\n  }\n`;\n\nexport const CLIENT_BY_ID = gql`\n  query Client($id:ID!){\n    client(id:$id){\n      id name email avatar phone status height weight birthday\n      goals { id title note createdAt }\n      notes { id body createdAt author { id name } }"
+        }
+      ]
+    },
+    {
+      "operation": "ClientNotes",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 47,
+          "snippet": "    addClientNote(clientId:$clientId, body:$body){\n      id body createdAt author { id name }\n    }\n  }\n`;\n\nexport const CLIENT_NOTES = gql`\n  query ClientNotes($clientId:ID!, $cursor:String, $limit:Int){\n    clientNotes(clientId:$clientId, cursor:$cursor, limit:$limit){\n      edges{ id body createdAt author { id name } }\n      pageInfo{ endCursor hasNextPage }\n    }"
+        }
+      ]
+    },
+    {
+      "operation": "Clients",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CLIENTS_LIST = gql`\n  query Clients($search:String, $cursor:String, $limit:Int){\n    clients(search:$search, cursor:$cursor, limit:$limit){\n      edges{ id name email avatar status lastActiveAt }\n      pageInfo{ endCursor hasNextPage }\n      total"
+        }
+      ]
+    },
+    {
+      "operation": "CoachAvailability",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const COACH_AVAILABILITY = gql`\n  query CoachAvailability($coachId: String!) {\n    coachAvailability(coachId: $coachId) {\n      id coachId start end recurrence createdAt\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "CoachReservations",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts",
+          "line": 11,
+          "snippet": "    coachAvailability(coachId: $coachId) {\n      id coachId start end recurrence createdAt\n    }\n  }\n`;\n\nexport const COACH_RESERVATIONS = gql`\n  query CoachReservations($coachId: String!) {\n    coachReservations(coachId: $coachId) {\n      id userId startsAt endsAt status createdAt\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "CreateAdmin",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/admin.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_ADMIN = gql`\n  mutation CreateAdmin($input: AdminInput!) {\n    createAdmin(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateAvailability",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/availability.mutations.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const CREATE_AVAILABILITY = gql`\n  mutation CreateAvailability($input: CreateAvailabilityInput!) {\n    createAvailability(input: $input) { id coachId start end recurrence }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateChallenge",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/challenge.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_CHALLENGE = gql`\n  mutation CreateChallenge($input: ChallengeInput!) {\n    createChallenge(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateCoach",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/coach.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_COACH = gql`\n  mutation CreateCoach($input: CoachInput!) {\n    createCoach(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateNotification",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/notification.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_NOTIFICATION = gql`\n  mutation CreateNotification($input: NotificationInput!) {\n    createNotification(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateNutritionPlan",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/nutrition.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_NUTRITION_PLAN = gql`\n  mutation CreateNutritionPlan($input: NutritionPlanInput!) {\n    createNutritionPlan(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreatePayment",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/payment.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_PAYMENT = gql`\n  mutation CreatePayment($input: PaymentInput!) {\n    createPayment(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateProduct",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/product.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_PRODUCT = gql`\n  mutation CreateProduct($input: ProductInput!) {\n    createProduct(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateReward",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/reward.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_REWARD = gql`\n  mutation CreateReward($input: RewardInput!) {\n    createReward(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateSurvey",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/survey.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_SURVEY = gql`\n  mutation CreateSurvey($input: SurveyInput!) {\n    createSurvey(input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "CreateUser",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const CREATE_USER = gql`\n  mutation CreateUser($input: UserInput!) {\n    createUser(input: $input) { id }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "CreateWorkout",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+          "line": 4,
+          "snippet": "import { gql, useQuery, useMutation } from '@apollo/client';\n\nexport const Q_WORKOUTS = gql`query Workouts{ workouts{ id name } }`;\nexport const M_CREATE_WORKOUT = gql`mutation CreateWorkout($input:WorkoutInput!){ createWorkout(input:$input){ id name } }`;\n// NOTE: Map these to your exact backend schema.\n\nexport function useWorkouts(){\n  const q = useQuery(Q_WORKOUTS);\n  return q;"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+          "line": 6,
+          "snippet": "import { gql } from \"@apollo/client\";\n\n// Create a new workout for a specific user. Accepts the user ID and a\n// CreateWorkoutInput containing planned metrics (title, duration, sets, reps, weight)\n// and optional fields (date, rpe, notes, mediaUrl). Returns the newly created workout ID.\nexport const CREATE_WORKOUT = gql`\n  mutation CreateWorkout($userId: Int!, $input: CreateWorkoutInput!) {\n    createWorkout(userId: $userId, input: $input) {\n      id\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "DailySummary",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const FOOD_SEARCH = gql`query FoodSearch($q:String!){ foodSearch(q:$q){ id title protein carbs fat calories } }`;\nexport const DAILY_SUMMARY = gql`query DailySummary($userId:Int!, $dateISO:String!){ userDailyNutrition(userId:$userId, dateISO:$dateISO){ calories protein carbs fat } }`;"
+        }
+      ]
+    },
+    {
+      "operation": "DeleteUser",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+          "line": 16,
+          "snippet": "export const UPDATE_USER = gql`\n  mutation UpdateUser($id: Int!, $input: UserInput!) {\n    updateUser(id: $id, input: $input) { id }\n  }\n`;\n\nexport const DELETE_USER = gql`\n  mutation DeleteUser($id: Int!) {\n    deleteUser(id: $id)\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "DeleteWorkout",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+          "line": 25,
+          "snippet": "      id\n    }\n  }\n`;\n\n// Delete a workout by its ID. Returns true if removed.\nexport const DELETE_WORKOUT = gql`\n  mutation DeleteWorkout($id: Int!) {\n    deleteWorkout(id: $id)\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "DuplicatePlan",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 38,
+          "snippet": "    upsertPlan(input:$input){\n      id title description status version updatedAt\n    }\n  }\n`;\n\nexport const DUPLICATE_PLAN = gql`\n  mutation DuplicatePlan($id:ID!){\n    duplicatePlan(id:$id){ id title description status version }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "Exercises",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 56,
+          "snippet": "export const ASSIGN_PLAN = gql`\n  mutation AssignPlan($planId:ID!, $clientId:ID!, $startDate:String!, $sessionsPerWeek:Int!, $restDays:[String!]!, $durationDays:Int!){\n    assignPlan(planId:$planId, clientId:$clientId, startDate:$startDate, sessionsPerWeek:$sessionsPerWeek, restDays:$restDays, durationDays:$durationDays){ id planId clientId startDate sessionsPerWeek restDays durationDays }\n  }\n`;\n\nexport const EXERCISE_LIBRARY = gql`\n  query Exercises($search:String, $muscle:String, $equipment:String, $cursor:String, $limit:Int){\n    exercises(search:$search, muscle:$muscle, equipment:$equipment, cursor:$cursor, limit:$limit){\n      edges{ id name muscleGroup equipment media }\n      pageInfo{ endCursor hasNextPage }\n      total"
+        }
+      ]
+    },
+    {
+      "operation": "FoodSearch",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const FOOD_SEARCH = gql`query FoodSearch($q:String!){ foodSearch(q:$q){ id title protein carbs fat calories } }`;\nexport const DAILY_SUMMARY = gql`query DailySummary($userId:Int!, $dateISO:String!){ userDailyNutrition(userId:$userId, dateISO:$dateISO){ calories protein carbs fat } }`;"
+        }
+      ]
+    },
+    {
+      "operation": "GetAdmins",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/admin.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_ADMINS = gql`\n  query GetAdmins {\n    admins {\n      id\n      name\n      email"
+        }
+      ]
+    },
+    {
+      "operation": "GetAnalytics",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/analytics.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_ANALYTICS = gql`\n  query GetAnalytics {\n    analytics {\n      users\n      payments\n      challenges"
+        }
+      ]
+    },
+    {
+      "operation": "GetChallenge",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+          "line": 14,
+          "snippet": "      title\n      participants\n    }\n  }\n`;\n\nexport const GET_CHALLENGE = gql`\n  query GetChallenge($id: Int!) {\n    challenge(id: $id) {\n      id\n      title\n      participants"
+        }
+      ]
+    },
+    {
+      "operation": "GetChallenges",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_CHALLENGES = gql`\n  query GetChallenges {\n    challenges {\n      id\n      title\n      participants"
+        }
+      ]
+    },
+    {
+      "operation": "GetChat",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/chat.queries.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const GET_CHAT = gql`\n  query GetChat($userA:Int!, $userB:Int!) {\n    getChat(userA:$userA, userB:$userB) {\n      id senderId receiverId content attachmentId createdAt\n    }\n  }"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/chat.queries.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const GET_CHAT = gql`\n  query GetChat($userA:Int!, $userB:Int!) {\n    getChat(userA:$userA, userB:$userB) {\n      id senderId receiverId content attachmentId createdAt\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "GetCoach",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+          "line": 14,
+          "snippet": "      name\n      email\n    }\n  }\n`;\n\nexport const GET_COACH = gql`\n  query GetCoach($id: Int!) {\n    coach(id: $id) {\n      id\n      name\n      email"
+        }
+      ]
+    },
+    {
+      "operation": "GetCoaches",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_COACHES = gql`\n  query GetCoaches {\n    coaches {\n      id\n      name\n      email"
+        }
+      ]
+    },
+    {
+      "operation": "GetNotifications",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/notification.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_NOTIFICATIONS = gql`\n  query GetNotifications {\n    notifications {\n      id\n      text\n      createdAt"
+        }
+      ]
+    },
+    {
+      "operation": "GetNutritionPlans",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/nutrition.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_NUTRITION_PLANS = gql`\n  query GetNutritionPlans {\n    nutritionPlans {\n      id\n      title\n      calories"
+        }
+      ]
+    },
+    {
+      "operation": "GetPayment",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+          "line": 15,
+          "snippet": "      amount\n      status\n    }\n  }\n`;\n\nexport const GET_PAYMENT = gql`\n  query GetPayment($id: Int!) {\n    payment(id: $id) {\n      id\n      user\n      amount"
+        }
+      ]
+    },
+    {
+      "operation": "GetPayments",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_PAYMENTS = gql`\n  query GetPayments {\n    payments {\n      id\n      user\n      amount"
+        }
+      ]
+    },
+    {
+      "operation": "GetProducts",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/product.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_PRODUCTS = gql`\n  query GetProducts {\n    products {\n      id\n      title\n      price"
+        }
+      ]
+    },
+    {
+      "operation": "GetRewards",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/reward.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_REWARDS = gql`\n  query GetRewards {\n    rewards {\n      id\n      title\n      xp"
+        }
+      ]
+    },
+    {
+      "operation": "GetSurveys",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/survey.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_SURVEYS = gql`\n  query GetSurveys {\n    surveys {\n      id\n      question\n    }"
+        }
+      ]
+    },
+    {
+      "operation": "GetUser",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+          "line": 15,
+          "snippet": "      email\n      role\n    }\n  }\n`;\n\nexport const GET_USER = gql`\n  query GetUser($id: Int!) {\n    user(id: $id) {\n      id\n      name\n      email"
+        }
+      ]
+    },
+    {
+      "operation": "GetUserWorkouts",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+          "line": 40,
+          "snippet": "      userId\n    }\n  }\n`;\n\n// Fetch workouts for a specific user.\nexport const GET_USER_WORKOUTS = gql`\n  query GetUserWorkouts($userId: Int!) {\n    userWorkouts(userId: $userId) {\n      id\n      title\n      duration"
+        }
+      ]
+    },
+    {
+      "operation": "GetUsers",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_USERS = gql`\n  query GetUsers {\n    users {\n      id\n      name\n      email"
+        }
+      ]
+    },
+    {
+      "operation": "GetWallets",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/wallet.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const GET_WALLETS = gql`\n  query GetWallets {\n    wallets {\n      id\n      user\n      balance"
+        }
+      ]
+    },
+    {
+      "operation": "GetWorkout",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+          "line": 22,
+          "snippet": "      mediaUrl\n      userId\n    }\n  }\n`;\n\nexport const GET_WORKOUT = gql`\n  query GetWorkout($id: Int!) {\n    workout(id: $id) {\n      id\n      title\n      duration"
+        }
+      ]
+    },
+    {
+      "operation": "GetWorkouts",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+          "line": 5,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\n// Fetch all workouts across all users. Use sparingly in admin dashboards.\nexport const GET_WORKOUTS = gql`\n  query GetWorkouts {\n    workouts {\n      id\n      title\n      duration"
+        }
+      ]
+    },
+    {
+      "operation": "LogActualWorkout",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+          "line": 34,
+          "snippet": "  }\n`;\n\n// Log the actual performance data for a workout. Accepts the workout ID\n// and an UpdateWorkoutInput containing metrics like sets, reps, weight, RPE,\n// notes and mediaUrl. Returns the updated workout ID.\nexport const LOG_ACTUAL_WORKOUT = gql`\n  mutation LogActualWorkout($id: Int!, $input: UpdateWorkoutInput!) {\n    logActual(id: $id, input: $input) {\n      id\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "LogMeal",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/nutrition.mutations.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const LOG_MEAL = gql`mutation LogMeal($input:LogMealInput!){ logMeal(input:$input){ id userId foodId grams createdAt } }`;"
+        }
+      ]
+    },
+    {
+      "operation": "LoginCoach",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const LOGIN_COACH = gql`\n  mutation LoginCoach($email:String!,$password:String!){\n    login(email:$email, password:$password){\n      token\n      coach { id email name role }\n      refreshToken"
+        }
+      ]
+    },
+    {
+      "operation": "MarkAllNotificationsRead",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts",
+          "line": 9,
+          "snippet": "export const MARK_NOTIFICATION_READ = gql`\n  mutation MarkNotificationRead($id: Int!) {\n    markNotificationRead(id: $id) { id read text createdAt }\n  }\n`;\n\nexport const MARK_ALL_NOTIFICATIONS_READ = gql`\n  mutation MarkAllNotificationsRead($userId: Int!) {\n    markAllNotificationsRead(userId: $userId)\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "MarkNotificationRead",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const MARK_NOTIFICATION_READ = gql`\n  mutation MarkNotificationRead($id: Int!) {\n    markNotificationRead(id: $id) { id read text createdAt }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "MessageReceived",
+      "kind": "subscription",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/subscriptions/chat.subs.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const MESSAGE_RECEIVED = gql`\n  subscription MessageReceived($userId: Int!) {\n    messageReceived(userId: $userId) { id senderId receiverId content attachmentId createdAt }\n  }\n`;"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/subscriptions/chat.subs.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const MESSAGE_RECEIVED = gql`\n  subscription MessageReceived($userId: Int!) {\n    messageReceived(userId: $userId) { id senderId receiverId content attachmentId createdAt }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "NotificationReceived",
+      "kind": "subscription",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/subscriptions/notification.subs.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const NOTIFICATION_RECEIVED = gql`\n  subscription NotificationReceived($userId: Int!) {\n    notificationReceived(userId: $userId) {\n      id\n      text\n      read"
+        }
+      ]
+    },
+    {
+      "operation": "Plan",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 14,
+          "snippet": "      pageInfo{ endCursor hasNextPage }\n      total\n    }\n  }\n`;\n\nexport const PLAN_BY_ID = gql`\n  query Plan($id:ID!){\n    plan(id:$id){\n      id title description status version updatedAt\n      days{\n        id order title"
+        }
+      ]
+    },
+    {
+      "operation": "Plans",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const PLANS_LIST = gql`\n  query Plans($cursor:String, $limit:Int, $search:String){\n    plans(cursor:$cursor, limit:$limit, search:$search){\n      edges{ id title description status version updatedAt assignedCount }\n      pageInfo{ endCursor hasNextPage }\n      total"
+        }
+      ]
+    },
+    {
+      "operation": "PublishPlan",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 44,
+          "snippet": "export const DUPLICATE_PLAN = gql`\n  mutation DuplicatePlan($id:ID!){\n    duplicatePlan(id:$id){ id title description status version }\n  }\n`;\n\nexport const PUBLISH_PLAN = gql`\n  mutation PublishPlan($id:ID!){\n    publishPlan(id:$id){ id status version updatedAt }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "Refresh",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+          "line": 26,
+          "snippet": "      refreshToken\n      expiresAt\n    }\n  }\n`;\n\nexport const REFRESH_TOKEN = gql`\n  mutation Refresh($refreshToken:String!){\n    refresh(refreshToken:$refreshToken){\n      token\n      expiresAt\n    }"
+        }
+      ]
+    },
+    {
+      "operation": "RegisterCoach",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts",
+          "line": 15,
+          "snippet": "      refreshToken\n      expiresAt\n    }\n  }\n`;\n\nexport const REGISTER_COACH = gql`\n  mutation RegisterCoach($input:RegisterInput!){\n    register(input:$input){\n      token\n      coach { id email name role }\n      refreshToken"
+        }
+      ]
+    },
+    {
+      "operation": "SendAttachment",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts",
+          "line": 7,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`\n  mutation SendAttachment($input: SendAttachmentInput!) {\n    sendAttachment(input: $input) { id senderId receiverId attachmentId createdAt }\n  }\n`;"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/chat.mutations.ts",
+          "line": 7,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`\n  mutation SendAttachment($input: SendAttachmentInput!) {\n    sendAttachment(input: $input) { id senderId receiverId attachmentId createdAt }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "SendMessage",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/chat.mutations.ts",
+          "line": 2,
+          "snippet": "import { gql } from \"@apollo/client\";\nexport const SEND_MESSAGE = gql`\n  mutation SendMessage($input: SendMessageInput!) {\n    sendMessage(input: $input) { id senderId receiverId content createdAt }\n  }\n`;\nexport const SEND_ATTACHMENT = gql`"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateAnalytics",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/analytics.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const UPDATE_ANALYTICS = gql`\n  mutation UpdateAnalytics($input: AnalyticsInput!) {\n    updateAnalytics(input: $input) { users }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateUser",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+          "line": 10,
+          "snippet": "export const CREATE_USER = gql`\n  mutation CreateUser($input: UserInput!) {\n    createUser(input: $input) { id }\n  }\n`;\n\nexport const UPDATE_USER = gql`\n  mutation UpdateUser($id: Int!, $input: UserInput!) {\n    updateUser(id: $id, input: $input) { id }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateWallet",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/wallet.mutations.ts",
+          "line": 4,
+          "snippet": "\nimport { gql } from \"@apollo/client\";\n\nexport const UPDATE_WALLET = gql`\n  mutation UpdateWallet($id: Int!, $input: WalletInput!) {\n    updateWallet(id: $id, input: $input) { id }\n  }\n`;"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateWorkout",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+          "line": 16,
+          "snippet": "    }\n  }\n`;\n\n// Update an existing workout by its ID. Only provided fields in the\n// input will be changed. Returns the updated workout ID.\nexport const UPDATE_WORKOUT = gql`\n  mutation UpdateWorkout($id: Int!, $input: UpdateWorkoutInput!) {\n    updateWorkout(id: $id, input: $input) {\n      id\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "UpsertClient",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts",
+          "line": 27,
+          "snippet": "      metrics { date weight bodyFat muscleMass }\n      lastActiveAt\n    }\n  }\n`;\n\nexport const UPSERT_CLIENT = gql`\n  mutation UpsertClient($input:UpsertClientInput!){\n    upsertClient(input:$input){ id name email avatar status }\n  }\n`;\n"
+        }
+      ]
+    },
+    {
+      "operation": "UpsertPlan",
+      "kind": "mutation",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts",
+          "line": 30,
+          "snippet": "        }\n      }\n    }\n  }\n`;\n\nexport const UPSERT_PLAN = gql`\n  mutation UpsertPlan($input:UpsertPlanInput!){\n    upsertPlan(input:$input){\n      id title description status version updatedAt\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "UserReservations",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/reservation.queries.ts",
+          "line": 3,
+          "snippet": "import { gql } from \"@apollo/client\";\n\nexport const USER_RESERVATIONS = gql`\n  query UserReservations($userId: String!) {\n    userReservations(userId: $userId) {\n      id coachId startsAt endsAt status createdAt\n    }\n  }"
+        }
+      ]
+    },
+    {
+      "operation": "Workouts",
+      "kind": "query",
+      "uses": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+          "line": 3,
+          "snippet": "import { gql, useQuery, useMutation } from '@apollo/client';\n\nexport const Q_WORKOUTS = gql`query Workouts{ workouts{ id name } }`;\nexport const M_CREATE_WORKOUT = gql`mutation CreateWorkout($input:WorkoutInput!){ createWorkout(input:$input){ id name } }`;\n// NOTE: Map these to your exact backend schema.\n\nexport function useWorkouts(){\n  const q = useQuery(Q_WORKOUTS);"
+        }
+      ]
+    }
+  ]
+}

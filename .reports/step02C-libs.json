@@ -1,0 +1,132 @@
+{
+  "timestamp": "2025-08-23T11:07:52.868522Z",
+  "modified_packages": [
+    {
+      "path": "packages/auth-kit",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/awards-engine",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/cache-std",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/client-live",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/env-config",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/graphql-dataloader",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/graphql-utils",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/http-client",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/infra",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/integration",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/integrations",
+      "mode": "tsc-fallback",
+      "created": []
+    },
+    {
+      "path": "packages/observability",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/resilience",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/storage",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/training-load-engine",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "packages/ui-kit-live",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "services/media-worker",
+      "mode": "tsup",
+      "created": [
+        "tsup.config.ts"
+      ]
+    },
+    {
+      "path": "services/workers",
+      "mode": "tsc-fallback",
+      "created": []
+    },
+    {
+      "path": "services/workers/bullmq-worker",
+      "mode": "tsc-fallback",
+      "created": []
+    }
+  ]
+}

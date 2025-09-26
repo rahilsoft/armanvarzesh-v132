@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Minimal user model for the users microservice. Additional fields can be
+// added as needed to match the overall platform schema.
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String?
+  name         String?
+  age          Int?
+  gender       String?
+  height       Float?
+  weight       Float?
+  goals        String?
+  fitnessLevel String?
+  role         String?
+  createdAt    DateTime @default(now())
+}

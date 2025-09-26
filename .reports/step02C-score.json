@@ -1,0 +1,372 @@
+[
+  {
+    "path": ".",
+    "name": "armanvarzesh-monorepo",
+    "score": 5
+  },
+  {
+    "path": "apps/activity-subgraph",
+    "name": "@arman/activity-subgraph",
+    "score": 6
+  },
+  {
+    "path": "apps/armanfit-admin",
+    "name": "armanfit-admin",
+    "score": 6
+  },
+  {
+    "path": "apps/backend",
+    "name": "@arman/backend",
+    "score": 6
+  },
+  {
+    "path": "apps/user-pwa",
+    "name": "@arman/user-pwa",
+    "score": 4
+  },
+  {
+    "path": "apps/coach-app",
+    "name": "armanfit-coach",
+    "score": 6
+  },
+  {
+    "path": "apps/coach-pwa",
+    "name": "@arman/coach-pwa",
+    "score": 4
+  },
+  {
+    "path": "apps/live-subgraph",
+    "name": "@arman/live-subgraph",
+    "score": 6
+  },
+  {
+    "path": "apps/media-worker",
+    "name": "@arman/media-worker",
+    "score": 6
+  },
+  {
+    "path": "apps/social-subgraph",
+    "name": "@arman/social-subgraph",
+    "score": 6
+  },
+  {
+    "path": "apps/user-app",
+    "name": "armanfit-user",
+    "score": 6
+  },
+  {
+    "path": "apps/vitrin-site",
+    "name": "vitrin-site",
+    "score": 6
+  },
+  {
+    "path": "packages/async-utils",
+    "name": "@arman/async-utils",
+    "score": 5
+  },
+  {
+    "path": "packages/auth",
+    "name": "@arman/auth",
+    "score": 4
+  },
+  {
+    "path": "packages/auth-kit",
+    "name": "@arman/auth-kit",
+    "score": 5
+  },
+  {
+    "path": "packages/awards-engine",
+    "name": "@arman/awards-engine",
+    "score": 5
+  },
+  {
+    "path": "packages/cache-std",
+    "name": "@arman/cache-std",
+    "score": 5
+  },
+  {
+    "path": "packages/client-live",
+    "name": "@arman/client-live",
+    "score": 5
+  },
+  {
+    "path": "packages/contracts",
+    "name": "@arman/contracts",
+    "score": 5
+  },
+  {
+    "path": "packages/contracts-tests",
+    "name": "@arman/contracts-tests",
+    "score": 4
+  },
+  {
+    "path": "packages/env-config",
+    "name": "@arman/env-config",
+    "score": 5
+  },
+  {
+    "path": "packages/graphql",
+    "name": "@arman/graphql",
+    "score": 4
+  },
+  {
+    "path": "packages/graphql-dataloader",
+    "name": "@arman/graphql-dataloader",
+    "score": 5
+  },
+  {
+    "path": "packages/graphql-utils",
+    "name": "@arman/graphql-utils",
+    "score": 5
+  },
+  {
+    "path": "packages/http-client",
+    "name": "@arman/http-client",
+    "score": 5
+  },
+  {
+    "path": "packages/infra",
+    "name": "@arman/infra",
+    "score": 5
+  },
+  {
+    "path": "packages/integration",
+    "name": "@arman/integration",
+    "score": 5
+  },
+  {
+    "path": "packages/integrations",
+    "name": "@arman/integrations",
+    "score": 4
+  },
+  {
+    "path": "packages/integrations/livekit",
+    "name": "@arman/integrations-livekit",
+    "score": 4
+  },
+  {
+    "path": "packages/libs",
+    "name": "@arman/libs",
+    "score": 5
+  },
+  {
+    "path": "packages/observability",
+    "name": "@arman/observability",
+    "score": 5
+  },
+  {
+    "path": "packages/resilience",
+    "name": "@arman/resilience",
+    "score": 5
+  },
+  {
+    "path": "packages/service-kit",
+    "name": "@arman/service-kit",
+    "score": 6
+  },
+  {
+    "path": "packages/shared",
+    "name": "@arman/shared",
+    "score": 6
+  },
+  {
+    "path": "packages/state",
+    "name": "@arman/state",
+    "score": 5
+  },
+  {
+    "path": "packages/storage",
+    "name": "@arman/storage",
+    "score": 5
+  },
+  {
+    "path": "packages/theme",
+    "name": "@arman/theme",
+    "score": 4
+  },
+  {
+    "path": "packages/training-load-engine",
+    "name": "@arman/training-load-engine",
+    "score": 5
+  },
+  {
+    "path": "packages/ui",
+    "name": "@arman/ui",
+    "score": 5
+  },
+  {
+    "path": "packages/ui-components",
+    "name": "@arman/ui-components",
+    "score": 6
+  },
+  {
+    "path": "packages/ui-kit-live",
+    "name": "@arman/ui-kit-live",
+    "score": 5
+  },
+  {
+    "path": "packages/ui-tokens",
+    "name": "@arman/ui-tokens",
+    "score": 6
+  },
+  {
+    "path": "packages/utils",
+    "name": "@arman/utils",
+    "score": 5
+  },
+  {
+    "path": "packages/web-core",
+    "name": "@arman/web-core",
+    "score": 5
+  },
+  {
+    "path": "services/affiliate-service",
+    "name": "affiliate-service",
+    "score": 6
+  },
+  {
+    "path": "services/ai-service",
+    "name": "ai-service",
+    "score": 6
+  },
+  {
+    "path": "services/analytics-collector",
+    "name": "@arman/analytics-collector",
+    "score": 6
+  },
+  {
+    "path": "services/analytics-service",
+    "name": "@arman/analytics-service",
+    "score": 6
+  },
+  {
+    "path": "services/api-gateway",
+    "name": "api-gateway",
+    "score": 5
+  },
+  {
+    "path": "services/assessment-service",
+    "name": "assessment-service",
+    "score": 6
+  },
+  {
+    "path": "services/assessments-service",
+    "name": "@arman/assessments-service",
+    "score": 6
+  },
+  {
+    "path": "services/auth-service",
+    "name": "auth-service",
+    "score": 6
+  },
+  {
+    "path": "services/booking-service",
+    "name": "@arman/booking-service",
+    "score": 6
+  },
+  {
+    "path": "services/certificate-service",
+    "name": "@arman/certificate-service",
+    "score": 6
+  },
+  {
+    "path": "services/challenges-service",
+    "name": "challenges-service",
+    "score": 6
+  },
+  {
+    "path": "services/chat-service",
+    "name": "chat-service",
+    "score": 6
+  },
+  {
+    "path": "services/coaches-service",
+    "name": "coaches-service",
+    "score": 6
+  },
+  {
+    "path": "services/content-service",
+    "name": "content-service",
+    "score": 6
+  },
+  {
+    "path": "services/courses-service",
+    "name": "courses-service",
+    "score": 6
+  },
+  {
+    "path": "services/marketplace-service",
+    "name": "marketplace-service",
+    "score": 6
+  },
+  {
+    "path": "services/media-worker",
+    "name": "@arman/media-worker__media-worker",
+    "score": 6
+  },
+  {
+    "path": "services/monitoring-service",
+    "name": "monitoring-service",
+    "score": 6
+  },
+  {
+    "path": "services/notifications-service",
+    "name": "notifications-service",
+    "score": 6
+  },
+  {
+    "path": "services/nutrition-service",
+    "name": "nutrition-service",
+    "score": 6
+  },
+  {
+    "path": "services/payments-service",
+    "name": "payments-service",
+    "score": 6
+  },
+  {
+    "path": "services/physio-service",
+    "name": "@arman/physio-service",
+    "score": 6
+  },
+  {
+    "path": "services/predictive-service",
+    "name": "predictive-service",
+    "score": 6
+  },
+  {
+    "path": "services/reward-service",
+    "name": "reward-service",
+    "score": 6
+  },
+  {
+    "path": "services/rewards-service",
+    "name": "@arman/rewards-service",
+    "score": 6
+  },
+  {
+    "path": "services/users-service",
+    "name": "users-service",
+    "score": 6
+  },
+  {
+    "path": "services/vip-service",
+    "name": "vip-service",
+    "score": 6
+  },
+  {
+    "path": "services/workers",
+    "name": "@arman/workers",
+    "score": 5
+  },
+  {
+    "path": "services/workers/bullmq-worker",
+    "name": "bullmq-worker",
+    "score": 5
+  },
+  {
+    "path": "services/workouts-service",
+    "name": "workouts-service",
+    "score": 6
+  }
+]

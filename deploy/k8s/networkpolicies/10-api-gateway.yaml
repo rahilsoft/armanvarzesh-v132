@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: allow-api-gateway }
+spec:
+  podSelector:
+    matchLabels: { app: api-gateway }
+  ingress:
+  - from:
+    - podSelector: { matchLabels: { app: api-gateway } }
+    ports: [{ port: 8080, protocol: TCP }]
+  egress:
+  - to:
+    - podSelector: { matchLabels: { app: nutrition } }
+    - podSelector: { matchLabels: { app: activities } }
+    - podSelector: { matchLabels: { app: challenges } }
+    - podSelector: { matchLabels: { app: courses } }
+    - podSelector: { matchLabels: { app: kpis } }
+    - podSelector: { matchLabels: { app: affiliate } }
+    - podSelector: { matchLabels: { app: inbox } }
+    - podSelector: { matchLabels: { app: assessments } }
+    - podSelector: { matchLabels: { app: rewards } }
+    - podSelector: { matchLabels: { app: medical } }
+    - podSelector: { matchLabels: { app: otel-collector } }
+    ports:
+    - port: 3000
+      protocol: TCP
+    - port: 4318
+      protocol: TCP
+  policyTypes: ["Ingress","Egress"]

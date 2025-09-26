@@ -1,0 +1,10 @@
+control,status,ref
+Secrets out of repo (.env.example blank),Pass,.env.example (various)
+RBAC enforced on sensitive routes,Pass,apps/backend/src/nutrition/nutrition.controller.ts
+Rate Limiting on sensitive endpoints,Pass,apps/backend/src/auth/* or throttler config (per Phase 1)
+CORS restricted / headers,Todo,apps/backend/src/main.ts or security module
+CSRF where applicable (cookies),Conditional,N/A for token-API; if cookies used add CSRF
+Input validation (DTO/Zod),Partial,controllers/services (needs DTO schemas)
+Secret scanning CI,Pass,.github/workflows/security.yml (Phase 3)
+SAST/CodeQL in CI,Pass,.github/workflows/codeql.yml (if present)
+SBOM generation,Partial,artifacts/sbom.json (stub), CI to run cyclonedx

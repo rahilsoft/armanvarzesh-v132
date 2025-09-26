@@ -1,0 +1,351 @@
+{
+  "repo_root": "/mnt/data/av69/armanvarzesh v69",
+  "touched_count": 8,
+  "touched": [
+    {
+      "package": "@arman/ui",
+      "dir": "packages/ui",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/web-core",
+      "dir": "packages/web-core",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/utils",
+      "dir": "packages/utils",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/state",
+      "dir": "packages/state",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/libs",
+      "dir": "packages/libs",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/integrations",
+      "dir": "packages/integrations",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": false,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/async-utils",
+      "dir": "packages/async-utils",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/http-client",
+      "dir": "packages/http-client",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": true,
+      "build_cmd": "tsc -p tsconfig.build.json"
+    }
+  ],
+  "scan": [
+    {
+      "package": "@arman/ui",
+      "dir": "packages/ui",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/infra",
+      "dir": "packages/infra",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json || echo \"no tsc\""
+    },
+    {
+      "package": "@arman/awards-engine",
+      "dir": "packages/awards-engine",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/web-core",
+      "dir": "packages/web-core",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/env-config",
+      "dir": "packages/env-config",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/auth",
+      "dir": "packages/auth",
+      "language": "js",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/ui-components",
+      "dir": "packages/ui-components",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/integration",
+      "dir": "packages/integration",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/contracts",
+      "dir": "packages/contracts",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json || echo \"no tsc\""
+    },
+    {
+      "package": "@arman/utils",
+      "dir": "packages/utils",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/shared",
+      "dir": "packages/shared",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/observability",
+      "dir": "packages/observability",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/state",
+      "dir": "packages/state",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/storage",
+      "dir": "packages/storage",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/libs",
+      "dir": "packages/libs",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/contracts-tests",
+      "dir": "packages/contracts-tests",
+      "language": "js",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": "tsc -p tsconfig.json || echo \"no tsc\""
+    },
+    {
+      "package": "@arman/graphql-dataloader",
+      "dir": "packages/graphql-dataloader",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/integrations",
+      "dir": "packages/integrations",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/async-utils",
+      "dir": "packages/async-utils",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/resilience",
+      "dir": "packages/resilience",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/theme",
+      "dir": "packages/theme",
+      "language": "js",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/graphql",
+      "dir": "packages/graphql",
+      "language": "js",
+      "framework": "lib",
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/ui-kit-live",
+      "dir": "packages/ui-kit-live",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/http-client",
+      "dir": "packages/http-client",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": ""
+    },
+    {
+      "package": "@arman/cache-std",
+      "dir": "packages/cache-std",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/service-kit",
+      "dir": "packages/service-kit",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/client-live",
+      "dir": "packages/client-live",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/auth-kit",
+      "dir": "packages/auth-kit",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/ui-tokens",
+      "dir": "packages/ui-tokens",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/graphql-utils",
+      "dir": "packages/graphql-utils",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json || echo \"no tsc\""
+    },
+    {
+      "package": "@arman/training-load-engine",
+      "dir": "packages/training-load-engine",
+      "language": "ts",
+      "framework": "lib",
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    }
+  ]
+}

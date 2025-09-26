@@ -1,0 +1,10 @@
+--- a/apps/site-web/src/pages/workouts/[id].tsx
++++ b/apps/site-web/src/pages/workouts/[id].tsx
+@@
+-  if(loading) return <div dir="rtl">...</div>;
+-  if(!data) return <div dir="rtl">یافت نشد</div>;
++  if(loading) return <div dir="rtl" role="status" aria-live="polite">در حال بارگذاری…</div>;
++  if(!data) return <div dir="rtl" role="alert">یافت نشد</div>;
+@@
+-        <ul>{data.exercises.map(e=> <li key={e.exerciseId}>{e.exerciseId} — {e.sets}×{e.reps}</li>)}</ul>
++        <ul>{data.exercises.map(e=> <li key={e.exerciseId}><span data-ex-id={e.exerciseId}>حرکت</span> — {e.sets}×{e.reps}</li>)}</ul>

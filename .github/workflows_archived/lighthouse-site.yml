@@ -1,0 +1,33 @@
+name: Lighthouse — site
+on:
+  pull_request:
+    paths:
+      - 'app/site/**'
+      - '.github/workflows/lighthouse-site.yml'
+  workflow_dispatch: {} 
+jobs:
+  lhci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+      - name: Build (if needed)
+        run: pnpm build || echo 'no build script'
+      - name: Run Lighthouse CI
+        run: pnpm lhci
+      - name: Upload LHCI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-site
+          path: app/site/.lighthouse
+          if-no-files-found: ignore

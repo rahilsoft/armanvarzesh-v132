@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/health/hydration" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"ml":500,"source":"app"}'

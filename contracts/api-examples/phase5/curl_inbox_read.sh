@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/inbox/1/read" -H "Authorization: Bearer $TOKEN" 

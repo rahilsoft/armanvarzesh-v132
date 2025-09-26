@@ -1,0 +1,40 @@
+name: Verify — typecheck • lint • test • build
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - '.github/workflows/verify.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+      - name: Typecheck
+        run: pnpm -r --if-present typecheck
+      - name: Lint
+        run: pnpm -r --if-present lint
+      - name: Unit tests with coverage
+        run: pnpm -r --if-present test -- --coverage
+      - name: Build
+        run: pnpm -r --if-present build
+      - name: Upload coverage (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            **/coverage/**/*
+          if-no-files-found: ignore

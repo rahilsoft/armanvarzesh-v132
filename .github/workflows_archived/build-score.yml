@@ -1,0 +1,26 @@
+name: Build Score 10/10
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Compute score
+        run: node scripts/build-score-10.mjs > .reports/build-score-10.json
+      - name: Fail if any package < 8/10
+        run: |
+          node -e "const s=require('fs').readFileSync('.reports/build-score-10.json','utf8'); const j=JSON.parse(s); const bad=j.packages.filter(p=>p.score<8); if(bad.length){ console.error('Packages below 8/10:', bad.map(b=>b.dir).join('\n')); process.exit(1);} else { console.log('All packages >= 8/10'); }"

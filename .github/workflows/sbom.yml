@@ -1,0 +1,36 @@
+
+name: SBOM & Dependency Review
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with: { version: 9.6.0 }
+    - uses: actions/setup-node@v4
+      with: { node-version: 20 }
+    - run: pnpm install --frozen-lockfile=false
+    - name: Generate CycloneDX SBOM (root)
+      run: npx @cyclonedx/cyclonedx-npm --output-file sbom-root.json --spec-version 1.5
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-root
+        path: sbom-root.json
+  dependency-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      security-events: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/dependency-review-action@v4

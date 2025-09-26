@@ -1,0 +1,89 @@
+# ==== Node & Package Managers ====
+node_modules/
+**/node_modules/
+.pnpm-store/
+pnpm-debug.log*
+npm-debug.log*
+yarn-error.log*
+
+# ==== Build & Output ====
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+reports/
+artifacts/
+.next/
+out/
+.turbo/
+.expo/
+.expo-shared/
+playwright-report/
+test-results/
+tmp/
+temp/
+
+# ==== React Native / Expo ====
+**/ios/build/
+**/ios/DerivedData/
+**/ios/Pods/
+**/android/.gradle/
+**/android/app/build/
+**/android/build/
+**/android/local.properties
+
+# ==== Caches ====
+.cache/
+.eslintcache
+.swc/
+.vscode/.eslintcache
+
+# ==== OS & IDE Files ====
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+*.swp
+.vscode/
+
+# ==== Environment & Secrets ====
+.env
+.env.*
+.envrc
+*.keystore
+*.jks
+*.p12
+*.p8
+*.pem
+*.key
+*.crt
+*.mobileprovision
+*.xcarchive
+google-services.json
+GoogleService-Info.plist
+docker-compose.override.yml
+
+# ==== Infrastructure & Terraform ====
+.terraform/
+**/.terraform/*
+*.tfstate
+*.tfstate.backup
+crash.log
+helmfile.d/secret*.yaml
+
+# ==== CI/CD & Test Artifacts ====
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+test-results/
+*.log
+# === Phase0 audit hardening ===
+.env
+.env.*
+!.env.example
+# build outputs
+dist
+build
+.next
+coverage

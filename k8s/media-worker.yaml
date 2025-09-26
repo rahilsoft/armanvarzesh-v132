@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: media-worker }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: media-worker } }
+  template:
+    metadata: { labels: { app: media-worker } }
+    spec:
+      containers:
+      - name: worker
+        image: ghcr.io/arman/media-worker:latest
+        env:
+        - { name: REDIS_URL, valueFrom: { secretKeyRef: { name: arman-secrets, key: redis_url } } }
+        - { name: S3_BUCKET, value: "arman-media" }
+        - { name: S3_REGION, value: "us-east-1" }

@@ -1,0 +1,54 @@
+{
+  "fa": [
+    {
+      "title": "هماهنگی کامل محتوا",
+      "body": "ویرایش زنده vitrine با پیش‌نمایش امن و نسخه‌بندی.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow1.jpg"
+      }
+    },
+    {
+      "title": "سرعت، زیبایی، دقت",
+      "body": "تصاویر AVIF/WebP و انیمیشن‌های کنترل‌شده.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow2.jpg"
+      }
+    },
+    {
+      "title": "مهندسی داده‌محور",
+      "body": "A/B تست و قیف‌های تبدیل با ClickHouse.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow3.jpg"
+      }
+    }
+  ],
+  "en": [
+    {
+      "title": "Seamless Content Orchestration",
+      "body": "Live-editable vitrine with secure preview and versioning.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow1.jpg"
+      }
+    },
+    {
+      "title": "Speed, Beauty, Precision",
+      "body": "AVIF/WebP imagery and controlled animation.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow2.jpg"
+      }
+    },
+    {
+      "title": "Data-Driven Engineering",
+      "body": "A/B testing and conversion funnels with ClickHouse.",
+      "media": {
+        "kind": "image",
+        "src": "/hero/flow3.jpg"
+      }
+    }
+  ]
+}

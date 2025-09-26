@@ -1,0 +1,5 @@
+
+
+otel:
+  traces:
+    endpoint: "http://otel-collector:4318/v1/traces"

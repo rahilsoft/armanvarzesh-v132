@@ -1,0 +1,7 @@
+Role,Can Access,Must Be Forbidden,Status,Notes
+admin,"vip, affiliate, certificate, reservations, physio",n/a,,
+ops,reservations,"vip, affiliate, certificate",,
+physio,physio,"vip, affiliate, certificate",,
+marketing,affiliate,"reservations, certificate",,
+coach,coach dashboards,admin-only modules,,
+user,client PWA only,admin-panel,,

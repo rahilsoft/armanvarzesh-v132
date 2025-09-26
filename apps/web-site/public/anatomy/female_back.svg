@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" role="img" aria-label="Female Back Anatomy">
+
+    <style>
+      .outline { fill: #ffffff; stroke: #111; stroke-width: 1.2; }
+      .muscle { fill: #e5e7eb; stroke: #111; stroke-width: 0.8; cursor: pointer; transition: fill .15s ease; }
+      .muscle:hover { fill: #d1d5db; }
+      .label { font-family: sans-serif; font-size: 10px; fill: #4b5563; }
+    </style>
+    
+<rect width="200" height="400" fill="#fff"/>
+<title>Female Back Anatomy</title>
+<path class="outline" d="M92,30 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"/>
+<path class="outline" d="M78,60 q22,-10 44,0 v68 q0,20 -22,20 h0 q-22,0 -22,-20 z"/>
+<path class="outline" d="M82,148 h36 v20 q-18,10 -36,0 z"/>
+<path class="outline" d="M85,168 v72 q0,10 10,10 h0 q10,0 10,-10 v-72 z"/>
+<path class="outline" d="M115,168 v72 q0,10 10,10 h0 q10,0 10,-10 v-72 z"/>
+<g class="muscle" data-code="traps" aria-label="ذوزنقه‌ای (پشت)"><path d="M86,60 h28 l-9,18 h-10 z"/></g>
+<g class="muscle" data-code="rear_delts" aria-label="سرشانه خلفی"><ellipse cx="70" cy="90" rx="9" ry="7"/><ellipse cx="130" cy="90" rx="9" ry="7"/></g>
+<g class="muscle" data-code="lats" aria-label="لتس"><path d="M80,90 q10,18 10,33 h-14 q-7,-15 -5,-28 z"/><path d="M120,90 q-10,18 -10,33 h14 q7,-15 5,-28 z"/></g>
+<g class="muscle" data-code="erector_spinae" aria-label="بازکننده‌های ستون فقرات"><rect x="96" y="106" width="8" height="38" rx="3"/></g>
+<g class="muscle" data-code="glute" aria-label="سرینی"><rect x="86" y="170" width="18" height="18" rx="6"/><rect x="116" y="170" width="18" height="18" rx="6"/></g>
+<g class="muscle" data-code="hamstrings" aria-label="همسترینگ"><rect x="91" y="194" width="12" height="33" rx="4"/><rect x="117" y="194" width="12" height="33" rx="4"/></g>
+<g class="muscle" data-code="calves_back" aria-label="ساق (پشت)"><rect x="91" y="233" width="12" height="21" rx="4"/><rect x="117" y="233" width="12" height="21" rx="4"/></g>
+</svg>

@@ -1,0 +1,54 @@
+name: Preview Environment
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [ "**" ]
+
+jobs:
+  deploy:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+          - uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'pnpm'
+          - uses: pnpm/action-setup@v4
+            with:
+              version: 9
+          - run: pnpm install --frozen-lockfile
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Set Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > $HOME/.kube/config
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+      - name: Create namespace
+        run: |
+          NS=pr-${{ github.event.number }}
+          kubectl create ns $NS --dry-run=client -o yaml | kubectl apply -f -
+      - name: Deploy chart
+        run: |
+          NS=pr-${{ github.event.number }}
+          helm upgrade --install armanfit ./helm/armanfit -n $NS --set replicaCount=1
+
+  destroy:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > $HOME/.kube/config
+      - name: Delete namespace
+        run: |
+          NS=pr-${{ github.event.number }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          kubectl delete ns $NS --ignore-not-found=true

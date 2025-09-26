@@ -1,0 +1,58 @@
+{
+  "id": null,
+  "uid": "vitrine-kpi",
+  "title": "Arman Vitrin — KPI",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "table",
+      "title": "CTR per Tile (7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "\n-- CTR per tile id and variant (last 7 days)\nWITH impressions AS (\n  SELECT JSON_VALUE(payload, '$.id') AS id,\n         JSON_VALUE(payload, '$.variant') AS variant,\n         count() AS imp\n  FROM default.events\n  WHERE app = 'vitrin-site' AND name = 'tile_impression' AND ts >= now() - INTERVAL 7 DAY\n  GROUP BY id, variant\n),\nclicks AS (\n  SELECT JSON_VALUE(payload, '$.id') AS id,\n         JSON_VALUE(payload, '$.variant') AS variant,\n         count() AS clk\n  FROM default.events\n  WHERE app = 'vitrin-site' AND name = 'tile_click' AND ts >= now() - INTERVAL 7 DAY\n  GROUP BY id, variant\n)\nSELECT i.id, i.variant, i.imp, c.clk, if(i.imp=0, 0, round(c.clk / i.imp * 100, 2)) AS ctr_pct\nFROM impressions i\nLEFT JOIN clicks c ON c.id = i.id AND c.variant = i.variant\nORDER BY ctr_pct DESC;\n"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "graph",
+      "title": "Tile Impressions (hourly)",
+      "targets": [
+        {
+          "format": "time_series",
+          "rawSql": "SELECT toStartOfHour(ts) t, count() c FROM default.events WHERE app='vitrin-site' AND name='tile_impression' AND ts>= now()-INTERVAL 7 DAY GROUP BY t ORDER BY t"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Funnel (sessions with PV→IMP→CLK, 7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "\n-- Simple funnel: pageview -> impression -> click (same session) for last 7 days\nWITH pv AS (\n  SELECT session, count() AS n FROM default.events\n  WHERE app='vitrin-site' AND name='pageview' AND ts>= now()-INTERVAL 7 DAY\n  GROUP BY session\n),\nimp AS (\n  SELECT session, count() AS n FROM default.events\n  WHERE app='vitrin-site' AND name='tile_impression' AND ts>= now()-INTERVAL 7 DAY\n  GROUP BY session\n),\nclk AS (\n  SELECT session, count() AS n FROM default.events\n  WHERE app='vitrin-site' AND name='tile_click' AND ts>= now()-INTERVAL 7 DAY\n  GROUP BY session\n)\nSELECT\n  (SELECT count() FROM pv) AS sessions_with_pageview,\n  (SELECT count() FROM imp) AS sessions_with_impression,\n  (SELECT count() FROM clk) AS sessions_with_click;\n"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      }
+    }
+  ]
+}

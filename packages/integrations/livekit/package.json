@@ -1,0 +1,27 @@
+{
+  "name": "@arman/integrations-livekit",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "test": "echo \"NO_TESTS\" && exit 0",
+    "start": "node dist/index.js || node dist/server.js || node dist/main.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts || node dist/index.js",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "@types/node": "^20.12.12"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

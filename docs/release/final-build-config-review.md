@@ -1,0 +1,3 @@
+- Android: target/compileSdk 34, Hermes/R8
+- iOS: Info.plist minimal perms, Swift modern
+- Web: ISR/SSG, @next/bundle-analyzer

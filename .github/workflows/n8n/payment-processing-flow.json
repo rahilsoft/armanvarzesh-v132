@@ -1,0 +1,12 @@
+{
+  "name": "Payment Processing Flow",
+  "nodes": [
+    {"id":1,"type":"Webhook","parameters":{"path":"payment","method":"POST"}},
+    {"id":2,"type":"Function","parameters":{"functionCode":"// validate payment and update DB"}},
+    {"id":3,"type":"SendConfirmation","parameters":{"channel":"user"}}
+  ],
+  "connections": {
+    "1":{"main":[[{"node":2,"type":"main","index":0}]]},
+    "2":{"main":[[{"node":3,"type":"main","index":0}]]}
+  }
+}

@@ -1,0 +1,17 @@
+export default () => ({
+  env: process.env.NODE_ENV || 'development',
+  port: parseInt(process.env.PORT || '4000', 10),
+  databaseUrl: process.env.DATABASE_URL,
+  jwtSecret: process.env.JWT_SECRET || process.env.JWT_ACCESS_SECRET,
+  jwtAccessSecret: process.env.JWT_ACCESS_SECRET || process.env.JWT_SECRET,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
+  jwtIssuer: process.env.JWT_ISSUER || 'armanfit',
+  jwtAudience: process.env.JWT_AUDIENCE || 'armanfit-users',
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
+  kavenegarApiKey: process.env.KAVENEGAR_API_KEY,
+  zarinpalMerchantId: process.env.ZARINPAL_MERCHANT_ID,
+  redisUrl: process.env.REDIS_URL,
+  graphqlPlayground: process.env.ENABLE_GRAPHQL_PLAYGROUND === 'true',
+  graphqlIntrospection: process.env.ENABLE_GRAPHQL_INTROSPECTION === 'true',
+  graphqlDepthLimit: Number(process.env.GRAPHQL_DEPTH_LIMIT || 8),
+});

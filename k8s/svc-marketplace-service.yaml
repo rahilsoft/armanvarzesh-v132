@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marketplace-service
+  namespace: armanfit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: marketplace-service
+  template:
+    metadata:
+      labels:
+        app: marketplace-service
+    spec:
+      containers:
+            a09
+              initialDelaySeconds: 20
+              periodSeconds: 10
+            a09
+              initialDelaySeconds: 10
+              periodSeconds: 5
+        - name: marketplace-service
+          image: ghcr.io/REPLACE_ORG/REPLACE_REPO/marketplace-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4109
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: REDIS_URL
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: RABBITMQ_URL
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MINIO_ENDPOINT
+            - name: MINIO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MINIO_PORT
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MINIO_ACCESS_KEY
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MINIO_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: marketplace-service
+  namespace: armanfit
+spec:
+  selector:
+    app: marketplace-service
+  ports:
+    - port: 4109
+      targetPort: 4109
+      protocol: TCP
+  type: ClusterIP

@@ -1,0 +1,60 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -r typecheck
+      - name: Lint (packages)
+        run: pnpm -r lint
+      - name: Lint (root)
+        run: pnpm -w exec eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0
+
+      - name: Tests + Coverage
+        run: pnpm -r test -- --ci || true
+      - name: Coverage (workspace)
+        run: pnpm -r run coverage || true
+      - name: Coverage threshold
+        run: pnpm -w run coverage:check
+
+      - name: SBOM (CycloneDX)
+        run: npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-artifacts
+          path: |
+            sbom.json
+            **/coverage/**
+            artifacts/**
+
+  # Optional perf smoke (non-blocking)
+  perf-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Performance smoke
+        run: pnpm run perf:smoke
+
+      - name: Docs lint
+        run: pnpm -w run docs:lint

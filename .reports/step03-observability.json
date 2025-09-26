@@ -1,0 +1,150 @@
+{
+  "timestamp": "2025-08-23T11:10:29.453884Z",
+  "package_created": "packages/observability-sdk",
+  "wired_entries": [
+    {
+      "path": "apps/activity-subgraph/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "apps/armanfit-admin/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "apps/backend/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "apps/live-subgraph/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "apps/social-subgraph/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "packages/contracts/src/main.ts",
+      "action": "created-main-with-register"
+    },
+    {
+      "path": "packages/service-kit/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "packages/shared/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "packages/ui-components/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "packages/ui-tokens/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/affiliate-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/ai-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/analytics-collector/src/index.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/analytics-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/assessment-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/assessments-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/auth-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/booking-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/certificate-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/challenges-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/chat-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/coaches-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/content-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/courses-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/marketplace-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/monitoring-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/notifications-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/nutrition-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/payments-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/physio-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/predictive-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/reward-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/rewards-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/users-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/vip-service/src/main.ts",
+      "action": "prepended-register"
+    },
+    {
+      "path": "services/workouts-service/src/main.ts",
+      "action": "prepended-register"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model ModelSnapshot {
+  id        String   @id
+  name      String
+  createdAt DateTime @default(now())
+  vectors   FeatureVector[]
+  suggestions SuggestionLog[]
+}
+
+model FeatureVector {
+  id           String   @id
+  userId       String?
+  coachId      String?
+  kind         String   // 'user'|'coach'|'session'
+  vec          Json
+  snapshotId   String
+  snapshot     ModelSnapshot @relation(fields:[snapshotId], references:[id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+}
+
+model SuggestionLog {
+  id           String   @id
+  userId       String
+  payload      Json
+  result       Json
+  explanation  String
+  modelId      String
+  model        ModelSnapshot @relation(fields:[modelId], references:[id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+}
+
+model ReadinessRecord {
+  id        String   @id
+  userId    String
+  score     Int
+  factors   Json
+  createdAt DateTime @default(now())
+}
+
+model CoachProfile {
+  id        String   @id
+  coachId   String   @unique
+  tags      String[]
+  vec       Json
+  createdAt DateTime @default(now())
+}

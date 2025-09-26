@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits"],
+  "timezone": "Europe/Helsinki",
+  "rangeStrategy": "bump",
+  "schedule": ["after 9am and before 6pm on monday to friday"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    { "matchManagers": ["npm"], "groupName": "npm deps (all)" }
+  ]
+}

@@ -1,0 +1,33 @@
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Challenge {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  rules       Json
+  reward      Json
+  startAt     DateTime
+  endAt       DateTime
+  createdAt   DateTime @default(now())
+
+  participants ChallengeParticipant[]
+
+  @@index([startAt, endAt], map: "idx_Challenge_window")
+}
+
+model ChallengeParticipant {
+  id           Int       @id @default(autoincrement())
+  challengeId  Int
+  userId       Int
+  status       String    // joined | completed
+  progress     Json
+  joinedAt     DateTime  @default(now())
+  completedAt  DateTime?
+
+  challenge    Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@index([challengeId, userId], map: "idx_Participant_user")
+  @@unique([challengeId, userId])
+}

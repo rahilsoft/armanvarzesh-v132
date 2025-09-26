@@ -1,0 +1,8 @@
+
+default_platform(:android)
+platform :android do
+  desc "Assemble Android"
+  lane :build do
+    sh "echo './gradlew assembleRelease would run here'"
+  end
+end

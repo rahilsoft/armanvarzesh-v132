@@ -1,0 +1,5 @@
+apiVersion: v2
+name: armanfit
+version: 0.1.0
+description: Helm chart for ArmanFit microservices
+type: application

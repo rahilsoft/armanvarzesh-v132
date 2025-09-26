@@ -1,0 +1,5 @@
+{
+  "input": "${OPENAPI_JSON:-http://localhost:3000/openapi.json}",
+  "output": "src/api/generated",
+  "client": "fetch"
+}

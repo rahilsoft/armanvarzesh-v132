@@ -1,0 +1,81 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Facility {
+  id        String   @id
+  name      String
+  city      String
+  geoLat    Float?
+  geoLng    Float?
+  doctors   Doctor[]
+  tests     HealthTest[]
+  createdAt DateTime @default(now())
+}
+
+model Doctor {
+  id         String   @id
+  name       String
+  specialty  String?
+  facilityId String
+  facility   Facility @relation(fields:[facilityId], references:[id], onDelete: Cascade)
+  slots      Slot[]
+  createdAt  DateTime @default(now())
+}
+
+model HealthTest {
+  id         String   @id
+  name       String
+  code       String   @unique
+  requiresFasting Boolean @default(false)
+  facilityId String?
+  facility   Facility? @relation(fields:[facilityId], references:[id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  bundles    TestBundleOnTest[]
+}
+
+model TestBundle {
+  id        String   @id
+  name      String
+  createdAt DateTime @default(now())
+  tests     TestBundleOnTest[]
+}
+
+model TestBundleOnTest {
+  bundleId String
+  testId   String
+  bundle   TestBundle @relation(fields:[bundleId], references:[id], onDelete: Cascade)
+  test     HealthTest @relation(fields:[testId], references:[id], onDelete: Cascade)
+
+  @@id([bundleId, testId])
+}
+
+model Appointment {
+  id         String   @id
+  userId     String
+  facilityId String
+  doctorId   String
+  slotId     String
+  status     String   // pending|confirmed|cancelled
+  fasting    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  resultId   String?
+  result     Result?  @relation(fields:[resultId], references:[id], onDelete: SetNull)
+}
+
+model Slot {
+  id        String   @id
+  doctorId  String
+  startUTC  DateTime
+  endUTC    DateTime
+  capacity  Int      @default(1)
+  holds     Int      @default(0)
+  createdAt DateTime @default(now())
+  doctor    Doctor   @relation(fields:[doctorId], references:[id], onDelete: Cascade)
+}
+
+model Result {
+  id          String   @id
+  appointment Appointment?
+  summary     String
+  createdAt   DateTime @default(now())
+}

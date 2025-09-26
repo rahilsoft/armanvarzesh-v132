@@ -1,0 +1,7 @@
+{
+  "scripts": [
+    "apps/activity-subgraph/prisma/migrations/PLAN_stage08/db_init.sh",
+    "apps/social-subgraph/prisma/migrations/PLAN_stage08/db_init.sh",
+    "services/certificate-service/prisma/migrations/PLAN_stage08/db_init.sh"
+  ]
+}

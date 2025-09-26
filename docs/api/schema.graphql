@@ -1,0 +1,16 @@
+# GraphQL Schema (stub)
+type Query {
+  me: User
+  workouts(cursor: String, limit: Int = 20): WorkoutConnection!
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload!
+}
+
+type User { id: ID!, email: String!, name: String }
+type Workout { id: ID!, title: String!, durationMin: Int! }
+type WorkoutEdge { cursor: String!, node: Workout! }
+type WorkoutConnection { edges: [WorkoutEdge!]!, pageInfo: PageInfo! }
+type PageInfo { endCursor: String, hasNextPage: Boolean! }
+type AuthPayload { accessToken: String!, refreshToken: String! }

@@ -1,0 +1,1 @@
+export default function PaymentsModule(){ return null }

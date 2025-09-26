@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+      - name: users-service
+        image: users-service:latest
+        X01
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        X01
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        env:
+        - name: DATABASE_URL
+          value: postgresql://postgres:postgres@postgres:5432/armanfit_users
+        - name: PORT
+          value: '3001'
+        ports:
+        - containerPort: 3001
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: '1'
+            memory: 1024Mi

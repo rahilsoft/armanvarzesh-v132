@@ -1,0 +1,26 @@
+{
+  "name": "bullmq-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "build": "echo \"No TypeScript in package\"",
+    "typecheck": "echo \"No TS to typecheck\"",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "test": "echo \"NO_TESTS\" && exit 0",
+    "dev": "tsc -w",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "bullmq": "^4.12.0",
+    "ioredis": "^5.3.2"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

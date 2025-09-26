@@ -1,0 +1,52 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Route {
+  id         String   @id
+  name       String
+  city       String?
+  polyline   String   // encoded polyline or GeoJSON
+  difficulty String?
+  createdBy  String?
+  createdAt  DateTime @default(now())
+  activities Activity[]
+}
+
+model Activity {
+  id         String   @id
+  userId     String
+  routeId    String?
+  status     String   // live|ended
+  startedAt  DateTime
+  endedAt    DateTime?
+  distanceM  Float    @default(0)
+  durationS  Int      @default(0)
+  paceSecPerKm Int    @default(0)
+  kcal       Int      @default(0)
+  elevGainM  Float    @default(0)
+  createdAt  DateTime @default(now())
+  route      Route?   @relation(fields:[routeId], references:[id], onDelete: SetNull)
+  ticks      ActivityTick[]
+}
+
+model ActivityTick {
+  id         String   @id
+  activityId String
+  ts         DateTime
+  lat        Float
+  lng        Float
+  elevM      Float?
+  paused     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  activity   Activity @relation(fields:[activityId], references:[id], onDelete: Cascade)
+}
+
+model ActivityInvite {
+  id          String   @id
+  activityId  String
+  inviterId   String
+  inviteeId   String
+  status      String   @default("pending") // pending|accepted|declined
+  createdAt   DateTime @default(now())
+  @@unique([activityId, inviteeId])
+}

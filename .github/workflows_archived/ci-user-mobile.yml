@@ -1,0 +1,65 @@
+name: CI — User Mobile
+
+on:
+  pull_request:
+    paths:
+      - 'app/user-app/**'
+      - '.github/workflows/ci-user-mobile.yml'
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'app/user-app/**'
+      - '.github/workflows/ci-user-mobile.yml'
+
+concurrency:
+  group: ci-user-mobile-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Typecheck • Lint • Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/user-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
+      - name: Print versions
+        run: |
+          node -v
+          pnpm -v
+
+      - name: Typecheck
+        run: pnpm run -s typecheck || pnpm exec tsc -p tsconfig.json --noEmit
+
+      - name: Lint
+        run: pnpm run -s lint || pnpm exec eslint .
+
+      - name: Unit tests with coverage
+        run: |
+          pnpm run -s test -- --coverage || echo "No tests"
+        env:
+          CI: 'true'
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-user-mobile
+          path: |
+            app/user-app/coverage
+            app/user-app/coverage/**/*
+          if-no-files-found: ignore

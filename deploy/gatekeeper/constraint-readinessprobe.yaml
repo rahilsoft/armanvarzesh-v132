@@ -1,0 +1,23 @@
+
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata: { name: k8srequireprobe }
+spec:
+  crd:
+    spec:
+      names: { kind: K8sRequireProbe }
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8srequireprobe
+      violation[{"msg": msg}] {
+        c := input.review.object.spec.containers[_]
+        not c.readinessProbe
+        msg := "readinessProbe required"
+      }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireProbe
+metadata: { name: require-readiness-probe }
+spec:
+  match: { kinds: [{ apiGroups: [ "apps" ], kinds: ["Deployment"] }] }

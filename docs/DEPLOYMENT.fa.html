@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>راهنمای انتشار آرمان ورزش</title>
+<style>
+@font-face { font-family: 'Yekan'; src: local('Yekan'); }
+@font-face { font-family: 'Far_Nazanin'; src: local('Far_Nazanin'); }
+body { font-family: Yekan, Far_Nazanin, sans-serif; line-height:1.8; margin:2rem; }
+h1,h2,h3 { margin-top:1.2em; }
+code, pre { direction:ltr; background:#f5f5f5; padding:.5rem; border-radius:6px; display:block; overflow:auto; }
+.table { border-collapse: collapse; width:100%; }
+.table th, .table td { border:1px solid #ddd; padding:.5rem; }
+.print-note { color:#666; font-size:.9rem; }
+</style>
+</head>
+<body>
+<h1>راهنمای انتشار (Runbook) - آرمان ورزش</h1>
+<p class="print-note">نسخه HTML آماده چاپ — تاریخ تولید: 2025-08-19 05:50:07</p>
+<h2>پیش‌نیازها</h2>
+<pre>Node 20, PNPM 9, Docker, Kubernetes/Helm, Postgres, Redis</pre>
+<h2>ماتریس Build</h2>
+<table class="table">
+<tr><th>بخش</th><th>فرمان</th></tr>
+<tr><td>Backend</td><td><code>pnpm --filter ./app/backend build</code></td></tr>
+<tr><td>Services</td><td><code>pnpm -r --filter "./services/*" build</code></td></tr>
+<tr><td>Web (vitrin-site)</td><td><code>pnpm --filter ./app/vitrin-site build</code></td></tr>
+</table>
+<h2>مهاجرت دیتابیس</h2>
+<pre>pnpm --filter ./app/backend prisma migrate deploy</pre>
+<h2>مدیریت ENV/Secrets</h2>
+<p>.env.example در همهٔ اپ‌ها/سرویس‌ها هم‌اکنون موجود است. در محیط Production از Secret Manager استفاده کنید.</p>
+<h2>سلامتی و رصد</h2>
+<p>Health endpoints: <code>/health</code>، متریک‌ها <code>/metrics</code>، لاگ‌ها با ساختار JSON.</p>
+<h2>استراتژی Rollout/Rollback</h2>
+<pre>kubectl rollout status deploy/backend
+kubectl rollout undo deploy/backend</pre>
+<h2>Smoke Test پس از دیپلوی</h2>
+<pre>curl -f https://api.example.com/health</pre>
+</body>
+</html>
+
+<h2>Canary/Rolling Rollout</h2>
+<p>برای انتشار مرحله‌ای از <code>deploy/helm/values-canary.yaml</code> استفاده کنید و سپس وضعیت را با <code>kubectl rollout status</code> بررسی نمایید.</p>
+<h2>آزمون کارایی (k6)</h2>
+<pre>k6 run perf/k6/smoke.js --env BASE_URL=http://api.example.com</pre>
+
+
+<h2>Idempotency & Replay</h2>
+<p>سرویس آیدمپوتنسی از Redis استفاده می‌کند و در حالت تست با <code>REDIS_URL=memory</code> با حافظهٔ محلی کار می‌کند. پاسخ عملیات با TTL ذخیره و در صورت تکرار کلید، Replay می‌شود.</p>
+<h2>Webhook Signature</h2>
+<p>گارد HMAC-SHA256 با هدر <code>x-signature</code> یا <code>x-hub-signature-256</code>. مقداردهی با ENV <code>PAYMENT_WEBHOOK_SECRET</code>.</p>
+<h2>Provider Layer</h2>
+<p>پرداخت و SMS با لایهٔ Factory قابل‌تعویض هستند. در Production، SDK رسمی را اضافه و ENV را تنظیم کنید. (Provider پیش‌فرض: <code>mock</code>)</p>
+<h2>k6 Thresholds</h2>
+<p>آستانه‌ها: <code>http_req_failed &lt; 1%</code> و <code>p(95) &lt; 800ms</code>. خلاصهٔ اجرا در artifact به صورت JSON ضمیمه می‌شود.</p>
+<h2>Argo Rollouts</h2>
+<p>مانیفست‌های نمونه در مسیر <code>deploy/argo/</code> موجود است.</p>
+<p class="print-note">به‌روزرسانی: 2025-08-19 06:03:17</p>
+
+
+<h2>Dynamic Providers & Resilience</h2>
+<p>Providerهای پرداخت و SMS به‌صورت پویا (Dynamic Import) بارگذاری می‌شوند. در نبود SDK یا خطاهای گذرا، از <strong>Backoff نمایی با Jitter</strong> و <strong>Circuit Breaker</strong> استفاده می‌شود؛ در محیط غیرتولیدی به Fallback ایمن تنزل می‌کند.</p>
+<h2>Advanced k6</h2>
+<p>اسکریپت <code>perf/k6/graphql-reservations.js</code> با Thresholdهای endpoint و خروجی JUnit/XML برای مصرف در CI اضافه شد.</p>
+<p class="print-note">به‌روزرسانی v40 — تاریخ: 2025-08-19 06:07:57</p>
+
+
+<h2>Security Hardening</h2>
+<ul>
+  <li>Helmet با CSP سفارشی و COEP غیرفعال برای سازگاری.</li>
+  <li>Rate-Limit بر اساس توکن/آی‌پی (ENV: <code>RL_WINDOW_MS</code>, <code>RL_MAX</code>).</li>
+  <li>JWT Rotation با <code>kid</code> (ENV: <code>JWT_KEYS</code> as JSON, <code>JWT_ACTIVE_KID</code>, <code>JWT_ALG</code>).</li>
+</ul>
+<h2>Observability</h2>
+<ul>
+  <li>متریک‌های Prometheus: <code>payments_verified_total</code>, <code>reservations_created_total</code>; اندپوینت <code>/metrics</code>.</li>
+  <li>Tracing با OTel API و برچسب‌های domain (payment_id, reservation_id).</li>
+  <li>Grafana Dashboard: <code>docs/observability/grafana/backend-kpis.json</code>.</li>
+</ul>
+<p class="print-note">به‌روزرسانی v41 — تاریخ: 2025-08-19 06:13:19</p>

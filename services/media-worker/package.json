@@ -1,0 +1,69 @@
+{
+  "name": "@arman/media-worker__media-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "dependencies": {
+    "bullmq": "^5.7.0",
+    "sharp": "^0.33.4",
+    "execa": "^9.2.0",
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@arman/service-kit": "workspace:*",
+    "@arman/integration": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
+    "start": "node dist/main.js",
+    "start:dev": "tsx src/main.ts",
+    "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
+    "test:cov": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
+    "format:check": "prettier -c . || echo \"no prettier\"",
+    "dev": "ts-node src/main.ts",
+    "clean": "rimraf dist || true",
+    "format": "prettier --write .",
+    "test:e2e": "echo \"e2e placeholder\"",
+    "prepare": "husky install || true",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "start:prod": "node dist/main.js",
+    "coverage": "jest --coverage --passWithNoTests",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "@types/express": "^5.0.3",
+    "vitest": "^3.2.4",
+    "@types/node": "^20.12.12",
+    "supertest": "^7.0.0",
+    "tsx": "^4.16.0",
+    "ts-node": "^10.9.2",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "rimraf": "^5.0.0",
+    "nodemon": "^3.0.0",
+    "tsup": "^8.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  },
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false
+}

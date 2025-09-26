@@ -1,0 +1,77 @@
+{
+  "generated_at": "2025-08-31 18:51",
+  "tasks": [
+    {
+      "id": "GA-01",
+      "title": "Remove 'unsafe-inline' from CSP with nonces",
+      "owner": "FE",
+      "priority": "P0",
+      "estimate_d": "2",
+      "risk": "M",
+      "deps": []
+    },
+    {
+      "id": "GA-02",
+      "title": "Wire OTLP exporter to collector",
+      "owner": "FE/DevOps",
+      "priority": "P1",
+      "estimate_d": "0.5",
+      "risk": "L",
+      "deps": []
+    },
+    {
+      "id": "GA-03",
+      "title": "Implement payment webhook signature verify",
+      "owner": "BFF",
+      "priority": "P0",
+      "estimate_d": "1",
+      "risk": "M",
+      "deps": []
+    },
+    {
+      "id": "GA-04",
+      "title": "API rate limiting (per IP/user)",
+      "owner": "BFF",
+      "priority": "P1",
+      "estimate_d": "1",
+      "risk": "M",
+      "deps": []
+    },
+    {
+      "id": "GA-05",
+      "title": "E2E negative paths (payments/network)",
+      "owner": "QA",
+      "priority": "P1",
+      "estimate_d": "1",
+      "risk": "L",
+      "deps": []
+    },
+    {
+      "id": "GA-06",
+      "title": "i18n gaps and plurals",
+      "owner": "FE",
+      "priority": "P2",
+      "estimate_d": "1",
+      "risk": "L",
+      "deps": []
+    },
+    {
+      "id": "GA-07",
+      "title": "CWV polish for /coaches /marketplace",
+      "owner": "FE",
+      "priority": "P2",
+      "estimate_d": "1",
+      "risk": "L",
+      "deps": []
+    },
+    {
+      "id": "GA-08",
+      "title": "Backups & restore dry-run",
+      "owner": "DevOps",
+      "priority": "P0",
+      "estimate_d": "0.5",
+      "risk": "L",
+      "deps": []
+    }
+  ]
+}

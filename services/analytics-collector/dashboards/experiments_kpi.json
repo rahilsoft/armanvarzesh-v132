@@ -1,0 +1,90 @@
+{
+  "id": null,
+  "uid": "experiments-kpi",
+  "title": "Arman Vitrin — Experiments & Attribution",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "table",
+      "title": "CTR per Tile (7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "\n-- CTR per tile id and variant (last 7 days)\nWITH impressions AS (\n  SELECT JSON_VALUE(payload, '$.id') AS id,\n         JSON_VALUE(payload, '$.variant') AS variant,\n         count() AS imp\n  FROM default.events\n  WHERE app = 'vitrin-site' AND name = 'tile_impression' AND ts >= now() - INTERVAL 7 DAY\n  GROUP BY id, variant\n),\nclicks AS (\n  SELECT JSON_VALUE(payload, '$.id') AS id,\n         JSON_VALUE(payload, '$.variant') AS variant,\n         count() AS clk\n  FROM default.events\n  WHERE app = 'vitrin-site' AND name = 'tile_click' AND ts >= now() - INTERVAL 7 DAY\n  GROUP BY id, variant\n)\nSELECT i.id, i.variant, i.imp, c.clk, if(i.imp=0, 0, round(c.clk / i.imp * 100, 2)) AS ctr_pct\nFROM impressions i\nLEFT JOIN clicks c ON c.id = i.id AND c.variant = i.variant\nORDER BY ctr_pct DESC;\n"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "table",
+      "title": "Conversion from Tile → Signup (7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "\n-- Conversion from tile_click to signup_complete grouped by tile id & variant (7d)\nWITH clk AS (\n  SELECT session, JSON_VALUE(payload,'$.id') AS id, JSON_VALUE(payload,'$.variant') AS variant, min(ts) as first_clk\n  FROM default.events WHERE app='vitrin-site' AND name='tile_click' AND ts>= now()-INTERVAL 7 DAY\n  GROUP BY session, id, variant\n),\nsu AS (\n  SELECT session, min(ts) as signup_ts\n  FROM default.events WHERE app='vitrin-site' AND name='signup_complete' AND ts>= now()-INTERVAL 7 DAY\n  GROUP BY session\n)\nSELECT c.id, c.variant, count() clicks, countIf(su.signup_ts >= c.first_clk) signups,\n       roundIf(signups/clicks*100,2) as cr_pct\nFROM clk c\nLEFT JOIN su ON su.session = c.session\nGROUP BY c.id, c.variant\nORDER BY cr_pct DESC;\n"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      }
+    },
+    {
+      "type": "table",
+      "title": "A/B Significance z-score (14d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "-- A/B significance test (z-score) last 14 days; group by logical id (or tile id), variant\nWITH base AS (\n  SELECT\n    JSON_VALUE(payload, '$.id') AS id,\n    JSON_VALUE(payload, '$.variant') AS variant,\n    countIf(name='tile_impression') AS imp,\n    countIf(name='tile_click') AS clk\n  FROM default.events\n  WHERE app='vitrin-site' AND name IN ('tile_impression','tile_click') AND ts>= now()-INTERVAL 14 DAY\n  GROUP BY id, variant\n),\npairs AS (\n  SELECT id, anyHeavy(variant) as variant, sum(imp) imp, sum(clk) clk\n  FROM base\n  GROUP BY id, variant\n)\nSELECT\n  a.id,\n  a.variant as variant_a, a.imp as imp_a, a.clk as clk_a, if(a.imp=0,0, clk_a/imp_a) as ctr_a,\n  b.variant as variant_b, b.imp as imp_b, b.clk as clk_b, if(b.imp=0,0, clk_b/imp_b) as ctr_b,\n  ( ( (clk_a/imp_a) - (clk_b/imp_b) ) / sqrt( ((clk_a+clk_b)/(imp_a+imp_b))*(1-((clk_a+clk_b)/(imp_a+imp_b))) * (1/imp_a + 1/imp_b) ) ) as z_score\nFROM pairs a\nINNER JOIN pairs b ON a.id=b.id AND a.variant < b.variant\nORDER BY abs(z_score) DESC;"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      }
+    },
+    {
+      "type": "table",
+      "title": "CTR by UTM (7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "-- CTR by UTM source/campaign (7d)\nSELECT\n  JSON_VALUE(payload,'$.id') AS id,\n  coalesce(JSON_VALUE(payload,'$.variant'), '—') AS variant,\n  coalesce(JSON_VALUE(payload,'$.utm_source'), 'direct') AS utm_source,\n  coalesce(JSON_VALUE(payload,'$.utm_campaign'), '—') AS utm_campaign,\n  countIf(name='tile_impression') AS imp,\n  countIf(name='tile_click') AS clk,\n  if(imp=0,0, round(clk/imp*100,2)) AS ctr_pct\nFROM default.events\nWHERE app='vitrin-site' AND name IN ('tile_impression','tile_click') AND ts>= now()-INTERVAL 7 DAY\nGROUP BY id, variant, utm_source, utm_campaign\nORDER BY ctr_pct DESC;"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      }
+    },
+    {
+      "type": "table",
+      "title": "Web Vitals p95 (7d)",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "-- p95 of core web vitals in last 7 days\nSELECT\n  metric,\n  quantileExact(0.95)(toFloat64(JSON_VALUE(payload, '$.value'))) AS p95\nFROM default.events\nWHERE app='vitrin-site' AND name LIKE 'webvitals_%' AND ts>= now()-INTERVAL 7 DAY\nGROUP BY metric\nORDER BY metric"
+        }
+      ],
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      }
+    }
+  ]
+}

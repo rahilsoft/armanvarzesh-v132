@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"No tests yet\" && exit 0",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "dev": "tsc -w",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "name": "@arman/integrations",
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

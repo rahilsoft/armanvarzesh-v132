@@ -1,0 +1,28 @@
+{
+  "title": {
+    "fa": "آرمان ورزش",
+    "en": "Arman Varzesh"
+  },
+  "subtitle": {
+    "fa": "سلامتی، تمرین، الهام — با طراحی مینیمال",
+    "en": "Health, Training, Inspiration — Minimal Design"
+  },
+  "layers": [
+    {
+      "src": "/hero/device_front.png",
+      "depth": 1.0,
+      "alt": {
+        "fa": "دستگاه",
+        "en": "device"
+      }
+    },
+    {
+      "src": "/hero/device_back.png",
+      "depth": 0.6
+    },
+    {
+      "src": "/hero/glow.png",
+      "depth": 0.2
+    }
+  ]
+}

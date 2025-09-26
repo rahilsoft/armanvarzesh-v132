@@ -1,0 +1,6 @@
+
+{
+  "gpx": "<gpx>...snip...use contracts/data/gpx/sample_run.gpx</gpx>",
+  "distance_m": 3200,
+  "elevation_gain_m": 42
+}

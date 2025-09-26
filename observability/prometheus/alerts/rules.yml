@@ -1,0 +1,26 @@
+groups:
+- name: armanvarzesh-api-slo
+  rules:
+  - alert: HighLatencyP95
+    expr: histogram_quantile(0.95, sum(rate(http_server_duration_seconds_bucket{route=~"/graphql|/workouts.*"}[5m])) by (le)) > 0.3
+    for: 10m
+    labels: { severity: warning }
+    annotations:
+      summary: "API p95 latency > 300ms"
+      description: "p95 latency is above threshold for 10m."
+
+  - alert: WebhookErrorRate
+    expr: sum(rate(webhook_fail_total[5m])) / clamp_min(sum(rate(webhook_total[5m])), 1) > 0.01
+    for: 10m
+    labels: { severity: critical }
+    annotations:
+      summary: "Webhook error rate > 1%"
+      description: "Investigate Stripe/Garmin endpoints and idempotency."
+
+  - alert: MediaQueueDelay
+    expr: avg(bullmq_job_delay_seconds{queue="media"}) > 30
+    for: 15m
+    labels: { severity: warning }
+    annotations:
+      summary: "Media queue average delay > 30s"
+      description: "FFmpeg/Sharp workers are falling behind."

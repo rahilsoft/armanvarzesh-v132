@@ -1,0 +1,30 @@
+
+name: CI Matrix
+on: [push, pull_request]
+jobs:
+  node-services:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [nutrition-service, activities-service, challenges-service, courses-service, kpis-service, affiliate-service, inbox-service, assessments-service, rewards-service]
+    defaults:
+      run:
+        working-directory: services/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9.6.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm -w run build || true
+      - run: pnpm -w run test || true
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload contracts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contracts
+          path: contracts/

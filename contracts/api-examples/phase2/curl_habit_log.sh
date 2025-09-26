@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/habits/1/log" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"value":250}'

@@ -1,0 +1,10 @@
+{
+  "features": {
+    "payments_api": true,
+    "livekit_enabled": false,
+    "chat_ws_real": false,
+    "media_signed_upload": false,
+    "vip_wallet_guard": true,
+    "i18n_audit_enforced": false
+  }
+}

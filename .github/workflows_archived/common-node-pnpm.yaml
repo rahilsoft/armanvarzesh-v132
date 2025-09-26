@@ -1,0 +1,76 @@
+name: common-node-pnpm
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+      run-tests:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  ci:
+    name: Setup + Install + Build${{ inputs.run-tests && ' + Test' || '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory || '.' }}
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node 20 (cache pnpm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm 10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.0.0
+          run_install: false
+
+      - name: Install (workspace, strict lockfile)
+        run: pnpm -w install --frozen-lockfile
+
+      - name: Prisma generate (workspace)
+        env:
+          CI_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?schema=public
+        run: |
+          export DATABASE_URL="${CI_DATABASE_URL}"
+          pnpm -r --filter "./**" exec bash -lc 'if [ -f prisma/schema.prisma ] || [ -f ./src/database/prisma/schema.prisma ]; then pnpm dlx prisma generate; fi'
+
+      - name: Typecheck
+        run: pnpm -w run typecheck || true
+
+      - name: Build
+        run: pnpm -w run build
+
+      - name: Unit tests
+        if: inputs.run-tests == true
+        run: pnpm -w run test || true
+
+      - name: Gitleaks (secret scan)
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          config-path: .gitleaks.toml
+        continue-on-error: true

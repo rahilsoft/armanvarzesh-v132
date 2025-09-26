@@ -1,0 +1,56 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Thread {
+  id          String   @id
+  userId      String   // end-user
+  coachId     String   // assigned coach
+  createdAt   DateTime @default(now())
+  messages    Message[]
+  participants Participant[]
+}
+
+model Participant {
+  id        String   @id
+  threadId  String
+  userId    String
+  role      String   // user|coach
+  createdAt DateTime @default(now())
+  thread    Thread   @relation(fields:[threadId], references:[id], onDelete: Cascade)
+  @@unique([threadId, userId])
+}
+
+model Message {
+  id          String   @id
+  threadId    String
+  authorId    String
+  authorRole  String   // user|coach
+  body        String?
+  clientMsgId String   @unique
+  createdAt   DateTime @default(now())
+  attachments Attachment[]
+  receipts    ReadReceipt[]
+  thread      Thread   @relation(fields:[threadId], references:[id], onDelete: Cascade)
+}
+
+model ReadReceipt {
+  id        String   @id
+  messageId String
+  userId    String
+  readAt    DateTime @default(now())
+  message   Message  @relation(fields:[messageId], references:[id], onDelete: Cascade)
+  @@unique([messageId, userId])
+}
+
+model Attachment {
+  id         String   @id
+  messageId  String
+  kind       String   // image|voice|file
+  url        String   // stored URL (after scan OK)
+  uploadKey  String?  // storage key
+  status     String   @default("pending") // pending|safe|quarantined
+  sizeBytes  Int
+  mime       String
+  createdAt  DateTime @default(now())
+  message    Message  @relation(fields:[messageId], references:[id], onDelete: Cascade)
+}

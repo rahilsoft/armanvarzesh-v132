@@ -1,0 +1,31 @@
+{
+  "name": "@arman/sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"no tests\" && exit 0",
+    "lint": "eslint . --max-warnings=0 --ext .ts,.tsx,.js,.jsx || echo \"eslint not configured\"",
+    "start": "node dist/index.js || echo \"no start\"",
+    "dev": "ts-node src/index.ts || echo \"no dev\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "@contracts/nutrition": "0.1.0",
+    "@contracts/notifications": "0.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

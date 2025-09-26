@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/medical/book" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"bundleId":1}' 

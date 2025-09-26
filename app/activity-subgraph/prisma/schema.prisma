@@ -1,0 +1,7 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+model ActivityDaily { userId String; date String; moveKcal Int @default(0); exerciseMin Int @default(0); standHr Int @default(0); @@id([userId,date]); @@index([userId,date]) }
+model ActivityGoal { userId String @id; moveKcal Int @default(500); exerciseMin Int @default(30); standHr Int @default(12) }
+model Trend { id String @id @default(cuid()); userId String; date String; metric String; value Float; direction String @default("steady"); @@index([userId,metric,date]) }
+model Award { id String @id @default(cuid()); userId String; code String; achievedAt DateTime @default(now()); meta Json?; @@index([userId,code]) }
+model Workout { id String @id @default(cuid()); userId String; startedAt DateTime; endedAt DateTime?; minutes Int @default(0); sRPE Int?; avgHR Int?; maxHR Int?; @@index([userId,startedAt]) }

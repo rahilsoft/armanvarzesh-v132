@@ -1,0 +1,9 @@
+{
+  "physio": "Physio/Corrective",
+  "protocol": "Protocol",
+  "pain": "Pain",
+  "mobility": "Mobility",
+  "recommendation": "Recommendation",
+  "submit": "Save",
+  "draft_saved": "Draft saved"
+}

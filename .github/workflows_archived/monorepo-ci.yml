@@ -1,0 +1,54 @@
+name: Monorepo CI (matrix)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Discover packages
+        id: set-matrix
+        run: |
+          node -e "const {glob} = require('glob'); glob('**/package.json',{ignore:['**/node_modules/**','.pnpm/**']},(e,files)=>{ const m = { include: files.map(f=>({pkg:f})) }; console.log('::set-output name=matrix::'+JSON.stringify(m)); });"
+
+  build:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -C $(dirname "${{ matrix.pkg }}") run typecheck || true
+      - name: Lint
+        run: pnpm -C $(dirname "${{ matrix.pkg }}") run lint || true
+      - name: Test
+        run: pnpm -C $(dirname "${{ matrix.pkg }}") run test || true
+      - name: Build
+        run: pnpm -C $(dirname "${{ matrix.pkg }}") run build || true

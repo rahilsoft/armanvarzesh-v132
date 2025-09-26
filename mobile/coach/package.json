@@ -1,0 +1,18 @@
+{
+  "name": "@mobile/coach",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "start": "echo 'stub mobile app — add Expo later'",
+    "build": "echo \"build: nothing to do\"",
+    "lint": "echo \"no eslint\"",
+    "typecheck": "echo \"no ts\"",
+    "test": "echo \"no tests\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

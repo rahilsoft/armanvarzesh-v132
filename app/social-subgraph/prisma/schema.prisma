@@ -1,0 +1,6 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+model Friendship { id String @id @default(cuid()); aId String; bId String; status String @default("PENDING"); createdAt DateTime @default(now()); @@index([aId,bId]) }
+model Competition { id String @id @default(cuid()); title String; startDate String; endDate String; participants CompetitionParticipant[]; points CompetitionDayPoints[] }
+model CompetitionParticipant { competitionId String; userId String; displayName String?; @@id([competitionId,userId]); competition Competition @relation(fields:[competitionId], references:[id], onDelete: Cascade) }
+model CompetitionDayPoints { competitionId String; userId String; date String; points Int @default(0); @@id([competitionId,userId,date]); @@index([competitionId,date]); competition Competition @relation(fields:[competitionId], references:[id], onDelete: Cascade) }

@@ -1,0 +1,31 @@
+
+name: Test Mobile Apps
+
+on: [push, pull_request]
+
+jobs:
+  mobile-user-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install deps (User App)
+        run: cd mobile/user-app && npm ci
+      - name: Run tests (User App)
+        run: cd mobile/user-app && npm run test:cov
+
+  mobile-coach-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install deps (Coach App)
+        run: cd mobile/coach-app && npm ci
+      - name: Run tests (Coach App)
+        run: cd mobile/coach-app && npm run test:cov

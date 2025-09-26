@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@av/backend/*": [
+        "packages/backend/src/*"
+      ],
+      "@av/api/*": [
+        "packages/api/src/*"
+      ],
+      "@av/ui/*": [
+        "packages/ui-kit/src/*"
+      ],
+      "@av/mobile/*": [
+        "packages/ui-mobile/src/*"
+      ],
+      "@av/db/*": [
+        "packages/db/src/*"
+      ],
+      "@av/utils/*": [
+        "packages/utils/src/*"
+      ]
+    }
+  }
+}

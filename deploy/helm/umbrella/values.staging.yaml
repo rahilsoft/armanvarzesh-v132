@@ -1,0 +1,43 @@
+backend:
+  image:
+    repository: ghcr.io/arman/backend
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: api.staging.example.com
+    tls:
+      - hosts: [api.staging.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+vitrin-site:
+  image:
+    repository: ghcr.io/arman/vitrin-site
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: www.staging.example.com
+    tls:
+      - hosts: [www.staging.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+sample:
+  image:
+    repository: ghcr.io/arman/sample
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: sample.staging.example.com
+    tls:
+      - hosts: [sample.staging.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+# staging-only overrides can go here

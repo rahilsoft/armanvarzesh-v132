@@ -1,0 +1,13 @@
+{
+  "app": "vitrin-site",
+  "framework_detected": "Nest",
+  "rest_client_uses": [
+    {
+      "method": "GET",
+      "url": "/api/metrics?name=",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/admin/experiments/page.tsx",
+      "line": 13
+    }
+  ],
+  "gql_client_uses": []
+}

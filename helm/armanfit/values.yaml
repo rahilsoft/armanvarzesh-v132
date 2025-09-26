@@ -1,0 +1,51 @@
+namespace: armanfit
+imageRegistry: ghcr.io/armanvarzesh
+replicaCount: 2
+services:
+- name: example
+  port: 4100
+resources:
+  limits:
+    cpu: 250m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+networkPolicy:
+  enabled: true
+  ingressNamespaces: []
+imageTag: v2025.08.18
+ingress:
+  host: api.armanvarzesh.com
+  enabled: true
+  className: nginx
+  hosts:
+  - host: api.armanvarzesh.com
+    paths:
+    - path: /
+      pathType: Prefix
+  tls:
+  - secretName: armanfit-tls
+    hosts:
+    - api.armanvarzesh.com
+image:
+  registry: ghcr.io
+  repository: armanfit/armanfit
+  tag: v2025.08.18
+  pullPolicy: IfNotPresent
+env:
+  NODE_ENV: production
+envFromSecretName: armanfit-backend-env
+externalSecrets:
+  enabled: false
+  secretStoreRef:
+    name: global-secrets-store
+    kind: ClusterSecretStore
+  refreshInterval: 1h
+  targetSecretName: armanfit-backend-env
+  data: []

@@ -1,0 +1,13 @@
+diff --git a/apps/backend/src/nutrition/nutrition.controller.ts b/apps/backend/src/nutrition/nutrition.controller.ts
+--- a/apps/backend/src/nutrition/nutrition.controller.ts
++++ b/apps/backend/src/nutrition/nutrition.controller.ts
+@@ -1,6 +1,6 @@
+-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
++import { Body, Controller, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
+ ...
+-async getMealPlan(@Param('userId') userId: string): Promise<MealPlan|null> {
+-  return this.svc.getMealPlan(userId);
++async getMealPlan(@Param('userId') userId: string, @Req() req: any): Promise<MealPlan|null> {
++  this.svc['ensureAccess']?.(req?.user?.id || userId, userId, roleFrom(req));
++  return this.svc.getMealPlan(userId);
+ }

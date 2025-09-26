@@ -1,0 +1,95 @@
+### Text-compare: /mnt/data/armanvarzesh/docker-compose.yml
+
+```
+--- /mnt/data/armanvarzesh/docker-compose.yml(old)
++++ /mnt/data/armanvarzesh/docker-compose.yml(incoming)
+@@ -1,37 +1,53 @@
+-version: "3.9"
+ services:
+-  postgres:
+-    image: postgres:15
++
++live-subgraph:
++  build: ./app/live-subgraph
++  environment:
++    - PORT=4004
++    - RECORDINGS_DIR=/recordings
++    - RECORDINGS_BASE_URL=http://localhost:9000/recordings
++  volumes:
++    - ./_recordings:/recordings
++  ports:
++    - "4004:4004"
++  depends_on:
++    - postgres
++    - rabbitmq
++
++activity-subgraph:
++  build: ./app/activity-subgraph
++  environment:
++    - PORT=4005
++    - DATABASE_URL=${DATABASE_URL}
++  ports:
++    - "4005:4005"
++  depends_on:
++    - postgres
++
++social-subgraph:
++  build: ./app/social-subgraph
++  environment:
++    - PORT=4006
++    - DATABASE_URL=${DATABASE_URL}
++  ports:
++    - "4006:4006"
++  depends_on:
++    - postgres
++
++
++  auth-service:
++    build: ./services/auth-service
+     environment:
+-      POSTGRES_USER: arman
+-      POSTGRES_PASSWORD: arman
+-      POSTGRES_DB: arman
+-    ports: ["5432:5432"]
+-    volumes: [ "pgdata:/var/lib/postgresql/data" ]
+-  redis:
+-    image: redis:7
+-    ports: ["6379:6379"]
+-  certificate-service:
+-    build: ./services/certificate-service
++      JWT_SECRET: dev-secret
++    ports: [ "4000:4000" ]
++
++
++  api-gateway:
++    build: ./services/api-gateway
+     environment:
+-      DATABASE_URL: postgres://arman:arman@postgres:5432/arman
+-      CERT_SECRET: change_me
+-      CERT_VERIFY_URL: http://localhost:3017/cert/verify
+-    depends_on: [postgres]
+-    ports: ["3017:3017"]
+-  coach-pwa:
+-    build: ./app/coach-pwa
+-    environment:
+-      NEXT_PUBLIC_GRAPHQL_URL: http://localhost:3000/graphql
+-    ports: ["3001:3000"]
+-  client-pwa:
+-    build: ./app/client-pwa
+-    environment:
+-      NEXT_PUBLIC_GRAPHQL_URL: http://localhost:3000/graphql
+-    ports: ["3002:3000"]
+-  admin-panel:
+-    build: ./app/admin-panel
+-    environment: { }
+-    ports: ["3003:3000"]
+-volumes:
+-  pgdata: {}
++      CONTENT_SERVICE_URL: http://content-service:3000/graphql
++      CONTENT_WS_URL: ws://content-service:3000/ws
++      JWT_SECRET: dev-secret
++    ports: [ "8080:8080" ]
++    depends_on:
++      - content-service
+
+```

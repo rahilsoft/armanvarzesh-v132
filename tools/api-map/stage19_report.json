@@ -1,0 +1,76 @@
+{
+  "service": "services/rewards-service",
+  "wired_calls": [
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /affiliate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /ai",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /analytics",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/affiliate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/ai",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/analytics",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/assessments",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/booking",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/certificate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/chat",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    }
+  ],
+  "note": "Wiring is conditional via AV_WIRE_PARITY=1"
+}

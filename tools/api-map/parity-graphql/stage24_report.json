@@ -1,0 +1,26 @@
+{
+  "ops": [
+    "AddNote",
+    "ArchiveClient",
+    "AssignPlan",
+    "BookReservation",
+    "CancelReservation",
+    "Client",
+    "ClientNotes",
+    "Clients",
+    "CoachAvailability",
+    "CoachReservations"
+  ],
+  "files": [
+    "AddNote.resolver.example.ts",
+    "ArchiveClient.resolver.example.ts",
+    "AssignPlan.resolver.example.ts",
+    "BookReservation.resolver.example.ts",
+    "CancelReservation.resolver.example.ts",
+    "Client.resolver.example.ts",
+    "ClientNotes.resolver.example.ts",
+    "Clients.resolver.example.ts",
+    "CoachAvailability.resolver.example.ts",
+    "CoachReservations.resolver.example.ts"
+  ]
+}

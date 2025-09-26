@@ -1,0 +1,19 @@
+Feature,User Story,Mobile,PWA,Evidence,Status,Notes
+workouts,"Create, assign, view, and track workout plans",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+nutrition,Create/view nutrition plans with calories/macros,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+booking,"Find slot, book, cancel, reschedule",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+chat,"1:1 and group chat, attachments",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+payments,"Checkout, subscription, wallet history",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+notifications,Receive and act on notifications,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+marketplace,Browse/buy marketplace items,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+rewards,Earn badges/rewards on milestones,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+assessments,Complete tests/assessments and view scores,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+monitoring,Coach sees client metrics; client sees progress,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+coaches,"Search coaches, manage profile/levels",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+analytics,View analytics/insights dashboards,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+courses,"Create courses, lessons; enroll & complete",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+ai,AI recommenders/predictions show results,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+physio,"Physio flows (assignments, tracking)",Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+vip,VIP tiers: subscribe/cancel; gated content,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+affiliate,Affiliate link creation & tracking,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes
+certificate,Certificates: issue/verify/display,Mobile parity?,PWA parity?,Evidence (test id / video / screenshot),Status (Pass/Fail),Notes

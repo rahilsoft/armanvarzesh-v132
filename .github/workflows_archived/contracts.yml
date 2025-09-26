@@ -1,0 +1,32 @@
+name: Contracts
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'packages/contracts/**'
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    ## SECRETS_ENV: map required secrets here (example)
+    # env:
+    #   DATABASE_URL: ${{ secrets.BACKEND_DATABASE_URL }}
+    steps:
+          - uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'pnpm'
+          - uses: pnpm/action-setup@v4
+            with:
+              version: 9
+          - run: pnpm install --frozen-lockfile
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Run contract tests
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+        run: node packages/contracts/tests/sample-consumer.mjs

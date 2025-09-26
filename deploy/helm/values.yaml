@@ -1,0 +1,30 @@
+
+images:
+  gateway: api-gateway:latest
+  nutrition: nutrition-service:latest
+  activities: activities-service:latest
+  challenges: challenges-service:latest
+  courses: courses-service:latest
+  kpis: kpis-service:latest
+  affiliate: affiliate-service:latest
+  inbox: inbox-service:latest
+  assessments: assessments-service:latest
+  rewards: rewards-service:latest
+  medical: medical-service:latest
+
+apiGateway:
+  env:
+    NUTRITION_SERVICE_URL: http://nutrition:3000
+    ACTIVITIES_SERVICE_URL: http://activities:3000
+    CHALLENGES_SERVICE_URL: http://challenges:3000
+    COURSES_SERVICE_URL: http://courses:3000
+    KPIS_SERVICE_URL: http://kpis:3000
+    AFFILIATE_SERVICE_URL: http://affiliate:3000
+    INBOX_SERVICE_URL: http://inbox:3000
+    ASSESSMENTS_SERVICE_URL: http://assessments:3000
+    REWARDS_SERVICE_URL: http://rewards:3000
+    MEDICAL_SERVICE_URL: http://medical:3000
+
+
+networkPolicy:
+  enabled: true

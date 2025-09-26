@@ -1,0 +1,14 @@
+name: Commitlint — PR Title
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wagoid/commitlint-github-action@v6
+        with:
+          helpURL: https://www.conventionalcommits.org/en/v1.0.0/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

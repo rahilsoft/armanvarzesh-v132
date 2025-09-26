@@ -1,0 +1,521 @@
+{
+  "touched_count": 15,
+  "touched": [
+    {
+      "package": "@arman/live-subgraph",
+      "dir": "apps/live-subgraph",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/activity-subgraph",
+      "dir": "apps/activity-subgraph",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/user-pwa",
+      "dir": "apps/user-pwa",
+      "framework": "lib",
+      "created_tsconfig": false,
+      "created_tsconfig_build": true,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/coach-pwa",
+      "dir": "apps/coach-pwa",
+      "framework": "lib",
+      "created_tsconfig": false,
+      "created_tsconfig_build": true,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/social-subgraph",
+      "dir": "apps/social-subgraph",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/rewards-service",
+      "dir": "services/rewards-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/certificate-service",
+      "dir": "services/certificate-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": true,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/analytics-collector",
+      "dir": "services/analytics-collector",
+      "framework": "lib",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "api-gateway",
+      "dir": "services/api-gateway",
+      "framework": "lib",
+      "created_tsconfig": true,
+      "created_tsconfig_build": true,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/physio-service",
+      "dir": "services/physio-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/assessments-service",
+      "dir": "services/assessments-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/analytics-service",
+      "dir": "services/analytics-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/workers",
+      "dir": "services/workers",
+      "framework": "lib",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "auth-service",
+      "dir": "services/auth-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": false,
+      "added_clean": true
+    },
+    {
+      "package": "@arman/booking-service",
+      "dir": "services/booking-service",
+      "framework": "nest",
+      "created_tsconfig": false,
+      "created_tsconfig_build": false,
+      "added_build": false,
+      "added_typecheck": true,
+      "added_clean": true
+    }
+  ],
+  "scan": [
+    {
+      "package": "vitrin-site",
+      "dir": "apps/vitrin-site",
+      "framework": "next",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "next build"
+    },
+    {
+      "package": "armanfit-admin",
+      "dir": "apps/armanfit-admin",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "armanfit-coach",
+      "dir": "apps/coach-app",
+      "framework": "expo",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/backend",
+      "dir": "apps/backend",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/media-worker",
+      "dir": "apps/media-worker",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/live-subgraph",
+      "dir": "apps/live-subgraph",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/activity-subgraph",
+      "dir": "apps/activity-subgraph",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/user-pwa",
+      "dir": "apps/user-pwa",
+      "framework": "lib",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": false,
+      "build_script": "tsc -b && vite build"
+    },
+    {
+      "package": "@arman/coach-pwa",
+      "dir": "apps/coach-pwa",
+      "framework": "lib",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": false,
+      "build_script": "tsc -b && vite build"
+    },
+    {
+      "package": "armanfit-user",
+      "dir": "apps/user-app",
+      "framework": "expo",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/social-subgraph",
+      "dir": "apps/social-subgraph",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "@arman/rewards-service",
+      "dir": "services/rewards-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "payments-service",
+      "dir": "services/payments-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "predictive-service",
+      "dir": "services/predictive-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/certificate-service",
+      "dir": "services/certificate-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": false,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "ai-service",
+      "dir": "services/ai-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/analytics-collector",
+      "dir": "services/analytics-collector",
+      "framework": "lib",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.json"
+    },
+    {
+      "package": "vip-service",
+      "dir": "services/vip-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "api-gateway",
+      "dir": "services/api-gateway",
+      "framework": "lib",
+      "is_ts": true,
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/physio-service",
+      "dir": "services/physio-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "nutrition-service",
+      "dir": "services/nutrition-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/assessments-service",
+      "dir": "services/assessments-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "reward-service",
+      "dir": "services/reward-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "chat-service",
+      "dir": "services/chat-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "marketplace-service",
+      "dir": "services/marketplace-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/media-worker",
+      "dir": "services/media-worker",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "assessment-service",
+      "dir": "services/assessment-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "monitoring-service",
+      "dir": "services/monitoring-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/analytics-service",
+      "dir": "services/analytics-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "coaches-service",
+      "dir": "services/coaches-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/workers",
+      "dir": "services/workers",
+      "framework": "lib",
+      "is_ts": false,
+      "tsconfig": false,
+      "tsconfig_build": false,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "notifications-service",
+      "dir": "services/notifications-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "workouts-service",
+      "dir": "services/workouts-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "auth-service",
+      "dir": "services/auth-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "content-service",
+      "dir": "services/content-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "@arman/booking-service",
+      "dir": "services/booking-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "challenges-service",
+      "dir": "services/challenges-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "courses-service",
+      "dir": "services/courses-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "users-service",
+      "dir": "services/users-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    },
+    {
+      "package": "affiliate-service",
+      "dir": "services/affiliate-service",
+      "framework": "nest",
+      "is_ts": true,
+      "tsconfig": true,
+      "tsconfig_build": true,
+      "build_script": "tsc -p tsconfig.build.json"
+    }
+  ],
+  "root_changed": false,
+  "added_tsconfig_base": true,
+  "created_nvmrc": true,
+  "created_npmrc": true
+}

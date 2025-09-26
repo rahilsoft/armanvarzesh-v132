@@ -1,0 +1,1 @@
+curl "$API/v1/coach/kpis" -H "Authorization: Bearer $TOKEN" 

@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/courses/1/license" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"deviceId":"device-123"}'

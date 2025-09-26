@@ -1,0 +1,86 @@
+name: Backend CI
+on:
+  push:
+    paths:
+    - app/backend/**
+    - .github/workflows/backend-ci.yml
+  pull_request:
+    paths:
+    - app/backend/**
+jobs:
+  test-build-schema:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: armanfit
+        ports:
+        - 5432:5432
+        options: --health-cmd="pg_isready -U postgres"  --health-interval=10s  --health-timeout=5s  --health-retries=5
+    steps:
+          - uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'pnpm'
+          - uses: pnpm/action-setup@v4
+            with:
+              version: 9
+          - run: pnpm install --frozen-lockfile
+    - uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: pnpm
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+        run_install: false
+- uses: pnpm/action-setup@v4
+      with:
+        version: 9
+        run_install: false
+- name: Install deps (backend only)
+      working-directory: app/backend
+      run: pnpm install --frozen-lockfile || pnpm install
+    - name: Prisma generate
+      working-directory: app/backend
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfit
+      run: pnpm -r run prisma:generate
+    - name: Unit tests
+      working-directory: app/backend
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfit
+      run: pnpm -r run test -- --runInBand
+    - name: E2E tests
+      working-directory: app/backend
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfit
+      run: pnpm -r run test:e2e -- --runInBand
+    - name: Build (tsc)
+      working-directory: app/backend
+      run: pnpm -r run build
+    - name: Emit GraphQL schema
+      working-directory: app/backend
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfit
+      run: pnpm -r run schema:emit
+    - name: Upload schema.gql
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-graphql-schema
+        path: app/backend/schema.gql
+    - name: Docker build
+      working-directory: app/backend
+      run: docker build -t backend:ci .
+    - name: Trivy scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: backend:ci
+        format: table
+        exit-code: '0'
+        ignore-unfixed: true

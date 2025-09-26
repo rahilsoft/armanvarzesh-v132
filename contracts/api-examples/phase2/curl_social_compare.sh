@@ -1,0 +1,1 @@
+curl "$API/v1/social/compare?with=friends" -H "Authorization: Bearer $TOKEN" 

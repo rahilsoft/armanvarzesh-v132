@@ -1,0 +1,5 @@
+{
+  "service": "services/rewards-service",
+  "rest_wired_count": 5,
+  "gql_ops_prepared": 5
+}

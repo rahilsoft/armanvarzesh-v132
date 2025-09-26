@@ -1,0 +1,43 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/armanvarzesh/users-service
+  tag: v2025.08.18
+  pullPolicy: IfNotPresent
+  registry: ghcr.io
+service:
+  type: ClusterIP
+  port: 3001
+env:
+  PORT: '3001'
+  NODE_ENV: production
+resources:
+  limits:
+    cpu: 400m
+    memory: 384Mi
+  requests:
+    cpu: 150m
+    memory: 192Mi
+secrets:
+  databaseUrlSecret: users-service-secrets
+  databaseUrlKey: DATABASE_URL
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+  - host: api.armanvarzesh.com
+    paths:
+    - path: /
+      pathType: Prefix
+  tls:
+  - secretName: armanfit-tls
+    hosts:
+    - api.armanvarzesh.com
+envFromSecretName: armanfit-backend-env
+externalSecrets:
+  enabled: false
+  secretStoreRef:
+    name: global-secrets-store
+    kind: ClusterSecretStore
+  refreshInterval: 1h
+  targetSecretName: armanfit-backend-env
+  data: []

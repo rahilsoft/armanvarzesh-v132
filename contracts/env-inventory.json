@@ -1,0 +1,1609 @@
+{
+  "env": [
+    {
+      "var": "METRICS_ENABLED",
+      "ref_count": 57,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/metrics/metrics.middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/test/metrics.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/metrics/metrics.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/metrics/metrics.middleware.ts"
+      ]
+    },
+    {
+      "var": "REDIS_URL",
+      "ref_count": 53,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e/diagnostics.e2e.test.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e/payments.webhook.e2e.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/cache/cache.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/idempotency/idempotency.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/live.gateway.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/media/media.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/mediaqueue/mediaqueue.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/queues/workers/resize.worker.example.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/queues/workers/transcode.worker.example.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/reminders/reminders.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/idempotency.memory.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/env.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/integration/src/queues/workers/test.worker.example.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "PORT",
+      "ref_count": 34,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/activity-subgraph/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/live-subgraph/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/social-subgraph/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/service-kit/src/server.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessments-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/booking-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "DATABASE_URL",
+      "ref_count": 23,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e/diagnostics.e2e.test.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/tests/e2e/auth.flow.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "NODE_ENV",
+      "ref_count": 21,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/database/prisma.safe.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/logging/logging.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/bootstrap.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/resource.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/app.module.ts"
+      ]
+    },
+    {
+      "var": "RABBITMQ_URL",
+      "ref_count": 20,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "OTEL_SERVICE_NAME",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/bootstrap.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/tracing.ts"
+      ]
+    },
+    {
+      "var": "OTEL_EXPORTER_OTLP_ENDPOINT",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/tracing.ts"
+      ]
+    },
+    {
+      "var": "MINIO_ENDPOINT",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "MINIO_PORT",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "MINIO_ACCESS_KEY",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "MINIO_SECRET_KEY",
+      "ref_count": 19,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/health/health.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/health/health.controller.ts"
+      ]
+    },
+    {
+      "var": "CORS_ORIGINS",
+      "ref_count": 18,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/service-kit/src/server.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "API_PREFIX",
+      "ref_count": 18,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "OTEL_ENABLED",
+      "ref_count": 18,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/tracing.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/tracing.ts"
+      ]
+    },
+    {
+      "var": "ENABLE_GRAPHQL_PLAYGROUND",
+      "ref_count": 17,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/config/graphql.config.ts"
+      ]
+    },
+    {
+      "var": "ENABLE_GRAPHQL_INTROSPECTION",
+      "ref_count": 17,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/config/graphql.config.ts"
+      ]
+    },
+    {
+      "var": "GRAPHQL_DEPTH_LIMIT",
+      "ref_count": 17,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/config/graphql.config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/config/graphql.config.ts"
+      ]
+    },
+    {
+      "var": "RATE_LIMIT_TTL",
+      "ref_count": 16,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/app.module.ts"
+      ]
+    },
+    {
+      "var": "RATE_LIMIT_LIMIT",
+      "ref_count": 16,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/app.module.ts"
+      ]
+    },
+    {
+      "var": "ENABLE_OTEL",
+      "ref_count": 15,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/main.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "JWT_SECRET",
+      "ref_count": 10,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/jest.setup.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/services/token.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/jwt-rotator.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/auth/auth.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/auth/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/tests/e2e/auth.flow.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/plan/plan.resolver.ts"
+      ]
+    },
+    {
+      "var": "API_DEFAULT_PAGE_SIZE",
+      "ref_count": 9,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/analytics/analytics.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/chat/chat.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/leaderboard/leaderboard.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/workouts/workouts.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/nutrition/nutrition.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/payments-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/payments/payments.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/workouts/workouts.service.ts"
+      ]
+    },
+    {
+      "var": "SKIP_AUTH",
+      "ref_count": 9,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/admin/profile.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/admin/survey.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/chat/chat.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/corrective/corrective.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/nutrition/nutrition.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/onboarding/onboarding.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/onboarding/specialist.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/plan/plan.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/scoring/scoring.resolver.ts"
+      ]
+    },
+    {
+      "var": "S3_BUCKET",
+      "ref_count": 8,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/worker.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/provider.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/jobs/media.worker.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/plan/plan.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/upload/upload.resolver.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_API_BASE",
+      "ref_count": 7,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/src/services/api.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-pwa/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/src/services/api.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/src/lib/api.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/http-client/src/client.ts"
+      ]
+    },
+    {
+      "var": "LOG_LEVEL",
+      "ref_count": 7,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/utils/setup-env.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/service-kit/src/server.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/common/logger.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/telemetry/logger.pino.example.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/telemetry/logger.pino.example.ts"
+      ]
+    },
+    {
+      "var": "EXPO_PUBLIC_API_BASE",
+      "ref_count": 6,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/src/services/api.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-pwa/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/src/api/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/src/services/api.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/http-client/src/client.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_JWT_SECRET",
+      "ref_count": 6,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.jwt.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/admin.controller.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/admin.jwt.guard.spec.ts"
+      ]
+    },
+    {
+      "var": "STAGING_BASE_URL",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/admin_rbac_forbidden.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/client_booking.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/client_vip_payment.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/coach_course_creation.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/playwright.config.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_USERS_JSON",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/auth.service.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e.integration.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/auth.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/admin.controller.spec.ts"
+      ]
+    },
+    {
+      "var": "PAYMENT_WEBHOOK_SECRET",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e/payments.webhook.e2e.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/webhook/webhook-signature.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/webhook.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/e2e/payments.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/utils/setup-env.ts"
+      ]
+    },
+    {
+      "var": "JWT_EXPIRES_IN",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/jwt-rotator.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/app.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/auth/auth.module.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/auth/auth.service.ts"
+      ]
+    },
+    {
+      "var": "S3_REGION",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/s3.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/upload/upload.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/media-worker/src/worker.ts"
+      ]
+    },
+    {
+      "var": "S3_ENDPOINT",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/s3.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/upload/upload.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/media-worker/src/worker.ts"
+      ]
+    },
+    {
+      "var": "PRISMA_SLOW_MS",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/database/prisma-middleware.ts"
+      ]
+    },
+    {
+      "var": "PRISMA_LOG_QUERIES",
+      "ref_count": 5,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service/src/database/prisma-middleware.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service/src/database/prisma-middleware.ts"
+      ]
+    },
+    {
+      "var": "E2E_PASS",
+      "ref_count": 4,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/auth_workout_notification.e2e.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/smoke.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/tests/e2e/auth.flow.e2e-spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/e2e/auth_workout_notification.e2e-spec.ts"
+      ]
+    },
+    {
+      "var": "JWT_TTL",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/jest.setup.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/auth.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/lib/domain/auth.usecase.ts"
+      ]
+    },
+    {
+      "var": "REFRESH_JWT_TTL",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/jest.setup.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/auth.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/lib/domain/auth.usecase.ts"
+      ]
+    },
+    {
+      "var": "APP_ENV",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/providers/payment.provider.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/utils/setup-env.ts"
+      ]
+    },
+    {
+      "var": "ZARINPAL_MERCHANT_ID",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/services/zarinpal.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/providers/payment.provider.ts"
+      ]
+    },
+    {
+      "var": "JWT_ISSUER",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/strategies/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/guards/auth.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts"
+      ]
+    },
+    {
+      "var": "JWT_AUDIENCE",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/strategies/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/guards/auth.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts"
+      ]
+    },
+    {
+      "var": "KAVENEGAR_API_KEY",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/services/kavenegar-sms.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts"
+      ]
+    },
+    {
+      "var": "S3_ACCESS_KEY",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/s3.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/media-worker/src/worker.ts"
+      ]
+    },
+    {
+      "var": "S3_SECRET_KEY",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/s3.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/media-worker/src/worker.ts"
+      ]
+    },
+    {
+      "var": "S3_FORCE_PATH_STYLE",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/storage/storage.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/s3.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/media-worker/src/worker.ts"
+      ]
+    },
+    {
+      "var": "TWILIO_FROM",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "AWS_REGION",
+      "ref_count": 3,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/jobs/media.worker.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/plan/plan.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/storage/storage.service.ts"
+      ]
+    },
+    {
+      "var": "E2E_BASE_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/e2e/coach_user.pwa-login-reserve.e2e.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/e2e/flow.reservation-payment-notification.e2e.ts"
+      ]
+    },
+    {
+      "var": "STAGING_USER_JWT",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/client_booking.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/client_vip_payment.spec.ts"
+      ]
+    },
+    {
+      "var": "RECORDINGS_DIR",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/index.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/provider.ts"
+      ]
+    },
+    {
+      "var": "RECORDINGS_BASE_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/index.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/provider.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_SITE_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/robots.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/sitemap.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/metrics/route.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_USER",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/metrics/route.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_PASSWORD",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/metrics/route.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_TOKEN",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/admin/login/route.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/admin/tiles/route.ts"
+      ]
+    },
+    {
+      "var": "REACT_APP_API_BASE_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/src/constants/config.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/src/utils/api.ts"
+      ]
+    },
+    {
+      "var": "EXPO_PUBLIC_GRAPHQL_HTTP",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/client.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/client.ts"
+      ]
+    },
+    {
+      "var": "REFRESH_JWT_SECRET",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/jest.setup.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/auth.service.ts"
+      ]
+    },
+    {
+      "var": "IDEMPOTENCY_TTL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/idempotency/idempotency.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/test/idempotency.memory.spec.ts"
+      ]
+    },
+    {
+      "var": "MEMORY_DB",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/e2e/reservations.e2e.spec.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/reservations/reservation.service.ts"
+      ]
+    },
+    {
+      "var": "REDIS_TLS_URL",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/cache/cache.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/live.gateway.ts"
+      ]
+    },
+    {
+      "var": "JWT_ACCESS_SECRET",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/strategies/jwt.strategy.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts"
+      ]
+    },
+    {
+      "var": "JWT_ACTIVE_KID",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/jwt-rotator.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/security/jwt-keys.service.ts"
+      ]
+    },
+    {
+      "var": "JWT_ALG",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/jwks.controller.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/jwt-rotator.service.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_API_TOKEN",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/http/http-client.ts"
+      ]
+    },
+    {
+      "var": "SERVICE_VERSION",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/bootstrap.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/resource.ts"
+      ]
+    },
+    {
+      "var": "LIVEKIT_API_SECRET",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/live.gateway.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/livekit.service.ts"
+      ]
+    },
+    {
+      "var": "LIVEKIT_API_KEY",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/livekit.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/live-subgraph/src/schema.ts"
+      ]
+    },
+    {
+      "var": "STRIPE_WEBHOOK_SECRET",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/payments-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/payments/payments.service.ts"
+      ]
+    },
+    {
+      "var": "CERT_SECRET",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/auth/roles.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/certificate/certificate.service.ts"
+      ]
+    },
+    {
+      "var": "FCM_SERVER_KEY",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "MAIL_HOST",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "MAIL_PORT",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "MAIL_USER",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "MAIL_PASS",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "MAIL_FROM",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "TWILIO_SID",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "TWILIO_TOKEN",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications-service.service.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service/src/notifications/notifications.service.ts"
+      ]
+    },
+    {
+      "var": "PREVIEW_SIGNING_KEY",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/security/preview.guard.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/tiles-prisma/preview-token.resolver.ts"
+      ]
+    },
+    {
+      "var": "S3_ACCESS_KEY_ID",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/upload/upload.resolver.ts"
+      ]
+    },
+    {
+      "var": "S3_SECRET_ACCESS_KEY",
+      "ref_count": 2,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts",
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/upload/upload.resolver.ts"
+      ]
+    },
+    {
+      "var": "STAGING_ADMIN_BASE_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/admin_rbac_forbidden.spec.ts"
+      ]
+    },
+    {
+      "var": "STAGING_COACH_JWT",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/staging/coach_course_creation.spec.ts"
+      ]
+    },
+    {
+      "var": "COACH_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/e2e/parity.spec.ts"
+      ]
+    },
+    {
+      "var": "CLIENT_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tests/e2e/parity.spec.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_API_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/apollo.ts"
+      ]
+    },
+    {
+      "var": "MEDIA_PROVIDER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/provider.ts"
+      ]
+    },
+    {
+      "var": "GCS_BUCKET",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/storage/src/provider.ts"
+      ]
+    },
+    {
+      "var": "RATE_LIMIT_WINDOW_MS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/service-kit/src/server.ts"
+      ]
+    },
+    {
+      "var": "RATE_LIMIT_MAX",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/service-kit/src/server.ts"
+      ]
+    },
+    {
+      "var": "WEB_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/smoke.spec.ts"
+      ]
+    },
+    {
+      "var": "NOTIF_CENTER_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/smoke.spec.ts"
+      ]
+    },
+    {
+      "var": "E2E_USER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/smoke.spec.ts"
+      ]
+    },
+    {
+      "var": "LIVE_E2E_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/e2e/tests/live-flow.spec.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_OIDC_JWKS_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "OIDC_JWKS_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_OIDC_ISSUER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "OIDC_ISSUER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_OIDC_AUDIENCE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "OIDC_AUDIENCE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/middleware.ts"
+      ]
+    },
+    {
+      "var": "CI",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/playwright.config.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_DB",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/app/api/metrics/route.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_ANALYTICS_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/lib/analytics.ts"
+      ]
+    },
+    {
+      "var": "NEXT_PUBLIC_GRAPHQL_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/vitrin-site/lib/graphqlClient.ts"
+      ]
+    },
+    {
+      "var": "EXPO_PUBLIC_REFRESH_ENABLED",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/client.ts"
+      ]
+    },
+    {
+      "var": "GQL_SCHEMA_PATH",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/app.module.ts"
+      ]
+    },
+    {
+      "var": "METRICS_TOKEN",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/metrics/metrics.guard.ts"
+      ]
+    },
+    {
+      "var": "METRICS_ALLOW_FROM",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/metrics/metrics.guard.ts"
+      ]
+    },
+    {
+      "var": "PAYMENT_PROVIDER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/payments/providers/payment.provider.ts"
+      ]
+    },
+    {
+      "var": "JWT_REFRESH_SECRET",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/config/configuration.ts"
+      ]
+    },
+    {
+      "var": "RL_WINDOW_MS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/applySecurity.ts"
+      ]
+    },
+    {
+      "var": "RL_MAX",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/applySecurity.ts"
+      ]
+    },
+    {
+      "var": "JWT_KEYS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/security/jwt-rotator.service.ts"
+      ]
+    },
+    {
+      "var": "JWT_KID",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/jwks.controller.ts"
+      ]
+    },
+    {
+      "var": "JWKS_PRIVATE_PEM",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/jwks.controller.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_JWT_TTL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/auth/admin.controller.ts"
+      ]
+    },
+    {
+      "var": "SERVICE_NAME",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/resource.ts"
+      ]
+    },
+    {
+      "var": "SERVICE_ENV",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/resource.ts"
+      ]
+    },
+    {
+      "var": "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/otel/bootstrap.ts"
+      ]
+    },
+    {
+      "var": "INTERNAL_API_TOKEN",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/http/http-client.ts"
+      ]
+    },
+    {
+      "var": "KAVENEGAR_TEMPLATE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/common/services/kavenegar-sms.service.ts"
+      ]
+    },
+    {
+      "var": "PRISMA_LOG",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/lib/data/prisma.safe.ts"
+      ]
+    },
+    {
+      "var": "LIVE_WS_REDIS_PREFIX",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/live.gateway.ts"
+      ]
+    },
+    {
+      "var": "LIVEKIT_HOST",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/livekit.service.ts"
+      ]
+    },
+    {
+      "var": "LIVEKIT_EGRESS_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/livekit/livekit.service.ts"
+      ]
+    },
+    {
+      "var": "SMS_PROVIDER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts"
+      ]
+    },
+    {
+      "var": "TWILIO_ACCOUNT_SID",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts"
+      ]
+    },
+    {
+      "var": "TWILIO_AUTH_TOKEN",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend/src/notifications/providers/sms.provider.ts"
+      ]
+    },
+    {
+      "var": "MEDIA_BASE_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/env.ts"
+      ]
+    },
+    {
+      "var": "FFMPEG_BIN",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/env.ts"
+      ]
+    },
+    {
+      "var": "WORKER_CONCURRENCY",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/media-worker/src/env.ts"
+      ]
+    },
+    {
+      "var": "EXPO_PUBLIC_GRAPHQL_WS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/client.ts"
+      ]
+    },
+    {
+      "var": "AV_WIRE_METRICS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "AV_WIRE_PARITY_REAL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "AV_SECURE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "AV_WIRE_QUEUES",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "AV_WIRE_PARITY",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service/src/main.ts"
+      ]
+    },
+    {
+      "var": "STRIPE_SECRET",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service/src/payments-service.service.ts"
+      ]
+    },
+    {
+      "var": "CERT_VERIFY_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service/src/certificate/certificate.service.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_TABLE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts"
+      ]
+    },
+    {
+      "var": "CLICKHOUSE_DATABASE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-collector/src/index.ts"
+      ]
+    },
+    {
+      "var": "CHAT_ENCRYPTION_KEY",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service/src/chat/chat.service.ts"
+      ]
+    },
+    {
+      "var": "JWT_SECRETS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/security/jwt-keys.service.ts"
+      ]
+    },
+    {
+      "var": "REFRESH_TTL_MS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service/src/auth/auth.service.ts"
+      ]
+    },
+    {
+      "var": "FEATURE_FLAGS_JSON",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/flags/flags.service.ts"
+      ]
+    },
+    {
+      "var": "AUTH_JWKS_URL",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/security/roles.guard.ts"
+      ]
+    },
+    {
+      "var": "ADMIN_JWT_PUBLIC_KEY",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/security/roles.guard.ts"
+      ]
+    },
+    {
+      "var": "AUTH_ISSUER",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/security/roles.guard.ts"
+      ]
+    },
+    {
+      "var": "AUTH_AUDIENCE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/security/roles.guard.ts"
+      ]
+    },
+    {
+      "var": "SKIP_AWS",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/storage/storage.service.ts"
+      ]
+    },
+    {
+      "var": "TILES_FILE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/tiles/tiles.service.ts"
+      ]
+    },
+    {
+      "var": "PUBLIC_MEDIA_BASE",
+      "ref_count": 1,
+      "files": [
+        "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service/src/media/image-variants.resolver.ts"
+      ]
+    }
+  ]
+}

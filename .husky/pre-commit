@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# Husky pre-commit hook (safe default)
+if [ -f "$(dirname "$0")/_/husky.sh" ]; then
+  . "$(dirname "$0")/_/husky.sh"
+fi
+pnpm -w check:repo || exit 1
+pnpm -w lint --if-present
+pnpm -w test --if-present
+pnpm -w typecheck --if-present

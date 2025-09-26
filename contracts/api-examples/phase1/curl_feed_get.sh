@@ -1,0 +1,1 @@
+curl "$API/v1/feed?difficulty=beginner&goal=fatloss&time=30&sort=trending" -H "Authorization: Bearer $TOKEN" 

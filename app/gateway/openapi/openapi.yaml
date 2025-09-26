@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: Arman Gateway API
+  version: v1
+servers:
+  - url: https://api.armanvarzesh.local
+  - url: http://localhost:8080
+paths:
+  /health:
+    get:
+      summary: Liveness probe
+      responses: { "200": { description: "OK" } }
+  /ready:
+    get:
+      summary: Readiness probe
+      responses: { "200": { description: "Ready" }, "503": { description: "Not Ready" } }
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      responses: { "200": { description: "Metrics" } }
+  /bff/graphql:
+    post:
+      summary: GraphQL endpoint (proxy to BFF)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query: { type: string }
+                variables: { type: object }
+      responses:
+        "200": { description: "GraphQL result" }
+        "400": { description: "Bad request" }
+        "502": { description: "Upstream error" }
+  /payments/{path}:
+    parameters: [ { name: path, in: path, required: true, schema: { type: string } } ]
+    get:
+      summary: Proxy to payments-service (GET)
+      responses: { "200": { description: "OK" }, "502": { description: "Upstream error" } }
+    post:
+      summary: Proxy to payments-service (POST)
+      responses: { "200": { description: "OK" }, "502": { description: "Upstream error" } }

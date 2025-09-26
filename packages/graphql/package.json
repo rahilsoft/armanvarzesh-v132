@@ -1,0 +1,21 @@
+{
+  "name": "@arman/graphql",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "echo \"No TypeScript in package\"",
+    "typecheck": "echo \"No TS to typecheck\"",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "test": "echo \"NO_TESTS\" && exit 0",
+    "codegen": "graphql-codegen",
+    "start": "node dist/index.js || node dist/server.js || node dist/main.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts || node dist/index.js",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

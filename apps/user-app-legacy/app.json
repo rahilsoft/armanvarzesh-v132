@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "ArmanFit",
+    "slug": "armanfit-user",
+    "version": "1.0.0",
+    "sdkVersion": "49.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/icons/app-icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "scheme": "arman",
+    "ios": {
+      "bundleIdentifier": "com.company.appsuserapp"
+    },
+    "android": {
+      "package": "com.company.appsuserapp"
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
+  }
+}

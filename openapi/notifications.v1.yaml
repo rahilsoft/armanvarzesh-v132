@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Notifications API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /notifications/v1/tokens:
+    post:
+      summary: Register device token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DeviceToken' }
+      responses:
+        '204': { description: registered }
+  /notifications/v1/send:
+    post:
+      summary: Send notification to a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, channel, title, body]
+              properties:
+                userId: { type: string }
+                channel: { $ref: '#/components/schemas/Channel' }
+                title: { type: string }
+                body: { type: string }
+                data: { type: object, additionalProperties: { type: string } }
+      responses:
+        '200':
+          description: queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+  /notifications/v1/users/{userId}/preferences:
+    get:
+      summary: Get user preferences
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Preferences
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserPreference' }
+    put:
+      summary: Set user preferences
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserPreference' }
+      responses:
+        '204': { description: updated }
+components:
+  schemas:
+    Channel:
+      type: string
+      enum: [push, web, email]
+    DeviceToken:
+      type: object
+      required: [userId, channel, token, createdAt]
+      properties:
+        userId: { type: string }
+        channel: { $ref: '#/components/schemas/Channel' }
+        token: { type: string }
+        platform: { type: string, enum: [ios, android, web] }
+        createdAt: { type: string, format: date-time }
+    UserPreference:
+      type: object
+      required: [userId, marketingOptIn, channels, updatedAt]
+      properties:
+        userId: { type: string }
+        marketingOptIn: { type: boolean }
+        channels:
+          type: array
+          items: { $ref: '#/components/schemas/Channel' }
+        quietHours:
+          type: object
+          required: [start, end]
+          properties:
+            start: { type: string, pattern: '^[0-2][0-9]:[0-5][0-9]$' }
+            end: { type: string, pattern: '^[0-2][0-9]:[0-5][0-9]$' }
+        updatedAt: { type: string, format: date-time }

@@ -1,0 +1,36 @@
+{
+  "name": "auth-service",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node dist/main.js",
+    "dev": "node --watch src/main.js",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"No tests yet\" && exit 0",
+    "clean": "rimraf dist || rm -rf dist",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "fastify": "^5.6.0",
+    "fastify-cors": "^6.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "@nestjs/passport": "11.0.5",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "@arman/observability-sdk": "workspace:*",
+    "@arman/security-middleware": "workspace:*"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  },
+  "prisma": {
+    "seed": "node ./prisma/seed.ts || node ./seed.ts || true"
+  }
+}

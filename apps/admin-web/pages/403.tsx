@@ -1,0 +1,1 @@
+export default () => <div style={{padding:20}}><h2>Forbidden</h2><p>Admins only.</p></div>

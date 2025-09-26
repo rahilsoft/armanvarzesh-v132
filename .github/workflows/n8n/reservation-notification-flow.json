@@ -1,0 +1,10 @@
+{
+  "name": "Reservation Notification Flow",
+  "nodes": [
+    {"id":1,"type":"Webhook","parameters":{"path":"reservation","method":"POST"}},
+    {"id":2,"type":"SendNotification","parameters":{"targetUser":"coach"}}
+  ],
+  "connections": {
+    "1":{"main":[[{"node":2,"type":"main","index":0}]]}
+  }
+}

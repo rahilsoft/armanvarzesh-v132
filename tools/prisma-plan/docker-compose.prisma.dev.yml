@@ -1,0 +1,22 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: armanfit
+      POSTGRES_USER: arman
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"  # from env/secret manager
+    ports:
+      - '5432:5432'
+    volumes:
+      - prisma-data:/var/lib/postgresql/data
+volumes:
+  prisma-data:
+
+# added by phase2
+x-default-healthcheck: &default-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
+    interval: 30s
+    timeout: 3s
+    retries: 3

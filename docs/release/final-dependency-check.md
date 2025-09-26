@@ -1,0 +1,3 @@
+- pnpm@10, Node 20
+- Overrides: Nest 11, Prisma 5.22, GraphQL 16.9, Apollo Server 5, TS 5.6
+- Run: `pnpm audit --prod`, CodeQL

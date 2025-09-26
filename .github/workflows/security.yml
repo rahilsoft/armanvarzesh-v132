@@ -1,0 +1,24 @@
+name: Security
+
+on:
+  schedule: [{ cron: '0 2 * * 1' }]
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install deps
+        run: pnpm install --frozen-lockfile=false
+      - name: NPM audit (high+)
+        run: pnpm audit --audit-level=high || true
+      - name: Run security unit tests
+        run: pnpm vitest run __tests__/security.*.spec.ts --reporter=verbose

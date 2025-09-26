@@ -1,0 +1,11 @@
+title = "Gitleaks Config"
+
+[allowlist]
+  description = "Allow common false positives"
+  files = [
+    '''.*\.md$''',
+    '''^\.?gitleaks\.toml$'''
+  ]
+
+[rules]
+# Keep default builtin rules. You can customize as needed.

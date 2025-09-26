@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/wearables/ingest" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"provider":"googlefit","datapoints":[{"type":"steps","value":1200,"at":"2025-08-30T09:00:00Z"}]}'

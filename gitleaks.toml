@@ -1,0 +1,4 @@
+title = "gitleaks config"
+allowlist = [
+  # add safe patterns or dummy test keys here if needed
+]

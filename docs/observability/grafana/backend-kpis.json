@@ -1,0 +1,43 @@
+{
+  "title": "ArmanVarzesh \u2013 Backend KPIs",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "HTTP Requests (rate)",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[5m]))"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Payment Verifications",
+      "targets": [
+        {
+          "expr": "sum(rate(payments_verified_total[5m])) by (status)"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Reservations Created",
+      "targets": [
+        {
+          "expr": "sum(rate(reservations_created_total[5m])) by (status)"
+        }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "p95 Latency",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 27,
+  "version": 1
+}

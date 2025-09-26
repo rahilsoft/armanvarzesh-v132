@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: gateway }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: gateway } }
+  template:
+    metadata: { labels: { app: gateway } }
+    spec:
+      containers:
+        - name: gateway
+          image: arman/gateway:latest
+          ports: [ { containerPort: 4089 } ]
+          env:
+            - { name: PORT, value: "4089" }
+            - { name: BODY_LIMIT, value: "1mb" }
+            - { name: BFF_URL, value: "http://bff:4091" }
+            - { name: PAYMENTS_URL, value: "http://payments:4081" }
+            - { name: NOTIFS_URL, value: "http://notifications:4079" }
+            - { name: COACH_URL, value: "http://coach:4093" }
+            - { name: CHAT_URL, value: "http://chat:4077" }
+            - { name: ACTIVITIES_URL, value: "http://activities:4075" }
+          readinessProbe: { httpGet: { path: /ready, port: 4089 }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe:  { httpGet: { path: /health, port: 4089 }, initialDelaySeconds: 5, periodSeconds: 10 }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: gateway }
+spec:
+  selector: { app: gateway }
+  ports: [ { name: http, port: 80, targetPort: 4089 } ]

@@ -1,0 +1,14 @@
+:root {
+  --color-bg: #0b0f14;
+  --color-fg: #e6ecf2;
+  --color-primary: #8dd3e1;
+  --color-warn: #e1d38d;
+  --color-danger: #ff9aa2;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --radius-2: 8px; --radius-3: 12px;
+  --font-rtl: 'Yekan','Far_Nazanin',system-ui;
+}
+html[dir="rtl"] body { font-family: var(--font-rtl); background: var(--color-bg); color: var(--color-fg); }
+.card { background:#0d1320; border:1px solid #1f2a3a; border-radius: var(--radius-3); padding: var(--space-4); }
+.btn { padding: 10px 14px; border-radius: var(--radius-2); border:1px solid #1f2a3a; background:#111826; color:var(--color-fg); cursor:pointer }
+.btn[aria-busy="true"] { opacity:.7; pointer-events:none; }

@@ -1,0 +1,31 @@
+name: vitrin-ci
+on:
+  push:
+    paths:
+      - 'apps/vitrin-site/**'
+      - '.github/workflows/vitrin-ci.yml'
+  pull_request:
+    paths:
+      - 'apps/vitrin-site/**'
+jobs:
+  build_test_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+      - name: Typecheck
+        run: pnpm --filter vitrin-site typecheck
+      - name: Lint
+        run: pnpm --filter vitrin-site lint
+      - name: Test
+        run: pnpm --filter vitrin-site test
+      - name: Build
+        run: pnpm --filter vitrin-site build

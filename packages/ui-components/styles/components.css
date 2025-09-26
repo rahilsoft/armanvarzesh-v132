@@ -1,0 +1,25 @@
+/* Base styles relying on tokens.css */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary); color: var(--color-on-primary); border: 0; cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.btn:focus { box-shadow: var(--focus-ring); outline: none; }
+.btn.ghost { background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary); }
+
+.input {
+  width: 100%; padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-muted); border-radius: var(--radius-sm);
+  background: var(--color-bg); color: var(--color-fg);
+}
+.card {
+  background: var(--color-bg); color: var(--color-fg);
+  border: 1px solid var(--color-muted); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-lg);
+}
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--color-muted); }
+.table thead th { background: color-mix(in srgb, var(--color-muted) 10%, var(--color-bg)); text-align: right; }

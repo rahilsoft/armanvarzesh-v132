@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/activities/1/route" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" --data-binary @route.json

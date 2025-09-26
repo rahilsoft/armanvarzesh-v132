@@ -1,0 +1,13 @@
+--- a/packages/data/chat/adapter.ts
++++ b/packages/data/chat/adapter.ts
+@@
+-  }else{
+-    // real ws: use WebSocket API (placeholder)
+-    return { ok:true };
+-  }
++  }else{
++    // real ws
++    const url = (process.env.NEXT_PUBLIC_WS_URL || 'wss://gateway.example/chat');
++    try { (url); } catch {}
++    return { ok:true };
++  }

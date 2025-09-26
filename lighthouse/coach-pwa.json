@@ -1,0 +1,10 @@
+{
+  "app": "coach-pwa",
+  "scores": {
+    "performance": 95,
+    "pwa": 100,
+    "bestPractices": 97,
+    "seo": 96
+  },
+  "note": "placeholder; run real Lighthouse in CI"
+}

@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "ArmanVarzesh Coach",
+    "slug": "arman-coach",
+    "scheme": "arman-coach",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#0b1020"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

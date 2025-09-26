@@ -1,0 +1,192 @@
+{
+  "app": "armanfit-admin",
+  "framework_detected": "Nest",
+  "rest_client_uses": [],
+  "gql_client_uses": [
+    {
+      "operation": "CreateAdmin",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/admin.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateChallenge",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/challenge.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateCoach",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/coach.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateNotification",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/notification.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateNutritionPlan",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/nutrition.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreatePayment",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/payment.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateProduct",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/product.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateReward",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/reward.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateSurvey",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/survey.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateUser",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "CreateWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+      "line": 6
+    },
+    {
+      "operation": "DeleteUser",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+      "line": 16
+    },
+    {
+      "operation": "DeleteWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+      "line": 25
+    },
+    {
+      "operation": "GetAdmins",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/admin.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetAnalytics",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/analytics.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetChallenge",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+      "line": 14
+    },
+    {
+      "operation": "GetChallenges",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetCoach",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+      "line": 14
+    },
+    {
+      "operation": "GetCoaches",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetNotifications",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/notification.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetNutritionPlans",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/nutrition.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetPayment",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+      "line": 15
+    },
+    {
+      "operation": "GetPayments",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetProducts",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/product.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetRewards",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/reward.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetSurveys",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/survey.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetUser",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+      "line": 15
+    },
+    {
+      "operation": "GetUserWorkouts",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+      "line": 40
+    },
+    {
+      "operation": "GetUsers",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetWallets",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/wallet.queries.ts",
+      "line": 4
+    },
+    {
+      "operation": "GetWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+      "line": 22
+    },
+    {
+      "operation": "GetWorkouts",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts",
+      "line": 5
+    },
+    {
+      "operation": "LogActualWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+      "line": 34
+    },
+    {
+      "operation": "UpdateAnalytics",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/analytics.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "UpdateUser",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts",
+      "line": 10
+    },
+    {
+      "operation": "UpdateWallet",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/wallet.mutations.ts",
+      "line": 4
+    },
+    {
+      "operation": "UpdateWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts",
+      "line": 16
+    }
+  ]
+}

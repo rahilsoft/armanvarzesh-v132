@@ -1,0 +1,1598 @@
+{
+  "generated_at": "2025-08-23T09:23:40.295826Z",
+  "services": [
+    {
+      "service": "@arman/rewards-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/rewards-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "PUT",
+            "path": "/:id"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "@arman/physio-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/physio-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "PUT",
+            "path": "/:id"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "@arman/assessments-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessments-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "PUT",
+            "path": "/:id"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "@arman/analytics-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/analytics-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "PUT",
+            "path": "/:id"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "@arman/booking-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/booking-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "PUT",
+            "path": "/:id"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "workouts-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/workouts-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/workouts/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts/:id"
+          },
+          {
+            "method": "POST",
+            "path": "/workouts"
+          },
+          {
+            "method": "POST",
+            "path": "/workouts"
+          },
+          {
+            "method": "PUT",
+            "path": "/workouts/:id"
+          }
+        ],
+        "graphql_operations": [
+          {
+            "operation": "q",
+            "kind": "Query"
+          },
+          {
+            "operation": "q",
+            "kind": "Query"
+          }
+        ]
+      }
+    },
+    {
+      "service": "@arman/backend",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/backend",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/"
+          },
+          {
+            "method": "GET",
+            "path": "/.well-known/jwks.json"
+          },
+          {
+            "method": "GET",
+            "path": "/admins"
+          },
+          {
+            "method": "GET",
+            "path": "/admins/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/bff-mobile/dashboard"
+          },
+          {
+            "method": "GET",
+            "path": "/bff-web/home"
+          },
+          {
+            "method": "GET",
+            "path": "/bff/dashboard"
+          },
+          {
+            "method": "GET",
+            "path": "/challenges"
+          },
+          {
+            "method": "GET",
+            "path": "/challenges/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/coaches"
+          },
+          {
+            "method": "GET",
+            "path": "/coaches/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/contents"
+          },
+          {
+            "method": "GET",
+            "path": "/contents/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/corporate"
+          },
+          {
+            "method": "GET",
+            "path": "/corporate/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/experiments"
+          },
+          {
+            "method": "GET",
+            "path": "/experiments/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/leaderboard"
+          },
+          {
+            "method": "GET",
+            "path": "/leaderboard/:userId"
+          },
+          {
+            "method": "GET",
+            "path": "/live"
+          },
+          {
+            "method": "GET",
+            "path": "/live/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/marketplace"
+          },
+          {
+            "method": "GET",
+            "path": "/marketplace/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/meals"
+          },
+          {
+            "method": "GET",
+            "path": "/meals/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/notifications/:userId"
+          },
+          {
+            "method": "GET",
+            "path": "/payments"
+          },
+          {
+            "method": "GET",
+            "path": "/payments"
+          },
+          {
+            "method": "GET",
+            "path": "/payments/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/payments/verify/callback"
+          },
+          {
+            "method": "GET",
+            "path": "/payrolls"
+          },
+          {
+            "method": "GET",
+            "path": "/payrolls/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/readyz"
+          },
+          {
+            "method": "GET",
+            "path": "/security/audit"
+          },
+          {
+            "method": "GET",
+            "path": "/surveys"
+          },
+          {
+            "method": "GET",
+            "path": "/surveys/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/tickets"
+          },
+          {
+            "method": "GET",
+            "path": "/tickets/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/users"
+          },
+          {
+            "method": "GET",
+            "path": "/users/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/wallets/:userId"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts"
+          },
+          {
+            "method": "GET",
+            "path": "/workouts/:id"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "POST",
+            "path": "/"
+          },
+          {
+            "method": "POST",
+            "path": "/admin/login"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/login"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/logout"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/refresh"
+          },
+          {
+            "method": "POST",
+            "path": "/live/egress/start"
+          },
+          {
+            "method": "POST",
+            "path": "/live/egress/stop"
+          },
+          {
+            "method": "POST",
+            "path": "/live/room/create"
+          },
+          {
+            "method": "POST",
+            "path": "/live/room/delete"
+          },
+          {
+            "method": "POST",
+            "path": "/live/token"
+          },
+          {
+            "method": "POST",
+            "path": "/media/confirm"
+          },
+          {
+            "method": "POST",
+            "path": "/payments"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/webhook"
+          },
+          {
+            "method": "POST",
+            "path": "/reservations/cancel"
+          },
+          {
+            "method": "POST",
+            "path": "/reservations/reserve"
+          }
+        ],
+        "graphql_operations": [
+          {
+            "operation": "Amount",
+            "kind": "Query"
+          },
+          {
+            "operation": "Authority",
+            "kind": "Query"
+          },
+          {
+            "operation": "cursor",
+            "kind": "Query"
+          },
+          {
+            "operation": "userId",
+            "kind": "Query"
+          },
+          {
+            "operation": "userId",
+            "kind": "Query"
+          },
+          {
+            "operation": "userId",
+            "kind": "Query"
+          }
+        ]
+      }
+    },
+    {
+      "service": "armanvarzesh-monorepo",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/affiliate"
+          },
+          {
+            "method": "GET",
+            "path": "/ai"
+          },
+          {
+            "method": "GET",
+            "path": "/analytics"
+          },
+          {
+            "method": "GET",
+            "path": "/api/affiliate"
+          },
+          {
+            "method": "GET",
+            "path": "/api/ai"
+          },
+          {
+            "method": "GET",
+            "path": "/api/analytics"
+          },
+          {
+            "method": "GET",
+            "path": "/api/assessments"
+          },
+          {
+            "method": "GET",
+            "path": "/api/booking"
+          },
+          {
+            "method": "GET",
+            "path": "/api/certificate"
+          },
+          {
+            "method": "GET",
+            "path": "/api/chat"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "auth-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/auth-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/auth/me"
+          },
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/login"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/password/confirm"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/password/request"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/refresh"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/register"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/totp/disable"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/totp/enable"
+          },
+          {
+            "method": "POST",
+            "path": "/auth/totp/verify"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "@arman/certificate-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/certificate-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/cert/verify"
+          },
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "POST",
+            "path": "/cert/issue"
+          }
+        ],
+        "graphql_operations": [
+          {
+            "operation": "t",
+            "kind": "Query"
+          }
+        ]
+      }
+    },
+    {
+      "service": "payments-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/payments-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/payments/orders/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/payments/products"
+          },
+          {
+            "method": "GET",
+            "path": "/payments/products"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/coupons"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/coupons"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/intent/:orderId"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/intent/:orderId"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/orders"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/orders"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/plans"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/products"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/products"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/subscriptions"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/subscriptions"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/webhook"
+          },
+          {
+            "method": "POST",
+            "path": "/payments/webhook"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "predictive-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/predictive-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "ai-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/ai-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "vip-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/vip-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "nutrition-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/nutrition-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "reward-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/reward-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "chat-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/chat-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "marketplace-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/marketplace-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "assessment-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/assessment-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "monitoring-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/monitoring-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "coaches-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/coaches-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "notifications-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/notifications-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/notifications/:id"
+          },
+          {
+            "method": "GET",
+            "path": "/notifications/:id"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/email"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/email"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/push"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/push"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/sms"
+          },
+          {
+            "method": "POST",
+            "path": "/notifications/sms"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "content-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/content-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/healthz"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/ready"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "challenges-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/challenges-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "courses-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/courses-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "users-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/users-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    },
+    {
+      "service": "affiliate-service",
+      "package_root": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/services/affiliate-service",
+      "slis": {
+        "availability": {
+          "target": "UNKNOWN",
+          "note": "Define %-availability (e.g., 99.9) based on business criticality"
+        },
+        "latency": {
+          "targets_ms": {
+            "p95": "UNKNOWN",
+            "p99": "UNKNOWN"
+          },
+          "note": "Set targets after perf pass; see /metrics if prom-client present"
+        },
+        "error_rate": {
+          "target": "UNKNOWN",
+          "note": "Use 5xx rate / total requests"
+        }
+      },
+      "metrics_signals": {
+        "rest_endpoints": [
+          {
+            "method": "GET",
+            "path": "/health"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          },
+          {
+            "method": "GET",
+            "path": "/metrics"
+          }
+        ],
+        "graphql_operations": []
+      }
+    }
+  ]
+}

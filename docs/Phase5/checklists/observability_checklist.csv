@@ -1,0 +1,5 @@
+Layer,Check,How,Status,Notes
+Frontend,Analytics events fire,Trigger views/clicks; verify in PostHog,,
+Backend,/health live,curl /health returns ok,,
+Backend,/metrics exposed,curl /metrics returns metrics,,
+Infra,Dashboards ready,"Grafana shows latency, error rates",,

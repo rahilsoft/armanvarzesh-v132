@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: 'services'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - affiliate-service:4100
+          - ai-service:4101
+          - assessment-service:4102
+          - auth-service:4103
+          - challenges-service:4104
+          - chat-service:4105
+          - coaches-service:4106
+          - content-service:4107
+          - courses-service:4108
+          - marketplace-service:4109
+          - monitoring-service:41010
+          - notifications-service:41011
+          - nutrition-service:41012
+          - payments-service:41013
+          - predictive-service:41014
+          - reward-service:41015
+          - users-service:41016
+          - vip-service:41017
+          - workouts-service:41018

@@ -1,0 +1,57 @@
+{
+  "counts": {
+    "producers": 4,
+    "consumers": 6,
+    "producer_only": 4,
+    "consumer_only": 6
+  },
+  "producer_only_jobs": [
+    "process-exercise",
+    "resize",
+    "test",
+    "transcode"
+  ],
+  "consumer_only_jobs": [
+    "media",
+    "media:image",
+    "media:transcode",
+    "reservations:reminder",
+    "scoring",
+    "survey"
+  ],
+  "producers": {
+    "test": [
+      "packages/integration/src/queue.ts"
+    ],
+    "resize": [
+      "apps/backend/src/media/media.service.ts"
+    ],
+    "transcode": [
+      "apps/backend/src/media/media.service.ts"
+    ],
+    "process-exercise": [
+      "services/content-service/src/jobs/media.worker.ts"
+    ]
+  },
+  "consumers": {
+    "reservations:reminder": [
+      "apps/backend/src/reminders/reminders.service.ts"
+    ],
+    "media:transcode": [
+      "apps/media-worker/src/worker.ts"
+    ],
+    "media:image": [
+      "apps/media-worker/src/worker.ts"
+    ],
+    "media": [
+      "services/media-worker/src/worker.ts",
+      "services/workers/bullmq-worker/src/index.js"
+    ],
+    "scoring": [
+      "services/workers/bullmq-worker/src/index.js"
+    ],
+    "survey": [
+      "services/workers/bullmq-worker/src/index.js"
+    ]
+  }
+}

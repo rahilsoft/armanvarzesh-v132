@@ -1,0 +1,9 @@
+Module,Operation,Detail,Status,Notes
+Reservations,Search,By email / coach / date-range,,
+Reservations,Filter,"Status, location, service type",,
+Reservations,Bulk actions,Cancel/confirm selected,,
+Reservations,Export,CSV of filtered view,,
+Physio,Content mgmt,Create/update physio items,,
+VIP,Tier mgmt,Create tiers; assign to user,,
+Affiliate,Partner mgmt,Create partner; set commission,,
+Certificate,Issue/revoke,Issue to user; revoke; history,,

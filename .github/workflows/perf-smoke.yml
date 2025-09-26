@@ -1,0 +1,20 @@
+name: Perf Smoke (k6)
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Base URL (e.g., https://api.example.com)"
+        required: true
+        type: string
+
+jobs:
+  k6-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run k6
+        uses: grafana/k6-action@v0.3.1
+        with:
+          filename: tests/load/smoke.js
+        env:
+          K6_TARGET: ${{ inputs.target }}

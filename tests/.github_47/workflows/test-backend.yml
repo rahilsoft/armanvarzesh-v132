@@ -1,0 +1,19 @@
+name: Backend Tests
+on:
+  push:
+    paths:
+      - 'backend/**'
+      - 'tests/backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'tests/backend/**'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npm run test:backend
+      - run: npm run test:backend:coverage

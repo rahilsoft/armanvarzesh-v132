@@ -1,0 +1,4 @@
+- No secrets committed (gitleaks)
+- Commit pnpm-lock.yaml; avoid CI mutation
+- Ignore build outputs/IDE/caches
+- Commit only .env.example

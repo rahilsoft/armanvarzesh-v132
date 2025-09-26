@@ -1,0 +1,24 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Event {
+  id        String   @id
+  userId    String
+  name      String
+  ts        DateTime
+  props     Json?
+  piiHash   Json?
+  idemKey   String   @unique
+  createdAt DateTime @default(now())
+}
+
+model KpiDaily {
+  date        DateTime @id
+  dau         Int
+  sessions    Int
+  signups     Int
+  purchases   Int
+  adherence   Float
+  conversionSignupToSub Float
+  createdAt   DateTime @default(now())
+}

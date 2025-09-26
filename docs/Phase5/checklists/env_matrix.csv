@@ -1,0 +1,11 @@
+App/Service,Variable,Example/Default,Description
+apps/client-pwa,NEXT_PUBLIC_USE_MOCK,false,Toggle mock vs live
+apps/client-pwa,NEXT_PUBLIC_GRAPHQL_URL,https://staging.example.com/graphql,GraphQL endpoint
+apps/client-pwa,NEXT_PUBLIC_API_URL,https://staging.example.com,REST base URL
+apps/client-pwa,NEXT_PUBLIC_POSTHOG_KEY,,Optional analytics key
+apps/coach-pwa,NEXT_PUBLIC_*,…,Same as client-pwa
+apps/admin-panel,NEXT_PUBLIC_*,…,Same as client-pwa
+services/certificate-service,PORT,3017,HTTP port
+services/certificate-service,DATABASE_URL,postgres://…,DB connection
+services/certificate-service,CERT_SECRET,<secret>,JWT signing secret
+services/certificate-service,CERT_VERIFY_URL,https://…/cert/verify,Public verify URL

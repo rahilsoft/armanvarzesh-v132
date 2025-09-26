@@ -1,0 +1,22 @@
+
+name: Coverage Report
+on:
+  workflow_run:
+    workflows: [Backend Tests, Frontend Tests, Mobile Tests, Admin Panel Tests]
+    types:
+      - completed
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            tests/backend/coverage/
+            tests/frontend/coverage/
+            tests/mobile/user-app/coverage/
+            tests/mobile/coach-app/coverage/
+            tests/admin-panel/coverage/

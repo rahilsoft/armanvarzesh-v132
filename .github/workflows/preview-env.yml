@@ -1,0 +1,65 @@
+name: preview-env
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+jobs:
+  preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.15.2'
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.30.2'
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      - name: Create preview namespace
+        id: ns
+        run: |
+          NS=pr-${{ github.event.number }}-${{ github.run_id }}
+          echo "ns=$NS" >> $GITHUB_OUTPUT
+          kubectl create namespace $NS || true
+      - name: Helm upgrade --install backend
+        working-directory: deploy/helm/armanvarzesh
+        env:
+          NS: ${{ steps.ns.outputs.ns }}
+        run: |
+          helm upgrade --install backend .             --namespace $NS             --set image.tag=pr-${{ github.sha }}             --set env.DATABASE_URL=${{ secrets.PREVIEW_DATABASE_URL }}             --wait --timeout 5m
+      - name: Print services
+        env: { NS: ${{ steps.ns.outputs.ns }} }
+        run: kubectl get svc -n $NS
+      - name: Set BASE_URL (cluster ingress)
+        run: |
+          echo "BASE_URL=${{ secrets.PREVIEW_BASE_URL }}" >> $GITHUB_ENV
+      - name: API Smoke against preview
+        run: pnpm run test:smoke
+        env:
+          API_BASE_URL: ${{ env.BASE_URL }}
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+      - name: Delete namespace
+        run: |
+          NS=pr-${{ github.event.number }}-*
+          kubectl delete ns $NS --ignore-not-found=true

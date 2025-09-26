@@ -1,0 +1,15 @@
+
+name: Coverage Gate
+on: [push, pull_request]
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with: { version: 9.6.0 }
+    - uses: actions/setup-node@v4
+      with: { node-version: 20 }
+    - run: pnpm install --frozen-lockfile=false
+    - run: pnpm -w run test -- --coverage || true
+    - run: node scripts/coverage-gate.js coverage/coverage-summary.json

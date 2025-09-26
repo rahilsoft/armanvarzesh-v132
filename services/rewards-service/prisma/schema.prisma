@@ -1,0 +1,70 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model PointEvent {
+  id        String   @id
+  userId    String
+  type      String
+  amount    Int
+  meta      Json?
+  idempotencyKey String @unique
+  createdAt DateTime @default(now())
+}
+
+model Badge {
+  id        String   @id
+  key       String   @unique
+  name      String
+  criteria  Json?
+  createdAt DateTime @default(now())
+}
+
+model UserBadge {
+  id        String   @id
+  userId    String
+  badgeId   String
+  createdAt DateTime @default(now())
+  @@unique([userId, badgeId])
+}
+
+model Streak {
+  id        String   @id
+  userId    String
+  kind      String
+  count     Int      @default(0)
+  lastDate  DateTime?
+  createdAt DateTime @default(now())
+  @@unique([userId, kind])
+}
+
+model VipTier {
+  id        String   @id
+  name      String   @unique
+  threshold Int
+  perks     Json?
+  createdAt DateTime @default(now())
+}
+
+model Referral {
+  id        String   @id
+  code      String   @unique
+  inviterId String
+  createdAt DateTime @default(now())
+}
+
+model ReferralUse {
+  id         String   @id
+  code       String
+  inviterId  String
+  inviteeId  String
+  createdAt  DateTime @default(now())
+  @@unique([code, inviteeId])
+}
+
+model Commission {
+  id        String   @id
+  inviterId String
+  amount    Int
+  status    String
+  createdAt DateTime @default(now())
+}

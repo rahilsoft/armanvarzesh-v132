@@ -1,0 +1,6 @@
+--- a/packages/data/workouts/adapter.ts
++++ b/packages/data/workouts/adapter.ts
+@@
+-const MODE = (process.env.DATA_MODE || 'mock') as 'api'|'mock';
++// PATCH: prefer real API when available; fallback to mock in dev
++const MODE = (process.env.DATA_MODE || (typeof window!=='undefined' ? 'api' : 'mock')) as 'api'|'mock';

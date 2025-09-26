@@ -1,0 +1,282 @@
+{
+  "timestamp": "2025-08-23T11:03:33.073874Z",
+  "changes": [
+    {
+      "package": "@arman/user-pwa",
+      "path": "apps/user-pwa",
+      "framework": "Vite",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/coach-pwa",
+      "path": "apps/coach-pwa",
+      "framework": "Vite",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/async-utils",
+      "path": "packages/async-utils",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/auth",
+      "path": "packages/auth",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/auth-kit",
+      "path": "packages/auth-kit",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/awards-engine",
+      "path": "packages/awards-engine",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/client-live",
+      "path": "packages/client-live",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/contracts",
+      "path": "packages/contracts",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/contracts-tests",
+      "path": "packages/contracts-tests",
+      "framework": "Unknown",
+      "tsconfigs": [
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "scripts_changed": false,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/env-config",
+      "path": "packages/env-config",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/graphql",
+      "path": "packages/graphql",
+      "framework": "Unknown",
+      "tsconfigs": [
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/http-client",
+      "path": "packages/http-client",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/integrations-livekit",
+      "path": "packages/integrations/livekit",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/libs",
+      "path": "packages/libs",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/shared",
+      "path": "packages/shared",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/state",
+      "path": "packages/state",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/storage",
+      "path": "packages/storage",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/theme",
+      "path": "packages/theme",
+      "framework": "Unknown",
+      "tsconfigs": [
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/training-load-engine",
+      "path": "packages/training-load-engine",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/ui",
+      "path": "packages/ui",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/ui-components",
+      "path": "packages/ui-components",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/ui-kit-live",
+      "path": "packages/ui-kit-live",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/ui-tokens",
+      "path": "packages/ui-tokens",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/utils",
+      "path": "packages/utils",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/web-core",
+      "path": "packages/web-core",
+      "framework": "Unknown",
+      "tsconfigs": [],
+      "scripts_changed": true,
+      "docker_added": false
+    },
+    {
+      "package": "@arman/analytics-service",
+      "path": "services/analytics-service",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/assessments-service",
+      "path": "services/assessments-service",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/booking-service",
+      "path": "services/booking-service",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/physio-service",
+      "path": "services/physio-service",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/rewards-service",
+      "path": "services/rewards-service",
+      "framework": "NestJS",
+      "tsconfigs": [],
+      "scripts_changed": false,
+      "docker_added": true
+    },
+    {
+      "package": "@arman/workers",
+      "path": "services/workers",
+      "framework": "Unknown",
+      "tsconfigs": [
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "scripts_changed": false,
+      "docker_added": false
+    },
+    {
+      "package": "bullmq-worker",
+      "path": "services/workers/bullmq-worker",
+      "framework": "Unknown",
+      "tsconfigs": [
+        "tsconfig.json",
+        "tsconfig.build.json"
+      ],
+      "scripts_changed": false,
+      "docker_added": false
+    }
+  ],
+  "duplicates": {
+    "@arman/media-worker": [
+      "apps/media-worker/package.json",
+      "services/media-worker/package.json"
+    ]
+  }
+}

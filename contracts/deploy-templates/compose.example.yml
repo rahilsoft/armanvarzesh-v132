@@ -1,0 +1,285 @@
+{
+  "version": "3.8",
+  "services": {
+    "armanvarzesh-monorepo": {
+      "build": {
+        "context": "."
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "infra": {
+      "build": {
+        "context": "packages/infra"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "awards-engine": {
+      "build": {
+        "context": "packages/awards-engine"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "web-core": {
+      "build": {
+        "context": "packages/web-core"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "env-config": {
+      "build": {
+        "context": "packages/env-config"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "auth": {
+      "build": {
+        "context": "packages/auth"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "ui-components": {
+      "build": {
+        "context": "packages/ui-components"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "integration": {
+      "build": {
+        "context": "packages/integration"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "contracts": {
+      "build": {
+        "context": "packages/contracts"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "utils": {
+      "build": {
+        "context": "packages/utils"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "shared": {
+      "build": {
+        "context": "packages/shared"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "observability": {
+      "build": {
+        "context": "packages/observability"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "state": {
+      "build": {
+        "context": "packages/state"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "storage": {
+      "build": {
+        "context": "packages/storage"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "libs": {
+      "build": {
+        "context": "packages/libs"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "contracts-tests": {
+      "build": {
+        "context": "packages/contracts-tests"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "graphql-dataloader": {
+      "build": {
+        "context": "packages/graphql-dataloader"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "integrations": {
+      "build": {
+        "context": "packages/integrations"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "integrations-livekit": {
+      "build": {
+        "context": "packages/integrations/livekit"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "async-utils": {
+      "build": {
+        "context": "packages/async-utils"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "resilience": {
+      "build": {
+        "context": "packages/resilience"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "theme": {
+      "build": {
+        "context": "packages/theme"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "graphql": {
+      "build": {
+        "context": "packages/graphql"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "http-client": {
+      "build": {
+        "context": "packages/http-client"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "cache-std": {
+      "build": {
+        "context": "packages/cache-std"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "client-live": {
+      "build": {
+        "context": "packages/client-live"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "auth-kit": {
+      "build": {
+        "context": "packages/auth-kit"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "ui-tokens": {
+      "build": {
+        "context": "packages/ui-tokens"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "graphql-utils": {
+      "build": {
+        "context": "packages/graphql-utils"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "training-load-engine": {
+      "build": {
+        "context": "packages/training-load-engine"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "rewards-service": {
+      "build": {
+        "context": "services/rewards-service"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "physio-service": {
+      "build": {
+        "context": "services/physio-service"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "assessments-service": {
+      "build": {
+        "context": "services/assessments-service"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "analytics-service": {
+      "build": {
+        "context": "services/analytics-service"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    },
+    "booking-service": {
+      "build": {
+        "context": "services/booking-service"
+      },
+      "ports": [
+        "3000:3000"
+      ]
+    }
+  }
+}

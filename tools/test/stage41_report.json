@@ -1,0 +1,9 @@
+{
+  "targets": [
+    "packages/ui",
+    "packages/web-core",
+    "packages/auth",
+    "packages/contracts",
+    "packages/utils"
+  ]
+}

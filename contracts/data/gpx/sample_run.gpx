@@ -1,0 +1,9 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="ArmanVarzesh">
+  <trk><name>Sample Run</name><trkseg>
+    <trkpt lat="52.3702" lon="4.8952"><ele>10</ele><time>2025-08-30T06:00:00Z</time></trkpt>
+    <trkpt lat="52.3710" lon="4.8960"><ele>11</ele><time>2025-08-30T06:01:00Z</time></trkpt>
+    <trkpt lat="52.3720" lon="4.8970"><ele>12</ele><time>2025-08-30T06:02:00Z</time></trkpt>
+  </trkseg></trk>
+</gpx>

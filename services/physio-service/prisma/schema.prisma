@@ -1,0 +1,56 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model PhysioProtocol {
+  id        String  @id
+  name      String
+  area      String
+  weeks     Int
+  steps     PhysioStep[]
+  createdAt DateTime @default(now())
+}
+
+model PhysioStep {
+  id          String @id
+  week        Int
+  day         Int
+  exerciseId  String
+  notes       String?
+  seconds     Int?
+  videoUrl    String?
+  protocolId  String
+  protocol    PhysioProtocol @relation(fields:[protocolId], references:[id], onDelete: Cascade)
+}
+
+model PhysioAssignment {
+  id         String @id
+  userId     String
+  protocolId String
+  startedAt  DateTime
+  archivedAt DateTime?
+}
+
+model PhysioSession {
+  id            String @id
+  assignmentId  String
+  date          String
+  completed     Boolean @default(false)
+  completedAt   DateTime?
+}
+
+model PainLog {
+  id         String @id
+  sessionId  String
+  score      Int
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+model RomMeasure {
+  id        String @id
+  userId    String
+  joint     String
+  side      String
+  angle     Int
+  createdAt DateTime @default(now())
+}

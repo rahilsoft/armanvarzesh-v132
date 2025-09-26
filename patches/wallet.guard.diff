@@ -1,0 +1,26 @@
+--- a/apps/site-web/src/pages/wallet.tsx
++++ b/apps/site-web/src/pages/wallet.tsx
+@@
+-export default function WalletPage(){
++import { AuthProvider, useAuth } from '../../../packages/auth/context';
++import { Guard } from '../../../packages/security/guards/react';
++export default function WalletPage(){
+@@
+-  return (
+-    <div dir="rtl">
++  return (
++    <AuthProvider>
++    <div dir="rtl">
+@@
+-      <Card>
++      <Guard role={role} feature="vip" action="view" fallback={<p>دسترسی VIP لازم است</p>}>
++      <Card>
+@@
+-      </Card>
++      </Card>
++      </Guard>
+-    </div>
++    </div>
++    </AuthProvider>
+   );
+ }

@@ -1,0 +1,600 @@
+{
+  "topological_order": [
+    "@arman/contracts",
+    "challenges-service",
+    "@arman/assessments-service",
+    "vip-service",
+    "@arman/integrations",
+    "notifications-service",
+    "@arman/graphql-utils",
+    "@arman/resilience",
+    "@arman/theme",
+    "@arman/auth",
+    "@arman/graphql-dataloader",
+    "nutrition-service",
+    "courses-service",
+    "@arman/libs",
+    "@arman/rewards-service",
+    "affiliate-service",
+    "vitrin-site",
+    "armanfit-admin",
+    "@arman/contracts-tests",
+    "@arman/booking-service",
+    "@arman/analytics-service",
+    "armanfit-coach",
+    "@arman/coach-pwa",
+    "payments-service",
+    "marketplace-service",
+    "@arman/client-live",
+    "content-service",
+    "ai-service",
+    "@arman/infra",
+    "@arman/web-core",
+    "api-gateway",
+    "chat-service",
+    "@arman/live-subgraph",
+    "@arman/user-pwa",
+    "@arman/workers",
+    "@arman/physio-service",
+    "predictive-service",
+    "reward-service",
+    "@arman/analytics-collector",
+    "@arman/backend",
+    "@arman/shared",
+    "auth-service",
+    "monitoring-service",
+    "@arman/auth-kit",
+    "@arman/ui-kit-live",
+    "bullmq-worker",
+    "@arman/activity-subgraph",
+    "armanfit-user",
+    "armanvarzesh-monorepo",
+    "@arman/certificate-service",
+    "workouts-service",
+    "@arman/social-subgraph",
+    "@arman/graphql",
+    "@arman/media-worker",
+    "assessment-service",
+    "coaches-service",
+    "users-service",
+    "@arman/cache-std"
+  ],
+  "buildable": [
+    {
+      "name": "@arman/contracts",
+      "path": "packages/contracts",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json || echo \"no tsc\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "challenges-service",
+      "path": "services/challenges-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/assessments-service",
+      "path": "services/assessments-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "vip-service",
+      "path": "services/vip-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/integrations",
+      "path": "packages/integrations",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "notifications-service",
+      "path": "services/notifications-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/graphql-utils",
+      "path": "packages/graphql-utils",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json || echo \"no tsc\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/resilience",
+      "path": "packages/resilience",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/theme",
+      "path": "packages/theme",
+      "framework": "Node/Pure",
+      "build_cmd": "echo \"No TypeScript in package\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/auth",
+      "path": "packages/auth",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/graphql-dataloader",
+      "path": "packages/graphql-dataloader",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "nutrition-service",
+      "path": "services/nutrition-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "courses-service",
+      "path": "services/courses-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/libs",
+      "path": "packages/libs",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/rewards-service",
+      "path": "services/rewards-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "affiliate-service",
+      "path": "services/affiliate-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "vitrin-site",
+      "path": "apps/vitrin-site",
+      "framework": "Nest",
+      "build_cmd": "next build",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "armanfit-admin",
+      "path": "apps/armanfit-admin",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/contracts-tests",
+      "path": "packages/contracts-tests",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json || echo \"no tsc\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/booking-service",
+      "path": "services/booking-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/analytics-service",
+      "path": "services/analytics-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "armanfit-coach",
+      "path": "apps/coach-app",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/coach-pwa",
+      "path": "apps/coach-pwa",
+      "framework": "React",
+      "build_cmd": "tsc -b && vite build",
+      "expected_dist": "UNKNOWN"
+    },
+    {
+      "name": "payments-service",
+      "path": "services/payments-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "marketplace-service",
+      "path": "services/marketplace-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/client-live",
+      "path": "packages/client-live",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "content-service",
+      "path": "services/content-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "ai-service",
+      "path": "services/ai-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/infra",
+      "path": "packages/infra",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json || echo \"no tsc\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/web-core",
+      "path": "packages/web-core",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "api-gateway",
+      "path": "services/api-gateway",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "chat-service",
+      "path": "services/chat-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/live-subgraph",
+      "path": "apps/live-subgraph",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/user-pwa",
+      "path": "apps/user-pwa",
+      "framework": "React",
+      "build_cmd": "tsc -b && vite build",
+      "expected_dist": "UNKNOWN"
+    },
+    {
+      "name": "@arman/workers",
+      "path": "services/workers",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/physio-service",
+      "path": "services/physio-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "predictive-service",
+      "path": "services/predictive-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "reward-service",
+      "path": "services/reward-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/analytics-collector",
+      "path": "services/analytics-collector",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/backend",
+      "path": "apps/backend",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/shared",
+      "path": "packages/shared",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "auth-service",
+      "path": "services/auth-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "monitoring-service",
+      "path": "services/monitoring-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/auth-kit",
+      "path": "packages/auth-kit",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/ui-kit-live",
+      "path": "packages/ui-kit-live",
+      "framework": "React",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "UNKNOWN"
+    },
+    {
+      "name": "bullmq-worker",
+      "path": "services/workers/bullmq-worker",
+      "framework": "Node/Pure",
+      "build_cmd": "echo \"No TypeScript in package\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/activity-subgraph",
+      "path": "apps/activity-subgraph",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "armanfit-user",
+      "path": "apps/user-app",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "armanvarzesh-monorepo",
+      "path": ".",
+      "framework": "Node/Pure",
+      "build_cmd": "pnpm -r --if-present run build",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/certificate-service",
+      "path": "services/certificate-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "workouts-service",
+      "path": "services/workouts-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/social-subgraph",
+      "path": "apps/social-subgraph",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/graphql",
+      "path": "packages/graphql",
+      "framework": "Node/Pure",
+      "build_cmd": "echo \"No TypeScript in package\"",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/media-worker",
+      "path": "apps/media-worker",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/media-worker",
+      "path": "services/media-worker",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "assessment-service",
+      "path": "services/assessment-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "coaches-service",
+      "path": "services/coaches-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "users-service",
+      "path": "services/users-service",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/cache-std",
+      "path": "packages/cache-std",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/ui",
+      "path": "packages/ui",
+      "framework": "React",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "UNKNOWN"
+    },
+    {
+      "name": "@arman/awards-engine",
+      "path": "packages/awards-engine",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/env-config",
+      "path": "packages/env-config",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/ui-components",
+      "path": "packages/ui-components",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/integration",
+      "path": "packages/integration",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/utils",
+      "path": "packages/utils",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/observability",
+      "path": "packages/observability",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/state",
+      "path": "packages/state",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/storage",
+      "path": "packages/storage",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/integrations-livekit",
+      "path": "packages/integrations/livekit",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/async-utils",
+      "path": "packages/async-utils",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/http-client",
+      "path": "packages/http-client",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/service-kit",
+      "path": "packages/service-kit",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.build.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/ui-tokens",
+      "path": "packages/ui-tokens",
+      "framework": "Nest",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    },
+    {
+      "name": "@arman/training-load-engine",
+      "path": "packages/training-load-engine",
+      "framework": "Node/Pure",
+      "build_cmd": "tsc -p tsconfig.json",
+      "expected_dist": "dist/"
+    }
+  ],
+  "non_buildable": [],
+  "cycle_nodes": [
+    "@arman/storage",
+    "@arman/service-kit",
+    "@arman/awards-engine",
+    "@arman/ui",
+    "@arman/http-client",
+    "@arman/state",
+    "@arman/async-utils",
+    "@arman/integration",
+    "@arman/env-config",
+    "@arman/integrations-livekit",
+    "@arman/ui-components",
+    "@arman/observability",
+    "@arman/training-load-engine",
+    "@arman/utils",
+    "@arman/ui-tokens"
+  ]
+}

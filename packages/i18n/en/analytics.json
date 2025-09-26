@@ -1,0 +1,11 @@
+{
+  "title": "Analytics",
+  "weekly_load": "Weekly Training Load",
+  "vo2max": "VO₂max",
+  "resting_hr": "Resting HR",
+  "sleep": "Sleep",
+  "export": "Export",
+  "loading": "Loading…",
+  "error": "Error",
+  "empty": "No data"
+}

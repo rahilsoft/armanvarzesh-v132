@@ -1,0 +1,68 @@
+
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../devops/docker/Dockerfile.backend
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/armanfit
+    depends_on:
+      - db
+
+  mobile:
+    build:
+      context: ../armanfit-mobile/coach-app
+      dockerfile: ../devops/docker/Dockerfile.mobile
+    ports:
+      - "19000:19000"
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
+
+  admin:
+    build:
+      context: ../armanfit-admin
+      dockerfile: ../devops/docker/Dockerfile.admin-panel
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../devops/docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"  # from env/secret manager
+      POSTGRES_DB: armanfit
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+# added by phase2
+x-default-healthcheck: &default-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
+    interval: 30s
+    timeout: 3s
+    retries: 3

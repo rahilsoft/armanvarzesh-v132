@@ -1,0 +1,1 @@
+curl "$API/v1/habits/today" -H "Authorization: Bearer $TOKEN" 

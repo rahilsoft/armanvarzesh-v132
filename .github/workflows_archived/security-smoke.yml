@@ -1,0 +1,54 @@
+name: Security & Metrics Smoke (matrix)
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Discover runnable packages
+        id: set-matrix
+        run: |
+          node -e "const fs=require('fs');const {glob}=require('glob');glob('**/package.json',{ignore:['**/node_modules/**','.pnpm/**']},(e,files)=>{const run=files.filter(f=>{try{const j=JSON.parse(fs.readFileSync(f,'utf8'));return j.scripts && (j.scripts.start||j.scripts.dev);}catch{return false;}});const m={include:run.map(p=>({pkg:require('path').dirname(p)}))};console.log('::set-output name=matrix::'+JSON.stringify(m));})"
+  smoke:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build (best effort)
+        run: pnpm -r build || true
+      - name: Security & Metrics Smoke
+        env:
+          PORT: 3000
+          METRICS_PORT: 9464
+          RATE_LIMIT_MAX: 5
+          RATE_LIMIT_WINDOW_MS: 10000
+          SMOKE_TIMEOUT_MS: 90000
+        run: node scripts/smoke-security.mjs ${{ matrix.pkg }}

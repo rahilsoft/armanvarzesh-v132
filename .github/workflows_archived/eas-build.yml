@@ -1,0 +1,40 @@
+name: EAS Build — User Mobile
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'ios/android'
+        required: true
+        default: 'ios'
+      profile:
+        description: 'development/preview/production'
+        required: true
+        default: 'development'
+  push:
+    tags:
+      - 'user-mobile-v*'
+
+jobs:
+  eas-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/user-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+      - name: Install EAS CLI
+        run: pnpm add -D eas-cli
+      - name: Build with EAS
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          npx eas build --platform ${{ github.event.inputs.platform || 'ios' }} --profile ${{ github.event.inputs.profile || 'development' }} --non-interactive

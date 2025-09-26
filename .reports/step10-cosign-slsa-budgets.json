@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-08-23T11:42:31.740341Z",
+  "workflows_modified_or_added": [
+    ".github/workflows/docker-ghcr.yml (signed + provenance)",
+    ".github/workflows/lighthouse-main.yml (strict)"
+  ],
+  "configs_added": [
+    "lighthouserc.main.json",
+    "lighthouse-budgets.json",
+    "SUPPLY_CHAIN.md"
+  ]
+}

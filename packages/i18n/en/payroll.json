@@ -1,0 +1,11 @@
+{
+  "payroll": "Payroll",
+  "payouts": "Payouts",
+  "total": "Total",
+  "status": "Status",
+  "period": "Period",
+  "export": "Export",
+  "loading": "Loading…",
+  "error": "Error",
+  "empty": "Nothing here"
+}

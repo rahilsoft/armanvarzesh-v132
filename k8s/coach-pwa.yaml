@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: coach-pwa }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: coach-pwa } }
+  template:
+    metadata: { labels: { app: coach-pwa } }
+    spec:
+      containers:
+        - name: coach-pwa
+          image: your-registry/coach-pwa:latest
+          ports: [{ containerPort: 3000 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: coach-pwa }
+spec:
+  selector: { app: coach-pwa }
+  ports:
+    - port: 80
+      targetPort: 3000

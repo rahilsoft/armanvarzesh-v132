@@ -1,0 +1,96 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "jsx": "react-jsx",
+    "module": "ES2022",
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "coach-pwa/*": [
+        "app/coach-pwa/*"
+      ],
+      "@coach-pwa/*": [
+        "app/coach-pwa/*"
+      ],
+      "activity-subgraph/*": [
+        "app/activity-subgraph/*"
+      ],
+      "@activity-subgraph/*": [
+        "app/activity-subgraph/*"
+      ],
+      "user-app/*": [
+        "app/user-app/*"
+      ],
+      "@user-app/*": [
+        "app/user-app/*"
+      ],
+      "coach-app/*": [
+        "app/coach-app/*"
+      ],
+      "@coach-app/*": [
+        "app/coach-app/*"
+      ],
+      "media-worker/*": [
+        "app/media-worker/*"
+      ],
+      "@media-worker/*": [
+        "app/media-worker/*"
+      ],
+      "social-subgraph/*": [
+        "app/social-subgraph/*"
+      ],
+      "@social-subgraph/*": [
+        "app/social-subgraph/*"
+      ],
+      "backend/*": [
+        "app/backend/*"
+      ],
+      "@backend/*": [
+        "app/backend/*"
+      ],
+      "live-subgraph/*": [
+        "app/live-subgraph/*"
+      ],
+      "@live-subgraph/*": [
+        "app/live-subgraph/*"
+      ],
+      "admin/*": [
+        "app/admin/*"
+      ],
+      "@admin/*": [
+        "app/admin/*"
+      ],
+      "site/*": [
+        "app/site/*"
+      ],
+      "@site/*": [
+        "app/site/*"
+      ],
+      "user-pwa/*": [
+        "app/user-pwa/*"
+      ],
+      "@user-pwa/*": [
+        "app/user-pwa/*"
+      ]
+    },
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useUnknownInCatchVariables": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ],
+  "extends": "../../tsconfig.base.json"
+}

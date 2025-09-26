@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install deps
+        run: pnpm install --frozen-lockfile=false
+      - name: Unit tests (vitest)
+        run: pnpm vitest run --reporter=verbose
+      - name: Build site (Next.js)
+        run: |
+          if [ -d apps/site-web ]; then
+            cd apps/site-web && pnpm build || true
+          fi
+      - name: Start site (Next.js) for e2e
+        run: |
+          if [ -d apps/site-web ]; then
+            cd apps/site-web && pnpm start &
+            echo $! > /tmp/site.pid
+          fi
+      - name: Wait for site
+        run: npx wait-on --timeout 60000 http://localhost:3000 || true
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: E2E (Playwright)
+        env:
+          E2E_BASE_URL: http://localhost:3000
+        run: npx playwright test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+      - name: Stop site
+        if: always()
+        run: |
+          if [ -f /tmp/site.pid ]; then
+            kill $(cat /tmp/site.pid) || true
+          fi

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-08-23T11:05:54.484354Z",
+  "duplicates_detected": {
+    "@arman/media-worker": [
+      "apps/media-worker/package.json",
+      "services/media-worker/package.json"
+    ]
+  },
+  "renames_applied": [
+    {
+      "duplicate": "@arman/media-worker",
+      "canonical": "apps/media-worker/package.json",
+      "renamed_path": "services/media-worker",
+      "new_name": "@arman/media-worker__media-worker"
+    }
+  ]
+}

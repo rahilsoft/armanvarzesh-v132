@@ -1,0 +1,35 @@
+name: quality-gates
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+permissions:
+  contents: read
+concurrency:
+  group: qg-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm -r run typecheck
+      - name: Lint
+        run: pnpm -r run lint
+      - name: Tests
+        run: pnpm -r run test
+      - name: Coverage (summary)
+        run: pnpm -r run coverage || true
+      - name: SBOM
+        run: pnpm run -w sbom || true
+      - name: Secret Scan
+        run: pnpm run -w secret-scan || true

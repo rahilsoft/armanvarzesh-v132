@@ -1,0 +1,5 @@
+{
+  "sw_upgraded": [
+    "apps/vitrin-site/public/sw.js"
+  ]
+}

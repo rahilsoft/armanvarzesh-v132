@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FoodItem {
+
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  calories    Float
+  protein     Float
+  carbs       Float
+  fats        Float
+  barcode     String?
+  createdAt   DateTime @default(now())
+  meals       Meal[]
+}
+
+model Meal {
+
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  foodItem    FoodItem @relation(fields: [foodItemId], references: [id])
+  foodItemId  Int
+  quantity    Float
+  calories    Float
+  protein     Float
+  carbs       Float
+  fats        Float
+  notes       String?
+  consumedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  @@index([userId], map: "idx_Meal_userId")
+  @@index([foodItemId], map: "idx_Meal_foodItemId")
+}
+
+model NutritionGoal {
+
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  calories  Float
+  protein   Float
+  carbs     Float
+  fats      Float
+  createdAt DateTime @default(now())
+  @@index([userId], map: "idx_NutritionGoal_userId")
+}
+
+// --- Added by Phase 1: Hydration ---
+model HydrationLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  occurredAt DateTime @db.Timestamptz(6)
+  ml         Int
+  source     String?  @db.VarChar(64)
+  createdAt  DateTime @default(now())
+
+  @@index([userId, occurredAt], map: "idx_HydrationLog_userId_occurredAt")
+  @@index([occurredAt], map: "idx_HydrationLog_occurredAt")
+}
+
+
+// --- Added by Phase 2: Habits/Streak ---
+enum HabitType {
+  water
+  steps
+  training
+  calorie
+}
+
+model Habit {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  type      HabitType
+  target    Float
+  cadence   Json
+  tz        String
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  logs      HabitLog[]
+
+  @@index([userId, type], map: "idx_Habit_user_type")
+  @@index([active], map: "idx_Habit_active")
+}
+
+model HabitLog {
+  id         Int       @id @default(autoincrement())
+  habitId    Int
+  occurredAt DateTime  @db.Timestamptz(6)
+  value      Float
+  meta       Json?
+  createdAt  DateTime  @default(now())
+
+  habit      Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@index([habitId, occurredAt], map: "idx_HabitLog_habit_occurredAt")
+  @@index([occurredAt], map: "idx_HabitLog_occurredAt")
+}
+

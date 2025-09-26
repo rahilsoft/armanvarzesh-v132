@@ -1,0 +1,1 @@
+curl "$API/v1/certificates/1/qr" -H "Authorization: Bearer $TOKEN" 

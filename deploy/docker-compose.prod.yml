@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  backend:
+    build: ./app/backend
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      CORS_ORIGINS: ""
+    ports: ["3000:3000"]
+  vitrin:
+    build: ./app/vitrin-site
+    environment:
+      NODE_ENV: production
+    ports: ["3001:3000"]
+  # example service
+  sample:
+    build: ./services/sample
+    environment:
+      NODE_ENV: production
+      SERVICE_NAME: sample
+      LOG_LEVEL: info
+    ports: ["4000:4000"]
+
+# added by phase2
+x-default-healthcheck: &default-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
+    interval: 30s
+    timeout: 3s
+    retries: 3

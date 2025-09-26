@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Sample Service API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                required: [status]
+  /info:
+    get:
+      responses:
+        '200':
+          description: info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service: { type: string }
+                  version: { type: string }
+                  time: { type: string, format: date-time }
+                required: [service,version,time]

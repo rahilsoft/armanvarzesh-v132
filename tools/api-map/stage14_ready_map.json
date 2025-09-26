@@ -1,0 +1,24 @@
+{
+  "ready_files": [
+    "tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__affiliate.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__ai.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__analytics.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_affiliate.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_ai.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_analytics.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_assessments.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_booking.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_certificate.controller.ready.ts",
+    "tools/api-map/server-stubs/ready/rest_GET__api_chat.controller.ready.ts"
+  ]
+}

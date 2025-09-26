@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backend-alerts
+  namespace: arman
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: backend.general
+      rules:
+        - alert: BackendHighErrorRate
+          expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 1) > 0.05
+          for: 5m
+          labels:
+            severity: page
+          annotations:
+            summary: "Backend 5xx error rate > 5%"
+            description: "Check upstream deps and recent deploys."
+        - alert: BackendHighLatencyP95
+          expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket[5m]))) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backend p95 latency > 500ms"
+            description: "Investigate slow queries, N+1, or saturation."

@@ -1,0 +1,1 @@
+curl "$API/v1/inbox?limit=20" -H "Authorization: Bearer $TOKEN" 

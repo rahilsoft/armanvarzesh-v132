@@ -1,0 +1,20 @@
+
+# Backend Dockerfile
+FROM node:18-alpine
+RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN ppppnpm install --frozen-lockfile=false --frozen-lockfile=falsenstall --frozen-lockfile=false --frozen-lockfile=false
+
+COPY . .
+
+RUN pnpm build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:prod"]
+
+RUN apk add --no-cache curl
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost:3000/health || exit 1

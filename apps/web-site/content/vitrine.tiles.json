@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "updatedAt": "2025-08-21T07:12:53Z",
+  "page": "home",
+  "tiles": [
+    {
+      "id": "user-app",
+      "type": "showcase",
+      "title": {
+        "fa": "اپ کاربر",
+        "en": "User App"
+      },
+      "subtitle": {
+        "fa": "تمرین، تغذیه، گزارش‌گیری، و AI Coach",
+        "en": "Workouts, Nutrition, Insights & AI Coach"
+      },
+      "cta": {
+        "label": {
+          "fa": "ببین",
+          "en": "Explore"
+        },
+        "href": "/features/user-app"
+      },
+      "media": {
+        "kind": "image",
+        "src": "/hero.jpg",
+        "alt": {
+          "fa": "نمایی از اپ کاربر",
+          "en": "User app preview"
+        }
+      },
+      "animation": {
+        "trigger": "scroll",
+        "effect": "fade-up",
+        "durationMs": 500
+      },
+      "metricsKey": "tile_user_app"
+    },
+    {
+      "id": "coach-app",
+      "type": "showcase",
+      "title": {
+        "fa": "اپ مربی",
+        "en": "Coach App"
+      },
+      "subtitle": {
+        "fa": "رزرو، دوره‌سازی، گزارش جلسات و درآمد",
+        "en": "Bookings, Courses, Session Reports & Earnings"
+      },
+      "cta": {
+        "label": {
+          "fa": "برای مربیان",
+          "en": "For Coaches"
+        },
+        "href": "/features/coach-app"
+      },
+      "media": {
+        "kind": "image",
+        "src": "/hero.jpg",
+        "alt": {
+          "fa": "نمایی از اپ مربی",
+          "en": "Coach app preview"
+        }
+      },
+      "animation": {
+        "trigger": "scroll",
+        "effect": "fade-up",
+        "durationMs": 500
+      },
+      "metricsKey": "tile_coach_app"
+    },
+    {
+      "id": "academy",
+      "type": "showcase",
+      "title": {
+        "fa": "آکادمی",
+        "en": "Academy"
+      },
+      "subtitle": {
+        "fa": "دوره‌های ویدیویی، تمرینات ساختاریافته و مدال‌ها",
+        "en": "Video Courses, Structured Workouts & Badges"
+      },
+      "cta": {
+        "label": {
+          "fa": "دوره‌ها",
+          "en": "Courses"
+        },
+        "href": "/features/academy"
+      },
+      "media": {
+        "kind": "image",
+        "src": "/hero.jpg",
+        "alt": {
+          "fa": "نمایی از آکادمی",
+          "en": "Academy preview"
+        }
+      },
+      "animation": {
+        "trigger": "scroll",
+        "effect": "fade-up",
+        "durationMs": 500
+      },
+      "metricsKey": "tile_academy"
+    },
+    {
+      "id": "clubs",
+      "type": "showcase",
+      "title": {
+        "fa": "باشگاه‌ها",
+        "en": "Clubs"
+      },
+      "subtitle": {
+        "fa": "رزرو باشگاه، چالش‌های گروهی و امتیازها",
+        "en": "Gym Booking, Group Challenges & Points"
+      },
+      "cta": {
+        "label": {
+          "fa": "باشگاه‌ها",
+          "en": "Clubs"
+        },
+        "href": "/features/clubs"
+      },
+      "media": {
+        "kind": "image",
+        "src": "/hero.jpg",
+        "alt": {
+          "fa": "نمایی از باشگاه",
+          "en": "Clubs preview"
+        }
+      },
+      "animation": {
+        "trigger": "scroll",
+        "effect": "fade-up",
+        "durationMs": 500
+      },
+      "metricsKey": "tile_clubs"
+    }
+  ]
+}

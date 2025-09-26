@@ -1,0 +1,11 @@
+model Payment {
+  id             String   @id @default(cuid())
+  userId         String
+  amountCents    Int
+  currency       String
+  status         String   @default("CREATED")
+  idempotencyKey String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  @@index([userId], map: "idx_payment_user")
+}

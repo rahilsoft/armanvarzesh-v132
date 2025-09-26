@@ -1,0 +1,2 @@
+// Generated for Stage 07 planning
+export type MissingGqlOp = 'AddNote' | 'ArchiveClient' | 'AssignPlan' | 'BookReservation' | 'CancelReservation' | 'Client' | 'ClientNotes' | 'Clients' | 'CoachAvailability' | 'CoachReservations' | 'CreateAdmin' | 'CreateAvailability' | 'CreateChallenge' | 'CreateCoach' | 'CreateNotification' | 'CreateNutritionPlan' | 'CreatePayment' | 'CreateProduct' | 'CreateReward' | 'CreateSurvey';

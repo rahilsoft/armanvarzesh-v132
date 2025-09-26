@@ -1,0 +1,54 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model ProgramTemplate {
+  id          String   @id
+  coachId     String
+  name        String
+  status      String   @default("draft") // draft|published
+  currentVersionNumber Int @default(0)
+  createdAt   DateTime @default(now())
+  versions    ProgramTemplateVersion[]
+}
+
+model ProgramTemplateVersion {
+  id          String   @id
+  templateId  String
+  versionNumber Int
+  content     Json
+  createdAt   DateTime @default(now())
+  publishedAt DateTime?
+  template    ProgramTemplate @relation(fields:[templateId], references:[id], onDelete: Cascade)
+  @@unique([templateId, versionNumber])
+}
+
+model ProgramAssignment {
+  id          String   @id
+  templateId  String
+  versionNumber Int
+  coachId     String
+  userId      String
+  assignedAt  DateTime @default(now())
+  completedSessions Int @default(0)
+  lastSessionAt DateTime?
+  template    ProgramTemplate @relation(fields:[templateId], references:[id], onDelete: Cascade)
+  @@unique([templateId, versionNumber, userId])
+}
+
+model PayoutRequest {
+  id          String   @id
+  coachId     String
+  amountCents Int
+  status      String   @default("pending") // pending|approved|paid|rejected
+  createdAt   DateTime @default(now())
+  approvedAt  DateTime?
+  paidAt      DateTime?
+  notes       String?
+}
+
+model DomainEventOutbox {
+  id        String   @id
+  type      String
+  data      Json
+  createdAt DateTime @default(now())
+}

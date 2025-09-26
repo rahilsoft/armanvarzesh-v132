@@ -1,0 +1,9 @@
+Feature,User Story,Steps (PWA),Expected (PWA),Steps (Mobile),Expected (Mobile),Status,Notes
+Workout,Coach creates 5-exercise plan; assigns to client; client logs workout; coach sees progress,Login Coach PWA → Workouts → Create Plan(5) → Assign → Switch to Client PWA → Log,Plan saved; client sees plan; log stored; coach dashboard shows progress,Login Coach Mobile → Create Plan → Assign → Client Mobile → Log,"Same result; parity in options, sets/reps & UX",,
+Nutrition,Coach creates nutrition plan; client views macros,…,…,…,…,,
+Booking,Client books slot; coach sees booking,…,…,…,…,,
+Chat,Client sends message; coach receives (near-real-time),…,…,…,…,,
+Payments,Client purchases VIP; status updated instantly,…,…,…,…,,
+Courses,Coach creates course; client enrolls/opens lesson 1,…,…,…,…,,
+Physio,Client completes corrective plan; coach reviews,…,…,…,…,,
+Affiliate,User generates referral link; signup tracked,…,…,…,…,,

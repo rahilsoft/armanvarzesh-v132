@@ -1,0 +1,61 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Product {
+  id        String   @id
+  kind      String   // plan|booking
+  name      String
+  amountCents Int
+  currency  String   @default("EUR")
+  interval  String?  // month|year for plan
+  createdAt DateTime @default(now())
+}
+
+model CheckoutSession {
+  id        String   @id
+  userId    String
+  productId String
+  amountCents Int
+  currency  String
+  status    String   @default("open") // open|paid|expired|cancelled
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+model PaymentEvent {
+  id        String   @id
+  provider  String
+  eventId   String   @unique
+  type      String
+  sessionId String?
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String   @id
+  userId    String
+  productId String
+  amountCents Int
+  currency  String
+  status    String   @default("paid") // paid|refunded
+  paymentId String
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id          String   @id
+  userId      String
+  planId      String
+  status      String   @default("active") // active|canceled
+  startedAt   DateTime
+  currentPeriodEnd DateTime
+  createdAt   DateTime @default(now())
+}
+
+model DomainEventOutbox {
+  id        String   @id
+  type      String
+  data      Json
+  createdAt DateTime @default(now())
+}

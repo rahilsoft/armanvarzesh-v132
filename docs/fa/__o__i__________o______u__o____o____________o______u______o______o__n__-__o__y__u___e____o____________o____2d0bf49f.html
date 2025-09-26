@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>گزارش فاز ۱ - تقویت معماری</title>
+<style>
+  @font-face { font-family: 'Yekan'; src: local('Yekan'); }
+  @font-face { font-family: 'Far_Nazanin'; src: local('Far_Nazanin'); }
+  body { font-family: Yekan, Far_Nazanin, sans-serif; direction: rtl; line-height: 1.85; font-size: 16px; margin: 2rem; }
+  h1, h2, h3 { margin: 1.2rem 0 .5rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; background: #f6f8fa; padding: .2rem .4rem; border-radius: 4px; }
+  .tag { background:#eef; padding: .25rem .5rem; border-radius: 4px; margin-left: .25rem; }
+</style>
+</head>
+<body>
+  <h1>گزارش فاز ۱ — تقویت معماری و زیرساخت</h1>
+  <p><strong>تاریخ:</strong> 2025-08-18</p>
+  <h2>خلاصه اقدامات انجام‌شده</h2>
+  <ol>
+    <li><strong>اسرار Kubernetes:</strong> حذف <code>k8s/11-secrets.yaml</code> و ایجاد Secret Template برای هر سرویس در <code>k8s/secrets/</code>.</li>
+    <li><strong>برچسب‌های ایمیج:</strong> حذف کامل <span class="tag">latest</span> از Helm و جایگزینی با <code>v2025.08.18</code>. اسکریپت‌های کنترل اضافه شد.</li>
+    <li><strong>مقاوم‌سازی:</strong> افزودن <code>PodDisruptionBudget</code> و <code>NetworkPolicy</code> پیش‌فرض به هر چارت Helm.</li>
+    <li><strong>بهداشت پیکربندی:</strong> ایجاد <code>.env.example</code> برای سرویس‌ها/اپ‌ها و به‌روزرسانی <code>.gitignore</code>.</li>
+    <li><strong>یادداشت:</strong> مهاجرت‌های کدشکن در فاز ۲ همراه با تست انجام خواهد شد.</li>
+  </ol>
+</body>
+</html>

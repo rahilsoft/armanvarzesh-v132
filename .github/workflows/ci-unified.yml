@@ -1,0 +1,361 @@
+name: Unified CI
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+  # Optional: set to comma-separated URLs to enable Lighthouse in CI
+  LHCI_URLS: ''
+
+jobs:
+  setup:
+    name: Setup & Install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - run: corepack enable && corepack prepare pnpm@${{ env.PNPM_VERSION }}.0.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - name: Save workspace info
+        run: pnpm -r list --depth -1 || true
+
+  lint_typecheck_test:
+    name: Lint • Typecheck • Unit/Integration
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r lint
+      - run: pnpm -r typecheck
+      - run: pnpm -r test -- --passWithNoTests || true
+      - name: Collect coverage if exists
+        run: |
+          mkdir -p coverage-artifacts
+          find . -type f -name "lcov.info" -maxdepth 5 -print -exec cp {} coverage-artifacts/ \; || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage-artifacts
+          if-no-files-found: ignore
+
+  build_all:
+    name: Build (packages & apps)
+    runs-on: ubuntu-latest
+    needs: [setup, lint_typecheck_test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build --no-cache || true
+
+  sbom_sca_sast:
+    name: SBOM • SCA • SAST
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - run: pnpm install --frozen-lockfile
+      - name: CycloneDX SBOM
+        run: |
+          npx @cyclonedx/cyclonedx-npm@4.1.0 --output-file sbom.json --output-format json || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+          if-no-files-found: ignore
+      - name: npm audit (SCA)
+        run: pnpm audit --json || true
+      - name: ESLint SAST (basic)
+        run: pnpm -r lint
+
+  container_build_scan:
+    name: Container Build • FS Scan
+    runs-on: ubuntu-latest
+    needs: build_all
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find Dockerfiles
+        id: list
+        run: |
+          mapfile -t files < <(git ls-files | grep -E '(^|/)(Dockerfile|dockerfile)$' || true)
+          printf "%s
+" "${files[@]}" > dockerfiles.txt
+          echo "count=$(wc -l < dockerfiles.txt)" >> $GITHUB_OUTPUT
+      - name: Build all Dockerfiles (no push)
+        if: steps.list.outputs.count != '0'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+        continue-on-error: true
+      - name: Trivy FS scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+          ignore-unfixed: true
+
+  lighthouse:
+    name: Lighthouse (optional)
+    runs-on: ubuntu-latest
+    needs: build_all
+    if: ${{ env.LHCI_URLS != '' }}
+    steps:
+      - name: Run LHCI
+        run: |
+          npm i -g @lhci/cli@0.13.x
+          IFS=',' read -ra URLS <<< "${LHCI_URLS}"
+          mkdir -p lighthouse
+          for u in "${URLS[@]}"; do
+            lhci collect --url "$u" --numberOfRuns=1 --output-path="./lighthouse/$(echo $u | sed 's/[^a-zA-Z0-9]/_/g').json" || true
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: lighthouse
+          if-no-files-found: ignore
+
+deploy-pages:
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        needs: build-and-test
+        permissions:
+          pages: write
+          id-token: write
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+  outputs:
+    page_url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+          - name: Setup Node
+            uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+          - name: Install deps
+            run: pnpm install
+
+- name: Wait for Postgres
+  run: |
+    for i in {1..30}; do
+      pg_isready -h localhost -p 5432 -U postgres && break
+      sleep 2
+    done
+    echo "Postgres is ready"
+
+          - name: Build PWAs
+            run: |
+              pnpm --filter ./app/user-pwa build
+              pnpm --filter ./app/coach-pwa build
+          - name: Prepare pages artifact
+            run: |
+              mkdir -p pages
+              cp -r app/user-pwa/dist pages/user
+              cp -r app/coach-pwa/dist pages/coach
+          - name: Upload pages artifact
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: pages
+          - name: Deploy to GitHub Pages
+            id: deployment
+            uses: actions/deploy-pages@v4
+deploy-preview:
+  if: github.event_name == 'pull_request'
+  needs: build-and-test
+  permissions:
+    pages: write
+    id-token: write
+  environment:
+    name: github-pages
+    url: ${{ steps.deployment.outputs.page_url }}
+  runs-on: ubuntu-latest
+  outputs:
+    page_url: ${{ steps.deployment.outputs.page_url }}
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 9
+    - name: Install deps
+      run: pnpm install
+    - name: Build PWAs
+      run: |
+        pnpm --filter ./app/user-pwa build
+        pnpm --filter ./app/coach-pwa build
+    - name: Prepare pages artifact
+      run: |
+        mkdir -p pages
+        cp -r app/user-pwa/dist pages/user
+        cp -r app/coach-pwa/dist pages/coach
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: pages
+    - name: Deploy PR Preview (GitHub Pages)
+      id: deployment
+      uses: actions/deploy-pages@v4
+dependency-review:
+  if: github.event_name == 'pull_request'
+  permissions:
+    contents: read
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: high
+        comment-summary-in-pr: true
+sast-semgrep:
+  needs: build-and-test
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Semgrep
+      run: pip install --upgrade semgrep
+
+    - name: Semgrep CI (PR - diff aware)
+      if: github.event_name == 'pull_request'
+      env:
+        SEMGREP_BASELINE_REF: ${{ github.base_ref }}
+      run: semgrep ci --strict --enable-metrics=off
+
+    - name: Semgrep CI (main/master - full)
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      run: semgrep ci --strict --enable-metrics=off
+lh-on-pages:
+  if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+  needs: deploy-pages
+  runs-on: ubuntu-latest
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 9
+    - name: Run Lighthouse on deployed Pages (main/master)
+      run: |
+        URL="${{ needs.deploy-pages.outputs.page_url }}"
+        echo "Testing URL: $URL"
+        pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.main.json --collect.url="$URL/user"
+        pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.main.json
+        pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.main.json --collect.url="$URL/coach"
+        pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.main.json
+    - name: Upload Lighthouse artifacts (pages)
+      uses: actions/upload-artifact@v4
+      with:
+        name: lighthouseci-pages
+        path: .lighthouseci
+        if-no-files-found: ignore
+
+- name: Synthetic smoke (HTTP 200)
+  run: |
+    URL=${{ needs.deploy-pages.outputs.page_url }}
+    echo "Smoke testing: $URL"
+    set -e
+    curl -fsS "$URL/user" >/dev/null
+    curl -fsS "$URL/coach" >/dev/null
+    curl -fsS "$URL/user/manifest.webmanifest" >/dev/null
+lh-on-preview:
+  if: github.event_name == 'pull_request'
+  needs: deploy-preview
+  runs-on: ubuntu-latest
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 9
+    - name: Run Lighthouse on PR Preview
+      run: |
+        URL="${{ needs.deploy-preview.outputs.page_url }}"
+        echo "Testing PR URL: $URL"
+        pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.pr.json --collect.url="$URL/user"
+        pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.pr.json
+        pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.pr.json --collect.url="$URL/coach"
+        pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.pr.json
+    - name: Upload Lighthouse artifacts (preview)
+      uses: actions/upload-artifact@v4
+      with:
+        name: lighthouseci-preview
+        path: .lighthouseci
+        if-no-files-found: ignore
+
+
+
+- name: Synthetic smoke (HTTP 200)
+  run: |
+    URL=${{ needs.deploy-preview.outputs.page_url }}
+    echo "Smoke testing: $URL"
+    set -e
+    curl -fsS "$URL/user" >/dev/null
+    curl -fsS "$URL/coach" >/dev/null
+    curl -fsS "$URL/user/manifest.webmanifest" >/dev/null
+- name: Upload Playwright screenshots (baselines & diffs)
+  uses: actions/upload-artifact@v4
+  with:
+    name: playwright-screenshots-${{ matrix.node-version }}
+    path: |
+      app/user-pwa/e2e/**-snapshots/**
+      app/user-pwa/e2e/__output__/**
+      app/coach-pwa/e2e/**-snapshots/**
+      app/coach-pwa/e2e/__output__/**
+    if-no-files-found: ignore

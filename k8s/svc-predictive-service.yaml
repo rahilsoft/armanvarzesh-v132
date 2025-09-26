@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictive-service
+  namespace: armanfit
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: predictive-service
+  template:
+    metadata:
+      labels:
+        app: predictive-service
+    spec:
+      containers:
+            a14
+              initialDelaySeconds: 20
+              periodSeconds: 10
+            a14
+              initialDelaySeconds: 10
+              periodSeconds: 5
+        - name: predictive-service
+          image: ghcr.io/REPLACE_ORG/REPLACE_REPO/predictive-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4114
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: REDIS_URL
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: RABBITMQ_URL
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MINIO_ENDPOINT
+            - name: MINIO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MINIO_PORT
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MINIO_ACCESS_KEY
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MINIO_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: predictive-service
+  namespace: armanfit
+spec:
+  selector:
+    app: predictive-service
+  ports:
+    - port: 4114
+      targetPort: 4114
+      protocol: TCP
+  type: ClusterIP

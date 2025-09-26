@@ -1,0 +1,21 @@
+{
+  "name": "@contracts/nutrition",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"no tests\" && exit 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --max-warnings=0 --ext .ts,.tsx,.js,.jsx || echo \"eslint not configured\"",
+    "start": "node dist/index.js || echo \"no start\"",
+    "dev": "ts-node src/index.ts || echo \"no dev\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

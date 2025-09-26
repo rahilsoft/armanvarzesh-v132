@@ -1,0 +1,16 @@
+import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Request, Response, NextFunction } from 'express';
+
+@Injectable()
+export class StripeRawBodyMiddleware implements NestMiddleware {
+  use(req: Request & { rawBody?: Buffer }, res: Response, next: NextFunction) {
+    if (req.originalUrl.startsWith('/payments/v1/webhooks/stripe')) {
+      let data = Buffer.from('');
+      req.setEncoding('utf8');
+      req.on('data', (chunk) => { data = Buffer.concat([data, Buffer.from(chunk)]); });
+      req.on('end', () => { req.rawBody = data; next(); });
+    } else {
+      next();
+    }
+  }
+}

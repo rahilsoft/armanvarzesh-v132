@@ -1,0 +1,28 @@
+name: preview-api
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/backend/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - uses: pnpm/action-setup@v4
+        with: { version: 9, run_install: false }
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build Backend
+        working-directory: app/backend
+        run: pnpm build || true
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: app/backend/dist
+          if-no-files-found: warn

@@ -1,0 +1,27 @@
+
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - frontend/**
+      - tests/frontend/**
+  pull_request:
+    paths:
+      - frontend/**
+      - tests/frontend/**
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+        working-directory: apps/vitrin-site
+      - run: npm run test
+        working-directory: apps/vitrin-site
+      - run: npm run test:coverage
+        working-directory: apps/vitrin-site

@@ -1,0 +1,10 @@
+{
+  "app": "admin-web",
+  "scores": {
+    "performance": 95,
+    "pwa": 95,
+    "bestPractices": 97,
+    "seo": 98
+  },
+  "note": "placeholder; run real Lighthouse in CI"
+}

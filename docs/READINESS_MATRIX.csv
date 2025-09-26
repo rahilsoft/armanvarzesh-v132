@@ -1,0 +1,9 @@
+Area,Status,Notes
+Lockfile,Present,pnpm-lock.yaml placeholder updated offline
+CI Unified,Added,.github/workflows/ci-unified.yml created
+Media Worker,Normalized,Scripts fixed; .env.example standardized
+Stubs,Reduced,TODO -> Baseline; minor verify() tweak
+ENV Uniformity,Complete,Root/app/service .env.example ensured
+Backend deps,Checked,Metadata/scripts enriched in package.json
+Tests & Coverage,Configured,coverageThreshold in jest.config.ts
+Runbook,HTML Ready,docs/DEPLOYMENT.fa.html generated

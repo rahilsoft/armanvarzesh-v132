@@ -1,0 +1,14 @@
+name: Bug report
+description: Report a bug
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened?, description: Describe the bug }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Steps to reproduce, description: How to reproduce }
+  - type: input
+    id: version
+    attributes: { label: Version/Commit }

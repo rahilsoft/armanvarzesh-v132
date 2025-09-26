@@ -1,0 +1,35 @@
+{
+  "name": "@arman/user-pwa",
+  "private": true,
+  "version": "0.0.0-v69-patched-r4",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rimraf dist || rm -rf dist",
+    "lint": "eslint .",
+    "test": "echo \"no tests\" && exit 0",
+    "start": "node dist/index.js || echo \"no start\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json",
+    "test:e2e": "PLAYWRIGHT_HTML_REPORT=playwright-report playwright test --reporter=html",
+    "test:visual": "PLAYWRIGHT_HTML_REPORT=playwright-report playwright test e2e/visual.spec.ts --reporter=html"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.25.1",
+    "axios": "^1.7.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "vite": "^5.3.1",
+    "@vitejs/plugin-react": "^4.3.1"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

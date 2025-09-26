@@ -1,0 +1,5 @@
+apiVersion: v2
+name: users-service
+description: Helm chart for the users microservice of ArmanFit
+version: 0.1.0
+appVersion: "1.0"

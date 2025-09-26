@@ -1,0 +1,1 @@
+curl "$API/v1/plans" -H "Authorization: Bearer $TOKEN" 

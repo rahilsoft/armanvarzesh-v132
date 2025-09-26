@@ -1,0 +1,43 @@
+backend:
+  image:
+    repository: ghcr.io/arman/backend
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: api.example.com
+    tls:
+      - hosts: [api.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+vitrin-site:
+  image:
+    repository: ghcr.io/arman/vitrin-site
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: www.example.com
+    tls:
+      - hosts: [www.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+sample:
+  image:
+    repository: ghcr.io/arman/sample
+    tag: latest
+  ingress:
+    enabled: true
+    className: nginx
+    certManagerIssuer: letsencrypt-prod
+    hosts:
+      - host: sample.example.com
+    tls:
+      - hosts: [sample.example.com]
+        secretName: "${SECRETNAME}"  # from env/secret manager
+
+# prod-only overrides can go here

@@ -1,0 +1,18 @@
+
+groups:
+- name: armanvarzesh-core
+  rules:
+  - alert: WearablesIngestionLagHigh
+    expr: wearable_ingestion_lag_seconds > 30
+    for: 5m
+    labels: { severity: warning }
+    annotations:
+      summary: "Wearable ingestion lag high"
+      description: "Lag is >30s for 5m"
+  - alert: ApiLatencyHigh
+    expr: histogram_quantile(0.5, sum(rate(http_server_requests_seconds_bucket[5m])) by (le)) > 0.15
+    for: 10m
+    labels: { severity: critical }
+    annotations:
+      summary: "API p50 latency exceeded 150ms"
+      description: "Check gateway and backend services"

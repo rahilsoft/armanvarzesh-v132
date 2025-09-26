@@ -1,0 +1,20 @@
+
+name: Mobile Tests
+on:
+  push:
+    paths:
+      - 'mobile/**'
+      - 'tests/mobile/**'
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'tests/mobile/**'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      - run: npm run test:mobile
+      - run: npm run test:mobile:coverage

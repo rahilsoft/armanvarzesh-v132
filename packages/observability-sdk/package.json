@@ -1,0 +1,53 @@
+{
+  "name": "@arman/observability-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./register": {
+      "require": "./dist/register.js",
+      "import": "./dist/register.mjs",
+      "types": "./dist/register.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/register.ts --dts --format esm,cjs --out-dir dist --clean",
+    "dev": "tsup src/index.ts src/register.ts --watch --dts --format esm,cjs --out-dir dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"no tests\" && exit 0",
+    "lint": "eslint . --max-warnings=0 --ext .ts,.tsx,.js,.jsx || echo \"eslint not configured\"",
+    "start": "node dist/index.js || echo \"no start\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/semantic-conventions": "^1.23.0",
+    "prom-client": "^15.1.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.5.4"
+  },
+  "optionalDependencies": {
+    "@opentelemetry/sdk-node": "^0.52.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.52.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.52.0",
+    "@opentelemetry/resources": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

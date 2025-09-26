@@ -1,0 +1,51 @@
+name: Lighthouse (Main, Strict)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Discover web apps (Next/Vite)
+        id: set-matrix
+        run: |
+          node -e "const fs=require('fs');const {glob}=require('glob');glob('**/package.json',{ignore:['**/node_modules/**','.pnpm/**']},(e,files)=>{const web=files.filter(f=>{try{const j=JSON.parse(fs.readFileSync(f,'utf8'));const d={...(j.dependencies||{}),...(j.devDependencies||{})};return !!(d.next||d.vite);}catch{return false;}}).map(p=>({pkg:require('path').dirname(p)}));const m={include:web};console.log('::set-output name=matrix::'+JSON.stringify(m));});"
+  lh:
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Build (best effort)
+        run: pnpm -C ${{ matrix.pkg }} build || true
+      - name: Lighthouse CI (main, strict)
+        working-directory: ${{ matrix.pkg }}
+        env:
+          PORT: 3000
+        run: npx @lhci/cli@0.13.x autorun --config=../../lighthouserc.main.json --collect.url=http://localhost:3000 --collect.startServerCommand="pnpm dev" --collect.startServerReadyTimeout=120000 --upload.target=temporary-public-storage

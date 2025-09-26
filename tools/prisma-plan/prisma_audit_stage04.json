@@ -1,0 +1,181 @@
+{
+  "schemas_found": 12,
+  "items": [
+    {
+      "schema_path": "apps/backend/src/database/prisma/schema.prisma",
+      "pkg_root": "apps/backend",
+      "package_name": "@arman/backend",
+      "models_count": 28,
+      "models": [
+        "User",
+        "Admin",
+        "Payment",
+        "AnalyticsEntity",
+        "AiEntity",
+        "Challenge",
+        "Cms",
+        "Coach",
+        "Corporate",
+        "Live",
+        "Marketplace",
+        "Meal",
+        "Payroll",
+        "Support",
+        "Survey",
+        "Wallet",
+        "Workout",
+        "Message",
+        "LeaderboardEntry",
+        "AuditLog",
+        "IdempotencyKey",
+        "Reservation",
+        "Notification",
+        "AvailabilitySlot",
+        "Attachment",
+        "Food",
+        "MealLog",
+        "Vod"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "apps/activity-subgraph/prisma/schema.prisma",
+      "pkg_root": "apps/activity-subgraph",
+      "package_name": "@arman/activity-subgraph",
+      "models_count": 5,
+      "models": [
+        "ActivityDaily",
+        "ActivityGoal",
+        "Trend",
+        "Award",
+        "Workout"
+      ],
+      "has_migrations": false
+    },
+    {
+      "schema_path": "apps/social-subgraph/prisma/schema.prisma",
+      "pkg_root": "apps/social-subgraph",
+      "package_name": "@arman/social-subgraph",
+      "models_count": 4,
+      "models": [
+        "Friendship",
+        "Competition",
+        "CompetitionParticipant",
+        "CompetitionDayPoints"
+      ],
+      "has_migrations": false
+    },
+    {
+      "schema_path": "services/payments-service/prisma/schema.prisma",
+      "pkg_root": "services/payments-service",
+      "package_name": "payments-service",
+      "models_count": 7,
+      "models": [
+        "Product",
+        "Coupon",
+        "Customer",
+        "Order",
+        "Payment",
+        "SubscriptionPlan",
+        "Subscription"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/certificate-service/prisma/schema.prisma",
+      "pkg_root": "services/certificate-service",
+      "package_name": "@arman/certificate-service",
+      "models_count": 1,
+      "models": [
+        "Certificate"
+      ],
+      "has_migrations": false
+    },
+    {
+      "schema_path": "services/nutrition-service/prisma/schema.prisma",
+      "pkg_root": "services/nutrition-service",
+      "package_name": "nutrition-service",
+      "models_count": 3,
+      "models": [
+        "FoodItem",
+        "Meal",
+        "NutritionGoal"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/coaches-service/prisma/schema.prisma",
+      "pkg_root": "services/coaches-service",
+      "package_name": "coaches-service",
+      "models_count": 1,
+      "models": [
+        "Coach"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/notifications-service/prisma/schema.prisma",
+      "pkg_root": "services/notifications-service",
+      "package_name": "notifications-service",
+      "models_count": 1,
+      "models": [
+        "Notification"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/workouts-service/prisma/schema.prisma",
+      "pkg_root": "services/workouts-service",
+      "package_name": "workouts-service",
+      "models_count": 3,
+      "models": [
+        "Exercise",
+        "Workout",
+        "WorkoutItem"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/auth-service/prisma/schema.prisma",
+      "pkg_root": "services/auth-service",
+      "package_name": "auth-service",
+      "models_count": 5,
+      "models": [
+        "User",
+        "Session",
+        "RefreshToken",
+        "Device",
+        "PasswordResetToken"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/content-service/prisma/schema.prisma",
+      "pkg_root": "services/content-service",
+      "package_name": "content-service",
+      "models_count": 9,
+      "models": [
+        "SpecialistMeta",
+        "SpecialistScoreHistory",
+        "MediaJob",
+        "Food",
+        "NutritionTemplate",
+        "NutritionPlan",
+        "MealLog",
+        "NotificationTask",
+        "DeviceToken"
+      ],
+      "has_migrations": true
+    },
+    {
+      "schema_path": "services/users-service/prisma/schema.prisma",
+      "pkg_root": "services/users-service",
+      "package_name": "users-service",
+      "models_count": 1,
+      "models": [
+        "User"
+      ],
+      "has_migrations": true
+    }
+  ]
+}

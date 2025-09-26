@@ -1,0 +1,23 @@
+name: Env Guard
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Install dev deps only
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Env guard
+        run: node scripts/env-guard.mjs

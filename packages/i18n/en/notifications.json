@@ -1,0 +1,9 @@
+{
+  "title": "Notifications",
+  "mark_all": "Mark all read",
+  "settings": "Notification Settings",
+  "enable_push": "Enable Push",
+  "loading": "Loading…",
+  "error": "Error",
+  "empty": "No notifications"
+}

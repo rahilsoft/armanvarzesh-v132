@@ -1,0 +1,8 @@
+schema: ${NEXT_PUBLIC_API_URL:http://localhost:3000/graphql}
+documents: "**/*.tsx"
+generates:
+  ./types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

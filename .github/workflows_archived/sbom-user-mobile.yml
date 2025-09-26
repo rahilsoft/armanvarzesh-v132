@@ -1,0 +1,30 @@
+name: SBOM — User Mobile
+on:
+  pull_request:
+    paths:
+      - 'app/user-app/**'
+  workflow_dispatch: {}
+
+jobs:
+  cyclonedx:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app/user-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+      - name: Generate CycloneDX SBOM
+        run: npx @cyclonedx/cyclonedx-npm --output-file sbom.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-user-mobile
+          path: app/user-app/sbom.json

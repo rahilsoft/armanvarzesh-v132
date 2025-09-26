@@ -1,0 +1,35 @@
+
+name: PR QA Comment
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with: { node-version: 20 }
+    - run: npm i -g @lhci/cli@0.13.x
+    - run: npm i -D @playwright/test @axe-core/playwright playwright
+    - run: npx playwright install --with-deps
+    - name: Run Lighthouse
+      run: lhci collect --url="${{ secrets.PREVIEW_BASE_URL }}" --numberOfRuns=1 --output html --out-folder .lhci || true
+    - name: Run Playwright smoke
+      run: npx playwright test tests/web/playwright-smoke.spec.ts
+      env: { BASE_URL: ${{ secrets.PREVIEW_BASE_URL }} }
+    - name: Run axe-core smoke
+      run: node tests/a11y/axe-smoke.js ${{ secrets.PREVIEW_BASE_URL }}
+    - name: Summarize & Comment
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const core = require('@actions/core');
+          const fs = require('fs');
+          let lh = 'n/a'; try { const f = fs.readFileSync('.lhci/manifest.json','utf8'); const m = JSON.parse(f)[0]; lh = m?.summary?.overall || 'n/a'; } catch(e){}
+          const body = `### QA Bot
+          - Lighthouse: **${lh}**
+          - Playwright: ran smoke
+          - axe-core: violations gate (0 => pass)
+          `;
+          github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });

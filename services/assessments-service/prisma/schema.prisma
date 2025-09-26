@@ -1,0 +1,42 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Assessment {
+  id          String     @id
+  code        String     @unique
+  name        String
+  domain      String
+  level       String?
+  durationMin Int        @default(10)
+  sections    Section[]
+  createdAt   DateTime   @default(now())
+}
+
+model Section {
+  id            String     @id
+  assessmentId  String
+  title         String
+  order         Int         @default(0)
+  questions     Question[]
+  assessment    Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id         String  @id
+  sectionId  String
+  type       String  // single|multi|number|boolean
+  text       String
+  options    Json?
+  scoring    Json?   // rule fragment for this question
+  section    Section @relation(fields:[sectionId], references:[id], onDelete: Cascade)
+}
+
+model AssessmentAttempt {
+  id            String   @id
+  userId        String
+  assessmentId  String
+  answers       Json     // [{questionId, value}...]
+  score         Int
+  recommendation Json?
+  createdAt     DateTime @default(now())
+}

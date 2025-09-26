@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" role="img" aria-label="Male Front Anatomy">
+
+    <style>
+      .outline { fill: #ffffff; stroke: #111; stroke-width: 1.2; }
+      .muscle { fill: #e5e7eb; stroke: #111; stroke-width: 0.8; cursor: pointer; transition: fill .15s ease; }
+      .muscle:hover { fill: #d1d5db; }
+      .label { font-family: sans-serif; font-size: 10px; fill: #4b5563; }
+    </style>
+    
+<rect width="200" height="400" fill="#fff"/>
+<title>Male Front Anatomy</title>
+<path class="outline" d="M90,30 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0"/>
+<path class="outline" d="M80,60 q20,-10 40,0 v70 q0,20 -20,20 h-0 q-20,0 -20,-20 z"/>
+<path class="outline" d="M85,150 h30 v20 q-15,10 -30,0 z"/>
+<path class="outline" d="M85,170 v70 q0,10 10,10 h0 q10,0 10,-10 v-70 z"/>
+<path class="outline" d="M115,170 v70 q0,10 10,10 h0 q10,0 10,-10 v-70 z"/>
+<path class="outline" d="M70,80 q-10,10 -10,30 v20 q0,15 10,15"/>
+<path class="outline" d="M130,80 q10,10 10,30 v20 q0,15 -10,15"/>
+<g class="muscle" data-code="deltoids_front" aria-label="سرشانه (جلو)"><ellipse cx="70" cy="85" rx="10" ry="8"/><ellipse cx="130" cy="85" rx="10" ry="8"/></g>
+<g class="muscle" data-code="pec_major" aria-label="سینه"><rect x="85" y="70" width="30" height="20" rx="4"/></g>
+<g class="muscle" data-code="biceps" aria-label="جلو بازو"><ellipse cx="65" cy="115" rx="8" ry="12"/><ellipse cx="135" cy="115" rx="8" ry="12"/></g>
+<g class="muscle" data-code="forearm_flexors" aria-label="ساعد (جلو)"><rect x="55" y="130" width="12" height="25" rx="4"/><rect x="133" y="130" width="12" height="25" rx="4"/></g>
+<g class="muscle" data-code="rectus_abdominis" aria-label="راست شکمی"><rect x="90" y="95" width="20" height="35" rx="4"/></g>
+<g class="muscle" data-code="external_obliques" aria-label="مورب شکمی"><path d="M85,95 l-8,8 v25 l8,-4 z"/><path d="M115,95 l8,8 v25 l-8,-4 z"/></g>
+<g class="muscle" data-code="quads" aria-label="چهارسر"><rect x="85" y="170" width="20" height="40" rx="4"/><rect x="115" y="170" width="20" height="40" rx="4"/></g>
+<g class="muscle" data-code="calves_front" aria-label="ساق (جلو)"><rect x="88" y="215" width="14" height="25" rx="4"/><rect x="118" y="215" width="14" height="25" rx="4"/></g>
+</svg>

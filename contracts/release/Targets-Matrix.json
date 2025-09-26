@@ -1,0 +1,50 @@
+{
+  "coach": {
+    "android": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "ios": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "pwa": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    }
+  },
+  "user": {
+    "android": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "ios": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "pwa": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    }
+  },
+  "admin_panel": {
+    "web": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "pwa": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    }
+  },
+  "website": {
+    "web": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    },
+    "pwa": {
+      "status": "BLOCKED",
+      "reason": "UNRESOLVED_CLIENT_CALLS=46, UNRESOLVED_CLIENT_OPERATIONS=70"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# main.ts not found. Apply the following to your Nest bootstrap:
+import helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
+
+// After creating app:
+app.use(helmet({ contentSecurityPolicy: false }));
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
+const origins = (process.env.ALLOWED_ORIGINS || '').split(',').map(s=>s.trim()).filter(Boolean);
+app.enableCors({ origin: origins.length ? origins : [/^https?:\/\/localhost:\d+$/], credentials: true });

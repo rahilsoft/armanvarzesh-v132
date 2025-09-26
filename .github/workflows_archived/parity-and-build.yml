@@ -1,0 +1,11 @@
+name: parity-and-build
+on: [push, pull_request]
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/parity-check/index.js || (echo "Parity failed" && exit 1)

@@ -1,0 +1,14 @@
+{
+  "payments": "Payments",
+  "checkout": "Checkout",
+  "amount": "Amount",
+  "currency": "Currency",
+  "status": "Status",
+  "pay_now": "Pay now",
+  "success": "Paid",
+  "failed": "Failed",
+  "card": "Card",
+  "add_card": "Add card",
+  "token": "Token",
+  "gateway": "Gateway"
+}

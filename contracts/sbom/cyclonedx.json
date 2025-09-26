@@ -1,0 +1,979 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2025-08-23T09:23:40.309809Z",
+    "tools": [
+      {
+        "vendor": "ArmanVarzesh-Audit",
+        "name": "Static SBOM Generator",
+        "version": "1.0"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "armanvarzesh-monorepo",
+      "version": "0.0.0",
+      "purl": "pkg:npm/armanvarzesh-monorepo@0.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/ui",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/ui@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNLICENSED"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/infra",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/infra@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/awards-engine",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/awards-engine@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/web-core",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/web-core@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/env-config",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/env-config@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/auth",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/auth@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/ui-components",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/ui-components@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/integration",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/integration@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/contracts",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/contracts@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/utils",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/utils@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNLICENSED"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/shared",
+      "version": "0.2.0",
+      "purl": "pkg:npm/arman/shared@0.2.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/observability",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/observability@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/state",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/state@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNLICENSED"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/storage",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/storage@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/libs",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/libs@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/contracts-tests",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/contracts-tests@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/graphql-dataloader",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/graphql-dataloader@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/integrations",
+      "version": "0.0.0",
+      "purl": "pkg:npm/arman/integrations@0.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/integrations-livekit",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/integrations-livekit@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/async-utils",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/async-utils@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNLICENSED"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/resilience",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/resilience@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/theme",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/theme@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/graphql",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/graphql@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/ui-kit-live",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/ui-kit-live@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/http-client",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/http-client@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNLICENSED"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/cache-std",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/cache-std@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/service-kit",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/service-kit@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/client-live",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/client-live@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/auth-kit",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/auth-kit@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/ui-tokens",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/ui-tokens@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/graphql-utils",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/graphql-utils@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/training-load-engine",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/training-load-engine@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "vitrin-site",
+      "version": "0.1.0",
+      "purl": "pkg:npm/vitrin-site@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "armanfit-admin",
+      "version": "1.0.0",
+      "purl": "pkg:npm/armanfit-admin@1.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "armanfit-coach",
+      "version": "1.0.0",
+      "purl": "pkg:npm/armanfit-coach@1.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/backend",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/backend@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/media-worker",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/media-worker@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/live-subgraph",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/live-subgraph@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/activity-subgraph",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/activity-subgraph@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/user-pwa",
+      "version": "0.0.0-v69-patched-r4",
+      "purl": "pkg:npm/arman/user-pwa@0.0.0-v69-patched-r4",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/coach-pwa",
+      "version": "0.0.0-v69-patched-r4",
+      "purl": "pkg:npm/arman/coach-pwa@0.0.0-v69-patched-r4",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "armanfit-user",
+      "version": "1.0.0",
+      "purl": "pkg:npm/armanfit-user@1.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/social-subgraph",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/social-subgraph@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/rewards-service",
+      "version": "0.0.0-v69-patched",
+      "purl": "pkg:npm/arman/rewards-service@0.0.0-v69-patched",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "payments-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/payments-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "predictive-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/predictive-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/certificate-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/certificate-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "ai-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/ai-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/analytics-collector",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/analytics-collector@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "vip-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/vip-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "api-gateway",
+      "version": "0.0.0",
+      "purl": "pkg:npm/api-gateway@0.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/physio-service",
+      "version": "0.0.0-v69-patched",
+      "purl": "pkg:npm/arman/physio-service@0.0.0-v69-patched",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "nutrition-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/nutrition-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/assessments-service",
+      "version": "0.0.0-v69-patched",
+      "purl": "pkg:npm/arman/assessments-service@0.0.0-v69-patched",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "reward-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/reward-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "chat-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/chat-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "marketplace-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/marketplace-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/media-worker",
+      "version": "0.1.0",
+      "purl": "pkg:npm/arman/media-worker@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "assessment-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/assessment-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "monitoring-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/monitoring-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/analytics-service",
+      "version": "0.0.0-v69-patched",
+      "purl": "pkg:npm/arman/analytics-service@0.0.0-v69-patched",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "coaches-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/coaches-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/workers",
+      "version": "0.0.0",
+      "purl": "pkg:npm/arman/workers@0.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "bullmq-worker",
+      "version": "1.0.0",
+      "purl": "pkg:npm/bullmq-worker@1.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "notifications-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/notifications-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "workouts-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/workouts-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "auth-service",
+      "version": "0.0.0",
+      "purl": "pkg:npm/auth-service@0.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "content-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/content-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@arman/booking-service",
+      "version": "0.0.0-v69-patched",
+      "purl": "pkg:npm/arman/booking-service@0.0.0-v69-patched",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "challenges-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/challenges-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "courses-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/courses-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "users-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/users-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "affiliate-service",
+      "version": "0.1.0",
+      "purl": "pkg:npm/affiliate-service@0.1.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "UNKNOWN"
+          }
+        }
+      ]
+    }
+  ]
+}

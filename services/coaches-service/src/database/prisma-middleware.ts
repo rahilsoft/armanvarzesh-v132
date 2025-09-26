@@ -1,0 +1,2 @@
+import { Prisma } from '@prisma/client';
+export function timingMiddleware(): Prisma.Middleware { const slow=Number(process.env.PRISMA_SLOW_MS||300); return async (params,next)=>{ const st=Date.now(); const res=await next(params); const dur=Date.now()-st; if(dur>=slow || String(process.env.PRISMA_LOG_QUERIES||'false')==='true'){ console.log(JSON.stringify({ level:'debug', msg:'prisma', model: params.model, action: params.action, dur })); } return res; } }

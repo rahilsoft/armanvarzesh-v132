@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: certificate-service }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: certificate-service } }
+  template:
+    metadata: { labels: { app: certificate-service } }
+    spec:
+      containers:
+        - name: certificate-service
+          image: your-registry/certificate-service:latest
+          ports: [{ containerPort: 3017 }]
+          env:
+            - name: CERT_SECRET
+              valueFrom: { secretKeyRef: { name: cert-secrets, key: CERT_SECRET } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: certificate-service }
+spec:
+  selector: { app: certificate-service }
+  ports:
+    - port: 80
+      targetPort: 3017

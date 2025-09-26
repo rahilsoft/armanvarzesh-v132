@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: api-gateway }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: api-gateway } }
+  template:
+    metadata: { labels: { app: api-gateway } }
+    spec:
+      containers:
+      - name: api-gateway
+        image: api-gateway:latest
+        ports: [{ containerPort: 8080 }]
+        env:
+        - name: NUTRITION_SERVICE_URL
+          value: {{ .Values.apiGateway.env.NUTRITION_SERVICE_URL | quote }}
+        - name: PAYMENTS_SERVICE_URL
+          value: {{ .Values.apiGateway.env.PAYMENTS_SERVICE_URL | quote }}
+        - name: CONTENT_API_URL
+          value: {{ .Values.apiGateway.env.CONTENT_API_URL | quote }}

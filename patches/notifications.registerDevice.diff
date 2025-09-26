@@ -1,0 +1,16 @@
+--- a/packages/data/notifications/adapter.ts
++++ b/packages/data/notifications/adapter.ts
+@@
+-export async function registerDevice(device: PushDevice){
+-  if(MODE==='mock'){ await delay(60); return { ok:true, device }; }
+-  const res = await fetcher('/api/bff/notifications/register',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(device)}); if(!res.ok) throw new Error('Network'); return await res.json();
+-}
++export async function registerDevice(device: PushDevice){
++  if(MODE==='mock'){ await delay(60); return { ok:true, device }; }
++  const res = await fetcher('/api/bff/notifications/register',{
++    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(device)
++  });
++  if(res.status===409){ return { ok:true, message:'already-registered' }; }
++  if(!res.ok) throw new Error('Network');
++  return await res.json();
++}

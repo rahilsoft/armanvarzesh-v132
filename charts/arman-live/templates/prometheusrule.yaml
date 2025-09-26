@@ -1,0 +1,32 @@
+{{- if .Values.prometheus.rules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "arman-live.fullname" . }}-rules
+  labels: {{- toYaml .Values.prometheus.rules.labels | nindent 4 }}
+spec:
+  groups:
+    - name: arman-live.rules
+      rules:
+        - alert: LiveBackendHealthDown
+          expr: probe_success{job="blackbox", instance=~".*api.*"} == 0
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Backend health down (blackbox)"
+            description: "API health endpoint has been failing for 5 minutes."
+        - alert: LiveNoPurchases30m
+          expr: increase(live_purchases_total[30m]) == 0
+          for: 1h
+          labels: { severity: warning }
+          annotations:
+            summary: "No purchases in last 30m"
+            description: "No successful purchases observed."
+        - alert: LiveNoJoins10m
+          expr: increase(live_joins_total[10m]) == 0
+          for: 30m
+          labels: { severity: info }
+          annotations:
+            summary: "No joins in last 10m"
+            description: "No viewer joins observed; check if live is expected."
+{{- end }}

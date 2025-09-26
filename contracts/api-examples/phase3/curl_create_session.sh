@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/activities/sessions" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"sport":"run","startedAt":"2025-08-30T06:00:00Z","device":{"name":"iPhone"}}'

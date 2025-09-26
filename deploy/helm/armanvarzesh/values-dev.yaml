@@ -1,0 +1,10 @@
+image:
+  repository: ghcr.io/org/armanvarzesh/backend
+  tag: dev
+service:
+  type: ClusterIP
+  port: 80
+env:
+  DATABASE_URL: "postgres://arman:arman@postgres:5432/arman"
+ingress:
+  enabled: false

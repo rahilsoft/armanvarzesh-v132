@@ -1,0 +1,14 @@
+
+name: PR Preview (Ephemeral)
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build preview images (placeholder)
+        run: echo "docker buildx bake"
+      - name: Deploy to preview namespace (placeholder)
+        run: echo "helm upgrade --install av-preview-$(echo $GITHUB_RUN_ID) deploy/helm --set image.tag=$GITHUB_SHA"

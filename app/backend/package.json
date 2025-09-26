@@ -1,0 +1,37 @@
+{
+  "name": "@arman/backend",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"No tests yet\" && exit 0",
+    "clean": "rimraf dist || rm -rf dist",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "dev": "ts-node src/index.ts || echo \"no dev\"",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "graphql": "^16.9.0",
+    "@apollo/server": "^4.10.0",
+    "livekit-server-sdk": "^2.5.0",
+    "stripe": "^18.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "@types/node": "^20.12.12",
+    "@types/express": "^5.0.3",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

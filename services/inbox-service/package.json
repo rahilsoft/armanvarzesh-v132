@@ -1,0 +1,36 @@
+{
+  "name": "inbox-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "ts-node src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma",
+    "prisma:migrate:dev": "prisma migrate dev --name init --schema prisma/schema.prisma",
+    "test": "jest --passWithNoTests",
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.0",
+    "@nestjs/core": "^10.4.0",
+    "@nestjs/platform-express": "^10.4.0",
+    "@prisma/client": "^5.19.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "prom-client": "^15.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2",
+    "ts-node": "^10.9.2",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.12"
+  },
+  "prisma": {
+    "seed": "node ./prisma/seed.ts || node ./seed.ts || true"
+  }
+}

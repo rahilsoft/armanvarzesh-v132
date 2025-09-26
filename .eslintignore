@@ -1,0 +1,3 @@
+apps/**/.next
+**/dist
+coverage

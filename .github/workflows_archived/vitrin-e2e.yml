@@ -1,0 +1,24 @@
+name: vitrin-e2e
+on:
+  workflow_run:
+    workflows: ["vitrin-ci"]
+    types: [completed]
+jobs:
+  e2e:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+      - name: Install browsers
+        run: pnpm --filter vitrin-site dlx playwright install --with-deps
+      - name: Run E2E
+        run: pnpm --filter vitrin-site e2e

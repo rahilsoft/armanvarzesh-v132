@@ -1,0 +1,9 @@
+# Stage 35 — GraphQL Codegen config (placeholder)
+schema: ${CODEGEN_SCHEMA:-http://localhost:3000/graphql}
+documents: 'src/**/*.{ts,tsx,graphql}'
+generates:
+  src/graphql/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo

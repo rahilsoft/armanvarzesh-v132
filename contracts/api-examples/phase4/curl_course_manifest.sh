@@ -1,0 +1,1 @@
+curl "$API/v1/courses/1/manifest" -H "Authorization: Bearer $TOKEN" 

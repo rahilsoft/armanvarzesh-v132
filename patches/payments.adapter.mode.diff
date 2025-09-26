@@ -1,0 +1,5 @@
+--- a/packages/data/payments/adapter.ts
++++ b/packages/data/payments/adapter.ts
+@@
+-const MODE = (process.env.DATA_MODE || 'mock') as 'api'|'mock';
++const MODE = (process.env.DATA_MODE || 'api') as 'api'|'mock';

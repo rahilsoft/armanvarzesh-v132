@@ -1,0 +1,5 @@
+--- a/apps/site-web/src/pages/cart.tsx
++++ b/apps/site-web/src/pages/cart.tsx
+@@
+-        {(data?.items||[]).length===0? <div>سبد خالی است</div> :
++        {(data?.items||[]).length===0? <div>سبد خالی است — <a href="/marketplace">رفتن به فروشگاه</a></div> :

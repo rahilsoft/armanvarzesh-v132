@@ -1,0 +1,61 @@
+name: Docker Build + Trivy Scan
+on:
+  pull_request:
+    paths:
+      - 'app/backend/**'
+      - 'app/site/**'
+      - '.github/workflows/docker-build-scan.yml'
+  workflow_dispatch: {}
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build backend image
+        if: ${{ hashFiles('app/backend/Dockerfile') != '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: app/backend
+          push: false
+          tags: backend:ci
+      - name: Build site image
+        if: ${{ hashFiles('app/site/Dockerfile') != '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: app/site
+          push: false
+          tags: site:ci
+      - name: Trivy scan (fs)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '0'
+          vuln-type: 'os,library'
+          scanners: 'vuln,secret,misconfig'
+          path: .
+      - name: Trivy scan (backend image)
+        if: ${{ hashFiles('app/backend/Dockerfile') != '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'backend:ci'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '1'
+      - name: Trivy scan (site image)
+        if: ${{ hashFiles('app/site/Dockerfile') != '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'site:ci'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '1'

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: user-pwa }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: user-pwa } }
+  template:
+    metadata: { labels: { app: user-pwa } }
+    spec:
+      containers:
+        - name: user-pwa
+          image: your-registry/user-pwa:latest
+          ports: [{ containerPort: 3000 }]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: user-pwa }
+spec:
+  selector: { app: user-pwa }
+  ports:
+    - port: 80
+      targetPort: 3000

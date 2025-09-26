@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "service": "@arman/activity-subgraph",
+      "schema": "apps/activity-subgraph/prisma/schema.prisma",
+      "created_plan_dir": true
+    },
+    {
+      "service": "@arman/social-subgraph",
+      "schema": "apps/social-subgraph/prisma/schema.prisma",
+      "created_plan_dir": true
+    },
+    {
+      "service": "@arman/certificate-service",
+      "schema": "services/certificate-service/prisma/schema.prisma",
+      "created_plan_dir": true
+    }
+  ]
+}

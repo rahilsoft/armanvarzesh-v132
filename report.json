@@ -1,0 +1,100 @@
+{
+  "score": 96,
+  "risks": [
+    {
+      "id": "SEC-CORS-01",
+      "severity": "medium",
+      "where": "apps/backend/src/main.ts",
+      "summary": "CORS overly permissive / headers not enforced",
+      "fix": "Restrict origins; add CSP/HSTS/X-Frame-Options"
+    },
+    {
+      "id": "SEC-DTO-02",
+      "severity": "medium",
+      "where": "apps/backend/src/**/*.controller.ts",
+      "summary": "Lack of DTO validation in new endpoints",
+      "fix": "Add class-validator pipes or Zod schemas"
+    },
+    {
+      "id": "SEC-WEBHOOK-03",
+      "severity": "high",
+      "where": "apps/backend/src/payments/payments.controller.ts",
+      "summary": "Webhook signature check disabled in dev",
+      "fix": "Enable signature verification using secrets from Secret Manager"
+    }
+  ],
+  "matrix": {
+    "Coach": {
+      "PWA": "green",
+      "iOS": "green",
+      "Android": "green"
+    },
+    "User": {
+      "PWA": "green",
+      "iOS": "green",
+      "Android": "green"
+    },
+    "Admin": {
+      "Web": "green",
+      "PWA": "green"
+    },
+    "Site": {
+      "Web": "green",
+      "PWA": "green"
+    }
+  },
+  "actions_top10": [
+    {
+      "title": "Lock CORS & security headers",
+      "impact": "+1 security",
+      "eta_hours": 4
+    },
+    {
+      "title": "DTO validation everywhere",
+      "impact": "+1 quality",
+      "+security": "+1",
+      "eta_hours": 6
+    },
+    {
+      "title": "Verify Stripe/RC webhooks",
+      "impact": "+1 reliability",
+      "+security": "+1",
+      "eta_hours": 3
+    },
+    {
+      "title": "Publish SDK & version contracts",
+      "impact": "devx",
+      "eta_hours": 3
+    },
+    {
+      "title": "Admin campaigns UI",
+      "impact": "productivity",
+      "eta_hours": 12
+    },
+    {
+      "title": "Offline conflict resolution",
+      "impact": "reliability",
+      "eta_hours": 8
+    },
+    {
+      "title": "BullMQ metrics & alerts",
+      "impact": "operability",
+      "eta_hours": 5
+    },
+    {
+      "title": "Payments E2E automation",
+      "impact": "release confidence",
+      "eta_hours": 6
+    },
+    {
+      "title": "Lighthouse in CI",
+      "impact": "perf/SEO gates",
+      "eta_hours": 4
+    },
+    {
+      "title": "SBOM full in CI",
+      "impact": "supply-chain",
+      "eta_hours": 2
+    }
+  ]
+}

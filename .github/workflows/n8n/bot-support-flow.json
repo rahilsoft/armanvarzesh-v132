@@ -1,0 +1,12 @@
+{
+  "name": "Bot Support Flow",
+  "nodes": [
+    {"id":1,"type":"Webhook","parameters":{"path":"support","method":"POST"}},
+    {"id":2,"type":"Function","parameters":{"functionCode":"return { response: 'Support request received' };"}},
+    {"id":3,"type":"SendMessage","parameters":{"channel":"support-channel"}}
+  ],
+  "connections": {
+    "1":{"main":[[{"node":2,"type":"main","index":0}]]},
+    "2":{"main":[[{"node":3,"type":"main","index":0}]]}
+  }
+}

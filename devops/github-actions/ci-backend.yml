@@ -1,0 +1,27 @@
+
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - backend/**
+      - tests/backend/**
+  pull_request:
+    paths:
+      - backend/**
+      - tests/backend/**
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: npm ci
+        working-directory: apps/backend
+      - run: npm run test
+        working-directory: apps/backend
+      - run: npm run test:coverage
+        working-directory: apps/backend

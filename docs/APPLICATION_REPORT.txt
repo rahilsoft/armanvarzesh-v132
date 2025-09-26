@@ -1,0 +1,14 @@
+Applied at: 20250822_063828
+Repo root: /mnt/data/project_src_20250822_063828/armanvarzesh_v57
+
+Phase 1:
+- .gitignore replaced (backup: .gitignore.bak exists: True)
+- package.json merged (engines/packageManager/pnpm.overrides/devDeps)
+
+Phases 2–6 overlay:
+- Files applied: 50 total
+
+Notes:
+- You can run ./build.sh to verify build locally.
+- CI: .github/workflows/ci-unified.yml + common-node-pnpm.yaml are included.
+- Codemagic: codemagic.yaml is included.

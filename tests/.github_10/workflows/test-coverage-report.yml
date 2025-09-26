@@ -1,0 +1,20 @@
+
+name: Code Coverage Report
+
+on: [push, pull_request]
+
+jobs:
+  coverage-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: |
+            backend/coverage/
+            frontend/coverage/
+            mobile/user-app/coverage/
+            mobile/coach-app/coverage/
+            admin-panel/coverage/

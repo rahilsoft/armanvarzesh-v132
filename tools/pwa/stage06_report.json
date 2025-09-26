@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app": "vitrin-site",
+      "dir": "apps/vitrin-site",
+      "created_manifest": false,
+      "created_icon_192": true,
+      "created_icon_512": true,
+      "created_sw": true
+    }
+  ]
+}

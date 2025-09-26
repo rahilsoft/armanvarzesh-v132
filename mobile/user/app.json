@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "ArmanVarzesh User",
+    "slug": "arman-user",
+    "scheme": "arman-user",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#0b1020"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

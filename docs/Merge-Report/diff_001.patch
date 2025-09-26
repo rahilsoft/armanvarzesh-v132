@@ -1,0 +1,50 @@
+### Text-compare: /mnt/data/armanvarzesh/tsconfig.base.json
+
+```
+--- /mnt/data/armanvarzesh/tsconfig.base.json(old)
++++ /mnt/data/armanvarzesh/tsconfig.base.json(incoming)
+@@ -1,23 +1,29 @@
+ {
+   "compilerOptions": {
+-    "target": "ES2020",
+-    "module": "commonjs",
+-    "lib": [
+-      "ES2020",
+-      "DOM"
+-    ],
++    "target": "ES2022",
++    "module": "CommonJS",
++    "moduleResolution": "Node",
+     "strict": true,
++    "noImplicitAny": true,
++    "exactOptionalPropertyTypes": true,
++    "forceConsistentCasingInFileNames": true,
++    "declaration": true,
++    "outDir": "dist",
++    "sourceMap": true,
++    "skipLibCheck": false,
++    "resolveJsonModule": true,
+     "esModuleInterop": true,
+-    "skipLibCheck": true,
+-    "forceConsistentCasingInFileNames": true,
++    "types": [],
+     "baseUrl": ".",
+     "paths": {
+-      "@ui/*": [
+-        "packages/ui/*"
+-      ],
+-      "@libs/*": [
+-        "packages/libs/*"
++      "@arman/*": [
++        "packages/*/src"
+       ]
+     }
+-  }
++  },
++  "exclude": [
++    "node_modules",
++    "dist",
++    "build"
++  ]
+ }
+```

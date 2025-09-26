@@ -1,0 +1,41 @@
+Module,Operation,Steps,Expected,Status,Notes
+reservations,Search,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Filter by date/coach/user,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Bulk actions,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Export (CSV),Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Edit/Update,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Cancel/Revoke,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,Audit trail,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+reservations,RBAC enforced,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Search,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Filter by date/coach/user,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Bulk actions,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Export (CSV),Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Edit/Update,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Cancel/Revoke,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,Audit trail,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+physio,RBAC enforced,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Search,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Filter by date/coach/user,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Bulk actions,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Export (CSV),Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Edit/Update,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Cancel/Revoke,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,Audit trail,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+vip,RBAC enforced,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Search,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Filter by date/coach/user,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Bulk actions,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Export (CSV),Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Edit/Update,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Cancel/Revoke,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,Audit trail,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+affiliate,RBAC enforced,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Search,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Filter by date/coach/user,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Bulk actions,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Export (CSV),Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Edit/Update,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Cancel/Revoke,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,Audit trail,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence
+certificate,RBAC enforced,Steps,Expected Result,Status (Pass/Fail),Notes/Evidence

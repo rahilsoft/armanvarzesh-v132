@@ -1,0 +1,80 @@
+services:
+
+live-subgraph:
+  build: ./app/live-subgraph
+  environment:
+    - PORT=4004
+    - RECORDINGS_DIR=/recordings
+    - RECORDINGS_BASE_URL=http://localhost:9000/recordings
+  volumes:
+    - ./_recordings:/recordings
+  ports:
+    - "4004:4004"
+  depends_on:
+    - postgres
+    - rabbitmq
+
+activity-subgraph:
+  build: ./app/activity-subgraph
+  environment:
+    - PORT=4005
+    - DATABASE_URL=${DATABASE_URL}
+  ports:
+    - "4005:4005"
+  depends_on:
+    - postgres
+
+social-subgraph:
+  build: ./app/social-subgraph
+  environment:
+    - PORT=4006
+    - DATABASE_URL=${DATABASE_URL}
+  ports:
+    - "4006:4006"
+  depends_on:
+    - postgres
+
+
+  auth-service:
+    build: ./services/auth-service
+    environment:
+      JWT_SECRET: "${JWT_SECRET}"  # from env/secret manager
+    ports: [ "4000:4000" ]
+
+
+  api-gateway:
+    build: ./services/api-gateway
+    environment:
+      CONTENT_SERVICE_URL: http://content-service:3000/graphql
+      CONTENT_WS_URL: ws://content-service:3000/ws
+      JWT_SECRET: "${JWT_SECRET}"  # from env/secret manager
+    ports: [ "8080:8080" ]
+    depends_on:
+      - content-servicehealthcheck:
+  test: ["CMD-SHELL", "wget -qO- http://localhost:4089/ready || exit 1"]
+  interval: 5s
+  timeout: 3s
+  retries: 30
+
+
+# added by phase2
+x-default-healthcheck: &default-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
+    interval: 30s
+    timeout: 3s
+    retries: 3
+
+otel-collector:
+  image: otel/opentelemetry-collector-contrib:0.97.0
+  command: ["--config=/etc/otel-collector.yaml"]
+  volumes:
+    - ./infra/observability/otel-collector.yaml:/etc/otel-collector.yaml:ro
+  ports: ["4317:4317","4318:4318"]
+  depends_on:
+    - prometheus
+
+tempo:
+  image: grafana/tempo:2.5.0
+  ports: ["3200:3200","4317:4317","4318:4318"]
+  command: ["-config.expand-env=true"]

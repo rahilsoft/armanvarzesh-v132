@@ -1,0 +1,150 @@
+{
+  "timestamp": "2025-08-23T11:12:52.783464Z",
+  "package_created": "packages/security-middleware",
+  "patched_entries": [
+    {
+      "entry": "apps/activity-subgraph/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "apps/armanfit-admin/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "apps/backend/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "apps/live-subgraph/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "apps/social-subgraph/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "packages/contracts/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "packages/service-kit/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "packages/shared/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "packages/ui-components/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "packages/ui-tokens/src/main.ts",
+      "result": "import_only"
+    },
+    {
+      "entry": "services/affiliate-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/ai-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/analytics-collector/src/index.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/analytics-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/assessment-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/assessments-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/auth-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/booking-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/certificate-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/challenges-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/chat-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/coaches-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/content-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/courses-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/marketplace-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/monitoring-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/notifications-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/nutrition-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/payments-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/physio-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/predictive-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/reward-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/rewards-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/users-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/vip-service/src/main.ts",
+      "result": "patched:app"
+    },
+    {
+      "entry": "services/workouts-service/src/main.ts",
+      "result": "patched:app"
+    }
+  ]
+}

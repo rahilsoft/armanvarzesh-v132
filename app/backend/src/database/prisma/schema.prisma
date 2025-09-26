@@ -1,0 +1,416 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  password  String?
+  role      String?
+  createdAt DateTime  @default(now())
+
+  // relations
+  payments        Payment[]
+  analytics       AnalyticsEntity[]
+  aiEntities      AiEntity[]
+  meals           Meal[]
+  workouts        Workout[]
+  wallet          Wallet?
+  messages        Message[]
+  leaderboard     LeaderboardEntry[]
+}
+
+model Admin {
+
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  amount    Int
+  authority String @unique
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_Payment_userId")
+  @@index([status, createdAt], map: "idx_Payment_status_createdAt")
+}
+
+model AnalyticsEntity {
+
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  kpi        String
+  value      Int
+  recordedAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_AnalyticsEntity_userId")
+}
+
+model AiEntity {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int?
+  plan      String
+
+  user User? @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_AiEntity_userId")
+}
+
+model Challenge {
+
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  duration    Int
+  createdAt   DateTime @default(now())
+}
+
+model Cms {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  title     String
+  body      String
+  category  String?
+}
+
+model Coach {
+
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  expertise String
+  createdAt DateTime @default(now())
+}
+
+model Corporate {
+
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  companyName String
+  industry    String
+}
+
+model Live {
+
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  startedAt   DateTime @default(now())
+}
+
+model Marketplace {
+
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  createdAt   DateTime @default(now())
+}
+
+model Meal {
+
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  date      DateTime?
+  kcal      Int
+  macros    Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_Meal_userId")
+}
+
+model Payroll {
+
+  id        Int      @id @default(autoincrement())
+  coachName String
+  amount    Int
+  period    String
+  createdAt DateTime @default(now())
+}
+
+model Support {
+
+  id        Int      @id @default(autoincrement())
+  userEmail String
+  subject   String
+  message   String
+  status    String
+  createdAt DateTime @default(now())
+  @@index([status, createdAt], map: "idx_Support_status_createdAt")
+}
+
+model Survey {
+
+  id        Int      @id @default(autoincrement())
+  title     String
+  question  String
+  createdAt DateTime @default(now())
+}
+
+model Wallet {
+
+  id        Int      @id @default(autoincrement())
+  userId    Int  @unique
+  balance   Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_Wallet_userId")
+}
+
+model Workout {
+
+  id        Int      @id @default(autoincrement())
+  title     String
+  data      Json
+  userId    Int?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_Workout_userId")
+}
+
+model Message {
+  id           Int       @id @default(autoincrement())
+  senderId     Int
+  receiverId   Int
+  content      String
+  attachmentId Int?
+  createdAt    DateTime  @default(now())
+
+  sender User  @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  attachment  Attachment? @relation(fields: [attachmentId], references: [id])
+
+  @@index([senderId, receiverId, createdAt], map: "idx_Message_pair_time")
+
+  @@index([receiverId, createdAt], map: "idx_Message_inbox_time")
+  @@index([attachmentId])  // added by phase5
+}
+model LeaderboardEntry {
+
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  xp        Int
+  calories  Int
+  sessions  Int
+  timeframe String
+  date      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId], map: "idx_LeaderboardEntry_userId")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  event     String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([event, createdAt])
+}
+
+
+model IdempotencyKey {
+  key        String   @id
+  requestHash String?
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+
+model Reservation {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  resourceId Int
+  startsAt   DateTime
+  endsAt     DateTime
+  status     String   @default("active")
+  version    Int      @default(1)
+
+  @@unique([resourceId, startsAt, endsAt])
+  @@index([userId, startsAt, endsAt])
+  @@index([resourceId])  // added by phase5
+}
+
+
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  text      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId, read, createdAt], map: "idx_Notification_user_read_createdAt")
+}
+
+model AvailabilitySlot {
+  id        Int      @id @default(autoincrement())
+  coachId   Int
+  startsAt  DateTime
+  endsAt    DateTime
+  rrule     String?  // RRULE (optional)
+  createdAt DateTime @default(now())
+
+  @@index([coachId, startsAt, endsAt], map: "idx_Availability_coach_time")
+  @@unique([coachId, startsAt, endsAt], map: "uq_Availability_coach_time")
+}
+
+model Attachment {
+  thumbKey   String?
+  id          Int      @id @default(autoincrement())
+  key         String
+  contentType String
+  width       Int?
+  height      Int?
+  durationSec Int?
+  createdAt   DateTime @default(now())
+
+  @@index([key], map: "idx_Attachment_key")
+}
+
+model Food {
+  id        Int      @id @default(autoincrement())
+  title     String
+  barcode   String?  @unique
+  protein   Float
+  carbs     Float
+  fat       Float
+  calories  Float    // per 100g
+  createdAt DateTime @default(now())
+
+  @@index([title], map: "idx_food_title")
+}
+
+model MealLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  foodId    Int
+  grams     Int
+  createdAt DateTime @default(now())
+
+  food Food @relation(fields: [foodId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  @@index([userId, createdAt], map: "idx_meallog_user_time")
+  @@index([foodId])  // added by phase5
+}
+
+
+enum VodStatus {
+  started
+  updated
+  ended
+}
+
+model Vod {
+  id        String    @id
+  room      String
+  url       String?
+  filepath  String?
+  status    VodStatus
+  startedAt DateTime?
+  endedAt   DateTime?
+  duration  Int?
+  meta      Json?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([room, status])
+}
+
+// Added by development: models for specialists, ratings, conversations, courses and content.
+enum SpecialistType {
+  COACH
+  NUTRITIONIST
+  CORRECTIVE
+}
+
+enum ContentType {
+  WORKOUT
+  NUTRITION
+  CORRECTIVE
+}
+
+model Specialist {
+  id          Int           @id @default(autoincrement())
+  userId      Int           @unique
+  type        SpecialistType
+  bio         String?
+  videoUrl    String?
+  rating      Float         @default(0)
+  createdAt   DateTime      @default(now())
+
+  user        User          @relation(fields: [userId], references: [id])
+  courses     Course[]
+  contents    Content[]
+  ratings     SpecialistRating[]
+  @@index([userId])  // added by phase5
+}
+
+model SpecialistRating {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  score        Int
+  comment      String?
+  createdAt    DateTime @default(now())
+
+  user         User      @relation(fields: [userId], references: [id])
+  specialist   Specialist @relation(fields: [specialistId], references: [id])
+  @@index([specialistId, userId], map: "idx_Rating_specialist_user")
+}
+
+model Conversation {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  participants User[]    @relation("ConversationParticipants")
+  messages    Message[]
+}
+
+model Content {
+  id           Int         @id @default(autoincrement())
+  specialistId Int
+  type         ContentType
+  title        String
+  description  String?
+  videoUrl     String?
+  createdAt    DateTime    @default(now())
+
+  specialist   Specialist  @relation(fields: [specialistId], references: [id])
+  @@index([specialistId], map: "idx_Content_specialistId")
+}
+
+model Course {
+  id           Int        @id @default(autoincrement())
+  specialistId Int
+  title        String
+  description  String?
+  price        Int
+  duration     Int
+  createdAt    DateTime   @default(now())
+
+  specialist   Specialist @relation(fields: [specialistId], references: [id])
+  @@index([specialistId], map: "idx_Course_specialistId")
+}

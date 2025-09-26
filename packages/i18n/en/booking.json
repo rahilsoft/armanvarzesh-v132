@@ -1,0 +1,13 @@
+{
+  "create_title": "New Booking",
+  "list_title": "My Bookings",
+  "detail_title": "Booking Detail",
+  "submit": "Submit",
+  "cancel": "Cancel",
+  "when": "When",
+  "notes": "Notes",
+  "loading": "Loading…",
+  "error": "An error occurred",
+  "empty": "No items found",
+  "success": "Saved successfully"
+}

@@ -1,0 +1,27 @@
+name: Live CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - name: Enable corepack & pnpm
+        run: |
+          corepack enable
+          corepack use pnpm@9.6.0
+      - name: Install
+        run: pnpm -w install --frozen-lockfile=false
+      - name: Lint (if configured)
+        run: pnpm -w -r run lint || true
+      - name: Test Backend
+        run: pnpm --filter @arman/backend test -- --ci --passWithNoTests

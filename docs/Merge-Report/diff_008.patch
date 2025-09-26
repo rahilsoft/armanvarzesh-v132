@@ -1,0 +1,20 @@
+### Text-compare: /mnt/data/armanvarzesh/packages/ui/package.json
+
+```
+--- /mnt/data/armanvarzesh/packages/ui/package.json(old)
++++ /mnt/data/armanvarzesh/packages/ui/package.json(incoming)
+@@ -1,7 +1,12 @@
+ {
+   "name": "@arman/ui",
+   "version": "0.1.0",
++  "private": true,
+   "main": "index.ts",
+   "types": "index.ts",
+-  "private": true
++  "license": "UNLICENSED",
++  "peerDependencies": {
++    "react": ">=17"
++  },
++  "sideEffects": false
+ }
+```

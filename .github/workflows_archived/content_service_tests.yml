@@ -1,0 +1,19 @@
+
+name: Content Service Tests
+on:
+  push:
+    paths: ['services/content-service/**']
+  pull_request:
+    paths: ['services/content-service/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: corepack enable && corepack prepare pnpm@9.7.0 --activate
+      - run: pnpm i --frozen-lockfile=false
+      - run: pnpm --filter content-service test -- --runInBand

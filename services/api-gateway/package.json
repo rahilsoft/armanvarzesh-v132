@@ -1,0 +1,28 @@
+{
+  "name": "api-gateway",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/main.js",
+    "start": "node src/main.js",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"No tests yet\" && exit 0",
+    "clean": "rimraf dist || rm -rf dist",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "dependencies": {
+    "fastify": "^5.6.0",
+    "@fastify/cors": "^11.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "undici": "^7.16.0",
+    "ws": "^8.17.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

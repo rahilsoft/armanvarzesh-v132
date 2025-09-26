@@ -1,0 +1,43 @@
+{
+  "title": "Arman KPI \u2014 HTTP & Queue",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "HTTP p95 latency (s)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le,service))"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP error rate (5xx %)",
+      "targets": [
+        {
+          "expr": "100 * (sum(rate(http_requests_total{code=~\"5..\"}[5m])) by (service)) / ignoring(code) group_left sum(rate(http_requests_total[5m])) by (service)"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Completed Jobs (per min)",
+      "targets": [
+        {
+          "expr": "sum(rate(queue_job_completed_total[1m])) by (queue)"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Failed Jobs (per min)",
+      "targets": [
+        {
+          "expr": "sum(rate(queue_job_failed_total[1m])) by (queue)"
+        }
+      ]
+    }
+  ]
+}

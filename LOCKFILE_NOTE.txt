@@ -1,0 +1,7 @@
+# NOTE: This is NOT a real pnpm-lock.yaml.
+# In this offline environment (no pnpm / no network), generating a real lockfile is impossible.
+# ACTION REQUIRED (CI or local dev):
+#   1) pnpm install
+#   2) pnpm dedupe
+#   3) pnpm install --lockfile-only
+# Then commit the generated pnpm-lock.yaml.

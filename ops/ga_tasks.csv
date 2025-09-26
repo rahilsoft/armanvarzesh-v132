@@ -1,0 +1,9 @@
+id,title,owner,priority,estimate_d,risk,deps
+GA-01,Remove 'unsafe-inline' from CSP with nonces,FE,P0,2,M,
+GA-02,Wire OTLP exporter to collector,FE/DevOps,P1,0.5,L,
+GA-03,Implement payment webhook signature verify,BFF,P0,1,M,
+GA-04,API rate limiting (per IP/user),BFF,P1,1,M,
+GA-05,E2E negative paths (payments/network),QA,P1,1,L,
+GA-06,i18n gaps and plurals,FE,P2,1,L,
+GA-07,CWV polish for /coaches /marketplace,FE,P2,1,L,
+GA-08,Backups & restore dry-run,DevOps,P0,0.5,L,

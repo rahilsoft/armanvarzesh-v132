@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/habits" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"type":"water","target":3000,"cadence":{"daily":true},"tz":"Europe/Amsterdam"}'

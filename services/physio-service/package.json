@@ -1,0 +1,43 @@
+{
+  "name": "@arman/physio-service",
+  "private": true,
+  "version": "0.0.0-v69-patched",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "clean": "rimraf dist || rm -rf dist",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "test": "echo \"NO_TESTS\" && exit 0",
+    "start:dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/main.ts || nest start --watch",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy || prisma migrate dev",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/core": "^10.3.0",
+    "@nestjs/platform-express": "^10.3.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "prom-client": "^15.1.3",
+    "@arman/observability-sdk": "workspace:*",
+    "@arman/security-middleware": "workspace:*",
+    "helmet": "^7.0.0",
+    "express-rate-limit": "^7.0.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "prisma": "^5.18.0",
+    "@prisma/client": "^5.18.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

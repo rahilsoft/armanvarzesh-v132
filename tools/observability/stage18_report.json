@@ -1,0 +1,6 @@
+{
+  "wired_services": [
+    "services/rewards-service",
+    "services/payments-service"
+  ]
+}

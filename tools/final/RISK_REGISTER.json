@@ -1,0 +1,87 @@
+{
+  "source": {
+    "adj_present": true,
+    "api_map_present": true
+  },
+  "risks": [
+    {
+      "key": "API_GQL_SERVER_UNUSED",
+      "severity": "medium",
+      "status": "open",
+      "description": "عملیات GraphQL روی سرور تعریف شده اما کلاینت مصرف نمی‌کند (پاکسازی یا مصرف لازم).",
+      "evidence": {
+        "adj": null,
+        "scan": 6
+      }
+    },
+    {
+      "key": "API_GQL_CLIENT_MISSING",
+      "severity": "high",
+      "status": "open",
+      "description": "عملیات GraphQL در کلاینت وجود دارد اما در سرور پیاده‌سازی نشده (باید Resolver/Service اضافه شود).",
+      "evidence": {
+        "adj": null,
+        "scan": 70
+      }
+    },
+    {
+      "key": "API_REST_SERVER_UNUSED",
+      "severity": "medium",
+      "status": "open",
+      "description": "روت‌های REST روی سرور تعریف شده اما کلاینتی مصرف نمی‌کند (حذف/مستندسازی).",
+      "evidence": {
+        "adj": null,
+        "scan": 43
+      }
+    },
+    {
+      "key": "API_REST_CLIENT_MISSING",
+      "severity": "high",
+      "status": "open",
+      "description": "فراخوان REST در کلاینت وجود دارد ولی مسیر معادل روی سرور نیست (افزودن Endpoint یا هم‌ترازی URL).",
+      "evidence": {
+        "adj": null,
+        "scan": 38
+      }
+    },
+    {
+      "key": "DB_MIGRATION_GAP",
+      "severity": "high",
+      "status": "open",
+      "description": "کاندیدهای Migration در Prisma (ایجاد INIT.sql و resolve در dev).",
+      "evidence": {
+        "adj": null
+      }
+    },
+    {
+      "key": "DB_UNEXPOSED_FIELDS",
+      "severity": "medium",
+      "status": "open",
+      "description": "فیلدهای Prisma که در DTO/Resolver اکسپوز نشده‌اند (بازبینی دامنه‌محور).",
+      "evidence": {
+        "adj": null
+      }
+    },
+    {
+      "key": "WORKER_PRODUCER_ONLY",
+      "severity": "high",
+      "status": "open",
+      "description": "Jobهای BullMQ که فقط Producer دارند (باید Worker و Health اضافه شود).",
+      "evidence": {
+        "adj": null
+      }
+    },
+    {
+      "key": "BUILD_BASELINE",
+      "severity": "medium",
+      "status": "mitigated",
+      "description": "در چند پکیج نبود tsconfig.build و build scripts ریسک بیلد ایجاد می‌کرد (اکنون بخش زیادی رفع شد؛ باقی را در اتصال واقعی بررسی کنید).",
+      "evidence": {
+        "adj": {
+          "tsconfig_build_missing": null,
+          "build_scripts_missing": null
+        }
+      }
+    }
+  ]
+}

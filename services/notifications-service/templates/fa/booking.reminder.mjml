@@ -1,0 +1,4 @@
+<mjml><mj-body><mj-section><mj-column>
+<mj-text>یادآوری رزرو</mj-text>
+<mj-text>سلام {{userName}}، قرار شما تا {{minutesLeft}} دقیقهٔ دیگر شروع می‌شود.</mj-text>
+</mj-column></mj-section></mj-body></mjml>

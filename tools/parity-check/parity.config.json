@@ -1,0 +1,23 @@
+{
+  "features": [
+    "workouts",
+    "nutrition",
+    "booking",
+    "chat",
+    "payments",
+    "notifications",
+    "marketplace",
+    "rewards",
+    "assessments",
+    "monitoring",
+    "coaches",
+    "analytics",
+    "courses",
+    "ai",
+    "physio",
+    "vip",
+    "affiliate"
+  ],
+  "coachPwaRoot": "apps/coach-pwa/app",
+  "clientPwaRoot": "apps/user-pwa/app"
+}

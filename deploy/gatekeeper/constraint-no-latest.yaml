@@ -1,0 +1,8 @@
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedImageTags
+metadata: { name: forbid-latest }
+spec:
+  match: { kinds: [{ apiGroups: [""], kinds: ["Pod"] }] }
+  parameters:
+    deniedTags: ["latest"]

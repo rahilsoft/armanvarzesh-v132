@@ -1,0 +1,1 @@
+curl "$API/v1/activities/1/summary" -H "Authorization: Bearer $TOKEN" 

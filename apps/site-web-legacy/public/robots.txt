@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://armanvarzesh.example/sitemap.xml

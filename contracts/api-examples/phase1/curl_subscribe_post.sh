@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/subscriptions" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"planId":"pro-monthly","platform":"ios","receipt":"<opaque>"}'

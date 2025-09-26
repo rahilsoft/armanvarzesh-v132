@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-08-23T11:30:50.667422Z",
+  "pwa_changes": [
+    {
+      "app": "apps/user-pwa",
+      "manifest": true,
+      "sw": true,
+      "icons": [
+        "apps/user-pwa/public/icons/icon-192.png",
+        "apps/user-pwa/public/icons/icon-512.png"
+      ]
+    },
+    {
+      "app": "apps/coach-pwa",
+      "manifest": true,
+      "sw": true,
+      "icons": [
+        "apps/coach-pwa/public/icons/icon-192.png",
+        "apps/coach-pwa/public/icons/icon-512.png"
+      ]
+    },
+    {
+      "app": "apps/vitrin-site",
+      "manifest": true,
+      "sw": false,
+      "icons": []
+    }
+  ],
+  "workflows_added": [
+    ".github/workflows/lighthouse.yml",
+    ".github/workflows/backend-e2e.yml",
+    ".github/workflows/openapi-validate.yml"
+  ],
+  "scripts_added": [
+    "scripts/e2e-backend.mjs",
+    "scripts/validate-openapi.mjs"
+  ],
+  "root_devDependencies": [
+    "@apidevtools/swagger-parser",
+    "yaml"
+  ],
+  "lighthouserc": true
+}

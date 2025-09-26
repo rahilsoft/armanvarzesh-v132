@@ -1,0 +1,45 @@
+
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"  # from env/secret manager
+      POSTGRES_DB: armanvarzesh
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+  app:
+    build:
+      context: ..
+      dockerfile: scripts/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://username:password@db:5432/armanvarzesh
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=supersecretjwtkey
+      - KAVENEGAR_API_KEY= "__CHANGE_ME__"
+      - ZARINPAL_MERCHANT_ID= "__CHANGE_ME__"
+    depends_on:
+      - db
+      - redis
+volumes:
+  dbdata:
+
+# added by phase2
+x-default-healthcheck: &default-healthcheck
+  healthcheck:
+    test: ["CMD-SHELL", "wget -qO- http://localhost:${PORT:-3000}/health || exit 1"]
+    interval: 30s
+    timeout: 3s
+    retries: 3

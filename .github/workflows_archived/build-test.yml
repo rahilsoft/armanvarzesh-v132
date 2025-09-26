@@ -1,0 +1,22 @@
+name: build-and-test
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install PNPM
+        run: npm i -g pnpm
+      - name: Install deps
+        run: pnpm i --no-frozen-lockfile || pnpm i
+      - name: Parity check
+        run: node tools/parity-check/index.js
+      - name: Build PWAs
+        run: |
+          pnpm --filter ./app/coach-pwa run build || true
+          pnpm --filter ./app/user-pwa run build || true
+          pnpm --filter ./app/admin-panel run build || true
+      - name: Build Certificate Service
+        run: pnpm --filter @arman/certificate-service run build || true

@@ -1,0 +1,50 @@
+{
+  "info": {
+    "name": "ArmanVarzesh Smoke",
+    "_postman_id": "00000000-0000-0000-0000-000000000001",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Backend Health",
+      "request": {
+        "method": "GET",
+        "url": "{{API_BASE}}/healthz"
+      }
+    },
+    {
+      "name": "Web Home",
+      "request": {
+        "method": "GET",
+        "url": "{{WEB_BASE}}/"
+      }
+    },
+    {
+      "name": "GraphQL Sanity",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"query\":\"query { __typename }\"}"
+        },
+        "url": "{{API_BASE}}/graphql"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "API_BASE",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "WEB_BASE",
+      "value": "http://localhost:3000"
+    }
+  ]
+}

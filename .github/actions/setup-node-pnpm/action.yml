@@ -1,0 +1,24 @@
+
+name: setup-node-pnpm
+description: Setup Node (LTS) with PNPM via corepack
+inputs:
+  node-version:
+    required: false
+    default: '20.x'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+    - name: Enable corepack
+      shell: bash
+      run: corepack enable
+    - name: Show versions
+      shell: bash
+      run: |
+        node -v
+        corepack -v
+        pnpm -v || true

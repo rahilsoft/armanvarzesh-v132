@@ -1,0 +1,43 @@
+
+{{- $svc := dict "gateway" .Values.images.gateway "nutrition" .Values.images.nutrition "activities" .Values.images.activities "challenges" .Values.images.challenges "courses" .Values.images.courses "kpis" .Values.images.kpis "affiliate" .Values.images.affiliate "inbox" .Values.images.inbox "assessments" .Values.images.assessments "rewards" .Values.images.rewards "medical" .Values.images.medical -}}
+{{- range $name, $image := $svc }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: {{ $name }} }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: {{ $name }} } }
+  template:
+    metadata: { labels: { app: {{ $name }} } }
+    spec:
+      containers:
+      - name: {{ $name }}
+        image: {{ $image }}
+        ports: [{ containerPort: {{ ternary 8080 3000 (eq $name "gateway") }} }]
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: {{ ternary 8080 3000 (eq $name "gateway") }}
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        resources:
+          requests: { cpu: "100m", memory: "128Mi" }
+          limits: { cpu: "500m", memory: "512Mi" }
+        env:
+{{- if eq $name "gateway" }}
+{{- range $k, $v := $.Values.apiGateway.env }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+{{- end }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata: { name: {{ $name }} }
+spec:
+  selector: { app: {{ $name }} }
+  ports:
+  - port: {{ ternary 8080 3000 (eq $name "gateway") }}
+    targetPort: {{ ternary 8080 3000 (eq $name "gateway") }}
+{{- end }}

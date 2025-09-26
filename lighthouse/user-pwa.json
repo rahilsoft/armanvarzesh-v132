@@ -1,0 +1,10 @@
+{
+  "app": "user-pwa",
+  "scores": {
+    "performance": 96,
+    "pwa": 100,
+    "bestPractices": 98,
+    "seo": 97
+  },
+  "note": "placeholder; run real Lighthouse in CI"
+}

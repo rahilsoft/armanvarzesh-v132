@@ -1,0 +1,284 @@
+{
+  "plan": [
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "AddNote",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "ArchiveClient",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "AssignPlan",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "BookReservation",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CancelReservation",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "Client",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "ClientNotes",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "Clients",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CoachAvailability",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CoachReservations",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateAdmin",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateAvailability",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateChallenge",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateCoach",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateNotification",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateNutritionPlan",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreatePayment",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateProduct",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateReward",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "gql_op_missing_on_server",
+      "operation": "CreateSurvey",
+      "action": "ADD_SERVER_RESOLVER_STUB",
+      "owner": "backend:api-gateway or respective microservice",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /affiliate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /ai",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /analytics",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/affiliate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/ai",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/analytics",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/assessments",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/booking",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/certificate",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/chat",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/coaches",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/courses",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/marketplace",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/metrics",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/monitoring",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/notifications",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/nutrition",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/payments",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/physio",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    },
+    {
+      "type": "rest_client_call_without_server_route",
+      "call": "GET /api/rewards",
+      "action": "EITHER_ADD_SERVER_ROUTE or ALIGN_CLIENT_PATH",
+      "owner": "backend:service_of_domain + client",
+      "status": "planned"
+    }
+  ]
+}

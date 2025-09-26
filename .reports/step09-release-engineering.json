@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-08-23T11:37:44.567173Z",
+  "added_workflows": [
+    ".github/workflows/changesets.yml",
+    ".github/workflows/docker-ghcr.yml",
+    ".github/workflows/gitleaks.yml",
+    ".github/workflows/env-allowlist.yml",
+    ".github/workflows/build-score.yml"
+  ],
+  "scripts_added": [
+    "scripts/enforce-env-usage.mjs",
+    "scripts/build-score-10.mjs"
+  ],
+  "files_added": [
+    ".env.allow",
+    "RELEASE_ENGINEERING.md",
+    ".changeset/config.json",
+    ".changeset/README.md"
+  ]
+}

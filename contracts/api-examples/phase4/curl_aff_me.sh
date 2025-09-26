@@ -1,0 +1,1 @@
+curl "$API/v1/affiliate/me" -H "Authorization: Bearer $TOKEN" 

@@ -1,0 +1,7 @@
+[
+  {
+    "file": "/mnt/data/work_p3/src/armanvarzesh_v30_hardened/apps/backend/src/main.ts",
+    "action": "add_call",
+    "call": "app.use(helmet())"
+  }
+]

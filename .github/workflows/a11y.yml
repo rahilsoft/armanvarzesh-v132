@@ -1,0 +1,13 @@
+
+name: Accessibility (axe-core)
+on: [workflow_dispatch]
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with: { node-version: 20 }
+    - run: npm i @playwright/test @axe-core/playwright playwright
+    - run: npx playwright install --with-deps
+    - run: node tests/a11y/axe-smoke.js ${{ secrets.PREVIEW_BASE_URL || 'http://localhost:3000' }}

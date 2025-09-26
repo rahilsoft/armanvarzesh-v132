@@ -1,0 +1,6 @@
+{
+  "policy": {
+    "auditLevel": "high",
+    "allowlist": []
+  }
+}

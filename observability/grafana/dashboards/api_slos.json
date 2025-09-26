@@ -1,0 +1,21 @@
+{
+  "title": "ArmanVarzesh \u2014 API SLOs",
+  "tags": [
+    "armanvarzesh",
+    "slo"
+  ],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "workouts.query p95 (ms)"
+    },
+    {
+      "type": "stat",
+      "title": "Webhook Success Rate (%)"
+    },
+    {
+      "type": "stat",
+      "title": "Video Processing Queue Delay (s)"
+    }
+  ]
+}

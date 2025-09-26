@@ -1,0 +1,9 @@
+# AUTO (Stage43 TEMPLATE): Helm values
+image:
+  repository: CHANGEME/armanvarzesh
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 3000
+resources: {}

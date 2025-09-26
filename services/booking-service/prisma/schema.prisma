@@ -1,0 +1,32 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model Slot {
+  id          String   @id
+  coachId     String
+  startUTC    DateTime
+  endUTC      DateTime
+  capacity    Int      @default(1)
+  holdToken   String?
+  holdExpires DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Booking {
+  id          String   @id
+  userId      String
+  coachId     String
+  slotId      String
+  status      String   // PENDING | CONFIRMED | CANCELLED
+  mode        String   // online | in_person
+  paymentId   String?
+  createdAt   DateTime @default(now())
+}
+
+model Audit {
+  id        String   @id
+  action    String
+  who       String?
+  details   Json?
+  createdAt DateTime @default(now())
+}

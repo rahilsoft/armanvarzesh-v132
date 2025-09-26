@@ -1,0 +1,13 @@
+
+# Mobile Dockerfile
+FROM node:18-alpine
+RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN ppppnpm install --frozen-lockfile=false --frozen-lockfile=falsenstall --frozen-lockfile=false --frozen-lockfile=false
+
+COPY . .
+
+CMD ["npm", "run", "start:mobile"]

@@ -1,0 +1,12 @@
+{
+  "name": "AI Response Flow",
+  "nodes": [
+    {"id":1,"type":"Webhook","parameters":{"path":"ai-chat","method":"POST"}},
+    {"id":2,"type":"AIModel","parameters":{"model":"chat-gpt","temperature":0.7}},
+    {"id":3,"type":"SendMessage","parameters":{"channel":"user"}}
+  ],
+  "connections": {
+    "1":{"main":[[{"node":2,"type":"main","index":0}]]},
+    "2":{"main":[[{"node":3,"type":"main","index":0}]]}
+  }
+}

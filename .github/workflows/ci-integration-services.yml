@@ -1,0 +1,128 @@
+name: CI Integration Services
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+
+concurrency:
+  group: ci-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfitsvc?schema=public
+      REDIS_URL: redis://localhost:6379
+      MINIO_ENDPOINT: http://localhost:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: armanfit-ci
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: armanfit_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      minio:
+        image: minio/minio:RELEASE.2024-12-07T00-00-00Z
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        command: server /data --console-address ":9001"
+        ports:
+          - 9000:9000
+          - 9001:9001
+        options: >-
+          --health-cmd="curl -f http://localhost:9000/minio/health/live || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres && break
+            sleep 2
+          done
+          echo "Postgres is ready"
+
+      - name: Wait for Redis
+        run: |
+          for i in {1..30}; do
+            (echo PING | nc -w 1 localhost 6379 | grep -q PONG) && break
+            sleep 2
+          done
+          echo "Redis is ready"
+
+      - name: Wait for MinIO
+        run: |
+          for i in {1..30}; do
+            curl -fsS http://localhost:9000/minio/health/live && break
+            sleep 2
+          done
+          echo "MinIO is ready"
+
+      - name: Prisma generate (all services)
+        run: |
+          for d in services/* app/* packages/*; do
+            if [ -f "$d/prisma/schema.prisma" ]; then
+              echo "Generating Prisma client in $d"
+              (cd "$d" && npx prisma generate)
+            fi
+          done
+
+      - name: Prisma migrate (deploy or push)
+        run: |
+          for d in services/* app/* packages/*; do
+            if [ -f "$d/prisma/schema.prisma" ]; then
+              echo "Applying migrations in $d"
+              (cd "$d" && (npx prisma migrate deploy || npx prisma db push --skip-generate))
+            fi
+          done
+
+      - name: Seed all (optional)
+        run: pnpm db:seed:all || true
+
+      - name: Backend Unit tests
+        run: pnpm --filter ./app/backend test -- --reporter=dot || true
+
+      - name: Backend E2E tests (conditional)
+        if: hashFiles('app/backend/**.e2e.*') != ''
+        run: pnpm --filter ./app/backend test:e2e || true

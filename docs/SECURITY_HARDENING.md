@@ -1,0 +1,3 @@
+- Helmet, CORS whitelist, 120 req/min rate-limit
+- JWT JWKS rotation (Phase 2)
+- Move secrets to SSM/Vault (Phase 2)

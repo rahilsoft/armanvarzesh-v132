@@ -1,0 +1,41 @@
+name: phase5-validation
+on:
+  workflow_dispatch:
+    inputs:
+      run-staging-e2e:
+        description: 'Run staging E2E (true/false)'
+        default: 'false'
+        required: false
+jobs:
+  staging-e2e:
+    if: ${{ github.event.inputs.run-staging-e2e == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install Playwright
+        run: npm i -g playwright && npx playwright install --with-deps
+      - name: Run staging tests
+        working-directory: tests/staging
+        env:
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          STAGING_ADMIN_BASE_URL: ${{ secrets.STAGING_ADMIN_BASE_URL }}
+          STAGING_USER_JWT: ${{ secrets.STAGING_USER_JWT }}
+          STAGING_COACH_JWT: ${{ secrets.STAGING_COACH_JWT }}
+          STAGING_ADMIN_JWT: ${{ secrets.STAGING_ADMIN_JWT }}
+        run: npx playwright test
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ secrets.STAGING_BASE_URL }}/
+            ${{ secrets.STAGING_BASE_URL }}/workouts
+            ${{ secrets.STAGING_BASE_URL }}/booking
+          budgetPath: ./docs/Phase5/lh-budget.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

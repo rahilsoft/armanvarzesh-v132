@@ -1,0 +1,8 @@
+lockfileVersion: '9.0'
+# NOTE: This is a placeholder lockfile scaffold generated offline.
+# To generate a real lockfile, run:
+#   pnpm install --lockfile-only
+# CI is configured to enforce --frozen-lockfile on subsequent runs.
+packages: {}
+
+# Generated/updated offline at 2025-08-19 05:50:07

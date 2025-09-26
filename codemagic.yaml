@@ -1,0 +1,99 @@
+workflows:
+  web_build:
+    name: Web Build (Next.js standalone)
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      vars:
+        NODE_VERSION: "20"
+      node: "20"
+    cache:
+      cache_paths:
+        - ~/.pnpm-store
+        - apps/vitrin-site/.next/cache
+    scripts:
+      - echo "Enabling Corepack & pin pnpm"
+      - corepack enable && corepack use pnpm@9.6.0
+      - echo "Install workspace dependencies (offline-friendly)"
+      - pnpm -w install --frozen-lockfile --prefer-offline
+      - echo "Build Next.js (standalone)"
+      - pnpm -C apps/vitrin-site build
+    artifacts:
+      - apps/vitrin-site/.next/standalone/**
+      - apps/vitrin-site/.next/static/**
+      - apps/vitrin-site/public/**
+
+  backend_test:
+    name: Backend Tests (NestJS)
+    max_build_duration: 45
+    instance_type: linux_x2
+    environment:
+      node: "20"
+      vars:
+        DATABASE_URL: $DATABASE_URL
+        REDIS_URL: $REDIS_URL
+    cache:
+      cache_paths:
+        - ~/.pnpm-store
+    scripts:
+      - corepack enable && corepack use pnpm@9.6.0
+      - pnpm -w install --frozen-lockfile --prefer-offline
+      - pnpm -C apps/backend test
+    artifacts:
+      - apps/backend/coverage/**
+
+  android_release:
+    name: Android Release (React Native)
+    max_build_duration: 120
+    instance_type: linux_x2
+    environment:
+      node: "20"
+      groups:
+        - keystore_credentials
+      vars:
+        # Keystore variables are provided via group 'keystore_credentials'
+        CM_KEYSTORE: $CM_KEYSTORE
+        CM_KEYSTORE_PASSWORD: $CM_KEYSTORE_PASSWORD
+        CM_KEY_ALIAS: $CM_KEY_ALIAS
+        CM_KEY_PASSWORD: $CM_KEY_PASSWORD
+    cache:
+      cache_paths:
+        - ~/.pnpm-store
+        - ~/.gradle/caches
+    scripts:
+      - corepack enable && corepack use pnpm@9.6.0
+      - pnpm -w i --frozen-lockfile
+      - |
+        echo "Decoding keystore..."
+        mkdir -p apps/user-app/android/app
+        echo "$CM_KEYSTORE" | base64 -d > apps/user-app/android/app/release.keystore
+      - |
+        echo "Assembling release AAB..."
+        cd apps/user-app/android && ./gradlew clean bundleRelease           -Pandroid.injected.signing.store.file=app/release.keystore           -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD           -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS           -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+    artifacts:
+      - apps/user-app/android/app/build/outputs/**
+
+  ios_release:
+    name: iOS Release (React Native)
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    environment:
+      node: "20"
+      vars:
+        # iOS signing handled by Codemagic GUI / App Store Connect API
+        DUMMY: "1"
+    cache:
+      cache_paths:
+        - ~/.pnpm-store
+        - ~/Library/Caches/CocoaPods
+    scripts:
+      - corepack enable && corepack use pnpm@9.6.0
+      - pnpm -w i --frozen-lockfile
+      - |
+        echo "Install CocoaPods if iOS project exists"
+        if [ -d "apps/user-app/ios" ]; then
+          cd apps/user-app/ios && pod install --repo-update
+        fi
+      - echo "Build iOS via Xcode/Codemagic steps (configure signing in UI)"
+    artifacts:
+      - apps/user-app/ios/build/**

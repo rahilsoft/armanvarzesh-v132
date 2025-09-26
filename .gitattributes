@@ -1,0 +1,32 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Treat lockfiles and generated artifacts
+pnpm-lock.yaml linguist-generated
+yarn.lock linguist-generated
+package-lock.json linguist-generated
+
+# Mark images/binaries as binary (no diff)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.gif binary
+*.mp4 binary
+*.mov binary
+*.pdf binary
+
+# Keep shell scripts LF
+*.sh text eol=lf
+
+# Improve diffs for TypeScript/JS
+*.ts diff
+*.tsx diff
+*.js diff
+*.jsx diff
+
+# Avoid expensive diffs for large bundles
+*.map -diff
+dist/** -diff
+build/** -diff

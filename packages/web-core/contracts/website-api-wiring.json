@@ -1,0 +1,17 @@
+{
+  "app": "@arman/web-core",
+  "framework_detected": "Node/Pure",
+  "rest_client_uses": [],
+  "gql_client_uses": [
+    {
+      "operation": "CreateWorkout",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+      "line": 4
+    },
+    {
+      "operation": "Workouts",
+      "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts",
+      "line": 3
+    }
+  ]
+}

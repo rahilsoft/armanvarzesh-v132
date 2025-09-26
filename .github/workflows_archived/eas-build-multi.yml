@@ -1,0 +1,47 @@
+name: EAS Build (coach & user)
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'EAS profile (development|preview|production)'
+        required: true
+        default: 'production'
+      platform:
+        description: 'android|ios|all'
+        required: true
+        default: 'all'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app_dir: [ 'apps/coach-app', 'apps/user-app' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install workspace deps
+        run: pnpm -w install --frozen-lockfile
+      - name: Setup Expo/EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: EAS Build ${{ matrix.app_dir }}
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          cd ${{ matrix.app_dir }}
+          eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive --no-wait
+      - name: (Optional) EAS Submit ${{ matrix.app_dir }}
+        if: ${{ github.event.inputs.profile == 'production' }}
+        run: |
+          cd ${{ matrix.app_dir }}
+          eas submit --platform ${{ github.event.inputs.platform }} --profile production --non-interactive || true

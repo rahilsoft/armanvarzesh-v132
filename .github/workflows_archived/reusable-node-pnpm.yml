@@ -1,0 +1,33 @@
+name: reusable-node-pnpm
+on:
+  workflow_call:
+    inputs:
+      run:
+        required: true
+        type: string
+      working-directory:
+        required: false
+        type: string
+        default: .
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+      - name: Enable Corepack and pin PNPM
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.6.0 --activate
+          pnpm -v
+      - name: Install (lockfile-aware)
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm -w install --frozen-lockfile || pnpm -w install
+      - name: Run
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.run }}

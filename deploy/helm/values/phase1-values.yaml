@@ -1,0 +1,32 @@
+
+apiGateway:
+  env:
+    NUTRITION_SERVICE_URL: http://nutrition-service:3000
+    PAYMENTS_SERVICE_URL: http://payments-service:3000
+    CONTENT_API_URL: http://content-service:3000
+    JWT_SECRET: change-me
+
+apiGateway:
+  env:
+    SOCIAL_SERVICE_URL: http://social-subgraph:3000
+
+apiGateway:
+  env:
+    ACTIVITIES_SERVICE_URL: http://activities-service:3000
+    CHALLENGES_SERVICE_URL: http://challenges-service:3000
+
+apiGateway:
+  env:
+    COURSES_SERVICE_URL: http://courses-service:3000
+    KPIS_SERVICE_URL: http://kpis-service:3000
+    AFFILIATE_SERVICE_URL: http://affiliate-service:3000
+
+apiGateway:
+  env:
+    INBOX_SERVICE_URL: http://inbox-service:3000
+    ASSESSMENTS_SERVICE_URL: http://assessments-service:3000
+    REWARDS_SERVICE_URL: http://rewards-service:3000
+
+apiGateway:
+  env:
+    MEDICAL_SERVICE_URL: http://medical-service:3000

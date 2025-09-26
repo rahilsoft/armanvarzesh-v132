@@ -1,0 +1,3364 @@
+{
+  "items": [
+    {
+      "operation": "AddNote",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:39",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "ArchiveClient",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:33",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "AssignPlan",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:50",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "BookReservation",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CancelReservation",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/reservation.mutations.ts:9",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Client",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:14",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "ClientNotes",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:47",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Clients",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CoachAvailability",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CoachReservations",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/availability.queries.ts:11",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateAdmin",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/admin.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateAvailability",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/availability.mutations.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateChallenge",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/challenge.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateCoach",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/coach.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateNotification",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/notification.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateNutritionPlan",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/nutrition.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreatePayment",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/payment.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateProduct",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/product.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateReward",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/reward.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateSurvey",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/survey.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateUser",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "CreateWorkout",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "DailySummary",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "DeleteUser",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts:16",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "DeleteWorkout",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts:25",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "DuplicatePlan",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:38",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Exercises",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:56",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "FoodSearch",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/nutrition.queries.ts:2",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetAdmins",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/admin.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetAnalytics",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/analytics.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetChallenge",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts:14",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetChallenges",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/challenge.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetChat",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/chat.queries.ts:2",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetCoach",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts:14",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetCoaches",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/coach.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetNotifications",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/notification.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetNutritionPlans",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/nutrition.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetPayment",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts:15",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetPayments",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/payment.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetProducts",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/product.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetRewards",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/reward.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetSurveys",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/survey.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetUser",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts:15",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetUserWorkouts",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts:40",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetUsers",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/user.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetWallets",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/wallet.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetWorkout",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts:22",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "GetWorkouts",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/queries/workout.queries.ts:5",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "LogActualWorkout",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts:34",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "LogMeal",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/nutrition.mutations.ts:2",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "LoginCoach",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "MarkAllNotificationsRead",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts:9",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "MarkNotificationRead",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/mutations/notification.mutations.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "MessageReceived",
+      "kind": "subscription",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/subscriptions/chat.subs.ts:2",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "NotificationReceived",
+      "kind": "subscription",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/subscriptions/notification.subs.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Plan",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:14",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Plans",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "PublishPlan",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:44",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Refresh",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts:26",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "RegisterCoach",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/auth.queries.ts:15",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "SendAttachment",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts:7",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "SendMessage",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/mutations/chat.mutations.ts:2",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateAnalytics",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/analytics.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateUser",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/user.mutations.ts:10",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateWallet",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/wallet.mutations.ts:4",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpdateWorkout",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/armanfit-admin/src/graphql/mutations/workout.mutations.ts:16",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpsertClient",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/clients.queries.ts:27",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UpsertPlan",
+      "kind": "mutation",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/coach-app/graphql/queries/plans.queries.ts:30",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "UserReservations",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/apps/user-app/graphql/queries/reservation.queries.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    },
+    {
+      "operation": "Workouts",
+      "kind": "query",
+      "client_ref": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/packages/web-core/src/hooks.ts:3",
+      "resolver_candidates_same_package": [],
+      "resolver_candidates_global_top10": [
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Client.resolver.ready.ts",
+          "class_name": "ClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CancelReservation.resolver.ready.ts",
+          "class_name": "CancelReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ArchiveClient.resolver.ready.ts",
+          "class_name": "ArchiveClientResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachAvailability.resolver.ready.ts",
+          "class_name": "CoachAvailabilityResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_CoachReservations.resolver.ready.ts",
+          "class_name": "CoachReservationsResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_ClientNotes.resolver.ready.ts",
+          "class_name": "ClientNotesResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AssignPlan.resolver.ready.ts",
+          "class_name": "AssignPlanResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_BookReservation.resolver.ready.ts",
+          "class_name": "BookReservationResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_AddNote.resolver.ready.ts",
+          "class_name": "AddNoteResolver"
+        },
+        {
+          "file": "/mnt/data/armanvarzesh_v72/armanvarzesh v72/tools/api-map/server-stubs/ready/gql_Clients.resolver.ready.ts",
+          "class_name": "ClientsResolver"
+        }
+      ]
+    }
+  ]
+}

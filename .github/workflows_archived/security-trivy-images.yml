@@ -1,0 +1,42 @@
+name: Trivy Image Scan
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    ## SECRETS_ENV: map required secrets here (example)
+    # env:
+    #   DATABASE_URL: ${{ secrets.BACKEND_DATABASE_URL }}
+    steps:
+          - uses: actions/setup-node@v4
+            with:
+              node-version: '20'
+              cache: 'pnpm'
+          - uses: pnpm/action-setup@v4
+            with:
+              version: 9
+          - run: pnpm install --frozen-lockfile
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Discover services
+        id: svc
+        run: |
+          arr=$(ls -1 services | tr '\n' ',' | sed 's/,$//')
+          echo "list=[\"${arr//,/\",\"}\"]" >> $GITHUB_OUTPUT
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: image
+          image-ref: ghcr.io/${{ github.repository }}/${{ steps.svc.outputs.list }}
+          format: table
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          ignore-unfixed: true
+        severity: 'HIGH,CRITICAL'

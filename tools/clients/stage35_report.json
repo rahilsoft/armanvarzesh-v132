@@ -1,0 +1,7 @@
+{
+  "targets": [
+    "apps/coach-app",
+    "apps/coach-pwa",
+    "apps/user-app"
+  ]
+}

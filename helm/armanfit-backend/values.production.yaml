@@ -1,0 +1,54 @@
+image:
+  registry: ghcr.io
+  repository: armanfit/backend
+  tag: v0.1.0
+  pullPolicy: IfNotPresent
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+  - host: api.armanvarzesh.com
+    paths:
+    - path: /
+      pathType: Prefix
+  tls:
+  - secretName: armanfit-tls
+    hosts:
+    - api.armanvarzesh.com
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+envFromSecretName: armanfit-backend-env
+externalSecrets:
+  enabled: true
+  secretStoreRef:
+    name: global-secrets-store
+    kind: ClusterSecretStore
+  refreshInterval: 1h
+  targetSecretName: armanfit-backend-env
+  data:
+  - secretKey: DATABASE_URL
+    remoteRef:
+      key: prod/armanfit/DATABASE_URL
+  - secretKey: JWT_SECRET
+    remoteRef:
+      key: prod/armanfit/JWT_SECRET
+  - secretKey: RABBITMQ_URL
+    remoteRef:
+      key: prod/armanfit/RABBITMQ_URL
+  - secretKey: REDIS_HOST
+    remoteRef:
+      key: prod/armanfit/REDIS_HOST
+  - secretKey: MINIO_ENDPOINT
+    remoteRef:
+      key: prod/armanfit/MINIO_ENDPOINT
+  - secretKey: MINIO_ROOT_USER
+    remoteRef:
+      key: prod/armanfit/MINIO_ROOT_USER
+  - secretKey: MINIO_ROOT_PASSWORD
+    remoteRef:
+      key: prod/armanfit/MINIO_ROOT_PASSWORD

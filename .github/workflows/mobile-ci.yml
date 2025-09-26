@@ -1,0 +1,28 @@
+name: mobile-ci
+on: [push, pull_request]
+jobs:
+  detox-ios:
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: app/user-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Install deps
+        run: pnpm install
+      - name: Install pods
+        run: |
+          cd ios
+          pod install --repo-update
+      - name: Build (Detox)
+        run: pnpm run e2e:ios:build
+      - name: Test (Detox)
+        run: pnpm run e2e:ios:test

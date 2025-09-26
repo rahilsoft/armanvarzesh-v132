@@ -1,0 +1,6 @@
+apiVersion: v2
+name: armanfit-mobile
+description: Helm chart for ArmanFit Mobile App (Web mode)
+type: application
+version: 0.1.0
+appVersion: "1.0"

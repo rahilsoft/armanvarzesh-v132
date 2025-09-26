@@ -1,0 +1,1 @@
+curl -X POST "$API/v1/challenges/join" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"challengeId":1}'

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<meta charset="utf-8" />
+<title>فاز ۳ — اجرای اصلاحات</title>
+<style>
+  body { font-family: Yekan, Far_Nazanin, sans-serif; direction: rtl; line-height: 1.85; font-size: 16px; margin: 2rem; }
+  code { background:#f6f8fa; padding:.2rem .4rem; border-radius:4px; }
+</style>
+<h1>فاز ۳ — اجرای اصلاحات (Pipe/Filter + Security Headers + CI)</h1>
+<p><strong>تاریخ:</strong> 2025-08-18</p>
+<ul>
+  <li>افزودن <code>ValidationPipe</code> و <code>GlobalExceptionFilter</code> به بک‌اند</li>
+  <li>افزودن هدرهای امنیتی به <code>apps/vitrin-site/next.config.js</code> (به‌همراه <code>CSP</code>)</li>
+  <li>اضافه‌شدن ورک‌فلوهای امنیتی: <code>gitleaks</code>، <code>trivy</code>، <code>semgrep</code></li>
+</ul>
+<p><em>یادداشت:</em> مقادیر <code>Content-Security-Policy</code> را با دامنه‌های واقعی‌تان هم‌سو کنید. در صورت نبود پکیج‌های اعتبارسنجی، قبل از بیلد آن‌ها را نصب کنید.</p>
+</html>

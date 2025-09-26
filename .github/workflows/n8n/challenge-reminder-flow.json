@@ -1,0 +1,10 @@
+{
+  "name": "Challenge Reminder Flow",
+  "nodes": [
+    {"id":1,"type":"Scheduler","parameters":{"cronExpression":"0 9 * * *"}},
+    {"id":2,"type":"SendReminder","parameters":{"target":"participants"}}
+  ],
+  "connections": {
+    "1":{"main":[[{"node":2,"type":"main","index":0}]]}
+  }
+}

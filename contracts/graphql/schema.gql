@@ -1,0 +1,4 @@
+# Baseline GraphQL schema (update via scripts/export_graphql_schema.sh after backend build)
+schema { query: Query }
+type Diagnostics { db: Boolean!, queue: Boolean! }
+type Query { diagnostics: Diagnostics! }

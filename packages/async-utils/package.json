@@ -1,0 +1,24 @@
+{
+  "name": "@arman/async-utils",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start:prod": "node dist/main.js",
+    "lint": "eslint .",
+    "test": "echo \"NO_TESTS\" && exit 0",
+    "start": "node dist/index.js || node dist/server.js || node dist/main.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts || node dist/index.js",
+    "coverage": "echo \"no coverage\"",
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+  },
+  "engines": {
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=9 <10"
+  }
+}

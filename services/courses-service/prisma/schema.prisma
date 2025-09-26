@@ -1,0 +1,43 @@
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Difficulty { beginner intermediate advanced }
+
+model Course {
+  id          Int         @id @default(autoincrement())
+  title       String
+  summary     String
+  difficulty  Difficulty
+  createdAt   DateTime    @default(now())
+  assets      CourseAsset[]
+  certificates Certificate[]
+
+  @@index([difficulty], map: "idx_Course_difficulty")
+}
+
+model CourseAsset {
+  id        Int     @id @default(autoincrement())
+  courseId  Int
+  idx       Int
+  encUrl    String  // encrypted chunk URL (signed)
+  durationS Int
+  createdAt DateTime @default(now())
+
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId, idx], map: "idx_CourseAsset_course_idx")
+}
+
+model Certificate {
+  id        Int      @id @default(autoincrement())
+  courseId  Int
+  userId    Int
+  code      String   @unique
+  qrToken   String
+  issuedAt  DateTime @default(now())
+
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_Certificate_user")
+}

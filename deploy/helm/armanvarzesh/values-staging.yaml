@@ -1,0 +1,11 @@
+image:
+  repository: ghcr.io/org/armanvarzesh/backend
+  tag: stg
+service:
+  type: ClusterIP
+  port: 80
+env:
+  DATABASE_URL: "${STAGING_DATABASE_URL}"
+ingress:
+  enabled: true
+  host: "api-stg.example.com"
