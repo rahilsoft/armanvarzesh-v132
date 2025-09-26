@@ -31,7 +31,7 @@
     "cors": "^2.8.5",
     "hpp": "^0.2.3",
     "express-rate-limit": "^7.4.0",
-    "jose": "^5.2.3"
+    "jose": "^6.1.0"
   },
   "devDependencies": {
     "tsup": "^8.0.1",
