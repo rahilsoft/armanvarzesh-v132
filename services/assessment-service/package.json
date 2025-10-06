@@ -46,7 +46,7 @@
     "@opentelemetry/auto-instrumentations-node": "^0.53.0",
     "dataloader": "^2.2.2",
     "@prisma/client": "^5.15.0",
-    "@nestjs/apollo": "^12.0.0",
+    "@nestjs/apollo": "^13.2.1",
     "@arman/service-kit": "workspace:*",
     "@arman/integration": "workspace:*",
     "@nestjs/config": "^3.2.2",
