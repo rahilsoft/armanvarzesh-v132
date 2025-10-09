@@ -34,8 +34,21 @@ async function bootstrap() {
   const register = new client.Registry();
   client.collectDefaultMetrics({ register });
 
-  const http = app.getHttpAdapter().getInstance();
+  const http: any = app.getHttpAdapter().getInstance();
   if (http && typeof http.get === 'function') {
+    if (!http._auto_metrics) {
+      http.get('/metrics', async (_req, res) => {
+        try {
+          const metrics = await register.metrics();
+          res.setHeader('Content-Type', register.contentType);
+          res.status(200).end(metrics);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to collect metrics';
+          res.status(500).end(message);
+        }
+      });
+      http._auto_metrics = true;
+    }
     if (!http._auto_healthz) {
       http.get('/healthz', (_req, res) => res.status(200).json({ ok: true }));
       http.get('/readyz', (_req, res) => res.status(200).json({ ready: true }));
