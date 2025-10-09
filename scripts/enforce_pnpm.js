@@ -5,7 +5,7 @@ function fail(msg) {
   console.error('راهنمای نصب/تست: docs/ops/Testing_Guide.md');
   console.error('\nروش صحیح (از ریشهٔ مخزن):');
   console.error('  corepack enable');
-  console.error('  corepack prepare pnpm@9 --activate');
+  console.error('  corepack prepare pnpm@10 --activate');
   console.error('  pnpm -w install');
   console.error('');
   process.exit(1);

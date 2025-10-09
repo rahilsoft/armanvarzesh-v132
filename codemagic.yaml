@@ -13,7 +13,7 @@ workflows:
         - apps/vitrin-site/.next/cache
     scripts:
       - echo "Enabling Corepack & pin pnpm"
-      - corepack enable && corepack use pnpm@9.6.0
+      - corepack enable && corepack use pnpm@10.x
       - echo "Install workspace dependencies (offline-friendly)"
       - pnpm -w install --frozen-lockfile --prefer-offline
       - echo "Build Next.js (standalone)"
@@ -36,7 +36,7 @@ workflows:
       cache_paths:
         - ~/.pnpm-store
     scripts:
-      - corepack enable && corepack use pnpm@9.6.0
+      - corepack enable && corepack use pnpm@10.x
       - pnpm -w install --frozen-lockfile --prefer-offline
       - pnpm -C apps/backend test
     artifacts:
@@ -61,7 +61,7 @@ workflows:
         - ~/.pnpm-store
         - ~/.gradle/caches
     scripts:
-      - corepack enable && corepack use pnpm@9.6.0
+      - corepack enable && corepack use pnpm@10.x
       - pnpm -w i --frozen-lockfile
       - |
         echo "Decoding keystore..."
@@ -87,7 +87,7 @@ workflows:
         - ~/.pnpm-store
         - ~/Library/Caches/CocoaPods
     scripts:
-      - corepack enable && corepack use pnpm@9.6.0
+      - corepack enable && corepack use pnpm@10.x
       - pnpm -w i --frozen-lockfile
       - |
         echo "Install CocoaPods if iOS project exists"

@@ -5,7 +5,7 @@
 ## تغییرات کلیدی
 
 - root: engines.node => >=20
-- root: packageManager => pnpm@9.6.0
+- root: packageManager => pnpm@10.0.0
 - root: pnpm.overrides.@nestjs/passport => 11.0.5
 - /mnt/data/review2_phase6_step38_20250822_083221/armanvarzesh_v57/apps/activity-subgraph: pin typescript ^5.6.2 in devDependencies
 - /mnt/data/review2_phase6_step38_20250822_083221/armanvarzesh_v57/apps/armanfit-admin: pin typescript ^5.6.2 in devDependencies
@@ -62,5 +62,5 @@
 
 ## توضیحات
 - با `pnpm.overrides` در **ریشه**، نسخهٔ TypeScript و `@nestjs/passport` در کل workspace یکسان می‌ماند.
-- `engines.node >= 20` و `packageManager=pnpm@9.6.0` باعث سازگاری با رنرهای CI و Corepack می‌شود.
+- `engines.node >= 20` و `packageManager=pnpm@10.0.0` باعث سازگاری با رنرهای CI و Corepack می‌شود.
 - اگر وابستگی‌های دیگری نیاز به pin دارند (مثل GraphQL 17 با Nest 11)، پیشنهاد می‌شود در یک شاخهٔ جدا مهاجرت انجام شود تا **ریسک شکست بیلد** کاهش یابد.

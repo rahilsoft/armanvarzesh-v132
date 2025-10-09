@@ -3,7 +3,7 @@
 > This document describes how to build, configure and deploy the monorepo to staging/production.
 
 ## 1) Requirements
-- Node.js 20.x, PNPM 9
+- Node.js 20.x, PNPM 10
 - Docker (24+) and a registry (GHCR/ECR)
 - Kubernetes (>=1.26) with Ingress, Cert-Manager (optional)
 - PostgreSQL (if used), Redis (for queues/rate limit), Object Storage (S3-compatible)

@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: corepack enable && corepack prepare pnpm@9.8.0 --activate
+      - run: corepack enable && corepack prepare pnpm@10.0.0 --activate
       - run: pnpm i --frozen-lockfile || true
   parity:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: corepack enable && corepack prepare pnpm@9.8.0 --activate
+      - run: corepack enable && corepack prepare pnpm@10.0.0 --activate
       - run: pnpm -r i --frozen-lockfile || true
       - run: pnpm --filter ./${{ matrix.app }} run typecheck || true
       - run: pnpm --filter ./${{ matrix.app }} run lint || true

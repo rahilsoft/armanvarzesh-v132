@@ -18,7 +18,7 @@
 
 ## CI (GitHub Actions)
 - Workflow: `live-ci.yml`
-  - Node 20 + pnpm 9.6
+  - Node 20 + pnpm 10.0
   - نصب، lint (اختیاری)، اجرای تست‌های بک‌اند.
 
 ## ENV نمونه

@@ -66,7 +66,7 @@
 ## How to Run (Local)
 ```bash
 corepack enable
-corepack prepare pnpm@9.6.0 --activate
+corepack prepare pnpm@10.0.0 --activate
 pnpm -w install
 
 pnpm --filter './armanvarzesh_v41/apps/armanfit-admin' run typecheck

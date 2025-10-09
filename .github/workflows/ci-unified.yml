@@ -9,7 +9,7 @@ concurrency:
 
 env:
   NODE_VERSION: '20'
-  PNPM_VERSION: '9'
+  PNPM_VERSION: '10'
   # Optional: set to comma-separated URLs to enable Lighthouse in CI
   LHCI_URLS: ''
 
@@ -217,9 +217,9 @@ deploy-preview:
       with:
         node-version: '20'
     - name: Setup pnpm
-      uses: pnpm/action-setup@v3
+      uses: pnpm/action-setup@v4
       with:
-        version: 9
+        version: 10
     - name: Install deps
       run: pnpm install
     - name: Build PWAs
@@ -285,9 +285,9 @@ lh-on-pages:
       with:
         node-version: '20'
     - name: Setup pnpm
-      uses: pnpm/action-setup@v3
+      uses: pnpm/action-setup@v4
       with:
-        version: 9
+        version: 10
     - name: Run Lighthouse on deployed Pages (main/master)
       run: |
         URL="${{ needs.deploy-pages.outputs.page_url }}"
@@ -321,9 +321,9 @@ lh-on-preview:
       with:
         node-version: '20'
     - name: Setup pnpm
-      uses: pnpm/action-setup@v3
+      uses: pnpm/action-setup@v4
       with:
-        version: 9
+        version: 10
     - name: Run Lighthouse on PR Preview
       run: |
         URL="${{ needs.deploy-preview.outputs.page_url }}"

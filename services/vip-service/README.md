@@ -1,6 +1,6 @@
 # vip-service
 
-> Type: **backend (NestJS)** — Engines: Node 20.x, pnpm 9.x
+> Type: **backend (NestJS)** — Engines: Node 20.x, pnpm 10.x
 
 ## Overview
 Short description of `vip-service`. Explain purpose, boundaries, and main responsibilities.

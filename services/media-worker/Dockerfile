@@ -3,7 +3,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 RUN apk add --no-cache wget && \
-     corepack enable && corepack prepare pnpm@9.0.0 --activate
+     corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --prod --frozen-lockfile || pnpm install --prod
