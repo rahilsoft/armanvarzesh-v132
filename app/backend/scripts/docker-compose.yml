@@ -27,7 +27,8 @@ services:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://username:password@db:5432/armanvarzesh
       - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=${JWT_SECRET:?Missing JWT_SECRET env var (see README for setup)}
+      # JWT_SECRET should be supplied via your shell environment or a local .env file alongside this compose file.
+      - JWT_SECRET=${JWT_SECRET}
       - KAVENEGAR_API_KEY= "__CHANGE_ME__"
       - ZARINPAL_MERCHANT_ID= "__CHANGE_ME__"
     depends_on:

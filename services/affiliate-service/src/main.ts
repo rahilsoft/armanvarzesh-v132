@@ -16,7 +16,7 @@ console.log = (...args)=>{
 // OTEL_INIT_PHASE11
 process.env.SERVICE_NAME = process.env.SERVICE_NAME || 'affiliate-service';
 if (process.env.OTEL_ENABLED === 'true') {
-  try { require('../../packages/observability/otel-node/dist/register.js'); } catch (e) {}
+  try { require('@arman/observability-sdk/register'); } catch (e) {}
 }
 
 import 'reflect-metadata';
@@ -34,8 +34,21 @@ async function bootstrap() {
   const register = new client.Registry();
   client.collectDefaultMetrics({ register });
 
-  const http = app.getHttpAdapter().getInstance();
+  const http: any = app.getHttpAdapter().getInstance();
   if (http && typeof http.get === 'function') {
+    if (!http._auto_metrics) {
+      http.get('/metrics', async (_req, res) => {
+        try {
+          const metrics = await register.metrics();
+          res.setHeader('Content-Type', register.contentType);
+          res.status(200).end(metrics);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to collect metrics';
+          res.status(500).end(message);
+        }
+      });
+      http._auto_metrics = true;
+    }
     if (!http._auto_healthz) {
       http.get('/healthz', (_req, res) => res.status(200).json({ ok: true }));
       http.get('/readyz', (_req, res) => res.status(200).json({ ready: true }));

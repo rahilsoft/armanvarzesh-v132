@@ -49,6 +49,8 @@ Use `.env` or inherit from repo root. Required variables (examples):
 - `JWT_SECRET` — JWT signing secret
 - `CORS_ORIGIN` — Comma-separated origins (e.g. https://app.example.com,https://admin.example.com)
 
+When running `scripts/docker-compose.yml`, create an adjacent `.env` file (ignored by Git) or export the variables in your shell so that `JWT_SECRET`, `POSTGRES_PASSWORD`, and other sensitive values are injected at runtime.
+
 ## Development
 - Lint: `pnpm run lint`
 - Typecheck: `pnpm run typecheck`
