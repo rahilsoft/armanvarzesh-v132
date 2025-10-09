@@ -2,4 +2,5 @@ packages:
   # مسیر apps به app تغییر یافته تا با ساختار واقعی مخزن منطبق باشد
   - 'app/*'
   - 'packages/*'
+  - 'packages/*/*'
   - 'services/*'
