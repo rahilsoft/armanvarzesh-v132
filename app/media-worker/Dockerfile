@@ -12,4 +12,5 @@ EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 CMD wget -qO- http://localhost:${PORT:-3000}/health || exit 1
 
+# S3 credentials are expected to be provided at runtime (secrets, env vars, etc.).
 USER node
