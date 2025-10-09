@@ -17,12 +17,15 @@ jobs:
   setup:
     name: Setup & Install
     runs-on: ubuntu-latest
+    outputs:
+      target_matrix: ${{ steps.generate_matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
@@ -30,31 +33,82 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Save workspace info
         run: pnpm -r list --depth -1 || true
+      - name: Generate target matrix
+        id: generate_matrix
+        shell: bash
+        run: |
+          node <<'NODE' > matrix.json
+          const fs = require('fs');
+          const path = require('path');
+          const root = process.cwd();
+          const groups = ['apps', 'services'];
+          const entries = [];
+          for (const group of groups) {
+            const base = path.join(root, group);
+            if (!fs.existsSync(base)) continue;
+            for (const entry of fs.readdirSync(base)) {
+              if (entry.startsWith('.')) continue;
+              const full = path.join(base, entry);
+              if (!fs.statSync(full).isDirectory()) continue;
+              const target = `${group}/${entry}`;
+              entries.push({ target, slug: target.replace(/[\\/]/g, '-') });
+            }
+          }
+          process.stdout.write(JSON.stringify(entries));
+NODE
+          matrix=$(cat matrix.json)
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   lint_typecheck_test:
-    name: Lint • Typecheck • Unit/Integration
+    name: Lint • Typecheck • Unit/Integration (${{ matrix.target }})
     runs-on: ubuntu-latest
     needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.target_matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ env.PNPM_VERSION }}
+      - name: Setup pnpm store cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.slug }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Cache turbo outputs
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ matrix.slug }}
+          restore-keys: |
+            turbo-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
-      - run: pnpm -r lint
-      - run: pnpm -r typecheck
-      - run: pnpm -r test -- --passWithNoTests || true
+      - name: Lint (affected)
+        run: pnpm dlx turbo run lint --filter=${{ matrix.target }} --affected
+      - name: Typecheck (affected)
+        run: pnpm dlx turbo run typecheck --filter=${{ matrix.target }} --affected
+      - name: Test (affected)
+        run: pnpm dlx turbo run test --filter=${{ matrix.target }} --affected -- --passWithNoTests || true
       - name: Collect coverage if exists
+        env:
+          TARGET_PATH: ${{ matrix.target }}
         run: |
           mkdir -p coverage-artifacts
-          find . -type f -name "lcov.info" -maxdepth 5 -print -exec cp {} coverage-artifacts/ \; || true
+          if [ -d "${TARGET_PATH}" ]; then
+            find "${TARGET_PATH}" -maxdepth 5 -type f -name "lcov.info" -print -exec cp {} coverage-artifacts/ \; || true
+          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-${{ matrix.slug }}
           path: coverage-artifacts
           if-no-files-found: ignore
 
