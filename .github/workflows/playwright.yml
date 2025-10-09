@@ -13,16 +13,16 @@ jobs:
       - name: Install deps
         run: pnpm install
       - name: Build site
-        working-directory: app/site
+        working-directory: apps/web-site
         run: pnpm build
       - name: Start site
-        working-directory: app/site
-        run: pnpm start -p 3001 &
+        working-directory: apps/web-site
+        run: pnpm start -- -p 3001 &
       - name: Install browsers
-        working-directory: app/site
+        working-directory: apps/web-site
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
-        working-directory: app/site
+        working-directory: apps/web-site
         env:
           SITE_URL: http://127.0.0.1:3001
-        run: pnpm run test:e2e
+        run: pnpm exec playwright test
