@@ -34,17 +34,15 @@ async function bootstrap() {
   const register = new client.Registry();
   client.collectDefaultMetrics({ register });
 
-  const http = app.getHttpAdapter().getInstance();
+  const http: any = app.getHttpAdapter().getInstance();
   if (http && typeof http.get === 'function') {
     if (!http._auto_metrics) {
       http.get('/metrics', async (_req, res) => {
         try {
-          const metrics = await register.metrics();
           res.setHeader('Content-Type', register.contentType);
-          res.status(200).end(metrics);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unable to collect metrics';
-          res.status(500).end(message);
+          res.end(await register.metrics());
+        } catch (err) {
+          res.status(500).send((err as Error)?.message ?? 'failed to collect metrics');
         }
       });
       http._auto_metrics = true;

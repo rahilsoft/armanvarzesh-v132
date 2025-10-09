@@ -34,7 +34,7 @@ async function bootstrap() {
   const register = new client.Registry();
   client.collectDefaultMetrics({ register });
 
-  const http = app.getHttpAdapter().getInstance();
+  const http: any = app.getHttpAdapter().getInstance();
   if (http && typeof http.get === 'function') {
     if (!http._auto_metrics) {
       http.get('/metrics', async (_req, res) => {
