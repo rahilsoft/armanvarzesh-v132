@@ -18,7 +18,7 @@ jobs:
       - name: Enable corepack & pnpm
         run: |
           corepack enable
-          corepack use pnpm@9.6.0
+          corepack use pnpm@10.x
       - name: Install
         run: pnpm -w install --frozen-lockfile=false
       - name: Lint (if configured)

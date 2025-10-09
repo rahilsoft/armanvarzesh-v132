@@ -2,7 +2,7 @@
     Date: 2025-08-12T12:09:38.262849Z
 
     ## Workflows
-    - Standardized all workflows to **Node 20 + pnpm 9** with **cache: 'pnpm'**.
+    - Standardized all workflows to **Node 20 + pnpm 10** with **cache: 'pnpm'**.
     - Replaced all `npm`/`bun install` usages with `pnpm -r install --frozen-lockfile=false`.
     - Ensured workspace-friendly `pnpm -r run <script>` for monorepo scripts.
 

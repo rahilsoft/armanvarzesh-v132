@@ -1,6 +1,6 @@
 # @arman/coach-pwa
 
-> Type: **web-lib (React)** — Engines: Node 20.x, pnpm 9.x
+> Type: **web-lib (React)** — Engines: Node 20.x, pnpm 10.x
 
 ## Overview
 Short description of `@arman/coach-pwa`. Explain purpose, boundaries, and main responsibilities.

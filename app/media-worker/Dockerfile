@@ -2,7 +2,7 @@ FROM node:20.19.0-alpine
 RUN apk add --no-cache ffmpeg
 WORKDIR /app
 COPY package.json tsconfig.json ./
-RUN npm i -g pnpm@9 && pnpm i --frozen-lockfile=false
+RUN npm i -g pnpm@10 && pnpm i --frozen-lockfile=false
 COPY src ./src
 RUN pnpm build
 ENV NODE_ENV=production

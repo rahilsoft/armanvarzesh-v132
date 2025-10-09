@@ -2,7 +2,7 @@
   "name": "armanvarzesh-monorepo",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@10.0.0",
   "scripts": {
     "lint": "pnpm -r run lint",
     "format": "prettier -w .",
@@ -147,8 +147,8 @@
     "@stoplight/spectral-cli": "^6.11.1"
   },
   "engines": {
-    "node": "20.19.x",
-    "pnpm": ">=9 <10"
+    "node": ">=20.0.0 <21",
+    "pnpm": ">=10 <11"
   },
   "dependencies": {
     "express-rate-limit": "^7.4.0",

@@ -51,13 +51,13 @@
 
 ## پیش‌نیازها
 - **Node.js 20 LTS** (پیشنهاد)  
-- **PNPM 9.x** (از طریق Corepack)
+- **PNPM 10.x** (از طریق Corepack)
 - **PostgreSQL 14+**، **Redis 6+** (برای اجرای کامل بک‌اند)
 
 ```bash
 # فعال‌سازی Corepack و پین نسخهٔ pnpm
 corepack enable
-corepack use pnpm@9.6.0
+corepack use pnpm@10.x
 ```
 
 ---
@@ -147,7 +147,7 @@ pnpm -C apps/vitrin-site start
   with:
     node-version: '20'
     cache: 'pnpm'
-- run: corepack enable && corepack use pnpm@9.6.0
+- run: corepack enable && corepack use pnpm@10.x
 - run: pnpm -w i
 - run: pnpm -C apps/backend test
 ```
@@ -176,7 +176,7 @@ pnpm -C apps/vitrin-site start
 - **Install workspace dependencies (lockfile-aware):**  
   `pnpm-lock.yaml` ریشه را commit و در CI از `pnpm -w i` استفاده کنید.
 - **Corepack pnpm download:**  
-  در CI: `corepack enable && corepack use pnpm@9.6.0` + کش فعال.
+  در CI: `corepack enable && corepack use pnpm@10.x` + کش فعال.
 - **Deprecated apollo-server-express@3:**  
   به **@apollo/server (v4)** مهاجرت کنید (در این پروژه مسیر مهاجرت فراهم شده است).
 
@@ -217,7 +217,7 @@ This repository uses GitHub Actions with the following required checks per PR:
 - `Secret Scan` (Gitleaks), `CodeQL`, `Container Scan (Trivy)`
 - Optional: `Lighthouse` (set `LHCI_URLS` env to enable)
 
-Use Node 20 and pnpm 9. Cache is enabled through setup-node and pnpm action.
+Use Node 20 and pnpm 10. Cache is enabled through setup-node and pnpm action.
 ## Documentation
 See [docs/README.md](docs/README.md) for runbooks, API docs, and ADRs.
 

@@ -6,9 +6,9 @@ if command -v nvm >/dev/null 2>&1; then
   nvm use || true
 fi
 
-echo "[local-build] Enable Corepack & use pnpm@9.6.0"
+echo "[local-build] Enable Corepack & use pnpm@10.x"
 corepack enable || true
-corepack use pnpm@9.6.0
+corepack use pnpm@10.x
 
 echo "[local-build] Install workspace dependencies (lockfile-aware)"
 pnpm -w i

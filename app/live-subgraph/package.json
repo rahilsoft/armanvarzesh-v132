@@ -16,19 +16,19 @@
     "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
   },
   "dependencies": {
-  "@apollo/server": "^4.10.0",
-  "@apollo/subgraph": "^2.7.6",
-  "graphql": "^16.9.0",
-  "express": "^4.19.2",
-  "cors": "^2.8.5",
-  "body-parser": "^1.20.2",
-  "socket.io": "^4.7.5",
-  "uuid": "^9.0.1",
-  "@arman/integrations-livekit": "git+https://github.com/rahilsoft/integrations-livekit.git#main",
-  "@arman/storage": "git+https://github.com/rahilsoft/storage.git#main",
-  "@arman/observability-sdk": "workspace:*",
-  "@arman/security-middleware": "workspace:*"
-},
+    "@apollo/server": "^4.10.0",
+    "@apollo/subgraph": "^2.7.6",
+    "graphql": "^16.9.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1",
+    "@arman/integrations-livekit": "workspace:*",
+    "@arman/storage": "workspace:*",
+    "@arman/observability-sdk": "workspace:*",
+    "@arman/security-middleware": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.6.2",
     "@types/node": "^20.12.12",

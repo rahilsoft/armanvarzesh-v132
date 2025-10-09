@@ -2,7 +2,7 @@ ENV NODE_ENV=production
 FROM node:20.19.0-alpine
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && corepack prepare pnpm@9.0.0 --activate && pnpm install --frozen-lockfile || pnpm install
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate && pnpm install --frozen-lockfile || pnpm install
 COPY . .
 RUN pnpm run build || true
 CMD ["node","dist/main.js"]

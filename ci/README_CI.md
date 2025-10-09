@@ -14,6 +14,6 @@ Codemagic logs showed `Required secret DATABASE_URL is not set` during **Prisma 
 - Or merge the `Prepare Prisma generate` step into your existing workflow.
 
 ## Notes
-- The pipeline uses pnpm (`corepack enable; corepack prepare pnpm@9.6.0 --activate`).
+- The pipeline uses pnpm (`corepack enable; corepack prepare pnpm@10.0.0 --activate`).
 - Installs dependencies once, then runs prisma generate across all packages that contain a Prisma schema.
 - Proceeds with type-check, build, and test for all workspaces if scripts exist.

@@ -6,7 +6,7 @@
 - Open PR; Required checks must pass: typecheck, lint, tests, coverage threshold, security scans, codeql, lighthouse (webs).
 
 ## Development
-- Node 20.x, pnpm 9.x
+- Node 20.x, pnpm 10.x
 - `pnpm -r typecheck` / `pnpm -r lint` / `pnpm -r test`
 
 ## Code Style & Quality

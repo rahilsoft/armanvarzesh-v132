@@ -2,7 +2,7 @@ ENV NODE_ENV=production
 FROM node:20.19.0-alpine
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && corepack prepare pnpm@9.0.0 --activate && pnpm install --frozen-lockfile || pnpm install
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate && pnpm install --frozen-lockfile || pnpm install
 COPY . .
 # For Expo: you typically use EAS for production builds; this Dockerfile runs dev server.
 EXPOSE 8081

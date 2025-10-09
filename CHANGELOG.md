@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Permissions policy** and native overlays (Android/iOS). See: `STEP35_PERMISSIONS_POLICY.md`.
 - **TSDoc/JSDoc** annotations across complex modules. See: `STEP36_DOCSTRINGS_REPORT.md`.
 - **Professional README** with setup/CI/CD/troubleshooting. See: `README.md`.
-- **Final dependency stabilization** (`typescript@^5.6.2`, `@nestjs/passport@11.0.5`, Node 20, pnpm 9.6). See: `STEP38_DEPENDENCY_FINAL_CHECK.md`.
+- **Final dependency stabilization** (`typescript@^5.6.2`, `@nestjs/passport@11.0.5`, Node 20, pnpm 10.0). See: `STEP38_DEPENDENCY_FINAL_CHECK.md`.
 - **Build hardening** (Next.js standalone, disable prod sourcemaps; backend tsconfig.build; Android gradle.properties). See: `STEP39_BUILD_FINAL_REPORT.md`.
 
 ### Changed
@@ -48,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## Upgrade Notes
-- Node.js **>= 20** و **pnpm@9.6.0** لازم است (Corepack).
+- Node.js **>= 20** و **pnpm@10.0.0** لازم است (Corepack).
 - TypeScript **5.6.x** و `@nestjs/passport@11.0.5` تثبیت شده‌اند. در صورت نیاز به نسخه‌های متفاوت، از شاخهٔ جداگانه استفاده کنید.
 - برای استقرار Next.js از خروجی **standalone** استفاده کنید؛ sourcemapهای Production غیرفعال‌اند.
 

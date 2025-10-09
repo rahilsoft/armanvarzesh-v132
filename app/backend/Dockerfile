@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM node:20.19.0-alpine AS deps
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/backend/package.json apps/backend/
 RUN pnpm -w install --frozen-lockfile
@@ -18,7 +18,7 @@ ENV NODE_ENV=production
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=deps /app/pnpm-lock.yaml /app/package.json ./
 COPY --from=deps /app/apps/backend/package.json apps/backend/
-RUN corepack enable && corepack prepare pnpm@9.6.0 --activate \
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate \
   && pnpm -w install --frozen-lockfile --prod --filter ./app/backend \
   && pnpm -w prune --prod --filter ./app/backend || true
 COPY --from=build /app/apps/backend/dist apps/backend/dist

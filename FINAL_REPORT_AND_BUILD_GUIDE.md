@@ -6,7 +6,7 @@
 ---
 
 ## ۱) جمع‌بندی تغییرات کلیدی (فازهای ۱ تا ۴۴)
-- **تثبیت وابستگی‌ها**: TypeScript **5.6.x**، `@nestjs/passport@11.0.5`، Node **>=20**، PNPM **9.6** (Corepack).
+- **تثبیت وابستگی‌ها**: TypeScript **5.6.x**، `@nestjs/passport@11.0.5`، Node **>=20**، PNPM **10.x** (Corepack).
 - **امنیت**: `SanitizePipe`، ValidationPipe سفت‌وسخت، Gitleaks در CI، سیاست مجوزها (Android/iOS)، ATS سخت‌گیر.
 - **عملکرد**: Keyset pagination، بهینه‌سازی تصاویر (sharp/svgo)، `SmartImage` (RN/Web)، کش HTTP (`Cache-Control`).
 - **پایداری بیلد**: Next.js `output: 'standalone'` + خاموش کردن sourcemap پروڈاکشن، tsconfig.build برای Nest، Gradle سخت‌تر.
@@ -17,10 +17,10 @@
 
 ## ۲) پیش‌نیازها
 - **Node.js 20** (با nvm: `nvm use`، فایل `.nvmrc` موجود است)
-- **PNPM 9.6** از طریق Corepack  
+- **PNPM 10.x** از طریق Corepack
   ```bash
   corepack enable
-  corepack use pnpm@9.6.0
+  corepack use pnpm@10.x
   ```
 - PostgreSQL 14+ و Redis 6+ (برای اجرای کامل بک‌اند)
 
@@ -44,7 +44,7 @@ cp .env.example .env
 ## ۴) راه‌اندازی محلی (Local)
 ### نصب و آماده‌سازی
 ```bash
-corepack enable && corepack use pnpm@9.6.0
+corepack enable && corepack use pnpm@10.x
 pnpm -w i
 pnpm -C apps/backend prisma migrate deploy   # یا: pnpm -C apps/backend prisma migrate dev
 ```

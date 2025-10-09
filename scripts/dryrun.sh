@@ -3,7 +3,7 @@ set -euo pipefail
 
 echo "== ArmanVarzesh Dry-Run =="
 corepack enable
-corepack prepare pnpm@9.6.0 --activate
+corepack use pnpm@10.x
 
 echo "[1/6] Install"
 pnpm install --frozen-lockfile || pnpm install
