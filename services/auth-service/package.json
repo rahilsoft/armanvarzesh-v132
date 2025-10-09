@@ -19,7 +19,7 @@
   "dependencies": {
     "fastify": "^5.6.0",
     "fastify-cors": "^6.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jose": "^5.8.0",
     "@nestjs/passport": "11.0.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

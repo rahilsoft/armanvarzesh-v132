@@ -18,7 +18,7 @@
     "@arman/observability-sdk": "workspace:*",
     "fastify": "^5.6.0",
     "@fastify/cors": "^11.1.0",
-    "jsonwebtoken": "^9.0.2",
+    "jose": "^5.8.0",
     "undici": "^7.16.0",
     "ws": "^8.17.0"
   },
