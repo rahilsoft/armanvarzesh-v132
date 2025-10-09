@@ -147,7 +147,7 @@
     "@stoplight/spectral-cli": "^6.11.1"
   },
   "engines": {
-    "node": ">=20.0.0 <21",
+    "node": "20.19.x",
     "pnpm": ">=9 <10"
   },
   "dependencies": {

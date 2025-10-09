@@ -1,5 +1,5 @@
 
-FROM node:20-alpine
+FROM node:20.19.0-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm i -g pnpm@9 && pnpm install --prod=false

@@ -1,18 +1,18 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS deps
+FROM node:20.19.0-alpine AS deps
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@9.6.0 --activate
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY services/chat-service/package.json services/chat-service/
 RUN pnpm -w install --frozen-lockfile
 
-FROM node:20-alpine AS build
+FROM node:20.19.0-alpine AS build
 WORKDIR /app
 COPY --from=deps /app /app
 COPY services/chat-service services/chat-service
 RUN pnpm -w -C services/chat-service build || pnpm -w -C services/chat-service run build || true
 
-FROM node:20-alpine AS runtime
+FROM node:20.19.0-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 RUN addgroup -S app && adduser -S app -G app

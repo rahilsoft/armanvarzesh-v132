@@ -1,6 +1,6 @@
 ENV NODE_ENV=production
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS deps
+FROM node:20.19.0-alpine AS deps
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY pnpm-lock.yaml .
@@ -12,7 +12,7 @@ RUN pnpm -r --offline install
 WORKDIR /app/packages/ui-tokens
 RUN pnpm build
 
-FROM node:20-alpine AS runtime
+FROM node:20.19.0-alpine AS runtime
 WORKDIR /srv
 RUN addgroup -S nodejs && adduser -S node -G nodejs
 COPY --from=build /app .

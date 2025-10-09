@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20.19.0-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN apk add --no-cache wget && \
@@ -6,7 +6,7 @@ RUN apk add --no-cache wget && \
 COPY . .
 RUN npx tsc -p tsconfig.json || pnpm run build
 
-FROM node:20-alpine
+FROM node:20.19.0-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/dist ./dist

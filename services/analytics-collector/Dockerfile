@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:20-alpine AS base
+FROM node:20.19.0-alpine AS base
 RUN corepack enable && apk add --no-cache python3 make g++
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -9,7 +9,7 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 RUN pnpm -r --filter ./services/analytics-collector... build
 
-FROM node:20-alpine AS runner
+FROM node:20.19.0-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 # Copy built app and dependencies
