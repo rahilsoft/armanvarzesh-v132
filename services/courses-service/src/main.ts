@@ -16,7 +16,7 @@ console.log = (...args)=>{
 // OTEL_INIT_PHASE11
 process.env.SERVICE_NAME = process.env.SERVICE_NAME || 'courses-service';
 if (process.env.OTEL_ENABLED === 'true') {
-  try { require('../../packages/observability/otel-node/dist/register.js'); } catch (e) {}
+  try { require('@arman/observability-sdk/register'); } catch (e) {}
 }
 
 import 'reflect-metadata';
@@ -43,6 +43,12 @@ async function bootstrap() {
           res.end(await register.metrics());
         } catch (err) {
           res.status(500).send((err as Error)?.message ?? 'failed to collect metrics');
+          const metrics = await register.metrics();
+          res.setHeader('Content-Type', register.contentType);
+          res.status(200).end(metrics);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unable to collect metrics';
+          res.status(500).end(message);
         }
       });
       http._auto_metrics = true;

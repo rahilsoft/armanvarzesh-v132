@@ -5,6 +5,8 @@
   - `OTEL_SERVICE_NAME`, `SERVICE_VERSION`, `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`
   - `REDIS_URL`
   - `S3_BUCKET`, `S3_REGION`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_FORCE_PATH_STYLE=1`
+    - Inject credentials at runtime via your secret manager (Docker/Kubernetes secrets, cloud parameter store, etc.). Do **not**
+      bake access keys into images or committed env files.
   - `JWKS_PUBLIC_SET` (e.g., `{"keys":[{...JWK...}]}`)
 
 ## Endpoints
