@@ -3,7 +3,7 @@
 
 ## Quick Start
 
-1. Copy `.env.example` to `.env` and set your configs.
+1. Copy `.env.example` to `.env` and set your configs. Ensure `JWT_SECRET` (and other secrets) are defined in this file or exported in your shell before starting the stack.
 2. Run:  
    `docker-compose -f scripts/docker-compose.yml up --build`
 3. App will be ready at [http://localhost:4000/graphql](http://localhost:4000/graphql)
