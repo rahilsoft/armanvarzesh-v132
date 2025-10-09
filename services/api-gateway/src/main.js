@@ -12,7 +12,7 @@ console.log = (...args)=>{
 // OTEL_INIT_PHASE11
 process.env.SERVICE_NAME = process.env.SERVICE_NAME || 'api-gateway';
 if (process.env.OTEL_ENABLED === 'true') {
-  try { require('../../packages/observability/otel-node/dist/register.js'); } catch (e) {}
+  try { await import('@arman/observability-sdk/register'); } catch (e) {}
 }
 
 import Fastify from 'fastify';
@@ -21,6 +21,7 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { createPublicKey } from 'crypto';
 import { fetch } from 'undici';
 import { WebSocketServer, WebSocket } from 'ws';
+import { buildJwtVerifier } from './jwt-verifier.js';
 
 const app = Fastify({ logger: false });
 await app.register(cors, { origin: true, credentials: true });
@@ -115,6 +116,21 @@ async function parseAuth(req){
     const payload = await resolveAuthPayload(req);
     if (!payload) return null;
     return { userId: payload.sub || payload.userId, role: payload.role || 'user' };
+const verifier = buildJwtVerifier(process.env);
+const hasVerifier = verifier.hasVerifier;
+
+async function parseAuth(req){
+  if (!hasVerifier) return null;
+  if (req.user) {
+    const payload = req.user;
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user', payload };
+  }
+  const h = req.headers||{};
+  const b = (h['authorization']||'').toString();
+  if (!b.startsWith('Bearer ')) return null;
+  try {
+    const { payload } = await verifier.verify(b.slice(7));
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user', payload };
   } catch (e) {
     return null;
   }
@@ -346,8 +362,17 @@ try {
     try {
       const payload = await resolveAuthPayload(req);
       if (!payload) {
+if (hasVerifier) {
+  const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
+
+  app.addHook('onRequest', async (req, reply) => {
+    try {
+      const auth = (req.headers['authorization']||'').toString();
+      if (!auth.startsWith('Bearer ')) {
         return reply.code(401).send({ error: 'unauthorized' });
       }
+      const token = auth.slice(7);
+      const { payload } = await verifier.verify(token);
       if (REQUIRE_DEVICE_ID) {
         const did = payload.did || payload.deviceId || null;
         const hdrDid = req.headers['x-device-id'] || null;
@@ -361,7 +386,7 @@ try {
   });
 
   // Circuit-breaker wrapper for fetch (basic): timeout + retries + half-open timer
-  const originalFetch = global.fetch || require('node-fetch');
+  const originalFetch = global.fetch || fetch;
   let cbOpen = false;
   let cbNextTry = 0;
   const CB_WINDOW_MS = 15000;
@@ -392,8 +417,8 @@ try {
     }
   }
   global.fetch = cbFetch;
-} catch(e) {
-  app.log && app.log.warn('Phase 9 JWKS/circuit not active: ' + (e?.message||e));
+} else {
+  app.log && app.log.warn('Phase 9 JWKS/circuit not active: verifier not configured');
 }
 
 
