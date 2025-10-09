@@ -1,6 +1,6 @@
 # @arman/http-client
 
-> Type: **library** — Engines: Node 20.x, pnpm 9.x
+> Type: **library** — Engines: Node 20.x, pnpm 10.x
 
 ## Overview
 Short description of `@arman/http-client`. Explain purpose, boundaries, and main responsibilities.

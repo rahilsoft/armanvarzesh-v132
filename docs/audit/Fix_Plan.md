@@ -2,7 +2,7 @@
 
 ## Phase 1 — Hygiene
 - حذف مسیرهای هاردکد و URLهای `http://`
-- یکسان‌سازی Node 20 و pnpm 9 در همه پکیج‌ها
+- یکسان‌سازی Node 20 و pnpm 10 در همه پکیج‌ها
 - بازنویسی `install.sh` بر پایه workspace
 
 ## Phase 2 — Security

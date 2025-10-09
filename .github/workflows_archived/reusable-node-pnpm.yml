@@ -23,7 +23,7 @@ jobs:
       - name: Enable Corepack and pin PNPM
         run: |
           corepack enable
-          corepack prepare pnpm@9.6.0 --activate
+          corepack prepare pnpm@10.0.0 --activate
           pnpm -v
       - name: Install (lockfile-aware)
         working-directory: ${{ inputs.working-directory }}

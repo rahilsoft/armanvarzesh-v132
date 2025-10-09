@@ -1,12 +1,12 @@
 # armanfit-admin
 
-**Build Target:** Node 20, pnpm 9.6.0
+**Build Target:** Node 20, pnpm 10.0.0
 
 ## Quickstart
 
 ```bash
 corepack enable
-corepack prepare pnpm@9.6.0 --activate
+corepack prepare pnpm@10.0.0 --activate
 
 # from repo root
 pnpm -w install
