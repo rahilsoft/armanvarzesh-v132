@@ -17,28 +17,36 @@ if (process.env.OTEL_ENABLED === 'true') {
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import jwt from 'jsonwebtoken';
 import { fetch } from 'undici';
 import { WebSocketServer, WebSocket } from 'ws';
+import { buildJwtVerifier } from './jwt-verifier.js';
 
 const app = Fastify({ logger: false });
 await app.register(cors, { origin: true, credentials: true });
 
 const CONTENT_URL = process.env.CONTENT_SERVICE_URL || 'http://content-service:3000/graphql';
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const verifier = buildJwtVerifier(process.env);
+const hasVerifier = verifier.hasVerifier;
 
-function parseAuth(req){
+async function parseAuth(req){
+  if (!hasVerifier) return null;
+  if (req.user) {
+    const payload = req.user;
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user', payload };
+  }
   const h = req.headers||{};
   const b = (h['authorization']||'').toString();
-  if (b.startsWith('Bearer ')){
-    try{ const d = jwt.verify(b.slice(7), JWT_SECRET); return { userId: d.sub||d.userId, role: d.role||'user' }; }
-    catch(e){ return null; }
+  if (!b.startsWith('Bearer ')) return null;
+  try {
+    const { payload } = await verifier.verify(b.slice(7));
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user', payload };
+  } catch (e) {
+    return null;
   }
-  return null;
 }
 
 app.post('/graphql', async (req, reply)=>{
-  const who = parseAuth(req);
+  const who = await parseAuth(req);
   if (!who) return reply.code(401).send({ errors:[{ message:'unauthorized' }] });
   const res = await fetch(CONTENT_URL, {
     method:'POST',
@@ -255,47 +263,17 @@ app.post('/v1/medical/book', async (req, reply) => {
 
 
 // --- Phase 9: JWKS-based JWT verification (preferred) + device-bind + circuit-breaker fetch ---
-try {
-  const { createLocalJWKSet } = require('jose/jwks/local');
-  const { jwtVerify } = require('jose');
-  const http = require('node:https');
-  const http2 = require('node:http');
-
-  const JWKS_URL = process.env.JWKS_URL || '';
+if (hasVerifier) {
   const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
-  let jwksCache = null;
-  async function getJWKS() {
-    if (!JWKS_URL) return null;
-    if (jwksCache && (Date.now() - jwksCache.ts) < 5*60*1000) return jwksCache.set;
-    const client = JWKS_URL.startsWith('https') ? http : http2;
-    const res = await new Promise((resolve,reject)=>{
-      const req = client.get(JWKS_URL, r=>{
-        let d=''; r.on('data',c=>d+=c); r.on('end',()=>resolve({status:r.statusCode, body:d}));
-      }); req.on('error',reject);
-    });
-    if (res.status !== 200) throw new Error('jwks_fetch_failed');
-    const json = JSON.parse(res.body);
-    const set = createLocalJWKSet(json);
-    jwksCache = { ts: Date.now(), set };
-    return set;
-  }
 
   app.addHook('onRequest', async (req, reply) => {
-    if (!JWKS_URL && !process.env.JWT_SECRET) return; // no auth configured
     try {
-      const auth = req.headers['authorization']||'';
-      const token = (auth.startsWith('Bearer ') ? auth.slice(7) : null);
-      if (!token) return reply.code(401).send({ error: 'unauthorized' });
-      let payload;
-      if (JWKS_URL) {
-        const set = await getJWKS();
-        const out = await jwtVerify(token, set);
-        payload = out.payload;
-      } else {
-        const { createSecretKey } = require('crypto');
-        const secret = createSecretKey(Buffer.from(process.env.JWT_SECRET||'', 'utf8'));
-        payload = (await jwtVerify(token, secret)).payload;
+      const auth = (req.headers['authorization']||'').toString();
+      if (!auth.startsWith('Bearer ')) {
+        return reply.code(401).send({ error: 'unauthorized' });
       }
+      const token = auth.slice(7);
+      const { payload } = await verifier.verify(token);
       if (REQUIRE_DEVICE_ID) {
         const did = payload.did || payload.deviceId || null;
         const hdrDid = req.headers['x-device-id'] || null;
@@ -310,7 +288,7 @@ try {
   });
 
   // Circuit-breaker wrapper for fetch (basic): timeout + retries + half-open timer
-  const originalFetch = global.fetch || require('node-fetch');
+  const originalFetch = global.fetch || fetch;
   let cbOpen = false;
   let cbNextTry = 0;
   const CB_WINDOW_MS = 15000;
@@ -341,8 +319,8 @@ try {
     }
   }
   global.fetch = cbFetch;
-} catch(e) {
-  app.log && app.log.warn('Phase 9 JWKS/circuit not active: ' + (e?.message||e));
+} else {
+  app.log && app.log.warn('Phase 9 JWKS/circuit not active: verifier not configured');
 }
 
 

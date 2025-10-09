@@ -1470,9 +1470,9 @@ importers:
       fastify:
         specifier: ^5.6.0
         version: 5.6.1
-      jsonwebtoken:
-        specifier: '>=9.0.0'
-        version: 9.0.2
+      jose:
+        specifier: ^5.8.0
+        version: 5.10.0
       undici:
         specifier: ^7.16.0
         version: 7.16.0
@@ -1700,9 +1700,9 @@ importers:
       fastify-cors:
         specifier: ^6.1.0
         version: 6.1.0
-      jsonwebtoken:
-        specifier: '>=9.0.0'
-        version: 9.0.2
+      jose:
+        specifier: ^5.8.0
+        version: 5.10.0
       passport:
         specifier: ^0.7.0
         version: 0.7.0
