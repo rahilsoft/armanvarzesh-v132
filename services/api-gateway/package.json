@@ -15,6 +15,7 @@
     "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
   },
   "dependencies": {
+    "@arman/observability-sdk": "workspace:*",
     "fastify": "^5.6.0",
     "@fastify/cors": "^11.1.0",
     "jsonwebtoken": "^9.0.2",
