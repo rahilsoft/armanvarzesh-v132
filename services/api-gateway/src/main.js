@@ -12,7 +12,7 @@ console.log = (...args)=>{
 // OTEL_INIT_PHASE11
 process.env.SERVICE_NAME = process.env.SERVICE_NAME || 'api-gateway';
 if (process.env.OTEL_ENABLED === 'true') {
-  try { require('../../packages/observability/otel-node/dist/register.js'); } catch (e) {}
+  try { await import('@arman/observability-sdk/register'); } catch (e) {}
 }
 
 import Fastify from 'fastify';

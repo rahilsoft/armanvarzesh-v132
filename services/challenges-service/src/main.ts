@@ -16,7 +16,7 @@ console.log = (...args)=>{
 // OTEL_INIT_PHASE11
 process.env.SERVICE_NAME = process.env.SERVICE_NAME || 'challenges-service';
 if (process.env.OTEL_ENABLED === 'true') {
-  try { require('../../packages/observability/otel-node/dist/register.js'); } catch (e) {}
+  try { require('@arman/observability-sdk/register'); } catch (e) {}
 }
 
 import 'reflect-metadata';
