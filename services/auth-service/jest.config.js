@@ -1,1 +1,7 @@
-module.exports={testEnvironment:'node'};
+module.exports = {
+  rootDir: __dirname,
+  testEnvironment: 'node',
+  testMatch: ['**/test/**/*.spec.mjs'],
+  transform: {},
+  collectCoverage: false,
+};

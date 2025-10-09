@@ -7,7 +7,7 @@
     "dev": "node --watch src/main.js",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "jest --config jest.config.js",
     "clean": "rimraf dist || rm -rf dist",
     "start:prod": "node dist/main.js",
     "lint": "eslint .",

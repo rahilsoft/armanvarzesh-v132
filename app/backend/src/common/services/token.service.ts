@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
+import { createPublicKey } from 'crypto';
+
+type KeyEntry = {
+  privateKey: string;
+  publicKey: string;
+};
 
 @Injectable()
 export class TokenService {
@@ -41,6 +47,10 @@ export class TokenService {
   }
 
   verify<T = any>(token: string): T {
+    const decoded = (jwt as any).decode(token, { complete: true }) as jwt.Jwt | null;
+    const kid = (decoded?.header as jwt.JwtHeader | undefined)?.kid || this.activeKid;
+    const key = this.getKey(kid);
+    return (jwt as any).verify(token, key.publicKey, {
     const verificationKey = this.publicKey || this.privateKey;
     return (jwt as any).verify(token, verificationKey, {
       algorithms: [this.algorithm],

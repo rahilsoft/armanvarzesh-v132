@@ -17,6 +17,8 @@ if (process.env.OTEL_ENABLED === 'true') {
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createPublicKey } from 'crypto';
 import { fetch } from 'undici';
 import { WebSocketServer, WebSocket } from 'ws';
 import { buildJwtVerifier } from './jwt-verifier.js';
@@ -25,6 +27,95 @@ const app = Fastify({ logger: false });
 await app.register(cors, { origin: true, credentials: true });
 
 const CONTENT_URL = process.env.CONTENT_SERVICE_URL || 'http://content-service:3000/graphql';
+const JWKS_URL = process.env.JWKS_URL || '';
+const VERIFY_ALG = 'RS256';
+
+function normalizePem(value = '') {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  if (trimmed.includes('-----BEGIN')) return trimmed;
+  try {
+    const decoded = Buffer.from(trimmed, 'base64').toString('utf8');
+    return decoded.includes('-----BEGIN') ? decoded : trimmed;
+  } catch {
+    return trimmed;
+  }
+}
+
+function buildLocalKeyStore() {
+  const store = new Map();
+  const primary =
+    process.env.JWT_PUBLIC_KEY || process.env.JWT_ACCESS_PUBLIC_KEY || process.env.ADMIN_JWT_PUBLIC_KEY;
+  if (primary) {
+    const pem = normalizePem(primary);
+    if (pem) store.set('default', createPublicKey(pem));
+  }
+  const jsonSources = [process.env.JWT_PUBLIC_KEYS, process.env.JWT_PUBLIC_KEY_SET];
+  for (const source of jsonSources) {
+    if (!source) continue;
+    try {
+      const parsed = JSON.parse(source);
+      for (const [kid, value] of Object.entries(parsed)) {
+        const pem = normalizePem(String(value));
+        if (pem) store.set(kid, createPublicKey(pem));
+      }
+    } catch (e) {
+      console.warn('Failed to parse JWT_PUBLIC_KEYS', e);
+    }
+  }
+  return store;
+}
+
+const localKeyStore = buildLocalKeyStore();
+const remoteJWKS = JWKS_URL ? createRemoteJWKSet(new URL(JWKS_URL), { cacheMaxAge: 5 * 60 * 1000 }) : null;
+const verifyOptions = {
+  issuer: process.env.AUTH_ISSUER || undefined,
+  audience: process.env.AUTH_AUDIENCE || undefined,
+  algorithms: [VERIFY_ALG],
+};
+const hasVerifier = Boolean(remoteJWKS || localKeyStore.size > 0);
+
+async function verifyJwtToken(token) {
+  if (remoteJWKS) {
+    return await jwtVerify(token, remoteJWKS, verifyOptions);
+  }
+  if (!localKeyStore.size) {
+    throw new Error('JWT verifier not configured');
+  }
+  return await jwtVerify(
+    token,
+    async ({ kid }) => {
+      if (kid && localKeyStore.has(kid)) {
+        return localKeyStore.get(kid);
+      }
+      if (!kid && localKeyStore.has('default')) {
+        return localKeyStore.get('default');
+      }
+      if (localKeyStore.size === 1) {
+        return [...localKeyStore.values()][0];
+      }
+      throw new Error('Unknown JWT kid');
+    },
+    verifyOptions
+  );
+}
+
+async function resolveAuthPayload(req) {
+  if (!hasVerifier) return null;
+  if (req.user) return req.user;
+  const header = (req.headers?.['authorization'] || '').toString();
+  if (!header.startsWith('Bearer ')) return null;
+  const token = header.slice(7);
+  const { payload } = await verifyJwtToken(token);
+  req.user = payload;
+  return payload;
+}
+
+async function parseAuth(req){
+  try {
+    const payload = await resolveAuthPayload(req);
+    if (!payload) return null;
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user' };
 const verifier = buildJwtVerifier(process.env);
 const hasVerifier = verifier.hasVerifier;
 
@@ -263,6 +354,14 @@ app.post('/v1/medical/book', async (req, reply) => {
 
 
 // --- Phase 9: JWKS-based JWT verification (preferred) + device-bind + circuit-breaker fetch ---
+try {
+  const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
+
+  app.addHook('onRequest', async (req, reply) => {
+    if (!hasVerifier) return; // no auth configured
+    try {
+      const payload = await resolveAuthPayload(req);
+      if (!payload) {
 if (hasVerifier) {
   const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
 
@@ -281,7 +380,6 @@ if (hasVerifier) {
           return reply.code(401).send({ error: 'device_mismatch' });
         }
       }
-      req.user = payload;
     } catch (e) {
       return reply.code(401).send({ error: 'invalid_token' });
     }
