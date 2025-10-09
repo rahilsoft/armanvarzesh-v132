@@ -17,7 +17,8 @@ if (process.env.OTEL_ENABLED === 'true') {
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import jwt from 'jsonwebtoken';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createPublicKey } from 'crypto';
 import { fetch } from 'undici';
 import { WebSocketServer, WebSocket } from 'ws';
 
@@ -25,20 +26,102 @@ const app = Fastify({ logger: false });
 await app.register(cors, { origin: true, credentials: true });
 
 const CONTENT_URL = process.env.CONTENT_SERVICE_URL || 'http://content-service:3000/graphql';
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const JWKS_URL = process.env.JWKS_URL || '';
+const VERIFY_ALG = 'RS256';
 
-function parseAuth(req){
-  const h = req.headers||{};
-  const b = (h['authorization']||'').toString();
-  if (b.startsWith('Bearer ')){
-    try{ const d = jwt.verify(b.slice(7), JWT_SECRET); return { userId: d.sub||d.userId, role: d.role||'user' }; }
-    catch(e){ return null; }
+function normalizePem(value = '') {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  if (trimmed.includes('-----BEGIN')) return trimmed;
+  try {
+    const decoded = Buffer.from(trimmed, 'base64').toString('utf8');
+    return decoded.includes('-----BEGIN') ? decoded : trimmed;
+  } catch {
+    return trimmed;
   }
-  return null;
+}
+
+function buildLocalKeyStore() {
+  const store = new Map();
+  const primary =
+    process.env.JWT_PUBLIC_KEY || process.env.JWT_ACCESS_PUBLIC_KEY || process.env.ADMIN_JWT_PUBLIC_KEY;
+  if (primary) {
+    const pem = normalizePem(primary);
+    if (pem) store.set('default', createPublicKey(pem));
+  }
+  const jsonSources = [process.env.JWT_PUBLIC_KEYS, process.env.JWT_PUBLIC_KEY_SET];
+  for (const source of jsonSources) {
+    if (!source) continue;
+    try {
+      const parsed = JSON.parse(source);
+      for (const [kid, value] of Object.entries(parsed)) {
+        const pem = normalizePem(String(value));
+        if (pem) store.set(kid, createPublicKey(pem));
+      }
+    } catch (e) {
+      console.warn('Failed to parse JWT_PUBLIC_KEYS', e);
+    }
+  }
+  return store;
+}
+
+const localKeyStore = buildLocalKeyStore();
+const remoteJWKS = JWKS_URL ? createRemoteJWKSet(new URL(JWKS_URL), { cacheMaxAge: 5 * 60 * 1000 }) : null;
+const verifyOptions = {
+  issuer: process.env.AUTH_ISSUER || undefined,
+  audience: process.env.AUTH_AUDIENCE || undefined,
+  algorithms: [VERIFY_ALG],
+};
+const hasVerifier = Boolean(remoteJWKS || localKeyStore.size > 0);
+
+async function verifyJwtToken(token) {
+  if (remoteJWKS) {
+    return await jwtVerify(token, remoteJWKS, verifyOptions);
+  }
+  if (!localKeyStore.size) {
+    throw new Error('JWT verifier not configured');
+  }
+  return await jwtVerify(
+    token,
+    async ({ kid }) => {
+      if (kid && localKeyStore.has(kid)) {
+        return localKeyStore.get(kid);
+      }
+      if (!kid && localKeyStore.has('default')) {
+        return localKeyStore.get('default');
+      }
+      if (localKeyStore.size === 1) {
+        return [...localKeyStore.values()][0];
+      }
+      throw new Error('Unknown JWT kid');
+    },
+    verifyOptions
+  );
+}
+
+async function resolveAuthPayload(req) {
+  if (!hasVerifier) return null;
+  if (req.user) return req.user;
+  const header = (req.headers?.['authorization'] || '').toString();
+  if (!header.startsWith('Bearer ')) return null;
+  const token = header.slice(7);
+  const { payload } = await verifyJwtToken(token);
+  req.user = payload;
+  return payload;
+}
+
+async function parseAuth(req){
+  try {
+    const payload = await resolveAuthPayload(req);
+    if (!payload) return null;
+    return { userId: payload.sub || payload.userId, role: payload.role || 'user' };
+  } catch (e) {
+    return null;
+  }
 }
 
 app.post('/graphql', async (req, reply)=>{
-  const who = parseAuth(req);
+  const who = await parseAuth(req);
   if (!who) return reply.code(401).send({ errors:[{ message:'unauthorized' }] });
   const res = await fetch(CONTENT_URL, {
     method:'POST',
@@ -256,45 +339,14 @@ app.post('/v1/medical/book', async (req, reply) => {
 
 // --- Phase 9: JWKS-based JWT verification (preferred) + device-bind + circuit-breaker fetch ---
 try {
-  const { createLocalJWKSet } = require('jose/jwks/local');
-  const { jwtVerify } = require('jose');
-  const http = require('node:https');
-  const http2 = require('node:http');
-
-  const JWKS_URL = process.env.JWKS_URL || '';
   const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
-  let jwksCache = null;
-  async function getJWKS() {
-    if (!JWKS_URL) return null;
-    if (jwksCache && (Date.now() - jwksCache.ts) < 5*60*1000) return jwksCache.set;
-    const client = JWKS_URL.startsWith('https') ? http : http2;
-    const res = await new Promise((resolve,reject)=>{
-      const req = client.get(JWKS_URL, r=>{
-        let d=''; r.on('data',c=>d+=c); r.on('end',()=>resolve({status:r.statusCode, body:d}));
-      }); req.on('error',reject);
-    });
-    if (res.status !== 200) throw new Error('jwks_fetch_failed');
-    const json = JSON.parse(res.body);
-    const set = createLocalJWKSet(json);
-    jwksCache = { ts: Date.now(), set };
-    return set;
-  }
 
   app.addHook('onRequest', async (req, reply) => {
-    if (!JWKS_URL && !process.env.JWT_SECRET) return; // no auth configured
+    if (!hasVerifier) return; // no auth configured
     try {
-      const auth = req.headers['authorization']||'';
-      const token = (auth.startsWith('Bearer ') ? auth.slice(7) : null);
-      if (!token) return reply.code(401).send({ error: 'unauthorized' });
-      let payload;
-      if (JWKS_URL) {
-        const set = await getJWKS();
-        const out = await jwtVerify(token, set);
-        payload = out.payload;
-      } else {
-        const { createSecretKey } = require('crypto');
-        const secret = createSecretKey(Buffer.from(process.env.JWT_SECRET||'', 'utf8'));
-        payload = (await jwtVerify(token, secret)).payload;
+      const payload = await resolveAuthPayload(req);
+      if (!payload) {
+        return reply.code(401).send({ error: 'unauthorized' });
       }
       if (REQUIRE_DEVICE_ID) {
         const did = payload.did || payload.deviceId || null;
@@ -303,7 +355,6 @@ try {
           return reply.code(401).send({ error: 'device_mismatch' });
         }
       }
-      req.user = payload;
     } catch (e) {
       return reply.code(401).send({ error: 'invalid_token' });
     }
