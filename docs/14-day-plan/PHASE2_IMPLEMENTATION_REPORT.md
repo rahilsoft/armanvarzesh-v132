@@ -12,6 +12,7 @@
 2) **Resolvers**: inject loaders via `@Context()`; build loaders per-request in a provider (Phase 3 will add a LoaderFactory).
 3) **Database**: run SQL migration (`db/migrations/2025-08-15_phase1_outbox_idempotency.sql`).
 4) **Env for presign**: `S3_BUCKET`, `S3_REGION`, `S3_ENDPOINT` (for MinIO), `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_FORCE_PATH_STYLE=1` (for MinIO).
+   Inject the S3 access/secret keys at runtime via your secrets manager; do not commit them to env files.
 5) **Prometheus**: include `observability/prometheus/alerts/rules.yml` into your Prom config. Expose metrics from API (Phase 3 will add OTEL/Prom metrics).
 6) **GitHub**: open a PR to trigger preview artifacts.
 
