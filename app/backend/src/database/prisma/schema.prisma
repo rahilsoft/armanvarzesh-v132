@@ -23,8 +23,14 @@ model User {
   meals           Meal[]
   workouts        Workout[]
   wallet          Wallet?
-  messages        Message[]
+  sentMessages    Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
   leaderboard     LeaderboardEntry[]
+  notifications   Notification[]
+  mealLogs        MealLog[]
+  specialists     Specialist[]
+  ratings         SpecialistRating[]
+  conversations   Conversation[] @relation("ConversationParticipants")
 }
 
 model Admin {
@@ -41,6 +47,7 @@ model Payment {
   createdAt DateTime @default(now())
   amount    Int
   authority String @unique
+  status    String   @default("pending")
 
   userId Int?
   user   User? @relation(fields: [userId], references: [id])
