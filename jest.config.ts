@@ -6,10 +6,10 @@ const config: Config = {
   coverageDirectory: './coverage',
   coverageThreshold: {
     global: {
-      branches: 40,
-      functions: 50,
-      lines: 60,
-      statements: 60,
+      branches: 50,
+      functions: 60,
+      lines: 70,
+      statements: 70,
     },
   },
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
