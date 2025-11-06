@@ -75,7 +75,7 @@
     "ts-jest": "^29.1.5",
     "@types/jest": "^29.5.12",
     "supertest": "^7.0.0",
-    "@types/supertest": "^2.0.16",
+    "@types/supertest": "^6.0.3",
     "@nestjs/testing": "^10.0.0",
     "@nestjs/cli": "^11.0.0",
     "prisma": "^5.15.0",
