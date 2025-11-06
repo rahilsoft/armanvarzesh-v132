@@ -82,5 +82,5 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "extends": "tsconfig.base.json"
+  "extends": "./tsconfig.base.json"
 }

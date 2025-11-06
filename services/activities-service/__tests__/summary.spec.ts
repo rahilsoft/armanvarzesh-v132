@@ -1,5 +1,4 @@
 
-import { describe, it, expect } from '@jest/globals';
 
 describe('Activity summary math', ()=>{
   it('sums distance and elevation', ()=>{

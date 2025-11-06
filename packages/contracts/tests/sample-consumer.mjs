@@ -8,7 +8,7 @@ const exampleAuthLoginContract = {
   path: "/auth/login",
   method: "POST",
   request: { email: "string", password: "string" },
-  response: { token: process.env.TOKEN || "changeme"string" }
+  response: { token: process.env.TOKEN || "changeme" }
 };
 
 assert.ok(exampleAuthLoginContract.path && exampleAuthLoginContract.response.token !== undefined);

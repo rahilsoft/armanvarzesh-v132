@@ -1,4 +1,3 @@
-import { describe, it, expect } from '@jest/globals';
 
 function toRad(d:number){ return d*Math.PI/180; }
 function haversine(lat1:number, lon1:number, lat2:number, lon2:number){

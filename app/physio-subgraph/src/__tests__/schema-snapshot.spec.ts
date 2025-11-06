@@ -1,4 +1,6 @@
+import { print } from 'graphql';
 import { typeDefs } from '../schema';
+
 test('SDL snapshot', ()=>{
-  expect(String(typeDefs)).toMatchSnapshot();
+  expect(print(typeDefs)).toMatchSnapshot();
 });
