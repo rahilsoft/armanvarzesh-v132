@@ -1,6 +1,8 @@
+import { print } from 'graphql';
 import { typeDefs } from '../schema';
+
 test('schema includes Physio types', ()=>{
-  const sdl = String(typeDefs);
+  const sdl = print(typeDefs);
   expect(sdl).toContain('type PhysioProtocol');
   expect(sdl).toContain('type Query');
   expect(sdl).toContain('Mutation');

@@ -47,7 +47,7 @@
   },
   "engines": {
     "node": ">=20.0.0 <21",
-    "pnpm": ">=9 <10"
+    "pnpm": ">=10 <11"
   },
   "module": "dist/index.mjs",
   "exports": {
