@@ -1,19 +1,87 @@
 {
   "expo": {
-    "name": "ArmanVarzesh Coach",
+    "name": "آرمان ورزش - مربیان",
     "slug": "arman-coach",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
     "scheme": "arman-coach",
-    "ios": {
-      "supportsTablet": true
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0b1020"
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#0b1020"
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.armanvarzesh.coach",
+      "infoPlist": {
+        "NSCameraUsageDescription": "برای تماس تصویری با مشتریان",
+        "NSPhotoLibraryUsageDescription": "برای انتخاب تصاویر از گالری",
+        "NSMicrophoneUsageDescription": "برای تماس تصویری",
+        "NSFaceIDUsageDescription": "برای ورود سریع به برنامه",
+        "NSCalendarsUsageDescription": "برای مدیریت جلسات",
+        "NSRemindersUsageDescription": "برای یادآوری جلسات"
       }
     },
+    "android": {
+      "package": "com.armanvarzesh.coach",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0b1020"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ],
+      "googleServicesFile": "./google-services.json"
+    },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store",
+      "expo-local-authentication",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#0b1020",
+          "sounds": ["./assets/notification.wav"]
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "برای تماس تصویری"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "برای انتخاب تصاویر"
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "arman-varzesh-coach"
+      }
     }
   }
 }
