@@ -2,7 +2,22 @@ import { gql } from 'graphql-tag'; import { prisma } from './prisma';
 import { combinedLoad, rollingAverage, classifyLoad } from '@arman/training-load-engine';
 import { evaluateAwards } from '@arman/awards-engine';
 export const typeDefs = gql`
-  extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@shareable"])
+  extend schema @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@shareable", "@external"])
+
+  """
+  User entity shared across subgraphs.
+  This subgraph extends User to add activity-specific fields.
+  """
+  type User @key(fields: "id") {
+    id: ID!
+    "Activity rings for this user (resolved by activity-subgraph)"
+    activityRings(date: String): ActivityRings
+    "Training load summary (resolved by activity-subgraph)"
+    loadSummary: LoadSummary
+    "User awards (resolved by activity-subgraph)"
+    awards: [Award!]!
+  }
+
   type ActivityRings { date:String!, moveKcal:Int!, exerciseMin:Int!, standHr:Int!, goals:RingGoals!, progress:RingProgress! }
   type RingGoals { moveKcal:Int!, exerciseMin:Int!, standHr:Int! }
   type RingProgress { movePct:Float!, exercisePct:Float!, standPct:Float! }
@@ -10,6 +25,7 @@ export const typeDefs = gql`
   type TrendPoint { date:String!, metric:String!, value:Float!, direction:String! }
   type Award { code:String!, achievedAt:String!, meta: JSON }
   scalar JSON
+
   type Query {
     activityRings(userId:ID!, date:String): ActivityRings!
     loadSummary(userId:ID!): LoadSummary!
@@ -21,6 +37,31 @@ export const typeDefs = gql`
     recomputeAwards(userId:ID!): [Award!]!
   }`;
 export const resolvers = {
+  // Entity reference resolver for User
+  User: {
+    __resolveReference: async (user: { id: string }) => {
+      // Return the user object - fields will be resolved by field resolvers
+      return { id: user.id };
+    },
+    activityRings: async (user: { id: string }, { date }: any) => {
+      const userId = user.id;
+      const d = date || new Date().toISOString().slice(0,10);
+      const row = await prisma.activityDaily.upsert({ where: { userId_date: { userId, date: d } }, create: { userId, date: d, moveKcal: 0, exerciseMin: 0, standHr: 0 }, update: {} });
+      const goals = await prisma.activityGoal.upsert({ where: { userId }, create: { userId, moveKcal: 500, exerciseMin: 30, standHr: 12 }, update: {} });
+      return shapeRings(row, goals);
+    },
+    loadSummary: async (user: { id: string }) => {
+      const userId = user.id;
+      const workouts = await prisma.workout.findMany({ where: { userId }, orderBy: { startedAt: 'asc' } });
+      const loads = workouts.map(w => combinedLoad({ userId, startedAt: w.startedAt.toISOString(), endedAt: w.endedAt?.toISOString()||w.startedAt.toISOString(), minutes: w.minutes||0, sRPE: w.sRPE||undefined, avgHR: w.avgHR||undefined, maxHR: w.maxHR||undefined }));
+      return { recent7: rollingAverage(loads,7), recent28: rollingAverage(loads,28), state: classifyLoad(rollingAverage(loads,7), rollingAverage(loads,28)) };
+    },
+    awards: async (user: { id: string }) => {
+      const userId = user.id;
+      const rows = await prisma.award.findMany({ where: { userId }, orderBy: { achievedAt: 'desc' } });
+      return rows.map(r => ({ code: r.code, achievedAt: r.achievedAt.toISOString(), meta: r.meta as any }));
+    }
+  },
   Query: {
     activityRings: async (_: any, { userId, date }: any) => {
       const d = date || new Date().toISOString().slice(0,10);
