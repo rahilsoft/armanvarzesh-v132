@@ -1,0 +1,162 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import * as Localization from 'expo-localization';
+
+// Persian translations
+const fa = {
+  common: {
+    submit: 'تایید',
+    cancel: 'لغو',
+    save: 'ذخیره',
+    delete: 'حذف',
+    edit: 'ویرایش',
+    back: 'بازگشت',
+    next: 'بعدی',
+    done: 'انجام شد',
+    loading: 'در حال بارگذاری...',
+    error: 'خطا',
+    success: 'موفق',
+  },
+  auth: {
+    login: 'ورود',
+    register: 'ثبت نام',
+    logout: 'خروج',
+    email: 'ایمیل',
+    password: 'رمز عبور',
+    confirmPassword: 'تکرار رمز عبور',
+    forgotPassword: 'رمز عبور را فراموش کرده‌اید؟',
+    resetPassword: 'بازیابی رمز عبور',
+    loginSuccess: 'ورود موفقیت‌آمیز',
+    registerSuccess: 'ثبت نام موفقیت‌آمیز',
+    invalidCredentials: 'ایمیل یا رمز عبور اشتباه است',
+  },
+  dashboard: {
+    title: 'داشبورد',
+    welcome: 'خوش آمدید',
+    todayWorkout: 'تمرین امروز',
+    nutrition: 'برنامه غذایی',
+    progress: 'پیشرفت',
+    chat: 'گفتگو با مربی',
+  },
+  workout: {
+    title: 'برنامه تمرینی',
+    today: 'امروز',
+    week: 'هفته',
+    exercises: 'تمرینات',
+    sets: 'ست',
+    reps: 'تکرار',
+    weight: 'وزنه',
+    rest: 'استراحت',
+    completed: 'انجام شد',
+    start: 'شروع تمرین',
+  },
+  nutrition: {
+    title: 'برنامه غذایی',
+    breakfast: 'صبحانه',
+    snack: 'میان‌وعده',
+    lunch: 'ناهار',
+    dinner: 'شام',
+    calories: 'کالری',
+    protein: 'پروتئین',
+    carbs: 'کربوهیدرات',
+    fat: 'چربی',
+    logMeal: 'ثبت وعده غذایی',
+  },
+  profile: {
+    title: 'پروفایل',
+    personalInfo: 'اطلاعات شخصی',
+    settings: 'تنظیمات',
+    notifications: 'اعلان‌ها',
+    language: 'زبان',
+    darkMode: 'حالت تاریک',
+    biometric: 'ورود با اثر انگشت',
+  },
+};
+
+// English translations
+const en = {
+  common: {
+    submit: 'Submit',
+    cancel: 'Cancel',
+    save: 'Save',
+    delete: 'Delete',
+    edit: 'Edit',
+    back: 'Back',
+    next: 'Next',
+    done: 'Done',
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success',
+  },
+  auth: {
+    login: 'Login',
+    register: 'Register',
+    logout: 'Logout',
+    email: 'Email',
+    password: 'Password',
+    confirmPassword: 'Confirm Password',
+    forgotPassword: 'Forgot Password?',
+    resetPassword: 'Reset Password',
+    loginSuccess: 'Login successful',
+    registerSuccess: 'Registration successful',
+    invalidCredentials: 'Invalid email or password',
+  },
+  dashboard: {
+    title: 'Dashboard',
+    welcome: 'Welcome',
+    todayWorkout: 'Today\'s Workout',
+    nutrition: 'Nutrition Plan',
+    progress: 'Progress',
+    chat: 'Chat with Coach',
+  },
+  workout: {
+    title: 'Workout Plan',
+    today: 'Today',
+    week: 'Week',
+    exercises: 'Exercises',
+    sets: 'Sets',
+    reps: 'Reps',
+    weight: 'Weight',
+    rest: 'Rest',
+    completed: 'Completed',
+    start: 'Start Workout',
+  },
+  nutrition: {
+    title: 'Nutrition Plan',
+    breakfast: 'Breakfast',
+    snack: 'Snack',
+    lunch: 'Lunch',
+    dinner: 'Dinner',
+    calories: 'Calories',
+    protein: 'Protein',
+    carbs: 'Carbs',
+    fat: 'Fat',
+    logMeal: 'Log Meal',
+  },
+  profile: {
+    title: 'Profile',
+    personalInfo: 'Personal Information',
+    settings: 'Settings',
+    notifications: 'Notifications',
+    language: 'Language',
+    darkMode: 'Dark Mode',
+    biometric: 'Biometric Login',
+  },
+};
+
+i18n.use(initReactI18next).init({
+  resources: {
+    fa: { translation: fa },
+    en: { translation: en },
+  },
+  lng: Localization.locale.startsWith('fa') ? 'fa' : 'en',
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false,
+  },
+  react: {
+    useSuspense: false,
+  },
+});
+
+export default i18n;
