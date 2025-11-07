@@ -1,48 +1,24 @@
-
-
-model SpecialistMeta {
-  languages      String?   // comma separated e.g. fa,en
-  thumbnailUrl   String?
-  specialistId   String  @id
-  role           ServiceType?
-  tags           String?
-  genderFocus    String?    // male|female|any
-  minAge         Int?
-  maxAge         Int?
-  activeAt       DateTime?
-  bio            String?
-  introVideoUrl  String?
-  updatedAt      DateTime @updatedAt
-  @@index([specialistId])  // added by phase5
+// Prisma Schema for Content Service
+generator client {
+  provider = "prisma-client-js"
 }
 
-
-
-model SpecialistScoreHistory {
-  id           String   @id @default(cuid())
-  specialistId String
-  role         ServiceType
-  totalScore   Float
-  metrics      Json?
-  at           DateTime @default(now())
-  @@index([specialistId, role, at])
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+// ============================================
+// ENUMS
+// ============================================
 
-
-model MediaJob {
-  id        String   @id @default(cuid())
-  kind      String   // THUMBNAIL|TRANSCODE
-  url       String
-  status    String   @default("PENDING") // PENDING|RUNNING|DONE|ERROR
-  result    Json?
-  error     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String?
+enum ServiceType {
+  NUTRITIONIST
+  COACH
+  PHYSICAL_THERAPIST
+  PSYCHOLOGIST
+  SPECIALIST
 }
-
-
 
 enum ActivityLevel {
   SEDENTARY
@@ -51,6 +27,278 @@ enum ActivityLevel {
   ACTIVE
   VERY_ACTIVE
 }
+
+enum BlockType {
+  SINGLE
+  SUPERSET
+  TRISET
+  CIRCUIT
+}
+
+enum PlanKind {
+  WORKOUT
+  CORRECTIVE
+  NUTRITION
+}
+
+enum ExerciseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CorrectiveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TileState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum LeadStatus {
+  OPEN
+  CONVERTED
+  CHURNED
+}
+
+// ============================================
+// SPECIALIST & SCORING MODELS
+// ============================================
+
+model SpecialistProfile {
+  id            String      @id @default(cuid())
+  specialistId  String      @unique
+  role          ServiceType
+  displayName   String
+  bio           String?
+  avatarUrl     String?
+  introVideoUrl String?
+  tags          Json?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([specialistId])
+}
+
+model SpecialistMeta {
+  specialistId  String       @id
+  role          ServiceType?
+  tags          String?
+  genderFocus   String?      // male|female|any
+  minAge        Int?
+  maxAge        Int?
+  activeAt      DateTime?
+  bio           String?
+  introVideoUrl String?
+  languages     String?      // comma separated e.g. fa,en
+  thumbnailUrl  String?
+  updatedAt     DateTime     @updatedAt
+
+  @@index([specialistId])
+}
+
+model SpecialistScore {
+  id           String      @id @default(cuid())
+  specialistId String
+  role         ServiceType
+  totalScore   Float
+  metrics      Json?
+  lastComputed DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@unique([specialistId, role])
+  @@index([specialistId, role])
+  @@index([role, totalScore])
+}
+
+model SpecialistScoreHistory {
+  id           String      @id @default(cuid())
+  specialistId String
+  role         ServiceType
+  totalScore   Float
+  metrics      Json?
+  at           DateTime    @default(now())
+
+  @@index([specialistId, role, at])
+}
+
+model ScoringWeights {
+  id      String      @id @default(cuid())
+  role    ServiceType @unique
+  weights Json
+
+  @@index([role])
+}
+
+// ============================================
+// USER & LEAD MODELS
+// ============================================
+
+model UserMeta {
+  userId    String   @id
+  json      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model UserProfile {
+  userId       String   @id
+  heightCm     Float?
+  weightKg     Float?
+  trainingEnv  String?
+  equipment    Json?    // Array of equipment
+  injuries     Json?    // Array of injuries
+  measurements Json?
+  medical      Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Lead {
+  id           String      @id @default(cuid())
+  userId       String
+  specialistId String
+  serviceType  ServiceType
+  status       LeadStatus  @default(OPEN)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([specialistId])
+  @@index([serviceType])
+  @@index([createdAt])
+}
+
+model ConversionEvent {
+  id           String      @id @default(cuid())
+  userId       String
+  specialistId String
+  serviceType  ServiceType
+  kind         String      // FREE_TO_PREMIUM, RENEWAL
+  at           DateTime    @default(now())
+
+  @@index([specialistId, serviceType])
+  @@index([kind])
+  @@index([at])
+}
+
+// ============================================
+// CHAT MODELS
+// ============================================
+
+model ChatThread {
+  id           String        @id @default(cuid())
+  specialistId String
+  userId       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  messages     ChatMessage[]
+
+  @@unique([specialistId, userId])
+  @@index([specialistId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  threadId   String
+  senderId   String
+  senderRole String   @default("user")
+  body       String?
+  voiceUrl   String?
+  createdAt  DateTime @default(now())
+
+  thread ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+// ============================================
+// SURVEY MODELS
+// ============================================
+
+model SurveyTemplate {
+  id          String       @id @default(cuid())
+  code        String       @unique
+  title       String
+  serviceType ServiceType?
+  periodDays  Int?
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([code])
+  @@index([active])
+}
+
+model SurveyTask {
+  id           String       @id @default(cuid())
+  userId       String
+  specialistId String
+  serviceType  ServiceType?
+  templateCode String
+  dueAt        DateTime
+  completedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([specialistId])
+  @@index([dueAt])
+  @@index([completedAt])
+}
+
+model SurveyResponse {
+  id           String      @id @default(cuid())
+  templateCode String
+  userId       String
+  specialistId String
+  rating       Int
+  comment      String?
+  createdAt    DateTime    @default(now())
+
+  @@index([specialistId, templateCode])
+  @@index([createdAt])
+}
+
+model SurveyInvite {
+  id           String   @id @default(cuid())
+  userId       String
+  specialistId String
+  templateCode String
+  dueAt        DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([userId, specialistId])
+  @@index([dueAt])
+}
+
+// ============================================
+// NUTRITION MODELS
+// ============================================
 
 model Food {
   id        String   @id @default(cuid())
@@ -61,9 +309,11 @@ model Food {
   carbs     Float    // per 100g
   fat       Float    // per 100g
   unitsJson Json?    // e.g. {"cup":240,"tbsp":15,"egg":50}
+  createdBy String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  createdBy String?
+
+  @@index([nameFa])
 }
 
 model NutritionTemplate {
@@ -74,19 +324,23 @@ model NutritionTemplate {
   createdBy String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([name])
 }
 
 model NutritionPlan {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   userId     String
   createdBy  String
   startDate  DateTime
   weeks      Int
-  status     String   @default("ACTIVE")
-  json       Json     // full calendar with meals & items & totals
+  status     String    @default("ACTIVE")
+  json       Json      // full calendar with meals & items & totals
   totalsJson Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  mealLogs   MealLog[]
+
   @@index([userId, status])
 }
 
@@ -101,33 +355,485 @@ model MealLog {
   aiJson    Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  plan NutritionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
   @@index([userId, planId, dayIndex, mealKey])
+}
+
+// ============================================
+// EXERCISE & PLAN MODELS
+// ============================================
+
+model ExerciseVideo {
+  id               String         @id @default(cuid())
+  title            String
+  videoUrl         String
+  audioUrl         String?
+  description      String?
+  level            String?        // BEGINNER|INTERMEDIATE|ADVANCED
+  kind             String?        // STRENGTH|CARDIO|FLEXIBILITY|...
+  ownerId          String?
+  status           ExerciseStatus @default(PENDING)
+  durationSec      Int?
+  thumbnailUrl     String?
+  viewCount        Int            @default(0)
+  likeCount        Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  primaryMuscles   Muscle[]       @relation("ExercisePrimaryMuscles")
+  secondaryMuscles Muscle[]       @relation("ExerciseSecondaryMuscles")
+  equipment        EquipmentCatalog[]
+  sports           Sport[]
+  planBlockItems   PlanBlockItem[]
+
+  @@index([status])
+  @@index([ownerId])
+  @@index([title])
+}
+
+model Sport {
+  id             String          @id @default(cuid())
+  name           String
+  exerciseVideos ExerciseVideo[]
+
+  @@index([name])
+}
+
+model EquipmentCatalog {
+  id             String          @id @default(cuid())
+  name           String
+  exerciseVideos ExerciseVideo[]
+
+  @@index([name])
+}
+
+model Muscle {
+  id                  String          @id @default(cuid())
+  code                String          @unique
+  name                String
+  primaryExercises    ExerciseVideo[] @relation("ExercisePrimaryMuscles")
+  secondaryExercises  ExerciseVideo[] @relation("ExerciseSecondaryMuscles")
+
+  @@index([code])
+}
+
+model AnatomyConfig {
+  id        String   @id @default(cuid())
+  gender    String   // male|female
+  modelUrl  String
+  meshMap   Json     // mapping of muscle codes to 3D mesh regions
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gender, active])
+}
+
+// ============================================
+// PLAN MODELS
+// ============================================
+
+model Plan {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  kind        PlanKind         @default(WORKOUT)
+  ownerId     String
+  createdBy   String
+  status      String           @default("DRAFT") // DRAFT|PUBLISHED
+  version     Int              @default(1)
+  json        Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  days        PlanDay[]
+  assignments PlanAssignment[]
+
+  @@index([ownerId])
+  @@index([createdBy])
+  @@index([status])
+}
+
+model PlanDay {
+  id       String      @id @default(cuid())
+  planId   String
+  order    Int
+  title    String?
+  note     String?
+  voiceUrl String?
+  blocks   PlanBlock[]
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId, order])
+}
+
+model PlanBlock {
+  id                  String          @id @default(cuid())
+  dayId               String
+  order               Int
+  type                BlockType       @default(SINGLE)
+  section             String?         // WARMUP|MAIN|COOLDOWN
+  protocol            String?         // FIVExFIVE|GVT|EMOM|HIIT
+  protocolParams      Json?
+  rounds              Int?
+  restBetweenItemsSec Int?
+  items               PlanBlockItem[]
+
+  day PlanDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+
+  @@index([dayId, order])
+}
+
+model PlanBlockItem {
+  id         String    @id @default(cuid())
+  blockId    String
+  order      Int
+  exerciseId String
+  note       String?
+  sets       PlanSet[]
+
+  block    PlanBlock     @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  exercise ExerciseVideo @relation(fields: [exerciseId], references: [id])
+
+  @@index([blockId, order])
+  @@index([exerciseId])
+}
+
+model PlanSet {
+  id           String       @id @default(cuid())
+  itemId       String
+  order        Int
+  reps         Int?
+  weight       Float?
+  rest         Int?         // seconds
+  tempo        String?      // e.g. "3-1-1-0"
+  rpe          Float?       // Rate of Perceived Exertion
+  durationSec  Int?
+  targetWeight Float?
+  targetRPE    Float?
+  logs         PlanSetLog[]
+
+  item PlanBlockItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId, order])
+}
+
+model PlanAssignment {
+  id              String        @id @default(cuid())
+  planId          String
+  clientId        String
+  userId          String
+  startDate       DateTime
+  sessionsPerWeek Int           @default(3)
+  restDays        Json?         // Array of day names: ["Sun", "Sat"]
+  durationDays    Int           @default(28)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  sessions        PlanSession[]
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([userId])
+  @@index([planId])
+}
+
+model PlanSession {
+  id           String             @id @default(cuid())
+  assignmentId String
+  dayIndex     Int
+  date         DateTime
+  status       SessionStatus      @default(SCHEDULED)
+  completedAt  DateTime?
+  clientId     String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  notes        PlanSessionNote[]
+  setLogs      PlanSetLog[]
+
+  assignment PlanAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId])
+  @@index([clientId, date])
+  @@index([date])
+}
+
+model PlanSessionNote {
+  id        String   @id @default(cuid())
+  sessionId String
+  authorId  String?
+  role      String   // USER|COACH|SPECIALIST
+  text      String?
+  audioUrl  String?
+  createdAt DateTime @default(now())
+
+  session PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model PlanSetLog {
+  id           String   @id @default(cuid())
+  sessionId    String
+  planSetId    String
+  actualReps   Int
+  actualWeight Float?
+  rpe          Float?
+  note         String?
+  createdAt    DateTime @default(now())
+
+  session PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  planSet PlanSet     @relation(fields: [planSetId], references: [id])
+
+  @@index([sessionId])
+  @@index([planSetId])
+}
+
+model CorrectiveProgress {
+  id           String   @id @default(cuid())
+  assignmentId String
+  dayIndex     Int
+  itemKey      String
+  value        String
+  createdAt    DateTime @default(now())
+
+  @@index([assignmentId])
+}
+
+// ============================================
+// CORRECTIVE MODELS
+// ============================================
+
+model Condition {
+  id          String                     @id @default(cuid())
+  code        String                     @unique
+  nameFa      String
+  nameEn      String?
+  description String?
+  videos      CorrectiveVideoCondition[]
+
+  @@index([code])
+}
+
+model CorrectiveVideo {
+  id          String                     @id @default(cuid())
+  title       String
+  url         String
+  equipment   String?
+  notes       String?
+  voiceUrl    String?
+  uploadedBy  String
+  status      CorrectiveStatus           @default(PENDING)
+  reviewNote  String?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  visibility  Visibility                 @default(PRIVATE)
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+  conditions  CorrectiveVideoCondition[]
+
+  @@index([uploadedBy])
+  @@index([status])
+}
+
+model CorrectiveVideoCondition {
+  id            String @id @default(cuid())
+  videoId       String
+  conditionCode String
+
+  video     CorrectiveVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  condition Condition       @relation(fields: [conditionCode], references: [code], onDelete: Cascade)
+
+  @@unique([videoId, conditionCode])
+  @@index([videoId])
+  @@index([conditionCode])
+}
+
+model ModerationLog {
+  id        String   @id @default(cuid())
+  entity    String   // CorrectiveVideo|ExerciseVideo|etc
+  entityId  String
+  action    String   // APPROVE|REJECT|EDIT
+  note      String?
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([actorId])
+}
+
+// ============================================
+// TILES/CMS MODELS
+// ============================================
+
+model Tile {
+  id        String        @id @default(cuid())
+  page      String
+  order     Int           @default(0)
+  type      String
+  variant   String?
+  weight    Float?
+  logicalId String?
+  state     TileState     @default(DRAFT)
+  data      Json
+  createdBy String
+  updatedBy String
+  version   Int           @default(1)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  versions  TileVersion[]
+  audits    PublishAudit[]
+
+  @@index([page, state, order])
+  @@index([state])
+}
+
+model TileVersion {
+  id        String    @id @default(cuid())
+  tileId    String
+  version   Int
+  data      Json
+  state     TileState
+  authorId  String
+  createdAt DateTime  @default(now())
+
+  tile Tile @relation(fields: [tileId], references: [id], onDelete: Cascade)
+
+  @@index([tileId, version])
+}
+
+model PublishAudit {
+  id        String    @id @default(cuid())
+  tileId    String
+  action    String    // UPSERT|DELETE|PUBLISH
+  actorId   String?
+  fromState TileState?
+  toState   TileState?
+  snapshot  Json?
+  createdAt DateTime  @default(now())
+
+  tile Tile @relation(fields: [tileId], references: [id], onDelete: Cascade)
+
+  @@index([tileId])
+  @@index([createdAt])
+}
+
+// ============================================
+// INTAKE FORMS
+// ============================================
+
+model IntakeForm {
+  id          String            @id @default(cuid())
+  slug        String            @unique
+  title       String
+  active      Boolean           @default(false)
+  version     Int               @default(1)
+  publishedAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  questions   IntakeQuestion[]
+  responses   IntakeResponse[]
+
+  @@index([slug])
+  @@index([active])
+}
+
+model IntakeQuestion {
+  id          String      @id @default(cuid())
+  formId      String
+  key         String
+  label       String
+  type        String      // text|number|select|multiselect|date|...
+  description String?
+  placeholder String?
+  options     Json?       // Array of option values
+  required    Boolean     @default(false)
+  section     String?
+  order       Int         @default(0)
+  validation  Json?       // { min, max, pattern, ... }
+  conditional Json?       // { showIf: [...] }
+
+  form IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([formId, order])
+}
+
+model IntakeResponse {
+  id          String   @id @default(cuid())
+  userId      String
+  formId      String
+  formVersion Int
+  answers     Json
+  createdAt   DateTime @default(now())
+
+  form IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([formId])
+}
+
+// ============================================
+// MEDIA & NOTIFICATIONS
+// ============================================
+
+model MediaJob {
+  id        String   @id @default(cuid())
+  kind      String   // THUMBNAIL|TRANSCODE
+  url       String
+  status    String   @default("PENDING") // PENDING|RUNNING|DONE|ERROR
+  result    Json?
+  error     String?
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+model DeviceToken {
+  id             String    @id @default(cuid())
+  userId         String
+  platform       String    // ios|android|web
+  token          String    @unique
+  enabled        Boolean   @default(true)
+  lastSeenAt     DateTime  @default(now())
+  lastNotifiedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 model NotificationTask {
   id        String   @id @default(cuid())
   userId    String
   planId    String?
-  type      String   // MEAL_REMINDER|WATER_REMINDER
+  type      String   // MEAL_REMINDER|WATER_REMINDER|SURVEY_INVITE|...
   dueAt     DateTime
   payload   Json?
   status    String   @default("PENDING") // PENDING|SENT|CANCELLED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@index([userId, dueAt])
-  @@index([planId])  // added by phase5
+  @@index([planId])
+  @@index([status, dueAt])
 }
 
+// ============================================
+// FEATURE FLAGS
+// ============================================
 
-model DeviceToken {
-  id             String   @id @default(cuid())
-  userId         String
-  platform       String   // ios|android|web
-  token          String   @unique
-  enabled        Boolean  @default(true)
-  lastSeenAt     DateTime @default(now())
-  lastNotifiedAt DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  @@index([userId])
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Boolean  @default(false)
+  description String?
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
 }
