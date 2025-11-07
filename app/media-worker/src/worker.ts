@@ -30,8 +30,16 @@ async function processImage(job: Job) {
   return { output: outputKey, format, width };
 }
 
-new Worker('media:transcode', transcode, { connection, concurrency: env.concurrency }, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') });
-new Worker('media:image', processImage, { connection, concurrency: env.concurrency }, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') });
+// Fixed: removed duplicate options object
+new Worker('media:transcode', transcode, {
+  connection,
+  concurrency: parseInt(process.env.WORKER_CONCURRENCY || '4') || env.concurrency
+});
+
+new Worker('media:image', processImage, {
+  connection,
+  concurrency: parseInt(process.env.WORKER_CONCURRENCY || '4') || env.concurrency
+});
 
 events('media:transcode');
 events('media:image');

@@ -3,12 +3,16 @@ import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/co
 import { PrismaClient } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
+import { TokenRevocationService } from './token-revocation.service';
 
 @Injectable()
 export class AuthService {
   private prisma = new PrismaClient();
 
-  constructor(private readonly jwt: JwtService) {}
+  constructor(
+    private readonly jwt: JwtService,
+    private readonly revocationService: TokenRevocationService
+  ) {}
 
   async register(email: string, password: string) {
     const existing = await this.prisma.user.findUnique({ where: { email } });
@@ -47,7 +51,14 @@ export class AuthService {
     const accessTtl = process.env.JWT_EXPIRES_IN || '15m';
     const refreshTtlMs = Number(process.env.REFRESH_TTL_MS || (1000 * 60 * 60 * 24 * 7)); // 7 days
     const now = Date.now();
-    const accessToken = await this.jwt.signAsync({ sub: userId, email }, { expiresIn: accessTtl });
+
+    // Generate unique JTI (JWT ID) for token revocation support
+    const jti = cryptoRandom(32);
+    const accessToken = await this.jwt.signAsync(
+      { sub: userId, email, jti },
+      { expiresIn: accessTtl }
+    );
+
     const plainRefresh = cryptoRandom(64);
     const tokenHash = await argon2.hash(plainRefresh);
     const expiresAt = new Date(now + refreshTtlMs);
@@ -58,7 +69,35 @@ export class AuthService {
       await this.prisma.refreshToken.create({ data: { userId, tokenHash, expiresAt } });
     }
 
-    return { accessToken, refreshToken: plainRefresh, expiresAt };
+    return { accessToken, refreshToken: plainRefresh, expiresAt, jti };
+  }
+
+  /**
+   * Logout from current session by revoking the access token
+   */
+  async logout(userId: string, jti: string, exp: number): Promise<void> {
+    // Revoke the specific access token
+    await this.revocationService.revokeToken(jti, exp);
+
+    // Optionally revoke all refresh tokens for this user
+    await this.prisma.refreshToken.updateMany({
+      where: { userId },
+      data: { revokedAt: new Date() }
+    });
+  }
+
+  /**
+   * Logout from all devices by revoking all tokens for the user
+   */
+  async logoutAll(userId: string): Promise<void> {
+    // Revoke all access tokens issued before now
+    await this.revocationService.revokeAllUserTokens(userId);
+
+    // Revoke all refresh tokens
+    await this.prisma.refreshToken.updateMany({
+      where: { userId },
+      data: { revokedAt: new Date() }
+    });
   }
 }
 

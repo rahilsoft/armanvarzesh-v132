@@ -16,13 +16,18 @@ export function csp(): string{
 }
 
 export function securityHeaders(){
-  return [
+  const headers: [string, string][] = [
     ['Content-Security-Policy', csp()],
     ['X-Content-Type-Options', 'nosniff'],
     ['X-Frame-Options', 'SAMEORIGIN'],
     ['Referrer-Policy', 'strict-origin-when-cross-origin'],
     ['Permissions-Policy', 'camera=(), microphone=(), geolocation=()'],
-    // Enable HSTS only if behind HTTPS in production
-    // ['Strict-Transport-Security','max-age=31536000; includeSubDomains; preload']
   ];
+
+  // Enable HSTS in production (NODE_ENV=production and ENABLE_HSTS=1)
+  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_HSTS !== '0') {
+    headers.push(['Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload']);
+  }
+
+  return headers;
 }

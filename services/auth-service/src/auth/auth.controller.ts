@@ -32,4 +32,26 @@ export class AuthController {
   me(@Req() req: any) {
     return { userId: req.user.sub, email: req.user.email };
   }
+
+  /**
+   * Logout from current session - revokes the current access token
+   */
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: any) {
+    const { sub: userId, jti, exp } = req.user;
+    await this.auth.logout(userId, jti, exp);
+    return { message: 'Logged out successfully' };
+  }
+
+  /**
+   * Logout from all devices - revokes all tokens for the user
+   */
+  @Post('logout-all')
+  @UseGuards(JwtAuthGuard)
+  async logoutAll(@Req() req: any) {
+    const { sub: userId } = req.user;
+    await this.auth.logoutAll(userId);
+    return { message: 'Logged out from all devices successfully' };
+  }
 }

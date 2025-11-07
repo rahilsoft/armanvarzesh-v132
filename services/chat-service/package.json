@@ -22,6 +22,8 @@
     "@nestjs/websockets": "^10.3.10",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "@prisma/client": "^5.18.0",

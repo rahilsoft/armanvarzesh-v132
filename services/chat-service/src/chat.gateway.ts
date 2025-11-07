@@ -1,11 +1,25 @@
-import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer, MessageBody, ConnectedSocket } from '@nestjs/websockets';
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { createAdapter } from '@socket.io/redis-adapter';
+import { createClient } from 'redis';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
   @WebSocketServer() server!: Server;
   constructor(private readonly svc: ChatService){}
+
+  async afterInit(server: Server) {
+    // Initialize Redis adapter for horizontal scaling
+    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+    const pubClient = createClient({ url: redisUrl });
+    const subClient = pubClient.duplicate();
+
+    await Promise.all([pubClient.connect(), subClient.connect()]);
+
+    server.adapter(createAdapter(pubClient, subClient));
+    console.log('[ChatGateway] Redis adapter initialized for Socket.IO');
+  }
 
   async handleConnection(client: Socket){
     // auth via query token (for demo). In prod, verify JWT during handshake.

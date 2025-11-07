@@ -2,6 +2,7 @@ import { PasswordResetService } from './password-reset.service';
 import { PasswordResetController } from './password-reset.controller';
 import { TotpService } from './totp.service';
 import { TotpController } from './totp.controller';
+import { TokenRevocationService } from './token-revocation.service';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -18,6 +19,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController, TotpController, PasswordResetController],
-  providers: [AuthService, JwtStrategy, TotpService, PasswordResetService],
+  providers: [AuthService, JwtStrategy, TotpService, PasswordResetService, TokenRevocationService],
+  exports: [TokenRevocationService],
 })
 export class AuthModule {}

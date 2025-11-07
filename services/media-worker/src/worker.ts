@@ -55,7 +55,10 @@ async function processVideoTranscode(job: Job) {
   return { outKey };
 }
 
-new Worker('media', async (job, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') }) => {
+new Worker('media', async (job) => {
   if (job.name === 'resize') return processImageResize(job);
   if (job.name === 'transcode') return processVideoTranscode(job);
-}, redis);
+}, {
+  connection: redis.connection,
+  concurrency: parseInt(process.env.WORKER_CONCURRENCY || '4')
+});
