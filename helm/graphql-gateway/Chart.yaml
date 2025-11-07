@@ -1,0 +1,13 @@
+apiVersion: v2
+name: graphql-gateway
+description: Apollo Federation v2 GraphQL Gateway for Arman Platform
+type: application
+version: 0.1.0
+appVersion: "v133-rc1"
+keywords:
+  - graphql
+  - federation
+  - gateway
+  - apollo
+maintainers:
+  - name: Arman Team

@@ -1,0 +1,139 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/rahilsoft/armanvarzesh-graphql-gateway
+  pullPolicy: IfNotPresent
+  tag: ""  # Overrides appVersion from Chart.yaml
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "4010"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+service:
+  type: ClusterIP
+  port: 4010
+  targetPort: 4010
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://arman.app,https://admin.arman.app"
+  hosts:
+    - host: api.arman.app
+      paths:
+        - path: /graphql
+          pathType: Prefix
+  tls:
+    - secretName: graphql-gateway-tls
+      hosts:
+        - api.arman.app
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - graphql-gateway
+          topologyKey: kubernetes.io/hostname
+
+env:
+  - name: PORT
+    value: "4010"
+  - name: NODE_ENV
+    value: "production"
+  - name: VERSION
+    value: "v133-rc1"
+
+  # Subgraph URLs (update these to match your cluster)
+  - name: ACTIVITY_URL
+    value: "http://activity-subgraph:4005/graphql"
+  - name: SOCIAL_URL
+    value: "http://social-subgraph:4006/graphql"
+  - name: PHYSIO_URL
+    value: "http://physio-subgraph:4016/graphql"
+  - name: LIVE_URL
+    value: "http://live-subgraph:4017/graphql"
+  - name: USERS_URL
+    value: "http://users-service:4001/graphql"
+  - name: COACHES_URL
+    value: "http://coaches-service:4008/graphql"
+  - name: NUTRITION_URL
+    value: "http://nutrition-service:4013/graphql"
+  - name: CONTENT_URL
+    value: "http://content-service:4014/graphql"
+
+  # Security
+  - name: CSP_NONCE_MODE
+    value: "1"
+
+# JWT verification (loaded from secret)
+envFrom:
+  - secretRef:
+      name: graphql-gateway-secrets
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 4010
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 4010
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
