@@ -23,7 +23,7 @@
     "cors": "^2.8.5",
     "body-parser": "^1.20.2",
     "socket.io": "^4.7.5",
-    "uuid": "^9.0.1",
+    "uuid": "^13.0.0",
     "@arman/integrations-livekit": "workspace:*",
     "@arman/storage": "workspace:*",
     "@arman/observability-sdk": "workspace:*",
