@@ -1,4 +1,5 @@
-import { CanActivate, ExecutionContext, Injectable, ForbiddenException, Reflector } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { ROLES_KEY, AdminRole } from './roles.decorator';
 
 @Injectable()

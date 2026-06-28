@@ -18,8 +18,16 @@ export function createQueueContext(name: string, env: NodeJS.ProcessEnv = proces
   if (!parsed.success || !parsed.data.REDIS_URL) {
     return { queue: null, events: null, ready: false };
   }
-  const conn = new IORedis(parsed.data.REDIS_URL);
-  const queue = new Queue(name, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, defaultJobOptions: { attempts: parseInt(process.env.BULLMQ_DEFAULT_ATTEMPTS||'5'), backoff: { type: 'exponential', delay: parseInt(process.env.BULLMQ_BACKOFF_MS||'5000') }, removeOnComplete: parseInt(process.env.BULLMQ_REMOVE_ON_COMPLETE||'1000'), removeOnFail: parseInt(process.env.BULLMQ_REMOVE_ON_FAIL||'5000') },  connection: conn });
+  const conn = new IORedis(parsed.data.REDIS_URL, { maxRetriesPerRequest: null });
+  const queue = new Queue(name, {
+    connection: conn,
+    defaultJobOptions: {
+      attempts: parseInt(process.env.BULLMQ_DEFAULT_ATTEMPTS || '5'),
+      backoff: { type: 'exponential', delay: parseInt(process.env.BULLMQ_BACKOFF_MS || '5000') },
+      removeOnComplete: parseInt(process.env.BULLMQ_REMOVE_ON_COMPLETE || '1000'),
+      removeOnFail: parseInt(process.env.BULLMQ_REMOVE_ON_FAIL || '5000'),
+    },
+  });
   const events = new QueueEvents(name, { connection: conn });
   return { queue, events, ready: true };
 }
@@ -36,7 +44,7 @@ const jobFailed = new client.Counter({ name: 'queue_job_failed_total', help: 'Fa
 
 export function attachWorkerMetrics(ctx: QueueContext, handler?: (job: Job) => Promise<any>) {
   if (!ctx.queue || ctx.worker) return;
-  ctx.worker = new Worker(ctx.queue.name, async (job, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') }) => {
+  ctx.worker = new Worker(ctx.queue.name, async (job) => {
     const start = Date.now();
     try {
       const res = handler ? await handler(job) : null;

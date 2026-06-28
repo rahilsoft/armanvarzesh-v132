@@ -1,4 +1,5 @@
-import { CanActivate, ExecutionContext, Injectable, Reflector, ForbiddenException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { DOUBLE_CONFIRM } from './double-confirm.decorator';
 
 @Injectable()

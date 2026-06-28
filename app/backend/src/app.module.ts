@@ -22,10 +22,10 @@ import { CorrectiveModule } from './corrective/corrective.module';
 import { NutritionModule } from './nutrition/nutrition.module';
 import { ChatModule } from './chat/chat.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { CacheModule } from './cache/cache.module';
+import { AppCacheModule } from './cache/cache.module';
 import { AdminController } from './auth/admin.controller';
 
-@Module({ imports: [ JwksModule, CacheModule, LivekitModule, 
+@Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRoot({
       pinoHttp: {
