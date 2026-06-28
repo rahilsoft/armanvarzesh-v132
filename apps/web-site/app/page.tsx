@@ -28,7 +28,7 @@ export default async function Home() {
         <CTA />
       </AnimatedSection>
 
-      <style jsx>{`
+      <style>{`
         .hero-media{padding:48px 16px}
         .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;max-width:1200px;margin:0 auto}
         .img{border-radius:24px;overflow:hidden;border:1px solid #eee}

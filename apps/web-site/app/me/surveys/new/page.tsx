@@ -9,8 +9,8 @@ async function gql(query:string, variables:any={}){
 }
 export default function Page(){
   const params = useSearchParams();
-  const template = params.get('template')||'BIWEEKLY';
-  const sid = params.get('sid')||'specialist-1';
+  const template = params?.get('template')||'BIWEEKLY';
+  const sid = params?.get('sid')||'specialist-1';
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const submit = async ()=>{

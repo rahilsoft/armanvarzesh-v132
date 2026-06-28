@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 export default function EmptyState({ title = 'موردی یافت نشد', desc = 'اطلاعاتی برای نمایش وجود ندارد.' }) {
   return (

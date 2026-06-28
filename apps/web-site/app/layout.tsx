@@ -1,5 +1,5 @@
 import React from 'react';
-import './globals.css';
+import '../styles/globals.css';
 import { I18nProvider } from '../lib/i18n';
 import { FlagsProvider } from '../lib/flags';
 import PageviewListener from '../components/PageviewListener';
