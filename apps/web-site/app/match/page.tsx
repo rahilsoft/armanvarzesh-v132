@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -9,7 +8,7 @@ async function gql(query:string, variables:any={}){
 }
 export default function Page(){
   const params = useSearchParams();
-  const serviceType = (params.get('serviceType')||'COACH') as 'COACH'|'NUTRITION'|'CORRECTIVE'|'FULL';
+  const serviceType = (params?.get('serviceType')||'COACH') as 'COACH'|'NUTRITION'|'CORRECTIVE'|'FULL';
   const [list, setList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(()=>{ (async()=>{ setLoading(true); if (serviceType==='FULL'){ const roles:['COACH','NUTRITION','CORRECTIVE'] = ['COACH','NUTRITION','CORRECTIVE']; const bundles:any = {}; for (const r of roles){ const res = await gql(`query($t:ServiceType!){ recommendSpecialists(serviceType:$t) }`, { t: r }); bundles[r] = JSON.parse(res.recommendSpecialists||'[]').slice(0,1); } setList(bundles); } else { const res = await gql(`query($t:ServiceType!){ recommendSpecialists(serviceType:$t) }`, { t: serviceType }); setList(JSON.parse(res.recommendSpecialists||'[]')); } setLoading(false); })(); }, [serviceType]);

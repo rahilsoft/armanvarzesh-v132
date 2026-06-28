@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 
 type Item = { title: string; desc: string; };

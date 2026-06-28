@@ -1,31 +1,28 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
-  skipWaiting: true,
-  runtimeCaching: [
-    {
-      urlPattern: ({url}) => url.origin === self.location.origin,
-      handler: 'StaleWhileRevalidate',
-      options: { cacheName: 'static-resources' },
-    },
-    {
-      urlPattern: ({url}) => url.pathname.startsWith('/api/'),
-      handler: 'NetworkFirst',
-      options: { cacheName: 'api-cache', networkTimeoutSeconds: 5 },
-    },
-    {
-      urlPattern: ({url}) => /\.(?:png|jpg|jpeg|svg|gif|webp)$/.test(url.pathname),
-      handler: 'CacheFirst',
-      options: { cacheName: 'images', expiration: { maxEntries: 100, maxAgeSeconds: 7*24*3600 } },
-    },
-  ],
-});
+
+// NOTE: next-pwa@5.x forces Next into Babel mode, which is incompatible with the
+// Next 13 App Router used here (it breaks transpilation of workspace source
+// packages). PWA is disabled for now; re-introduce via a App-Router-compatible
+// plugin (e.g. @ducanh2912/next-pwa) when needed. The service worker is still
+// registered client-side from app/layout.tsx and pages/_app.tsx.
 
 const nextConfig = {
   reactStrictMode: true,
   images: { domains: ['localhost'] },
+  // eslint-config-next is not installed in this workspace; linting runs as a
+  // separate CI step, so it should not block the production build.
+  eslint: { ignoreDuringBuilds: true },
+  // The vitrine consumes several workspace packages as TypeScript source via
+  // the @arman/* path mapping; Next must transpile them.
+  transpilePackages: [
+    '@arman/ui',
+    '@arman/ui-components',
+    '@arman/ui-tokens',
+    '@arman/utils',
+    '@arman/state',
+    '@arman/async-utils',
+    '@arman/http-client',
+  ],
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;

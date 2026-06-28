@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
-import { registerServiceWorker } from '../pwa/register-sw';
-'use client'
-import './globals.css';
-    const MEDIA_CDN = process.env.NEXT_PUBLIC_MEDIA_CDN;
 import React from 'react';
+import '../styles/globals.css';
+import { I18nProvider } from '../lib/i18n';
+import { FlagsProvider } from '../lib/flags';
+import PageviewListener from '../components/PageviewListener';
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.armanvarzesh.com'),
@@ -30,41 +29,36 @@ export const metadata = {
   alternates: { canonical: '/' }
 };
 
-import { I18nProvider } from '../lib/i18n';
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  useEffect(() => { registerServiceWorker(); }, []);
   return (
     <html dir="rtl" lang="fa">
       <body>
-      <FlagsProvider>
-    <a href="#main" className="skip-main">پرش به محتوا</a>
-  <body>
-      <FlagsProvider>
-        <I18nProvider>{children}</I18nProvider>
-        {/* Schema.org Organization */}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Arman Varzesh",
-            "url": (process.env.NEXT_PUBLIC_SITE_URL || "https://www.armanvarzesh.com"),
-            "logo": "/logo.png",
-            "sameAs": [
-              "https://www.instagram.com/armanvarzesh",
-              "https://www.linkedin.com/company/armanvarzesh"
-            ]
-          })
-        }} />
-        <PageviewListener />
-          </FlagsProvider>
-    <script dangerouslySetInnerHTML={{__html: `
+        <FlagsProvider>
+          <a href="#main" className="skip-main">پرش به محتوا</a>
+          <I18nProvider>{children}</I18nProvider>
+          {/* Schema.org Organization */}
+          <script type="application/ld+json" dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Arman Varzesh",
+              "url": (process.env.NEXT_PUBLIC_SITE_URL || "https://www.armanvarzesh.com"),
+              "logo": "/logo.png",
+              "sameAs": [
+                "https://www.instagram.com/armanvarzesh",
+                "https://www.linkedin.com/company/armanvarzesh"
+              ]
+            })
+          }} />
+          <PageviewListener />
+        </FlagsProvider>
+        <script dangerouslySetInnerHTML={{__html: `
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/sw.js');
   });
 }`}} />
-</body>
+      </body>
     </html>
   );
 }

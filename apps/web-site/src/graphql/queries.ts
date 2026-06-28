@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_USER_PROFILE = gql\`
+export const GET_USER_PROFILE = gql`
   query GetUserProfile($id: ID!) {
     user(id: $id) {
       id
@@ -10,9 +10,9 @@ export const GET_USER_PROFILE = gql\`
       profilePicture
     }
   }
-\`;
+`;
 
-export const GET_WORKOUTS = gql\`
+export const GET_WORKOUTS = gql`
   query GetWorkouts($userId: ID!) {
     workouts(userId: $userId) {
       id
@@ -21,4 +21,4 @@ export const GET_WORKOUTS = gql\`
       status
     }
   }
-\`;
+`;

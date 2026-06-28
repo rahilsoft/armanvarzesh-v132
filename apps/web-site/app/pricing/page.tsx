@@ -17,7 +17,7 @@ export default function Pricing() {
           </div>
         ))}
       </div>
-      <style jsx>{`
+      <style>{`
         main{padding:48px 16px;max-width:1100px;margin:0 auto}
         .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
         .card{border:1px solid #e5e7eb;border-radius:16px;padding:20px}

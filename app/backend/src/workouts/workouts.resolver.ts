@@ -18,7 +18,8 @@ export class WorkoutsResolver {
     const map = new Map(users.map(u => [u.id, u]));
     return (ids as number[]).map(id => map.get(id) ?? null);
   });
-@Query(() => [Workout])
+
+  @Query(() => [Workout])
   async workouts() {
     return this.workoutsService.findAll();
   }
@@ -65,9 +66,9 @@ export class WorkoutsResolver {
   ) {
     return this.workoutsService.logActual(id, input);
   }
-}
 
-@ResolveField(() => User, { name: 'user', nullable: true })
-user(@Parent() item: Workout) {
-  return this.userById.load(item.userId);
+  @ResolveField(() => User, { name: 'user', nullable: true })
+  user(@Parent() item: Workout) {
+    return this.userById.load(item.userId);
+  }
 }

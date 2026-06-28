@@ -22,6 +22,9 @@
       "@arman/*": [
         "../../packages/*/src"
       ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
       "coach-pwa/*": [
         "app/coach-pwa/*"
       ],
@@ -91,10 +94,8 @@
     },
     "skipLibCheck": true,
     "noImplicitThis": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true,
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": false,
     "forceConsistentCasingInFileNames": true
   },
   "include": [

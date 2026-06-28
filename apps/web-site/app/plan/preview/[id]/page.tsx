@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 
@@ -37,8 +36,7 @@ export default function PlanPreview({ params }:{ params:{ id:string } }){
           ))}
         </div>
       ))}
+      <style>{`@media print { button, nav { display:none !important } body { color:#000 } }`}</style>
     </div>
   );
 }
-
-<style>{`@media print { button, nav { display:none !important } body { color:#000 } }`}</style>

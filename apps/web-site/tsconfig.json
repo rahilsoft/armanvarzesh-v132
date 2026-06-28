@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,10 +17,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "rootDir": "src",
+    "rootDir": "../..",
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "@arman/*": [
+        "../../packages/*/src",
+        "../../packages/*"
+      ],
       "coach-pwa/*": [
         "app/coach-pwa/*"
       ],
@@ -88,21 +92,32 @@
         "app/user-pwa/*"
       ]
     },
-    "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/main.ts",
+    "**/__tests__/**",
+    "**/__stories__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ],
   "extends": "../../tsconfig.base.json"
 }

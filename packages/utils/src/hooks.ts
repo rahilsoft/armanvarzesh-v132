@@ -4,6 +4,5 @@ import { useRef, useCallback } from 'react';
 export function useStableCallback<T extends (...args: any[]) => any>(fn: T): T {
   const ref = useRef(fn);
   ref.current = fn;
-  // @ts-expect-error generic inference
-  return useCallback(((...args) => ref.current(...args)) as T, []);
+  return useCallback(((...args: any[]) => ref.current(...args)) as T, []);
 }

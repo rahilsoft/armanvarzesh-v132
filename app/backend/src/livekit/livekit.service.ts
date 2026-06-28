@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AccessToken, VideoGrant, RoomServiceClient, EgressClient } from '@livekit/server-sdk';
+import { AccessToken, VideoGrant, RoomServiceClient, EgressClient } from 'livekit-server-sdk';
 
 export type LiveRole = 'host' | 'viewer';
 

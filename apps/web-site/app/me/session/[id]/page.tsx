@@ -1,11 +1,10 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 
-const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
+const CONTENT_URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 const UPLOAD_KIND = 'audio';
 async function gql(query:string, variables:any={}){
-  const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query, variables }) });
+  const r = await fetch(CONTENT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query, variables }) });
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
 
@@ -52,8 +51,8 @@ function BlockRunner({ block }:{ block:any }){
     const items = (block.items||[]).slice().sort((a:any,b:any)=> a.order-b.order);
     const rounds = block.rounds || 1;
     const segments:any[] = [];
-    if (block.protocol==='EMOM') return { type:'EMOM', minutes: block.protocolParams?.minutes||20, segments:[] }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
-    if (block.protocol==='HIIT') return { type:'HIIT', rounds: block.protocolParams?.rounds||8, work: block.protocolParams?.work||20, rest: block.protocolParams?.rest||10, segments:[] }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+    if (block.protocol==='EMOM') return { type:'EMOM', minutes: block.protocolParams?.minutes||20, segments:[] };
+    if (block.protocol==='HIIT') return { type:'HIIT', rounds: block.protocolParams?.rounds||8, work: block.protocolParams?.work||20, rest: block.protocolParams?.rest||10, segments:[] };
     for (let r=0;r<rounds;r++){
       if (t==='SINGLE'){
         for (const it of items){
@@ -64,14 +63,14 @@ function BlockRunner({ block }:{ block:any }){
         }
       } else { // SUPERSET/TRISET/CIRCUIT
         for (const it of items){
-          const st = (it.sets||[])[0] || { reps:10, rest:30 }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+          const st = (it.sets||[])[0] || { reps:10, rest:30 };
           segments.push({ kind:'work', label:`${it.note||'Item'}`, secs: Math.max(10, (st.reps||10)*3) });
           const rb = block.restBetweenItemsSec || 20;
           segments.push({ kind:'rest', label:`Transition`, secs: rb });
         }
       }
     }
-    return { type:'SETS', segments }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+    return { type:'SETS', segments };
   }, [block]);
 
   React.useEffect(()=>{
@@ -101,7 +100,7 @@ function BlockRunner({ block }:{ block:any }){
     if (seconds >= seg.secs){ setIndex(i=> i+1); setSeconds(0); beep(seg.kind==='work'? 660: 520, 120); }
   }, [seconds, running]);
 
-  const start = ()=>{ setRunning(true); setSeconds(0); setIndex(0); setRound(1); }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  const start = ()=>{ setRunning(true); setSeconds(0); setIndex(0); setRound(1); };
   const stop = ()=> setRunning(false);
   const mmss = (s:number)=> `${Math.floor(s/60)}`.padStart(2,'0') + ':' + `${s%60}`.padStart(2,'0');
 
@@ -156,7 +155,7 @@ function NotesPanel({ sessionId }:{ sessionId:string }){
   const [recUrl, setRecUrl] = React.useState<string>('');
   const [busy, setBusy] = React.useState(false);
 
-  const load = async ()=>{ setList(await listNotes(sessionId)); }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  const load = async ()=>{ setList(await listNotes(sessionId)); };
   React.useEffect(()=>{ load(); }, [sessionId]);
 
   const startRec = async ()=>{
@@ -167,7 +166,7 @@ function NotesPanel({ sessionId }:{ sessionId:string }){
       mr.ondataavailable = (e)=> chunks.push(e.data);
       mr.onstop = async()=>{
         const blob = new Blob(chunks, { type:'audio/webm' });
-        setRecUrl(URL.createObjectURL(blob));
+        setRecUrl(window.URL.createObjectURL(blob));
         // upload
         setBusy(true);
         try{
@@ -176,18 +175,18 @@ function NotesPanel({ sessionId }:{ sessionId:string }){
           await saveNote(sessionId, { audioUrl: up.fileUrl, role:'USER' });
           await load();
         }finally{ setBusy(false); }
-      }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+      };
       mr.start();
       setRec(mr);
     }catch(e){ alert('Microphone access failed'); }
-  }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
-  const stopRec = ()=>{ try{ rec?.stop(); }catch(e){} setRec(null); }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  };
+  const stopRec = ()=>{ try{ rec?.stop(); }catch(e){} setRec(null); };
 
   const submitText = async ()=>{
     if (!text.trim()) return;
     setBusy(true);
     try{ await saveNote(sessionId, { text, role:'USER' }); setText(''); await load(); } finally { setBusy(false); }
-  }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  };
 
   return (
     <div style={{ border:'1px solid #eee', borderRadius:12, padding:12 }}>
@@ -241,16 +240,16 @@ export default function SessionPage({ params, searchParams }:{ params:{ id:strin
   const load = async ()=>{
     const d = await gql(`query($id:String!){ sessionDetail(id:$id){ id date status dayIndex blocks{ id type section protocol protocolParams items{ id note exerciseId sets{ id order reps rest targetWeight targetRPE } } } } }`, { id });
     setData(d.sessionDetail);
-  }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  };
   useEffect(()=>{ load(); }, [id]);
 
-  const doStart = async ()=>{ await gql(`mutation($id:String!){ startSession(sessionId:$id){ id } }`, { id }); load(); }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
-  const doComplete = async ()=>{ await gql(`mutation($id:String!){ completeSession(sessionId:$id){ id } }`, { id }); load(); }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  const doStart = async ()=>{ await gql(`mutation($id:String!){ startSession(sessionId:$id){ id } }`, { id }); load(); };
+  const doComplete = async ()=>{ await gql(`mutation($id:String!){ completeSession(sessionId:$id){ id } }`, { id }); load(); };
   const submitSet = async (setId:string)=>{
     const v = log[setId]; if (!v) return;
     await gql(`mutation($s:String!,$p:String!,$r:Int!,$w:Float,$e:Int){ logSet(sessionId:$s, planSetId:$p, reps:$r, weight:$w, rpe:$e){ id } }`, { s:id, p:setId, r:v.reps, w:v.weight||null, e:v.rpe||null });
     const n = { ...log }; delete n[setId]; setLog(n);
-  }catch(e){ try{ const payload = (log && typeof log==='object')? log[sid] || {} : {}; qSave(id, [...qLoad(id), { id: sid, actual: payload }]); alert('ذخیرهٔ آفلاین؛ بعداً همگام‌سازی می‌شود.'); }catch(_){} };
+  };
 
   if (!data) return <div style={{ padding:24 }}>در حال بارگذاری…</div>;
 

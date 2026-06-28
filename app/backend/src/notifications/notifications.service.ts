@@ -6,43 +6,58 @@ import { KavenegarSmsService } from '../common/services/kavenegar-sms.service';
 @Injectable()
 export class NotificationsService {
   private provider = makeSmsProvider();
-  constructor(private readonly prisma: PrismaService, private readonly sms: KavenegarSmsService) {}
 
-  async sendSms(to: string, body: string) { await this.provider.send(to, body); }
-}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly sms: KavenegarSmsService,
+  ) {}
 
+  async sendSms(to: string, body: string) {
+    await this.provider.send(to, body);
+  }
 
-// PubSub publishing hook — call after creating a notification
-async publishRealtime(notification: any, pubSub: any) {
-  await pubSub.publish('notificationReceived', { notificationReceived: notification });
-}
+  /**
+   * Create and persist a notification for a user. The `isCritical` flag is
+   * accepted for API compatibility but is not currently persisted.
+   */
+  async create(userId: number, text: string, _isCritical = false) {
+    return this.prisma.notification.create({ data: { userId, text } });
+  }
 
+  async findAllByUser(userId: number) {
+    return this.prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
-async markRead(id: number) {
-  // Baseline: replace with Prisma update
-  return { id, read: true };
-}
+  async markAsRead(id: number) {
+    await this.prisma.notification.update({ where: { id }, data: { read: true } });
+    return true;
+  }
 
-async markAllRead(userId: number) {
-  // Baseline: replace with Prisma updateMany
-  return true;
-}
+  async markRead(id: number) {
+    return this.prisma.notification.update({ where: { id }, data: { read: true } });
+  }
 
+  async markAllRead(userId: number) {
+    const res = await this.prisma.notification.updateMany({
+      where: { userId, read: false },
+      data: { read: true },
+    });
+    return res.count > 0;
+  }
 
-async createForUser(userId: number, text: string) {
-  const n = await this.prisma.notification.create({ data: { userId, text } });
-  return n;
-}
+  async delete(id: number) {
+    await this.prisma.notification.delete({ where: { id } });
+    return true;
+  }
 
-async listForUser(userId: number) {
-  return this.prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
-}
-
-async markRead(id: number) {
-  return this.prisma.notification.update({ where: { id }, data: { read: true } });
-}
-
-async markAllRead(userId: number) {
-  const res = await this.prisma.notification.updateMany({ where: { userId, read: false }, data: { read: true } });
-  return res.count > 0;
+  /**
+   * PubSub publishing hook — call after creating a notification to push it to
+   * any subscribed clients in real time.
+   */
+  async publishRealtime(notification: any, pubSub: any) {
+    await pubSub.publish('notificationReceived', { notificationReceived: notification });
+  }
 }

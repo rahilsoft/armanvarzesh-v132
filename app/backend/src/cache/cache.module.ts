@@ -1,5 +1,6 @@
 // Phase J — Cache module skeleton using cache-manager
-import { CacheModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [

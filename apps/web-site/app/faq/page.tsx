@@ -25,7 +25,7 @@ export default function FAQ() {
           }))
         })
       }} />
-      <style jsx>{`
+      <style>{`
         main{padding:48px 16px;max-width:900px;margin:0 auto}
         details{border:1px solid #e5e7eb;border-radius:12px;padding:12px 16px;margin:8px 0}
         summary{cursor:pointer;font-weight:600}

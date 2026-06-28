@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useEffect, useState } from 'react';
 const CONTENT_SERVICE_URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
@@ -56,8 +55,8 @@ export default function AdminCMS(){
     if (!data) return;
     const body = { ...data, updatedAt: new Date().toISOString() };
     setStatus('در حال ذخیره...');
-    let ok=true; for (const t of body.tiles){ const res = await fetch(CONTENT_SERVICE_URL, { method:'POST', headers:{'Content-Type':'application/json', ...(localStorage.getItem('idToken') || localStorage.getItem('admintoken')? {'Authorization':'Bearer '+localStorage.getItem('idToken') || localStorage.getItem('admintoken')!}:{})}, body: JSON.stringify({ query: `mutation M($input:UpsertTileInput!){ upsertTile(input:$input){ id } }`, variables:{ input:{ page: body.page, type: t.type||'showcase', data: t, actorId:'admin-ui' } } ) }); if (!res.ok) ok=false; }
-    setStatus(res.ok ? 'ذخیره شد' : 'خطا در ذخیره');
+    let ok=true; for (const t of body.tiles){ const res = await fetch(CONTENT_SERVICE_URL, { method:'POST', headers:{'Content-Type':'application/json', ...(localStorage.getItem('idToken') || localStorage.getItem('admintoken')? {'Authorization':'Bearer '+(localStorage.getItem('idToken') || localStorage.getItem('admintoken'))}:{})}, body: JSON.stringify({ query: `mutation M($input:UpsertTileInput!){ upsertTile(input:$input){ id } }`, variables:{ input:{ page: body.page, type: t.type||'showcase', data: t, actorId:'admin-ui' } } }) }); if (!res.ok) ok=false; }
+    setStatus(ok ? 'ذخیره شد' : 'خطا در ذخیره');
   }
 
   return (
@@ -99,7 +98,8 @@ export default function AdminCMS(){
                 <label>cta.href <input value={t.cta.href} onChange={e=>updateTile(i,'cta.href',e.target.value)} /></label>
                 <label>media.kind <input value={t.media.kind} onChange={e=>updateTile(i,'media.kind',e.target.value)} /></label>
                 <label>media.src <input value={t.media.src} onChange={e=>updateTile(i,'media.src',e.target.value)} /></label>
-              
+              </div>
+
               <div style={{display:'flex', gap:8, alignItems:'center'}}>
                 <input type="file" accept="image/*,video/*,.json" onChange={async e=>{
                   const f = e.target.files?.[0]; if (!f || !data) return;

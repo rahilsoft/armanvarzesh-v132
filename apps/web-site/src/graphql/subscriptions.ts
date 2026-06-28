@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const NOTIFICATION_RECEIVED = gql\`
+export const NOTIFICATION_RECEIVED = gql`
   subscription NotificationReceived($userId: ID!) {
     notificationReceived(userId: $userId) {
       id
@@ -9,4 +9,4 @@ export const NOTIFICATION_RECEIVED = gql\`
       createdAt
     }
   }
-\`;
+`;

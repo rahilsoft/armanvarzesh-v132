@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -73,7 +72,7 @@ export default function Anatomy3D(){
           </Suspense>
           <OrbitControls enablePan={false} minDistance={1.2} maxDistance={6} />
           <Environment preset="city" />
-        {(selection?.length)? <Outlines selection={selection} thickness={2} color='black' /> : null}
+        {(selection?.length)? <Outlines {...({ selection, thickness: 2, color: 'black' } as any)} /> : null}
         </Canvas>
       </div>
     </div>

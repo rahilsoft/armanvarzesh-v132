@@ -1,4 +1,3 @@
-
 'use client';
 import React from 'react';
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';

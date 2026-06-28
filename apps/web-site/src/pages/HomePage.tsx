@@ -25,27 +25,27 @@ const HomePage: React.FC = () => {
         <section className="container mx-auto py-12">
           <h2 className="text-2xl font-bold mb-6 text-center">پلن‌ها و مزایای ویژه</h2>
           <div className="flex flex-wrap justify-center gap-6">
-            <PlanCard title="ویژه ورزشکاران" price="۲۹۰,۰۰۰" features={["پشتیبانی مستقیم", "تحلیل حرفه‌ای", "مربی برتر"]} />
-            <PlanCard title="پایه" price="۱۲۰,۰۰۰" features={["برنامه استاندارد", "مشاوره اولیه"]} />
-            <PlanCard title="VIP Club" price="۷۵۰,۰۰۰" features={["باشگاه VIP", "پاداش وفاداری", "دسترسی کامل"]} />
+            <PlanCard title="ویژه ورزشکاران" price="۲۹۰,۰۰۰" description="پلن حرفه‌ای برای ورزشکاران رقابتی" features={["پشتیبانی مستقیم", "تحلیل حرفه‌ای", "مربی برتر"]} onSelect={() => {}} />
+            <PlanCard title="پایه" price="۱۲۰,۰۰۰" description="شروع مناسب برای تازه‌واردها" features={["برنامه استاندارد", "مشاوره اولیه"]} onSelect={() => {}} />
+            <PlanCard title="VIP Club" price="۷۵۰,۰۰۰" description="تجربهٔ کامل و اختصاصی باشگاه VIP" features={["باشگاه VIP", "پاداش وفاداری", "دسترسی کامل"]} onSelect={() => {}} />
           </div>
         </section>
 
         <section className="container mx-auto py-12">
           <h2 className="text-2xl font-bold mb-6 text-center">مربیان برتر</h2>
           <div className="flex flex-wrap justify-center gap-6">
-            <CoachCard name="رضا قهرمان" field="بدنسازی" image="/assets/images/coach1.jpg" />
-            <CoachCard name="سمیه اکبری" field="تناسب اندام" image="/assets/images/coach2.jpg" />
-            <CoachCard name="ایمان رستگار" field="تغذیه و اصلاحی" image="/assets/images/coach3.jpg" />
+            <CoachCard name="رضا قهرمان" specialty="بدنسازی" photo="/assets/images/coach1.jpg" onContact={() => {}} />
+            <CoachCard name="سمیه اکبری" specialty="تناسب اندام" photo="/assets/images/coach2.jpg" onContact={() => {}} />
+            <CoachCard name="ایمان رستگار" specialty="تغذیه و اصلاحی" photo="/assets/images/coach3.jpg" onContact={() => {}} />
           </div>
         </section>
 
         <section className="container mx-auto py-12">
           <h2 className="text-2xl font-bold mb-6 text-center">محصولات منتخب فروشگاه</h2>
           <div className="flex flex-wrap justify-center gap-6">
-            <ProductCard name="کمربند ورزشی" price={390_000} image="/assets/images/belt.jpg" />
-            <ProductCard name="مکمل پروتئین" price={1_200_000} image="/assets/images/whey.jpg" />
-            <ProductCard name="بند لیفت" price={185_000} image="/assets/images/strap.jpg" />
+            <ProductCard title="کمربند ورزشی" price="۳۹۰,۰۰۰" image="/assets/images/belt.jpg" onAddToCart={() => {}} />
+            <ProductCard title="مکمل پروتئین" price="۱,۲۰۰,۰۰۰" image="/assets/images/whey.jpg" onAddToCart={() => {}} />
+            <ProductCard title="بند لیفت" price="۱۸۵,۰۰۰" image="/assets/images/strap.jpg" onAddToCart={() => {}} />
           </div>
         </section>
 

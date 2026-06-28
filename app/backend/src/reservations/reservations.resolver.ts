@@ -42,15 +42,14 @@ export class ReservationsResolver {
     await this.resv.cancel(id);
     return true;
   }
-}
 
+  @Query(() => [Reservation])
+  async userReservations(@Args('userId') userId: string) {
+    return this.resv.listByUser(Number(userId));
+  }
 
-@Query(() => [Reservation])
-async userReservations(@Args('userId') userId: string) {
-  return this.resv.listByUser(Number(userId));
-}
-
-@Query(() => [Reservation])
-async coachReservations(@Args('coachId') coachId: string) {
-  return this.resv.listByCoach(Number(coachId));
+  @Query(() => [Reservation])
+  async coachReservations(@Args('coachId') coachId: string) {
+    return this.resv.listByCoach(Number(coachId));
+  }
 }

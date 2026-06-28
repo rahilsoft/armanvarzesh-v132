@@ -17,7 +17,8 @@ export class LeaderboardResolver {
     const map = new Map(users.map(u => [u.id, u]));
     return (ids as number[]).map(id => map.get(id) ?? null);
   });
-@Query(() => [LeaderboardEntry])
+
+  @Query(() => [LeaderboardEntry])
   async leaderboard() {
     return this.leaderboardService.getLeaderboard();
   }
@@ -39,9 +40,9 @@ export class LeaderboardResolver {
   async deleteLeaderboardEntry(@Args('id', { type: () => Int }) id: number) {
     return this.leaderboardService.delete(id);
   }
-}
 
-@ResolveField(() => User, { name: 'user', nullable: true })
-user(@Parent() item: LeaderboardEntry) {
-  return this.userById.load(item.userId);
+  @ResolveField(() => User, { name: 'user', nullable: true })
+  user(@Parent() item: LeaderboardEntry) {
+    return this.userById.load(item.userId);
+  }
 }

@@ -2,16 +2,22 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../..",
     "module": "CommonJS",
     "target": "ES2020",
     "moduleResolution": "Node",
-    "declaration": true,
+    "declaration": false,
     "sourceMap": true,
     "strict": true,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@arman/*": [
+        "../../packages/*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
       "coach-pwa/*": [
         "app/coach-pwa/*"
       ],
