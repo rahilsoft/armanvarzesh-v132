@@ -87,3 +87,7 @@ dist
 build
 .next
 coverage
+
+# Build artifacts
+*.tsbuildinfo
+apps/web-site/public/fallback-*.js
