@@ -1,5 +1,5 @@
 {
-  "name": "@arman/http-user",
+  "name": "@arman/http-client",
   "version": "0.1.0",
   "private": true,
   "main": "index.ts",

@@ -52,7 +52,7 @@ export const TileCard: React.FC<{ tile: Tile; locale?: 'fa' | 'en'; orderIndex?:
 
       <div className="media">
         {tile.media.kind === 'image' && (
-          {tile.media.srcset?.length ? (
+          tile.media.srcset?.length ? (
             <picture>
               {/* AVIF */}
               <source type="image/avif" srcSet={tile.media.srcset.filter(s=>s.format==='avif').sort((a,b)=>a.width-b.width).map(s=>`${s.url} ${s.width}w`).join(', ')} sizes="(max-width: 960px) 100vw, 60vw" />
@@ -62,7 +62,7 @@ export const TileCard: React.FC<{ tile: Tile; locale?: 'fa' | 'en'; orderIndex?:
             </picture>
           ) : (
             <Image src={tile.media.src} alt={t(tile.media.alt || {fa:'', en:''})} width={1280} height={720} sizes="(max-width: 960px) 100vw, 60vw" placeholder={tile.media.blur ? 'blur' : undefined} blurDataURL={tile.media.blur} priority={orderIndex===0} />
-          )}
+          )
         )}
         {tile.media.kind === 'video' && (
           <video src={tile.media.src} controls playsInline preload="none" />

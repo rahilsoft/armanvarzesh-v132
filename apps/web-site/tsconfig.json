@@ -17,10 +17,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "rootDir": "src",
+    "rootDir": "../..",
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "@arman/*": [
+        "../../packages/*/src",
+        "../../packages/*"
+      ],
       "coach-pwa/*": [
         "app/coach-pwa/*"
       ],
@@ -88,13 +92,8 @@
         "app/user-pwa/*"
       ]
     },
-    "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
@@ -102,7 +101,15 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/__tests__/**",
+    "**/__stories__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ],
   "extends": "../../tsconfig.base.json"
 }
