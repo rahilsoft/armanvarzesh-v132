@@ -10,6 +10,6 @@ export function useReward() {
   return {
     rewards: data?.rewards || [],
     loading,
-    createReward: (input) => createReward({ variables: { input } })
+    createReward: (input: any) => createReward({ variables: { input } })
   };
 }

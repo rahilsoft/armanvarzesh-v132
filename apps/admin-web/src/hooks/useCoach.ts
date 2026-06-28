@@ -10,6 +10,6 @@ export function useCoach() {
   return {
     coaches: data?.coaches || [],
     loading,
-    createCoach: (input) => createCoach({ variables: { input } })
+    createCoach: (input: any) => createCoach({ variables: { input } })
   };
 }

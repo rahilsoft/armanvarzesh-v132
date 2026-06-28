@@ -3,7 +3,7 @@ import React, { createContext, useState } from "react";
 
 export const AdminContext = createContext<any>(null);
 
-export const AdminProvider = ({ children }) => {
+export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState(null);
 
   return (

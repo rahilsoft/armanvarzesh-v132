@@ -10,6 +10,6 @@ export function useWorkout() {
   return {
     workouts: data?.workouts || [],
     loading,
-    createWorkout: (input) => createWorkout({ variables: { input } })
+    createWorkout: (input: any) => createWorkout({ variables: { input } })
   };
 }

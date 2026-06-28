@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
 import { applyBasicHardening } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 import helmet from "helmet";
 import { register as promRegister } from "prom-client";
@@ -57,7 +57,7 @@ if (http && typeof http.get === 'function') {
     res.json({ status: "ok", uptime: process.uptime(), timestamp: Date.now() });
   });
 
-  \1
+    await app.listen(port);
     console.log(`Service started at http://localhost:${port}`);
   } catch (e) {
     // Fallback: simple node script

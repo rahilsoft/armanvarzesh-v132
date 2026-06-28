@@ -10,6 +10,6 @@ export function useAnalytics() {
   return {
     analytics: data?.analytics || {},
     loading,
-    updateAnalytics: (input) => updateAnalytics({ variables: { input } })
+    updateAnalytics: (input: any) => updateAnalytics({ variables: { input } })
   };
 }

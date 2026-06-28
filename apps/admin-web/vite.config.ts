@@ -39,4 +39,22 @@ const pwa = VitePWA({
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-export default defineConfig({ plugins: [pwa,  [react()] })
+import path from 'node:path'
+
+// Mirror the tsconfig path aliases (baseUrl: src) so Rollup can resolve them.
+const r = (p: string) => path.resolve(__dirname, 'src', p)
+
+export default defineConfig({
+  plugins: [pwa, react()],
+  resolve: {
+    alias: {
+      '@components': r('components'),
+      '@pages': r('pages'),
+      '@graphql': r('graphql'),
+      '@hooks': r('hooks'),
+      '@utils': r('utils'),
+      '@context': r('context'),
+      '@theme': r('theme'),
+    },
+  },
+})

@@ -10,6 +10,6 @@ export function useNotification() {
   return {
     notifications: data?.notifications || [],
     loading,
-    createNotification: (input) => createNotification({ variables: { input } })
+    createNotification: (input: any) => createNotification({ variables: { input } })
   };
 }

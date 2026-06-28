@@ -10,6 +10,6 @@ export function useChallenge() {
   return {
     challenges: data?.challenges || [],
     loading,
-    createChallenge: (input) => createChallenge({ variables: { input } })
+    createChallenge: (input: any) => createChallenge({ variables: { input } })
   };
 }

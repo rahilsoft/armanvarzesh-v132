@@ -10,6 +10,6 @@ export function useNutrition() {
   return {
     nutritionPlans: data?.nutritionPlans || [],
     loading,
-    createNutritionPlan: (input) => createNutritionPlan({ variables: { input } })
+    createNutritionPlan: (input: any) => createNutritionPlan({ variables: { input } })
   };
 }

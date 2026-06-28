@@ -12,8 +12,8 @@ export function useUser() {
   return {
     users: data?.users || [],
     loading,
-    createUser: (input) => createUser({ variables: { input } }),
-    updateUser: (id, input) => updateUser({ variables: { id, input } }),
-    deleteUser: (id) => deleteUser({ variables: { id } })
+    createUser: (input: any) => createUser({ variables: { input } }),
+    updateUser: (id: any, input: any) => updateUser({ variables: { id, input } }),
+    deleteUser: (id: any) => deleteUser({ variables: { id } })
   };
 }
