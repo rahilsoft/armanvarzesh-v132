@@ -3,6 +3,7 @@ packages:
   - 'app/*'
   - 'apps/web-site'
   - 'apps/admin-web'
+  - 'apps/mobile-user'
   - 'packages/*'
   - 'packages/*/*'
   - 'services/*'

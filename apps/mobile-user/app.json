@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "آرمان ورزش",
+    "slug": "arman-varzesh-user",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "armanvarzesh",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0F1923"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.armanvarzesh.user"
+    },
+    "android": {
+      "package": "com.armanvarzesh.user",
+      "adaptiveIcon": {
+        "backgroundColor": "#1A5C3A"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "apiUrl": "https://api.armanvarzesh.com/graphql"
+    }
+  }
+}
