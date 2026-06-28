@@ -1,7 +1,7 @@
 
 'use client';
 import React from 'react';
-import { logConversion } from '../../lib/analytics';
+import { logConversion } from '../../../lib/analytics';
 
 export default function DownloadCTA(){
   return (

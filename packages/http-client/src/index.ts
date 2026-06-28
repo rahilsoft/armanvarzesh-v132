@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
+export * from './client';
+
 export interface HttpOptions {
   timeoutMs?: number;
   retries?: number;

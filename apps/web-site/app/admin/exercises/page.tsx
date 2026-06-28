@@ -37,7 +37,7 @@ export default function ExercisesAdmin(){
     }catch(e:any){ setMsg(e.message||'خطا'); }
   };
 
-  const approve = async (id:string)=>{ await gql(`mutation($id:String!,$status:String!){ reviewExercise(id:$id,status:$status){ id } }`, { id, status:'APPROVED' }); load(); };
+  const approve = async (id:string, status:string='APPROVED')=>{ await gql(`mutation($id:String!,$status:String!){ reviewExercise(id:$id,status:$status){ id } }`, { id, status }); load(); };
   const reject = async (id:string)=>{ await gql(`mutation($id:String!,$status:String!){ reviewExercise(id:$id,status:$status){ id } }`, { id, status:'REJECTED' }); load(); };
 
   return (

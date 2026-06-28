@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "dom",
       "dom.iterable",
@@ -102,6 +102,7 @@
   ],
   "exclude": [
     "node_modules",
+    "src/main.ts",
     "**/__tests__/**",
     "**/__stories__/**",
     "**/*.spec.ts",

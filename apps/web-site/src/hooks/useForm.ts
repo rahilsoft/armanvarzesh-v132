@@ -5,7 +5,7 @@ export function useForm(initialValues: any) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setValues(prev => ({ ...prev, [name]: value }));
+    setValues((prev: any) => ({ ...prev, [name]: value }));
   }
 
   function resetForm() {

@@ -29,7 +29,7 @@ export function createApiClient(opts: ClientOptions = {}): AxiosInstance {
     withCredentials: opts.withCredentials ?? false,
   });
 
-  instance.interceptors.request.use(async (config: AxiosRequestConfig) => {
+  instance.interceptors.request.use(async (config) => {
     // attach auth
     if (getToken) {
       try {
