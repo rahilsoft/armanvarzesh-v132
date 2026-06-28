@@ -27,12 +27,12 @@ export async function enqueueMediaProcessing(exerciseId: string, opts: JobsOptio
 
 export function startMediaWorker(){
   if (!queue || !connection) return null;
-  const worker = new Worker(queueName, async (job, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') })=>{
+  const worker = new Worker(queueName, async (job)=>{
     if (job.name === 'process-exercise'){
       const { exerciseId } = job.data;
       await processExerciseMediaHandler(exerciseId);
     }
-  }, { connection });
+  }, { connection, concurrency: parseInt(process.env.WORKER_CONCURRENCY||'4') });
   return worker;
 }
 

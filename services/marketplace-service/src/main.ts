@@ -32,7 +32,7 @@ import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 async function bootstrap() {
   const globalPrefix = process.env.API_PREFIX || '';
   await startTracing();
-  const app = \1
+  const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
   if (process.env.HTTP_CACHE_ENABLED === 'true') {
@@ -75,7 +75,6 @@ const swaggerCfg = new DocumentBuilder().setTitle('ArmanFit').setDescription('AP
     return cb(new Error('Not allowed by CORS'));
   }, credentials: true });
   const port = process.env.PORT || 3012;
-  await 
 
 // AUTO (Stage14): basic health/ready endpoints (no deps)
 const http = app.getHttpAdapter().getInstance();

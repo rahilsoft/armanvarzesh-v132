@@ -154,7 +154,6 @@ class SearchExercisesInput {
 }
 
 @ObjectType()
-class PageInfo { @Field() endCursor:string; @Field() hasNextPage:boolean; }
 
 
 @ObjectType() class SessionDetailDTO {
@@ -175,6 +174,27 @@ class UpsertAnatomyInput { @Field({nullable:true}) id?:string; @Field() gender:s
 
 
 @Resolver()
+// --- GraphQL DTOs hoisted out of PlanResolver (were illegally nested) ---
+@ObjectType() class ExerciseEdge { @Field() id:string; @Field() title:string; @Field() videoUrl:string; @Field({nullable:true}) thumbnailUrl?:string; @Field({nullable:true}) durationSec?:number; @Field() status:string; @Field({nullable:true}) level?:string; @Field({nullable:true}) kind?:string; @Field({nullable:true}) ownerId?:string; @Field({nullable:true}) muscleGroup?:string; @Field({nullable:true}) equipment?:string; @Field() viewCount:number; @Field() likeCount:number; }
+@ObjectType() class ExerciseConnection { @Field(() => [ExerciseEdge]) edges: ExerciseEdge[]; @Field() total:number; @Field(() => PageInfo) pageInfo: PageInfo; }
+@ObjectType() class MultipartInit { @Field() uploadId:string; @Field() key:string; }
+@ObjectType() class MultipartPartURL { @Field() url:string; }
+@ObjectType() class SportDTO { @Field() id:string; @Field() name:string; }
+@ObjectType() class EquipmentDTO { @Field() id:string; @Field() name:string; }
+@ObjectType() class MuscleDTO { @Field() id:string; @Field() code:string; @Field() name:string; }
+@ObjectType() class PlanSetDTO { @Field({nullable:true}) targetWeight?: number; @Field({nullable:true}) targetRPE?: number; @Field({nullable:true}) reps?: number; @Field({nullable:true}) weight?: number; @Field({nullable:true}) rest?: number; @Field({nullable:true}) tempo?: string; @Field({nullable:true}) rpe?: number; @Field({nullable:true}) durationSec?: number; }
+@ObjectType() class PlanItemDTO { @Field() id: string; @Field() order: number; @Field() exerciseId: string; @Field({nullable:true}) note?: string; @Field(() => [PlanSetDTO]) sets: PlanSetDTO[]; }
+@ObjectType() class PlanBlockDTO { @Field({nullable:true}) section?: string; @Field() id: string; @Field() order: number; @Field() type: string; @Field({nullable:true}) protocol?: string; @Field({nullable:true}) protocolParams?: string; @Field({nullable:true}) restBetweenItems?: number; @Field(() => [PlanItemDTO]) items: PlanItemDTO[]; }
+@ObjectType() class PlanDayDTO { @Field() id: string; @Field() order: number; @Field({nullable:true}) title?: string; @Field({nullable:true}) note?: string; @Field({nullable:true}) voiceUrl?: string; @Field(() => [PlanBlockDTO]) blocks: PlanBlockDTO[]; }
+@ObjectType() class PlanDTO { @Field() id: string; @Field() title: string; @Field({nullable:true}) description?: string; @Field() status: string; @Field() version: number; @Field(() => [PlanDayDTO]) days: PlanDayDTO[]; @Field() updatedAt: Date; }
+@InputType() class PlanSetInput { @Field({nullable:true}) reps?: number; @Field({nullable:true}) weight?: number; @Field({nullable:true}) rest?: number; @Field({nullable:true}) tempo?: string; @Field({nullable:true}) rpe?: number; @Field({nullable:true}) durationSec?: number; }
+@InputType() class PlanItemInput { @Field({nullable:true}) id?: string; @Field() order: number; @Field() exerciseId: string; @Field({nullable:true}) note?: string; @Field(() => [PlanSetInput]) sets: PlanSetInput[]; }
+@InputType() class PlanBlockInput { @Field({nullable:true}) section?: string; @Field({nullable:true}) id?: string; @Field() order: number; @Field() type: string; @Field({nullable:true}) protocol?: string; @Field({nullable:true}) protocolParams?: string; @Field({nullable:true}) restBetweenItems?: number; @Field(() => [PlanItemInput]) items: PlanItemInput[]; }
+@InputType() class PlanDayInput { @Field({nullable:true}) id?: string; @Field() order: number; @Field({nullable:true}) title?: string; @Field({nullable:true}) note?: string; @Field({nullable:true}) voiceUrl?: string; @Field(() => [PlanBlockInput]) blocks: PlanBlockInput[]; }
+@InputType() class UpsertPlanInput { @Field({nullable:true}) id?: string; @Field() title: string; @Field({nullable:true}) description?: string; @Field(() => [PlanDayInput]) days: PlanDayInput[]; @Field() ownerId: string; }
+@ObjectType() class SessionDTO { @Field() id:string; @Field() date:Date; @Field() dayIndex:number; @Field() status:string; @Field({nullable:true}) completedAt?:Date; }
+@ObjectType() class AssignmentDTO { @Field() id: string; @Field() planId: string; @Field() clientId: string; @Field() startDate: Date; @Field() sessionsPerWeek: number; @Field(() => [String]) restDays: string[]; @Field() durationDays: number; }
+
 export class PlanResolver {
 
 
@@ -185,8 +205,6 @@ export class PlanResolver {
   }
 
   
-  @ObjectType() class ExerciseEdge { @Field() id:string; @Field() title:string; @Field() videoUrl:string; @Field({nullable:true}) thumbnailUrl?:string; @Field({nullable:true}) durationSec?:number; @Field() status:string; @Field({nullable:true}) level?:string; @Field({nullable:true}) kind?:string; @Field({nullable:true}) ownerId?:string; @Field({nullable:true}) muscleGroup?:string; @Field({nullable:true}) equipment?:string; @Field() viewCount:number; @Field() likeCount:number; }
-  @ObjectType() class ExerciseConnection { @Field(() => [ExerciseEdge]) edges: ExerciseEdge[]; @Field() total:number; @Field(() => PageInfo) pageInfo: PageInfo; }
 
   @Query(() => ExerciseConnection)
   async searchExercises(@Args('input', { nullable:true }) input?: SearchExercisesInput): Promise<ExerciseConnection> {
@@ -236,8 +254,6 @@ export class PlanResolver {
 
   // ---------- Exercises (library) ----------
 
-  @ObjectType() class MultipartInit { @Field() uploadId:string; @Field() key:string; }
-  @ObjectType() class MultipartPartURL { @Field() url:string; }
 
 
   @Mutation(() => Boolean)
@@ -402,9 +418,6 @@ export class PlanResolver {
 
 
   // ---------- Taxonomy ----------
-  @ObjectType() class SportDTO { @Field() id:string; @Field() name:string; }
-  @ObjectType() class EquipmentDTO { @Field() id:string; @Field() name:string; }
-  @ObjectType() class MuscleDTO { @Field() id:string; @Field() code:string; @Field() name:string; }
 
   @Query(() => [SportDTO]) async sports(): Promise<SportDTO[]> { return await prisma.sport.findMany(); }
   @Query(() => [EquipmentDTO]) async equipmentCatalogs(): Promise<EquipmentDTO[]> { return await prisma.equipmentCatalog.findMany(); }
@@ -811,11 +824,6 @@ export class PlanResolver {
     return p as any;
   }
 
-  @ObjectType() class PlanSetDTO { @Field({nullable:true}) targetWeight?: number; @Field({nullable:true}) targetRPE?: number; @Field({nullable:true}) reps?: number; @Field({nullable:true}) weight?: number; @Field({nullable:true}) rest?: number; @Field({nullable:true}) tempo?: string; @Field({nullable:true}) rpe?: number; @Field({nullable:true}) durationSec?: number; }
-  @ObjectType() class PlanItemDTO { @Field() id: string; @Field() order: number; @Field() exerciseId: string; @Field({nullable:true}) note?: string; @Field(() => [PlanSetDTO]) sets: PlanSetDTO[]; }
-  @ObjectType() class PlanBlockDTO { @Field({nullable:true}) section?: string; @Field() id: string; @Field() order: number; @Field() type: string; @Field({nullable:true}) protocol?: string; @Field({nullable:true}) protocolParams?: string; @Field({nullable:true}) restBetweenItems?: number; @Field(() => [PlanItemDTO]) items: PlanItemDTO[]; }
-  @ObjectType() class PlanDayDTO { @Field() id: string; @Field() order: number; @Field({nullable:true}) title?: string; @Field({nullable:true}) note?: string; @Field({nullable:true}) voiceUrl?: string; @Field(() => [PlanBlockDTO]) blocks: PlanBlockDTO[]; }
-  @ObjectType() class PlanDTO { @Field() id: string; @Field() title: string; @Field({nullable:true}) description?: string; @Field() status: string; @Field() version: number; @Field(() => [PlanDayDTO]) days: PlanDayDTO[]; @Field() updatedAt: Date; }
 
   @Query(() => PlanDTO, { nullable: true })
   async plan(@Args('id') id: string): Promise<PlanDTO | null> {
@@ -833,11 +841,6 @@ export class PlanResolver {
     return { edges, pageInfo: { endCursor, hasNextPage: (rows.length + (cursor? Number(cursor):0)) < total }, total } as any;
   }
 
-  @InputType() class PlanSetInput { @Field({nullable:true}) reps?: number; @Field({nullable:true}) weight?: number; @Field({nullable:true}) rest?: number; @Field({nullable:true}) tempo?: string; @Field({nullable:true}) rpe?: number; @Field({nullable:true}) durationSec?: number; }
-  @InputType() class PlanItemInput { @Field({nullable:true}) id?: string; @Field() order: number; @Field() exerciseId: string; @Field({nullable:true}) note?: string; @Field(() => [PlanSetInput]) sets: PlanSetInput[]; }
-  @InputType() class PlanBlockInput { @Field({nullable:true}) section?: string; @Field({nullable:true}) id?: string; @Field() order: number; @Field() type: string; @Field({nullable:true}) protocol?: string; @Field({nullable:true}) protocolParams?: string; @Field({nullable:true}) restBetweenItems?: number; @Field(() => [PlanItemInput]) items: PlanItemInput[]; }
-  @InputType() class PlanDayInput { @Field({nullable:true}) id?: string; @Field() order: number; @Field({nullable:true}) title?: string; @Field({nullable:true}) note?: string; @Field({nullable:true}) voiceUrl?: string; @Field(() => [PlanBlockInput]) blocks: PlanBlockInput[]; }
-  @InputType() class UpsertPlanInput { @Field({nullable:true}) id?: string; @Field() title: string; @Field({nullable:true}) description?: string; @Field(() => [PlanDayInput]) days: PlanDayInput[]; @Field() ownerId: string; }
 
   @Mutation(() => PlanDTO)
   async upsertPlan(@Args('input') input: UpsertPlanInput): Promise<PlanDTO> {
@@ -976,7 +979,6 @@ export class PlanResolver {
   }
 
   // ---------- Assign & schedule ----------
-  @ObjectType() class SessionDTO { @Field() id:string; @Field() date:Date; @Field() dayIndex:number; @Field() status:string; @Field({nullable:true}) completedAt?:Date; }
   @Query(() => [SessionDTO])
   async sessionsByClient(@Args('clientId') clientId:string, @Args('from') fro:string, @Args('to') to:string): Promise<SessionDTO[]> {
     const list = await prisma.planSession.findMany({ where: { assignment: { clientId }, date: { gte: new Date(fro), lte: new Date(to) } }, orderBy:{ date:'asc' } });
@@ -1008,7 +1010,6 @@ export class PlanResolver {
     return asg as any;
   }
 
-  @ObjectType() class AssignmentDTO { @Field() id: string; @Field() planId: string; @Field() clientId: string; @Field() startDate: Date; @Field() sessionsPerWeek: number; @Field(() => [String]) restDays: string[]; @Field() durationDays: number; }
   @Mutation(() => AssignmentDTO)
   async assignPlan(
     @Args('planId') planId: string,

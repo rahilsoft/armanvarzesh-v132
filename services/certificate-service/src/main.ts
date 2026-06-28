@@ -14,7 +14,7 @@ import { register as promRegister } from "prom-client";
 import compression from "compression";
 
 async function bootstrap() {
-  const app = \1
+  const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
   if (process.env.HTTP_CACHE_ENABLED === 'true') {
