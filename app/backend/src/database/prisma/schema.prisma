@@ -201,11 +201,13 @@ model Message {
   receiverId   Int
   content      String
   attachmentId Int?
+  conversationId Int?
   createdAt    DateTime  @default(now())
 
   sender User  @relation("SentMessages", fields: [senderId], references: [id])
   receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
   attachment  Attachment? @relation(fields: [attachmentId], references: [id])
+  conversation Conversation? @relation(fields: [conversationId], references: [id])
 
   @@index([senderId, receiverId, createdAt], map: "idx_Message_pair_time")
 
@@ -295,6 +297,8 @@ model Attachment {
   durationSec Int?
   createdAt   DateTime @default(now())
 
+  messages    Message[]
+
   @@index([key], map: "idx_Attachment_key")
 }
 
@@ -307,6 +311,8 @@ model Food {
   fat       Float
   calories  Float    // per 100g
   createdAt DateTime @default(now())
+
+  mealLogs  MealLog[]
 
   @@index([title], map: "idx_food_title")
 }
