@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
-  const [sex, setSex] = useState<'male'|'female'>('male');
 async function gql(query:string, variables:any={}){
   const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json','x-role':'specialist'}, body: JSON.stringify({ query, variables }) });
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
@@ -11,6 +10,7 @@ async function gql(query:string, variables:any={}){
 
 const AnatomyBoard = dynamic(()=> import('../_components/AnatomyBoard'), { ssr:false });
 export default function Page(){
+  const [sex, setSex] = useState<'male'|'female'>('male');
   const [conds, setConds] = useState<any[]>([]);
   const [sel, setSel] = useState<string[]>([]);
   const [q, setQ] = useState('');
