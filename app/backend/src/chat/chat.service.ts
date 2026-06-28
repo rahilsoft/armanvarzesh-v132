@@ -10,7 +10,10 @@ import { Message as MessageModel } from '@prisma/client';
  */
 @Injectable()
 export class ChatService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly media: MediaQueueService,
+  ) {}
 
   /**
    * Persist a new message from `senderId` to `receiverId` with the given
@@ -22,8 +25,8 @@ export class ChatService {
         senderId,
         receiverId,
         content,
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -32,14 +35,15 @@ export class ChatService {
    * creation time ascending. This includes messages sent in both directions.
    */
   async getConversation(userId1: number, userId2: number): Promise<MessageModel[]> {
-    return this.prisma.message.findMany({ take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20, 
+    return this.prisma.message.findMany({
+      take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20,
       where: {
         OR: [
           { senderId: userId1, receiverId: userId2 },
-          { senderId: userId2, receiverId: userId1 }
-        ]
+          { senderId: userId2, receiverId: userId1 },
+        ],
       },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -48,32 +52,43 @@ export class ChatService {
    * receiver. Messages are returned in descending order of creation time.
    */
   async getInbox(userId: number): Promise<MessageModel[]> {
-    return this.prisma.message.findMany({ take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20, 
+    return this.prisma.message.findMany({
+      take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20,
       where: { receiverId: userId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
-}
-async sendAttachmentMessage(senderId: number, receiverId: number, key: string, contentType: string) {
-  const att = await this.prisma.attachment.create({ data: { key, contentType } });
+
+  /**
+   * Persist a message carrying a media attachment. For video attachments a
+   * thumbnail generation job is enqueued. Returns the stored message record.
+   */
+  async sendAttachmentMessage(senderId: number, receiverId: number, key: string, contentType: string) {
+    const att = await (this.prisma as any).attachment.create({ data: { key, contentType } });
     // If video, enqueue thumbnail job (webp 480w)
     if (contentType.startsWith('video')) {
       const outputKey = `${key}.thumb.webp`;
       await this.media.enqueueImage(await this.presigned(key), outputKey, 'webp', 480);
-      try { await this.prisma.attachment.update({ where: { id: att.id }, data: { thumbKey: outputKey } }); } catch {}
+      try {
+        await (this.prisma as any).attachment.update({ where: { id: att.id }, data: { thumbKey: outputKey } });
+      } catch {}
     }
-  const msg = await (this.prisma as any).message.create({
-    data: {
-      senderId, receiverId, content: '', attachmentId: att.id, createdAt: new Date()
-    }
-  });
-  return msg;
-}
+    const msg = await (this.prisma as any).message.create({
+      data: {
+        senderId,
+        receiverId,
+        content: '',
+        attachmentId: att.id,
+        createdAt: new Date(),
+      },
+    });
+    return msg;
+  }
 
-
-private async presigned(key: string): Promise<string> {
-  const { StorageService } = await import('../storage/storage.service');
-  const storage = new StorageService();
-  const d = await storage.createDownloadUrl(key);
-  return d.downloadUrl;
+  private async presigned(key: string): Promise<string> {
+    const { StorageService } = await import('../storage/storage.service');
+    const storage = new StorageService();
+    const d = await storage.createDownloadUrl(key);
+    return d.downloadUrl;
+  }
 }

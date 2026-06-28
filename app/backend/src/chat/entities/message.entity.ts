@@ -21,7 +21,13 @@ export class Message {
 
   @Field()
   createdAt: Date;
+
+  @Field({ nullable: true })
+  attachmentId?: number;
+
+  @Field({ nullable: true })
+  attachmentUrl?: string; // resolved at query via signed URL
+
+  @Field({ nullable: true })
+  attachmentType?: string;
 }
-@Field({ nullable: true }) attachmentId?: number;
-@Field({ nullable: true }) attachmentUrl?: string; // resolved at query via signed URL
-@Field({ nullable: true }) attachmentType?: string;
