@@ -36,7 +36,7 @@ export class BookingService {
     if (activeCount >= slot.capacity) throw new BadRequestException('SLOT_FULL');
 
     // user overlap check with other bookings (pending/confirmed)
-    const my = await this.prisma.booking.findMany({ where: { userId, status: { in: ['PENDING','CONFIRMED'] } }, include: { } });
+    const my = await this.prisma.booking.findMany({ where: { userId, status: { in: ['PENDING','CONFIRMED'] } } });
     for (const b of my){
       const s2 = await this.prisma.slot.findUnique({ where: { id: b.slotId } });
       if (s2 && overlaps(slot.startUTC as any, slot.endUTC as any, s2.startUTC as any, s2.endUTC as any)){
@@ -98,7 +98,7 @@ export class BookingService {
   // DST-safe utilities
   utcToTz(isoUtc: string, tz: string){
     const d = new Date(isoUtc);
-    const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: False, year: 'numeric', month: '2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+    const fmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: false, year: 'numeric', month: '2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
     const [{value:month},,{value:day},,{value:year},,{value:hour},,{value:minute}] = fmt.formatToParts(d);
     return `${year}-${month}-${day} ${hour}:${minute}`;
   }

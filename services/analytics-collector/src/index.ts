@@ -11,7 +11,7 @@ import { createClient } from '@clickhouse/client';
 const log = pino({ level: process.env.LOG_LEVEL || 'info' });
 const app = express();
 app && app.use(buildJwtVerifier());
-app && app.use(buildUserAwareRateLimit());
+app && app.use(buildUserAwareRateLimit() as any);
 process.env.CSP_NONCE_MODE==='1' && app.use(cspMiddleware({mode:'nonce'}));
 
 

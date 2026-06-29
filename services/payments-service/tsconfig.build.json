@@ -34,5 +34,14 @@
   "include": [
     "src",
     "prisma"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "test/**",
+    "**/*.e2e-spec.ts"
   ]
 }

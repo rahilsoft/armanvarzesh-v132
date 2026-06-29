@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": false,
+    "noEmit": true,
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
@@ -91,9 +91,19 @@
     "strictPropertyInitialization": false,
     "noImplicitAny": false,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "allowJs": false
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "test/**",
+    "**/*.e2e-spec.ts"
   ]
 }

@@ -103,6 +103,10 @@
   "exclude": [
     "**/*.spec.ts",
     "node_modules",
-    "dist"
+    "dist",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "test/**",
+    "**/*.e2e-spec.ts"
   ]
 }
