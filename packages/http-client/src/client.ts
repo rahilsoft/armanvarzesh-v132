@@ -35,7 +35,7 @@ export function createApiClient(opts: ClientOptions = {}): AxiosInstance {
       try {
         const token = await Promise.resolve(getToken());
         if (token) {
-          config.headers = config.headers || {};
+          config.headers = (config.headers || {}) as any;
           (config.headers as any)['Authorization'] = `Bearer ${token}`;
         }
       } catch {}
@@ -43,7 +43,7 @@ export function createApiClient(opts: ClientOptions = {}): AxiosInstance {
     // idempotency for mutating methods
     const method = (config.method || 'get').toLowerCase();
     if (['post','put','patch','delete'].includes(method)) {
-      config.headers = config.headers || {};
+      config.headers = (config.headers || {}) as any;
       if (!(config.headers as any)['Idempotency-Key']) {
         (config.headers as any)['Idempotency-Key'] = cryptoRandomId();
       }

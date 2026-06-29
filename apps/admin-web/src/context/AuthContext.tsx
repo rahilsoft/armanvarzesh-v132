@@ -3,11 +3,11 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext<any>(null);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [admin, setAdmin] = useState(null);
   const [token, setToken] = useState<string | null>(null);
 
-  const login = (adminData, jwt) => {
+  const login = (adminData: any, jwt: any) => {
     setAdmin(adminData);
     setToken(jwt);
   };

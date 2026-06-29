@@ -30,6 +30,6 @@ export class PaymentsUseCase {
     if (!Number.isInteger(limit) || limit <= 0 || limit > 100) {
       throw new ValidationError('limit must be between 1 and 100', 'limit');
     }
-    return this.payments.listByUser(userId, limit, cursor);
+    return this.payments.listByUser(userId, limit, cursor) as unknown as PaymentList;
   }
 }

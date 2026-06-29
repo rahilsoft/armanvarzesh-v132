@@ -7,7 +7,7 @@ export class WorkoutsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: { title: string; data?: Prisma.JsonValue; userId?: number }) {
-    return this.prisma.workout.create({ data: { title: data.title, data: data.data ?? undefined, userId: data.userId ?? undefined } });
+    return this.prisma.workout.create({ data: { title: data.title, data: (data.data ?? undefined) as Prisma.InputJsonValue, userId: data.userId ?? undefined } });
   }
 
   async update(id: number, data: Partial<{ title: string; data: Prisma.JsonValue; userId: number }>) {
@@ -31,7 +31,33 @@ export class WorkoutsService {
     return this.prisma.workout.findMany({ take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20,  where: { userId } });
   }
 
+  /** Alias for findByUser(), used by the GraphQL resolver. */
+  async findAllByUser(userId: number) {
+    return this.findByUser(userId);
+  }
+
   async findAll() {
     return this.prisma.workout.findMany();
+  }
+
+  /** Alias for remove(), used by the GraphQL resolver. */
+  async delete(id: number) {
+    return this.remove(id);
+  }
+
+  /**
+   * Record the actual performance data for a workout by merging it into the
+   * workout's JSON `data` field under an `actual` key.
+   */
+  async logActual(id: number, input: any) {
+    const existing = await this.prisma.workout.findUniqueOrThrow({ where: { id } });
+    const current =
+      existing.data && typeof existing.data === 'object' && !Array.isArray(existing.data)
+        ? (existing.data as Record<string, unknown>)
+        : {};
+    return this.prisma.workout.update({
+      where: { id },
+      data: { data: { ...current, actual: input ?? null } as Prisma.InputJsonValue },
+    });
   }
 }

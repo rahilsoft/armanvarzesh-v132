@@ -9,7 +9,7 @@ export class WalletController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get(':userId')
-  async getWallet(@Param('userId') userId: number): Promise<Wallet> {
+  async getWallet(@Param('userId') userId: number): Promise<any> {
     return this.walletService.findOne(Number(userId));
   }
 }

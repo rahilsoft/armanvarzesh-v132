@@ -1,3 +1,28 @@
+/**
+ * Execute `fn` inside a tracing span when OpenTelemetry is available, otherwise
+ * just run `fn`. Keeps call sites simple and dependency-free at runtime.
+ */
+export async function withSpan<T>(
+  name: string,
+  _attrs: Record<string, unknown>,
+  fn: () => Promise<T>,
+): Promise<T> {
+  try {
+    const api = require('@opentelemetry/api');
+    const tracer = api.trace.getTracer('backend');
+    return await tracer.startActiveSpan(name, async (span: any) => {
+      try {
+        for (const [k, v] of Object.entries(_attrs)) span.setAttribute(k, v as any);
+        return await fn();
+      } finally {
+        span.end();
+      }
+    });
+  } catch {
+    return fn();
+  }
+}
+
 export async function initTracing() {
   // Lazy init to avoid hard dependency at runtime
   if (!process.env.OTEL_EXPORTER_OTLP_ENDPOINT) return;

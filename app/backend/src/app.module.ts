@@ -30,7 +30,7 @@ import { AdminController } from './auth/admin.controller';
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL || 'info',
-        redact: ['req.headers.authorization','res.headers["set-cookie", PresentationModule HealthModule]'],
+        redact: ['req.headers.authorization', 'res.headers["set-cookie"]'],
         transport: process.env.NODE_ENV !== 'production'
           ? { target: 'pino-pretty', options: { colorize: true } }
           : undefined,

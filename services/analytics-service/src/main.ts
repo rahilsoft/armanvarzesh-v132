@@ -5,14 +5,12 @@ import { applyBasicHardening } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';
 import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './
+import { AppModule } from './app.module'
 import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 import { register as promRegister } from "prom-client";
 import compression from "compression";
-  app.enableCors({ origin: true, credentials: true }); // AUTO (Stage09)
-app.module'
 async function bootstrap() {
-  const app = \1
+  const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
   if (process.env.HTTP_CACHE_ENABLED === 'true') {

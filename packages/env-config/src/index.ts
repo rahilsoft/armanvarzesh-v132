@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const EnvSchema = z.object({
   NODE_ENV: z.enum(['development','test','staging','production']).default('development'),
-  PORT: z.string().regex(/^\d+$/).transform(Number).default('3000'),
+  PORT: z.string().regex(/^\d+$/).default('3000').transform(Number),
   DATABASE_URL: z.string().url().or(z.string().startsWith('postgres')).describe('PostgreSQL connection string'),
   REDIS_URL: z.string().optional(),
   JWT_ISSUER: z.string().optional(),
@@ -14,7 +14,7 @@ export const EnvSchema = z.object({
 
 export type Env = z.infer<typeof EnvSchema>;
 
-export function validateEnv(raw: NodeJS.ProcessEnv): Env {
+export function validateEnv(raw: Record<string, string | undefined>): Env {
   const parsed = EnvSchema.safeParse(raw);
   if (!parsed.success) {
     console.error('❌ Invalid environment variables:', parsed.error.flatten().fieldErrors);

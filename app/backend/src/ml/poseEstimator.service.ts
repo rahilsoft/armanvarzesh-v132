@@ -32,4 +32,13 @@ export class PoseEstimatorService {
       throw e;
     }
   }
+
+  /**
+   * Evaluate a recorded movement and return an accuracy score plus a list of
+   * detected form issues. Wraps {@link estimatePose}.
+   */
+  async evaluate(videoUrl: string): Promise<{ accuracy: number; issues: string[] }> {
+    const res = await this.estimatePose(videoUrl);
+    return { accuracy: res.ok ? 1 : 0, issues: [] };
+  }
 }

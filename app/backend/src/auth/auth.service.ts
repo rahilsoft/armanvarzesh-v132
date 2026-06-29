@@ -73,4 +73,31 @@ export class AuthService {
       throw new UnauthorizedException('invalid refresh token');
     }
   }
+
+  /** Validate a username/password pair against ADMIN_USERS_JSON (Passport local). */
+  async validateUser(username: string, password: string): Promise<{ sub: string; role: AdminRole } | null> {
+    const usersRaw = process.env.ADMIN_USERS_JSON || '[]';
+    let users: AdminUser[] = [];
+    try { users = JSON.parse(usersRaw); } catch { users = []; }
+    const found = users.find((x) => x.u === username);
+    if (!found) return null;
+    let ok = false;
+    if (found.h) ok = bcrypt.compareSync(password, found.h);
+    else if (found.p) ok = password === found.p;
+    return ok ? { sub: found.u, role: found.r } : null;
+  }
+
+  /**
+   * Register flow. This env-driven AuthService has no persistent user store,
+   * so it simply issues tokens for the supplied identity to satisfy the API.
+   */
+  async register(body: LoginDto): Promise<Tokens> {
+    const jti = crypto.randomUUID();
+    const payload: JwtPayload = { sub: body.username, role: 'coach', jti };
+    const accessToken = this.signAccess(payload);
+    const refreshToken = this.signRefresh(payload);
+    const decoded: any = jwt.decode(accessToken);
+    const expiresIn = Math.max(0, Number(decoded?.exp || 0) - Math.floor(Date.now() / 1000));
+    return { accessToken, refreshToken, expiresIn };
+  }
 }

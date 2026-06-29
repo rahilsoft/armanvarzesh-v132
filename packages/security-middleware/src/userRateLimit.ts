@@ -18,7 +18,7 @@ export function buildUserAwareRateLimit(opts: UserRateOptions = {}) {
     max,
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req: Request) => {
+    keyGenerator: (req: any) => {
       const sub = subjectFromReq(req);
       if (sub) return prefix + "sub:" + String(sub);
       // fallback to token hash or IP

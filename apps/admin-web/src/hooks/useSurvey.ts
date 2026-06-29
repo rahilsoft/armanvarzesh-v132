@@ -10,6 +10,6 @@ export function useSurvey() {
   return {
     surveys: data?.surveys || [],
     loading,
-    createSurvey: (input) => createSurvey({ variables: { input } })
+    createSurvey: (input: any) => createSurvey({ variables: { input } })
   };
 }

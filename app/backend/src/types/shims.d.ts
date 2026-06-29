@@ -3,13 +3,20 @@
 declare module '@arman/infra/src/outbox' {
   export interface OutboxEvent {
     id?: string;
-    topic: string;
+    topic?: string;
+    aggregate?: string;
+    aggregateId?: string;
+    type?: string;
     payload: unknown;
     createdAt?: Date;
   }
 
   export interface OutboxRepo {
-    store(event: OutboxEvent): Promise<void>;
+    store?(event: OutboxEvent): Promise<void>;
+    insert?(event: OutboxEvent): Promise<void>;
+    fetchUnpublished?(limit: number): Promise<Array<{ id: string; event: OutboxEvent }>>;
+    markPublished?(id: string): Promise<void>;
+    incrementRetry?(id: string): Promise<void>;
     next?(limit?: number): Promise<OutboxEvent[]>;
     ack?(id: string): Promise<void>;
     retry?(id: string): Promise<void>;

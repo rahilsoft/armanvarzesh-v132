@@ -56,3 +56,29 @@ export function applyBasicHardening(app: any, opts: SecurityOptions = {}) {
 export { buildJwtVerifier, subjectFromReq } from './jwt';
 export { buildUserAwareRateLimit } from './userRateLimit';
 export { cspMiddleware } from './csp';
+
+/**
+ * Build individual security middlewares for services that wire them onto the
+ * app themselves (e.g. `app.use(sec.cors)`).
+ */
+export function buildSecurityMiddleware(opts: SecurityOptions = {}): {
+  cors: RequestHandler;
+  helmet: RequestHandler;
+  hpp: RequestHandler;
+} {
+  const origin = opts.corsOrigin ?? process.env.CORS_ORIGIN ?? '*';
+  return {
+    cors: cors({ origin, credentials: true }) as unknown as RequestHandler,
+    helmet: helmet() as unknown as RequestHandler,
+    hpp: hpp() as unknown as RequestHandler,
+  };
+}
+
+/**
+ * Build a configured CORS middleware. Accepts `{ origins }` (array) or falls
+ * back to `CORS_ORIGIN` / wildcard.
+ */
+export function buildCors(opts: { origins?: (string | RegExp)[]; credentials?: boolean } = {}): RequestHandler {
+  const origin = opts.origins && opts.origins.length ? opts.origins : (process.env.CORS_ORIGIN ?? '*');
+  return cors({ origin: origin as any, credentials: opts.credentials ?? true }) as unknown as RequestHandler;
+}

@@ -13,13 +13,13 @@ export class SurveyAdminResolver {
     return JSON.stringify(rows);
   }
   @Mutation(()=> Boolean)
-  async upsertSurveyTemplate(@Args('code') code:string, @Args('title') title:string, @Args('periodDays',{nullable:true}) periodDays?:number, @Args('serviceType',{nullable:true}) serviceType?:ServiceType, @Context() ctx:any): Promise<boolean>{
+  async upsertSurveyTemplate(@Args('code') code:string, @Args('title') title:string, @Args('periodDays',{nullable:true}) periodDays?:number, @Args('serviceType',{nullable:true}) serviceType?:ServiceType, @Context() ctx?: any): Promise<boolean>{
     mustAdmin(ctx);
     await prisma.surveyTemplate.upsert({ where:{ code }, update:{ title, periodDays, serviceType }, create:{ code, title, periodDays, serviceType } });
     return true;
   }
   @Mutation(()=> Boolean)
-  async deactivateSurveyTemplate(@Args('code') code:string, @Context() ctx:any): Promise<boolean>{
+  async deactivateSurveyTemplate(@Args('code') code:string, @Context() ctx?: any): Promise<boolean>{
     mustAdmin(ctx);
     await prisma.surveyTemplate.update({ where:{ code }, data:{ active:false } });
     return true;

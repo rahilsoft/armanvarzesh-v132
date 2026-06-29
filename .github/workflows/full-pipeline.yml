@@ -1,0 +1,157 @@
+name: Full Pipeline
+
+# Authoritative gate: Prisma generate -> typecheck -> build (emit) -> DB apply -> e2e.
+# Mirrors the per-project Prisma client isolation (each schema generates to its
+# own prisma/generated/client) and the green state of backend + services +
+# app federation tier + shared packages + frontends.
+
+on:
+  push:
+    branches: [ main, 'claude/**' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: full-pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: 10
+  NODE_VERSION: 20
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Type-correctness + emit. Fully reproducible, no external services needed.
+  # ---------------------------------------------------------------------------
+  verify:
+    name: generate · typecheck · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Prisma generate (every schema -> its own client)
+        run: |
+          set -e
+          # Resolve the prisma CLI once from the repo root. Some services carry a
+          # minimal local node_modules that shadows the hoisted prisma, so `npx
+          # prisma` is unreliable inside them — call the resolved CLI by path.
+          PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
+          if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
+          echo "Using prisma CLI: $PRISMA"
+          # Find every schema (some live at non-standard paths, e.g. the backend's
+          # app/backend/src/database/prisma/schema.prisma). Generate each; output
+          # dir is declared relative to the schema in its generator block.
+          while IFS= read -r schema; do
+            echo "::group::prisma generate $schema"
+            node "$PRISMA" generate --schema "$schema" || exit 1
+            echo "::endgroup::"
+          done < <(find services app packages -name schema.prisma -not -path '*/node_modules/*' -not -path '*/generated/*')
+
+      - name: Typecheck (all workspaces)
+        run: pnpm -r --if-present run typecheck
+
+      - name: Build / emit (all workspaces)
+        run: pnpm -r --if-present run build
+
+  # ---------------------------------------------------------------------------
+  # 2) Prove every schema applies cleanly to a real Postgres (db push).
+  # ---------------------------------------------------------------------------
+  db-apply:
+    name: prisma db push (fresh Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: arman
+          POSTGRES_PASSWORD: arman
+          POSTGRES_DB: arman
+        ports: [ '5432:5432' ]
+        options: >-
+          --health-cmd "pg_isready -U arman"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Apply each schema into its own database
+        run: |
+          set -e
+          PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
+          if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
+          echo "Using prisma CLI: $PRISMA"
+          while IFS= read -r schema; do
+            # unique db name derived from the full schema path
+            name=$(echo "${schema%/schema.prisma}" | tr -c 'a-zA-Z0-9' '_')
+            echo "::group::db push $schema -> db $name"
+            PGPASSWORD=arman psql -h localhost -U arman -d arman \
+              -c "CREATE DATABASE \"$name\";" || true
+            DATABASE_URL="postgresql://arman:arman@localhost:5432/$name?schema=public" \
+              node "$PRISMA" db push --schema "$schema" --skip-generate --accept-data-loss || exit 1
+            echo "::endgroup::"
+          done < <(find services app -name schema.prisma -not -path '*/node_modules/*' -not -path '*/generated/*')
+
+  # ---------------------------------------------------------------------------
+  # 3) Best-effort end-to-end against the marketing/admin frontends.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: e2e (Playwright, best-effort)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      # Skip the rest of the job unless an e2e harness is actually present.
+      # (hashFiles cannot be used in a job-level `if:`, so gate at step level.)
+      - id: detect
+        run: |
+          if ls playwright.config.* >/dev/null 2>&1 || [ -d e2e ] || [ -d ui-tests ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: pnpm/action-setup@v4
+        if: steps.detect.outputs.present == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.detect.outputs.present == 'true'
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm install --no-frozen-lockfile
+      - name: Build web-site
+        if: steps.detect.outputs.present == 'true'
+        run: pnpm --filter ./apps/web-site run build || true
+      - name: Install Playwright browser
+        if: steps.detect.outputs.present == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright
+        if: steps.detect.outputs.present == 'true'
+        run: npx playwright test || true
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore

@@ -18,7 +18,7 @@ export class PaymentsResolver {
     @Args('userId', { type: () => Int }) userId: number,
     @Args('input') input: PaymentInput
   ) {
-    return this.paymentsService.create(userId, input.amount, input.description, input.callbackUrl);
+    return this.paymentsService.create({ userId: String(userId), amountCents: input.amount, currency: 'IRR' } as any);
   }
 
   @Mutation(() => Boolean)

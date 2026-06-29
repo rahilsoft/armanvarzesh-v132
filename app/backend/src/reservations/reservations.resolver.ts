@@ -14,7 +14,7 @@ export class ReservationsResolver {
 
   @Mutation(() => AvailabilitySlot)
   async createAvailability(@Args('input') input: CreateAvailabilityInput) {
-    return this.avail.createAvailability(input);
+    return this.avail.createAvailability(input as any);
   }
 
   @Query(() => [AvailabilitySlot])

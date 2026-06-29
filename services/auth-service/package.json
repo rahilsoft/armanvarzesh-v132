@@ -1,5 +1,6 @@
 {
   "name": "auth-service",
+  "version": "0.0.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
@@ -17,14 +18,15 @@
     "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
   },
   "dependencies": {
+    "@arman/observability-sdk": "workspace:*",
+    "@arman/security-middleware": "workspace:*",
+    "@nestjs/passport": "11.0.5",
+    "@prisma/client": "5.22.0",
     "fastify": "^5.6.0",
     "fastify-cors": "^6.1.0",
     "jose": "^5.8.0",
-    "@nestjs/passport": "11.0.5",
     "passport": "^0.7.0",
-    "passport-jwt": "^4.0.1",
-    "@arman/observability-sdk": "workspace:*",
-    "@arman/security-middleware": "workspace:*"
+    "passport-jwt": "^4.0.1"
   },
   "engines": {
     "node": ">=20.0.0 <21",
@@ -32,5 +34,8 @@
   },
   "prisma": {
     "seed": "node ./prisma/seed.ts || node ./seed.ts || true"
+  },
+  "devDependencies": {
+    "prisma": "5.22.0"
   }
 }

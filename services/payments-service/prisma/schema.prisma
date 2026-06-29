@@ -1,5 +1,11 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model Product {
   id        String   @id
@@ -45,7 +51,7 @@ model Order {
 
 model Subscription {
   id          String   @id
-  userId      String
+  userId      String   @unique
   planId      String
   status      String   @default("active") // active|canceled
   startedAt   DateTime

@@ -1,5 +1,5 @@
 import { createApp } from '@arman/service-kit';
-import pkg from '../package.json' assert { type: 'json' };
+import pkg from '../package.json';
 
 const serviceName = 'challenges-service';
 
@@ -22,16 +22,4 @@ async function main() {
 main().catch((err) => {
   console.error(err);
   process.exit(1);
-});
-
-import { createDbContext, dbPing, createQueueContext } from '@arman/integration';
-
-// Optional integrations (enabled if envs set)
-const dbCtx = createDbContext(process.env);
-const qCtx = createQueueContext('challenges-service', process.env);
-
-ctx.app.get('/diag', async (_req, res) => {
-  const dbOk = await dbPing(dbCtx);
-  const queueOk = qCtx.ready;
-  res.json({ db: dbOk, queue: queueOk });
 });

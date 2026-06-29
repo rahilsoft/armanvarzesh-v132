@@ -10,6 +10,6 @@ export function useAdmin() {
   return {
     admins: data?.admins || [],
     loading,
-    createAdmin: (input) => createAdmin({ variables: { input } })
+    createAdmin: (input: any) => createAdmin({ variables: { input } })
   };
 }

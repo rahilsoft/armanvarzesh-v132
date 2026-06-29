@@ -12,7 +12,4 @@ const sdk = new NodeSDK({
   instrumentations: [getNodeAutoInstrumentations()]
 });
 
-sdk.start().then(()=>{
-  // eslint-disable-next-line no-console
-  console.log('OTel tracing started');
-}).catch((e)=> console.error(e));
+try { sdk.start(); } catch (e) { console.error(e); }

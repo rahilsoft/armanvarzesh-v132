@@ -9,13 +9,13 @@ export class LiveController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get()
-  async findAll(): Promise<Live[]> {
+  async findAll(): Promise<any[]> {
     return this.liveService.findAll();
   }
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Live> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.liveService.findOne(Number(id));
   }
 }

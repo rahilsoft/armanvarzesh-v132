@@ -1,6 +1,6 @@
 
 import { Injectable } from '@nestjs/common';
-import { PrismaClient, CorrectiveStatus } from '@prisma/client';
+import { PrismaClient, CorrectiveStatus, Visibility } from '@prisma/client';
 import { CreateConditionInput } from './dto/create-condition.input';
 import { CreateCorrectiveVideoInput } from './dto/create-corrective-video.input';
 import { SearchCorrectiveInput } from './dto/search-corrective.input';
@@ -31,7 +31,7 @@ export class CorrectiveService {
 
   async updateVideo(id:string, patch:any, ctx?:{role?:string, userId?:string}){ const v = await this.prisma.correctiveVideo.update({ where:{ id }, data:{ title: patch.title||undefined, url: patch.url||undefined, voiceUrl: patch.voiceUrl===undefined? undefined: patch.voiceUrl, equipment: patch.equipment===undefined? undefined: patch.equipment, notes: patch.notes===undefined? undefined: patch.notes, status: (ctx && ctx.role!=='admin') ? 'PENDING' : undefined } }); if (patch.conditions){ await this.prisma.correctiveVideoCondition.deleteMany({ where:{ videoId: id } }); await this.prisma.correctiveVideoCondition.createMany({ data: (patch.conditions||[]).map((c:string)=> ({ videoId: id, conditionCode: c })) }); } return v as any; }
 
-  async approveVideo(id:string, status:'APPROVED'|'REJECTED'='APPROVED', opts?:{note?:string, visibility?:'PUBLIC'|'PRIVATE', actorId?:string}){ await this.prisma.$transaction(async(tx)=>{ await tx.correctiveVideo.update({ where:{ id }, data:{ status, reviewNote: opts?.note||null, reviewedBy: opts?.actorId||null, reviewedAt: new Date(), visibility: (opts?.visibility as any)||undefined } }); await tx.moderationLog.create({ data:{ entity:'CorrectiveVideo', entityId:id, action: status==='APPROVED'?'APPROVE':'REJECT', note: opts?.note||null, actorId: opts?.actorId||null } }); }); return true; }, data:{ status } }); return true; }
+  async approveVideo(id:string, status:'APPROVED'|'REJECTED'='APPROVED', opts?:{note?:string, visibility?:'PUBLIC'|'PRIVATE', actorId?:string}){ await this.prisma.$transaction(async(tx)=>{ await tx.correctiveVideo.update({ where:{ id }, data:{ status, reviewNote: opts?.note||null, reviewedBy: opts?.actorId||null, reviewedAt: new Date(), visibility: (opts?.visibility as any)||undefined } }); await tx.moderationLog.create({ data:{ entity:'CorrectiveVideo', entityId:id, action: status==='APPROVED'?'APPROVE':'REJECT', note: opts?.note||null, actorId: opts?.actorId||null } }); }); return true; }
 
   async listVideos(input?: any, ctx?:{role?:string, userId?:string}){ const where:any = {}; if (input?.q){ where.OR = [{ title:{ contains: input.q, mode:'insensitive' } }, { notes:{ contains: input.q, mode:'insensitive' } }]; } if (input?.approvedOnly){ where.status = 'APPROVED'; }
   if (input?.mineOnly && ctx?.userId){ where.uploadedBy = ctx.userId; }

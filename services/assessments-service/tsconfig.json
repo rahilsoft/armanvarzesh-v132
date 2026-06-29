@@ -1,3 +1,45 @@
-
-{ "compilerOptions": { "module":"commonjs","declaration":false,"removeComments":true,"emitDecoratorMetadata":true,"experimentalDecorators":true,"target":"ES2020","sourceMap":true,"outDir":"./dist","baseUrl":".","strict":true },
-  "exclude": ["node_modules","dist"] }
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES2020",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": false,
+    "noImplicitThis": false,
+    "resolveJsonModule": true,
+    "paths": {
+      "@arman/*": [
+        "../../packages/*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
+      "@prisma/client": [
+        "prisma/generated/client"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
+      ]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

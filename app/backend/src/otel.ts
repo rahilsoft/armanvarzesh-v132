@@ -21,11 +21,12 @@ const sdk = new NodeSDK({
   instrumentations: [getNodeAutoInstrumentations()],
 });
 
-sdk.start().then(() => {
+try {
+  sdk.start();
   console.log(`[OTEL] SDK started for ${serviceName}`);
-}).catch(err => {
+} catch (err: any) {
   console.error('[OTEL] SDK failed to start', err);
-});
+}
 
 process.on('SIGTERM', () => {
   sdk.shutdown().finally(() => process.exit(0));

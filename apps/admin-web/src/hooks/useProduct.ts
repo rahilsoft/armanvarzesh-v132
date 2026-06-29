@@ -10,6 +10,6 @@ export function useProduct() {
   return {
     products: data?.products || [],
     loading,
-    createProduct: (input) => createProduct({ variables: { input } })
+    createProduct: (input: any) => createProduct({ variables: { input } })
   };
 }

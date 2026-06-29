@@ -10,6 +10,6 @@ export function usePayment() {
   return {
     payments: data?.payments || [],
     loading,
-    createPayment: (input) => createPayment({ variables: { input } })
+    createPayment: (input: any) => createPayment({ variables: { input } })
   };
 }

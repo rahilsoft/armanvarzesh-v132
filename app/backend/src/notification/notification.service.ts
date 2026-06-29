@@ -9,4 +9,18 @@ export class NotificationService {
     // Baseline: plug providers here + retry/backoff
     return true;
   }
+
+  /**
+   * Send a push notification to a single device token. Baseline implementation
+   * logs the payload; wire FCM/APNs providers here.
+   */
+  async sendPushNotification(payload: {
+    to: string;
+    title: string;
+    body: string;
+    data?: Record<string, unknown>;
+  }): Promise<boolean> {
+    this.logger.log(`Push to ${payload.to}: ${payload.title} - ${payload.body}`);
+    return true;
+  }
 }

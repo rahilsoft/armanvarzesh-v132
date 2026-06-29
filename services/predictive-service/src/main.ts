@@ -18,7 +18,7 @@ const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 @Controller()
-class MetricsController {
+export class MetricsController {
   @Get('/metrics')
   async metrics(): Promise<string> {
     return register.metrics();
@@ -31,8 +31,8 @@ import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 
 async function bootstrap() {
   const globalPrefix = process.env.API_PREFIX || '';
-  await startTracing();
-  const app = \1
+  await initTracing();
+  const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
   if (process.env.HTTP_CACHE_ENABLED === 'true') {
@@ -75,7 +75,6 @@ const swaggerCfg = new DocumentBuilder().setTitle('ArmanFit').setDescription('AP
     return cb(new Error('Not allowed by CORS'));
   }, credentials: true });
   const port = process.env.PORT || 3007;
-  await 
 
 // AUTO (Stage14): basic health/ready endpoints (no deps)
 const http = app.getHttpAdapter().getInstance();

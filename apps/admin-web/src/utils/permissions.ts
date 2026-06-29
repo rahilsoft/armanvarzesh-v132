@@ -6,7 +6,7 @@ export enum Permission {
   MANAGE_PAYMENTS = "manage_payments",
   VIEW_ANALYTICS = "view_analytics"
 }
-export function hasPermission(user, perm: Permission): boolean {
+export function hasPermission(user: any, perm: Permission): boolean {
   if (!user?.permissions) return false;
   return user.permissions.includes(perm);
 }

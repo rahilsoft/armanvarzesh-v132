@@ -83,7 +83,7 @@ export class AiService {
   // Coach-match: cosine similarity between user vector and coach profiles
   private toVec(x:any): number[]{
     if (Array.isArray(x)) return x.map(n=> isFiniteNumber(n)? n : 0);
-    if (typeof x === 'object' && x) return Object.values(x).map(v=> isFiniteNumber(v)? v : 0);
+    if (typeof x === 'object' && x) return Object.values(x).map(v=> isFiniteNumber(v)? (v as number) : 0);
     return [];
   }
 

@@ -14,16 +14,16 @@ export class LoadersFactory {
 
   create() {
     // NOTE: The model names may differ; adjust to your Prisma schema.
-    const usersById = makeLoader<string, any>(async (ids) => {
+    const usersById = makeLoader<string, any>((async (ids: readonly string[]) => {
       const rows = await (this.prisma as any).user.findMany({ where: { id: { in: ids as string[] } } });
       const map = indexBy(rows, "id");
       return ids.map(id => map.get(id) ?? new Error("User not found"));
-    });
-    const workoutsById = makeLoader<string, any>(async (ids) => {
+    }) as any);
+    const workoutsById = makeLoader<string, any>((async (ids: readonly string[]) => {
       const rows = await (this.prisma as any).workout.findMany({ where: { id: { in: ids as string[] } } });
       const map = indexBy(rows, "id");
       return ids.map(id => map.get(id) ?? new Error("Workout not found"));
-    });
+    }) as any);
     return { usersById, workoutsById };
   }
 }

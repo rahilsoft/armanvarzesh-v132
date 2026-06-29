@@ -26,7 +26,7 @@ export class BillingProcessor extends WorkerHost {
         const amount = evt.data?.object?.amount_total || 0;
         const currency = (evt.data?.object?.currency || 'eur').toUpperCase();
         const userId = evt.data?.object?.client_reference_id || 'unknown';
-        await this.prisma.payment.upsert({
+        await (this.prisma as any).payment.upsert({
           where: { intentId: pi ?? 'none' },
           update: { status: 'succeeded' as any, amountCents: amount, currency },
           create: { userId, provider: 'stripe' as any, status: 'succeeded' as any, intentId: pi ?? null, amountCents: amount, currency }
@@ -35,7 +35,7 @@ export class BillingProcessor extends WorkerHost {
       }
       case 'payment_intent.payment_failed': {
         const pi = evt.data?.object?.id;
-        await this.prisma.payment.updateMany({ where: { intentId: pi }, data: { status: 'failed' as any } });
+        await (this.prisma as any).payment.updateMany({ where: { intentId: pi }, data: { status: 'failed' as any } });
         break;
       }
       case 'charge.refunded': {
@@ -43,10 +43,10 @@ export class BillingProcessor extends WorkerHost {
         const pi = charge?.payment_intent;
         const amount = charge?.amount_refunded || 0;
         const refundId = charge?.refunds?.data?.[0]?.id || null;
-        const pay = await this.prisma.payment.findFirst({ where: { intentId: pi } });
+        const pay = await (this.prisma as any).payment.findFirst({ where: { intentId: pi } });
         if (pay) {
-          await this.prisma.refund.create({ data: { paymentId: pay.id, amountCents: amount, providerRefundId: refundId } });
-          await this.prisma.payment.update({ where: { id: pay.id }, data: { status: 'refunded' as any } });
+          await (this.prisma as any).refund.create({ data: { paymentId: pay.id, amountCents: amount, providerRefundId: refundId } });
+          await (this.prisma as any).payment.update({ where: { id: pay.id }, data: { status: 'refunded' as any } });
         }
         break;
       }
@@ -54,7 +54,7 @@ export class BillingProcessor extends WorkerHost {
         // noop
         break;
     }
-    await this.prisma.webhookEvent.updateMany({ where: { eventId: evt.id }, data: { processedAt: new Date(), success: true } });
+    await (this.prisma as any).webhookEvent.updateMany({ where: { eventId: evt.id }, data: { processedAt: new Date(), success: true } });
   }
 
   private async handleRevenueCat(evt: RCEvent) {
@@ -62,12 +62,12 @@ export class BillingProcessor extends WorkerHost {
     const userId = evt.data?.app_user_id || 'unknown';
     const extId = evt.data?.subscriber_id || evt.data?.entitlement_id || null;
     const status = (evt.type && evt.type.includes('EXPIRATION')) ? 'canceled' : 'active';
-    await this.prisma.subscription.upsert({
+    await (this.prisma as any).subscription.upsert({
       where: { provider_externalId: { provider: 'revenuecat' as any, externalId: extId ?? userId } },
       update: { status: status as any, currentPeriodEnd: evt.data?.expiration_at_ms ? new Date(Number(evt.data.expiration_at_ms)) : null },
       create: { userId, provider: 'revenuecat' as any, externalId: extId ?? userId, status: status as any, currentPeriodEnd: evt.data?.expiration_at_ms ? new Date(Number(evt.data.expiration_at_ms)) : null }
     });
-    await this.prisma.webhookEvent.updateMany({ where: { eventId: evt.id }, data: { processedAt: new Date(), success: true } });
+    await (this.prisma as any).webhookEvent.updateMany({ where: { eventId: evt.id }, data: { processedAt: new Date(), success: true } });
   }
 
   // Daily reconciliation skeleton

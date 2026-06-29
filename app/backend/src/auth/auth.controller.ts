@@ -1,12 +1,8 @@
 import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { API_ROUTES } from '../common/http/routes';
-import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { Body, Controller, HttpCode, HttpStatus, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { AuthService } from './auth.service';
-import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { LoginDto } from './dto/login.dto';
-import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { RefreshDto } from './dto/refresh.dto';
 
 @Controller('auth') // see API_ROUTES.auth

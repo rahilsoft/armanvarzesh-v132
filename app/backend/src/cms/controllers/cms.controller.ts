@@ -9,13 +9,13 @@ export class CmsController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get()
-  async findAll(): Promise<Cms[]> {
+  async findAll(): Promise<any[]> {
     return this.cmsService.findAll();
   }
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Cms> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.cmsService.findOne(Number(id));
   }
 }

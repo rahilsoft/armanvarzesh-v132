@@ -10,6 +10,6 @@ export function useWallet() {
   return {
     wallets: data?.wallets || [],
     loading,
-    updateWallet: (id, input) => updateWallet({ variables: { id, input } })
+    updateWallet: (id: any, input: any) => updateWallet({ variables: { id, input } })
   };
 }

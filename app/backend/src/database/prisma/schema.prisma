@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -201,11 +202,13 @@ model Message {
   receiverId   Int
   content      String
   attachmentId Int?
+  conversationId Int?
   createdAt    DateTime  @default(now())
 
   sender User  @relation("SentMessages", fields: [senderId], references: [id])
   receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
   attachment  Attachment? @relation(fields: [attachmentId], references: [id])
+  conversation Conversation? @relation(fields: [conversationId], references: [id])
 
   @@index([senderId, receiverId, createdAt], map: "idx_Message_pair_time")
 
@@ -295,6 +298,8 @@ model Attachment {
   durationSec Int?
   createdAt   DateTime @default(now())
 
+  messages    Message[]
+
   @@index([key], map: "idx_Attachment_key")
 }
 
@@ -307,6 +312,8 @@ model Food {
   fat       Float
   calories  Float    // per 100g
   createdAt DateTime @default(now())
+
+  mealLogs  MealLog[]
 
   @@index([title], map: "idx_food_title")
 }
@@ -420,4 +427,43 @@ model Course {
 
   specialist   Specialist @relation(fields: [specialistId], references: [id])
   @@index([specialistId], map: "idx_Course_specialistId")
+}
+
+model Experiment {
+  id         Int      @id @default(autoincrement())
+  name       String
+  hypothesis String?
+  createdAt  DateTime @default(now())
+}
+
+model Refund {
+  id               Int      @id @default(autoincrement())
+  paymentId        Int
+  amountCents      Int
+  providerRefundId String?
+  createdAt        DateTime @default(now())
+
+  @@index([paymentId], map: "idx_Refund_paymentId")
+}
+
+model WebhookEvent {
+  id          Int       @id @default(autoincrement())
+  eventId     String    @unique
+  provider    String?
+  payload     Json?
+  processedAt DateTime?
+  success     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model Subscription {
+  id               Int       @id @default(autoincrement())
+  userId           String
+  provider         String
+  externalId       String
+  status           String
+  currentPeriodEnd DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@unique([provider, externalId], name: "provider_externalId")
 }

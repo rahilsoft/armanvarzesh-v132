@@ -1,7 +1,7 @@
 import '@arman/observability-sdk/register';
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware, applyBasicHardening } from '@arman/security-middleware';
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
-import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4';
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
 
 // Federation v2 subgraphs configuration
@@ -30,9 +30,9 @@ async function bootstrap(){
   const app = express();
   app.use(cors());
   app.use(bodyParser.json());
-  app.use(buildJwtVerifier());
-  app.use(buildUserAwareRateLimit());
-  if (process.env.CSP_NONCE_MODE==='1') app.use(cspMiddleware({mode:'nonce'}));
+  app.use(buildJwtVerifier() as any);
+  app.use(buildUserAwareRateLimit() as any);
+  if (process.env.CSP_NONCE_MODE==='1') app.use(cspMiddleware({mode:'nonce'}) as any);
   applyBasicHardening(app);
 
   // Health and readiness endpoints

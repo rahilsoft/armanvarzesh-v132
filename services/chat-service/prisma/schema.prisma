@@ -1,5 +1,11 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model Thread {
   id          String   @id
@@ -53,4 +59,16 @@ model Attachment {
   mime       String
   createdAt  DateTime @default(now())
   message    Message  @relation(fields:[messageId], references:[id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  threadId   String
+  senderId   String
+  senderRole String
+  body       String?
+  voiceUrl   String?
+  createdAt  DateTime @default(now())
+
+  @@index([threadId], map: "idx_chatmessage_thread")
 }

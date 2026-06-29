@@ -12,6 +12,9 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@prisma/client": [
+        "src/database/prisma/generated/client"
+      ],
       "@arman/*": [
         "../../packages/*/src"
       ],

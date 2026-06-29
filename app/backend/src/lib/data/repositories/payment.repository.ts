@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { SafePrismaService } from '../prisma.safe';
-import { decodeCursor, encodeCursor, whereKeyset } from '../../../common/pagination/keyset';
 import type { Payment as PrismaPayment } from '@prisma/client';
 
 /**
- * Payment entity used throughout the repository. By reusing the type from
- * `@prisma/client`, we ensure the fields remain in sync with the database
- * schema and avoid manual "any" casts. See {@link PaymentListResult} for
- * pagination semantics.
+ * Payment entity, kept in sync with the database via the generated Prisma type.
  */
 export type Payment = PrismaPayment;
 
@@ -24,48 +20,37 @@ export interface PaymentListResult {
 export class PaymentRepository {
   constructor(private readonly db: SafePrismaService) {}
 
-  async create(params: { userId: string; amountCents: number; currency: string; idempotencyKey?: string }) {
-    const { userId, amountCents, currency, idempotencyKey } = params;
-    const created = await this.db.payment.create({
+  async create(params: { userId: string; amountCents: number; currency?: string; idempotencyKey?: string }) {
+    const { userId, amountCents, idempotencyKey } = params;
+    return this.db.payment.create({
       data: {
-        user_id: userId,
-        amount_cents: amountCents,
-        currency,
+        userId: Number(userId),
+        amount: amountCents,
         status: 'pending',
-        idempotency_key: idempotencyKey ?? null,
+        authority: idempotencyKey ?? `pay_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       },
     });
-    return created;
   }
 
   async findById(id: string): Promise<Payment | null> {
-    const p = await this.db.payment.findUnique({ where: { id } });
-    return p;
+    return this.db.payment.findUnique({ where: { id: Number(id) } });
   }
 
   async findByIdempotencyKey(idempotencyKey: string): Promise<Payment | null> {
-    const payment = await this.db.payment.findFirst({ where: { idempotency_key: idempotencyKey } });
-    return payment;
+    return this.db.payment.findUnique({ where: { authority: idempotencyKey } });
   }
 
   async listByUser(userId: string, limit = 20, cursor?: string): Promise<PaymentListResult> {
-    const parsed = decodeCursor(cursor);
-    const rows = await this.db.$queryRawUnsafe<Payment[]>(
-      `
-        SELECT id, user_id, amount_cents, currency, status, created_at, idempotency_key
-        FROM payments
-        WHERE user_id = $1 AND (${whereKeyset(parsed).values.join(' ')})
-        ORDER BY created_at DESC, id DESC
-        LIMIT $2
-      `,
-      userId, limit + 1
-    );
-    const data: Payment[] = rows.slice(0, limit);
+    const where: { userId: number; id?: { lt: number } } = { userId: Number(userId) };
+    if (cursor) where.id = { lt: Number(cursor) };
+    const rows = await this.db.payment.findMany({
+      where,
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: limit + 1,
+    });
+    const data = rows.slice(0, limit);
     let nextCursor: string | undefined;
-    if (rows.length > limit) {
-      const last = rows[limit - 1];
-      nextCursor = encodeCursor(last.created_at, String(last.id));
-    }
+    if (rows.length > limit) nextCursor = String(rows[limit - 1].id);
     return { data, nextCursor };
   }
 }

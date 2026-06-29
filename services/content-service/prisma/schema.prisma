@@ -1,6 +1,7 @@
 // Prisma Schema for Content Service
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {

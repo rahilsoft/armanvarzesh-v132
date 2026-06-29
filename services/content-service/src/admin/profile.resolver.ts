@@ -16,7 +16,7 @@ export class ProfileAdminResolver{
     @Args('avatarUrl',{nullable:true}) avatarUrl?:string,
     @Args('introVideoUrl',{nullable:true}) introVideoUrl?:string,
     @Args('tagsJson',{nullable:true}) tagsJson?:string,
-    @Context() ctx:any
+    @Context() ctx?: any
   ): Promise<boolean>{
     mustAdmin(ctx);
     const tags = tagsJson? JSON.parse(tagsJson): null;

@@ -19,7 +19,7 @@ const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 @Controller()
-class MetricsController {
+export class MetricsController {
   @Get('/metrics')
   async metrics(): Promise<string> {
     return register.metrics();
@@ -32,7 +32,7 @@ import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 
 async function bootstrap() {
   const globalPrefix = process.env.API_PREFIX || '';
-  await startTracing();
+  await initTracing();
   const app = await NestFactory.create(AppModule);
 app && app.use(buildJwtVerifier());
 app && app.use(buildUserAwareRateLimit());

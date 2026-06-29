@@ -29,6 +29,14 @@ export function metricsMiddleware(req: Request, res: Response, next: any) {
   next();
 }
 
+/**
+ * Counter for created/cancelled reservations. Falls back to a no-op stub when
+ * prom-client is unavailable so callers can use `.inc()` unconditionally.
+ */
+export const reservationsCreated: { inc: (labels?: Record<string, string>) => void } = prom
+  ? new prom.Counter({ name: 'reservations_created_total', help: 'Reservations created', labelNames: ['status'] })
+  : { inc: () => {} };
+
 export function metricsHandler(_req: Request, res: Response) {
   if (!prom) return res.status(501).send('# prom-client not installed');
   res.setHeader('Content-Type', prom.register.contentType);

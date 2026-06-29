@@ -23,14 +23,14 @@ export class GatewayController {
   private getProxy(target: string, stripPrefix?: string){
     const key = target + '|' + (stripPrefix||'');
     if (this.proxies.has(key)) return this.proxies.get(key);
-    const mw = createProxyMiddleware({
+    const mw = (createProxyMiddleware as any)({
       target, changeOrigin: true, xfwd: true,
       pathRewrite: stripPrefix ? { [`^${stripPrefix}`]: '' } : undefined,
-      onProxyReq: (proxyReq, req, res)=>{
+      onProxyReq: ((proxyReq:any, req:any, res:any)=>{
         // forward correlation id if present
         const cid = (req.headers['x-correlation-id'] as string) || cryptoRandom();
         proxyReq.setHeader('x-correlation-id', cid);
-      },
+      }) as any,
       onError: (err, req, res)=>{
         (res as Response).status(502).json({ code:'UPSTREAM_ERROR', message:String(err) });
       }

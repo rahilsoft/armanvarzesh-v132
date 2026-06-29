@@ -1,5 +1,11 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model Facility {
   id        String   @id
@@ -58,7 +64,7 @@ model Appointment {
   status     String   // pending|confirmed|cancelled
   fasting    Boolean  @default(false)
   createdAt  DateTime @default(now())
-  resultId   String?
+  resultId   String?  @unique
   result     Result?  @relation(fields:[resultId], references:[id], onDelete: SetNull)
 }
 
