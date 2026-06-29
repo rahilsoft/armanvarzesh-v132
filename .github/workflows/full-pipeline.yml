@@ -47,7 +47,8 @@ jobs:
           # Resolve the prisma CLI once from the repo root. Some services carry a
           # minimal local node_modules that shadows the hoisted prisma, so `npx
           # prisma` is unreliable inside them — call the resolved CLI by path.
-          PRISMA="$(node -e 'const p=require("path");const pj=require.resolve("prisma/package.json");const b=require(pj).bin;console.log(p.join(p.dirname(pj), typeof b==="string"?b:b.prisma))')"
+          PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
+          if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
           echo "Using prisma CLI: $PRISMA"
           for d in services/* app/* packages/*; do
             if [ -f "$d/prisma/schema.prisma" ]; then
@@ -94,7 +95,8 @@ jobs:
       - name: Apply each schema into its own database
         run: |
           set -e
-          PRISMA="$(node -e 'const p=require("path");const pj=require.resolve("prisma/package.json");const b=require(pj).bin;console.log(p.join(p.dirname(pj), typeof b==="string"?b:b.prisma))')"
+          PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
+          if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
           echo "Using prisma CLI: $PRISMA"
           for d in services/* app/*; do
             if [ -f "$d/prisma/schema.prisma" ]; then
