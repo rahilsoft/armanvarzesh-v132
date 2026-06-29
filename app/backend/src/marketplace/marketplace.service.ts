@@ -7,10 +7,10 @@ import { PrismaService } from '../database/prisma.service';
 export class MarketplaceService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Marketplace>): Promise<any> {
+  async create(input: any): Promise<any> {
     return this.prisma.marketplace.create({ data: { name: input.name, description: input.description, price: input.price, createdAt: new Date() } });
   }
-  async update(id: number, input: Partial<Marketplace>): Promise<any> {
+  async update(id: number, input: any): Promise<any> {
     return this.prisma.marketplace.update({ where: { id }, data: { name: input.name, description: input.description, price: input.price } });
   }
   async findOne(id: number): Promise<any> {

@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class ChallengesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Challenge>): Promise<any> {
+  async create(input: any): Promise<any> {
     return this.prisma.challenge.create({ data: { name: input.name, description: input.description, duration: input.duration, createdAt: new Date() } });
   }
   async join(userId: number, challengeId: number): Promise<boolean> {
@@ -25,7 +25,7 @@ export class ChallengesService {
   /**
    * Update an existing challenge. Returns the updated challenge or null if not found.
    */
-  async update(id: number, input: Partial<Challenge>): Promise<any> {
+  async update(id: number, input: any): Promise<any> {
     return this.prisma.challenge.update({ where: { id }, data: { name: input.name, description: input.description, duration: input.duration } });
   }
 

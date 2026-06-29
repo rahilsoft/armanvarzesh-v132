@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class PayrollService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Payroll>): Promise<any> {
+  async create(input: any): Promise<any> {
     return this.prisma.payroll.create({ data: { coachName: input.coachName, amount: input.amount, period: input.period, createdAt: new Date() } });
   }
   async findAll(): Promise<any[]> {
@@ -20,7 +20,7 @@ export class PayrollService {
   /**
    * Update an existing payroll record. Returns the updated record or null.
    */
-  async update(id: number, input: Partial<Payroll>): Promise<any> {
+  async update(id: number, input: any): Promise<any> {
     return this.prisma.payroll.update({ where: { id }, data: { coachName: input.coachName, amount: input.amount, period: input.period } });
   }
 

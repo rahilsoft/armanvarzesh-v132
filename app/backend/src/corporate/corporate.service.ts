@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class CorporateService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Corporate>): Promise<any> {
+  async create(input: any): Promise<any> {
     return this.prisma.corporate.create({ data: { companyName: input.companyName, industry: input.industry, createdAt: new Date() } });
   }
   async findAll(): Promise<any[]> {
@@ -20,7 +20,7 @@ export class CorporateService {
   /**
    * Update an existing corporate record. Returns the updated record or null.
    */
-  async update(id: number, input: Partial<Corporate>): Promise<any> {
+  async update(id: number, input: any): Promise<any> {
     return this.prisma.corporate.update({ where: { id }, data: { companyName: input.companyName, industry: input.industry } });
   }
 

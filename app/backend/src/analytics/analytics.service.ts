@@ -27,7 +27,7 @@ export class AnalyticsService {
    * Update a KPI record. Only provided fields will be updated. Returns
    * the updated record or null if not found.
    */
-  async update(id: number, input: Partial<AnalyticsEntity>): Promise<any> {
+  async update(id: number, input: any): Promise<any> {
     return this.prisma.analyticsEntity.update({ where: { id }, data: { kpi: input.kpi, value: input.value } });
   }
 
