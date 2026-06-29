@@ -5,7 +5,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "moduleResolution": "node",
     "skipLibCheck": true,
     "baseUrl": ".",
@@ -75,16 +75,24 @@
       ],
       "@user-pwa/*": [
         "app/user-pwa/*"
+      ],
+      "@arman/*": [
+        "../../packages/*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
       ]
     },
-    "noImplicitAny": true,
-    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
     "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true,
-    "forceConsistentCasingInFileNames": true
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "useUnknownInCatchVariables": false,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src"

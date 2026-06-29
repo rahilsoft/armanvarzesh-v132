@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -18,6 +19,8 @@ model User {
   updatedAt    DateTime @updatedAt
   sessions     Session[]
   refreshTokens RefreshToken[]
+  devices      Device[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Session {

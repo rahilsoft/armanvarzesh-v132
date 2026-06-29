@@ -56,3 +56,6 @@ export function applyBasicHardening(app: any, opts: SecurityOptions = {}) {
 export { buildJwtVerifier, subjectFromReq } from './jwt';
 export { buildUserAwareRateLimit } from './userRateLimit';
 export { cspMiddleware } from './csp';
+
+/** Alias kept for services that expect a `buildSecurityMiddleware` entry point. */
+export const buildSecurityMiddleware = applyBasicHardening;

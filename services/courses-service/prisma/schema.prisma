@@ -1,8 +1,18 @@
 
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-enum Difficulty { beginner intermediate advanced }
+enum Difficulty {
+  beginner
+  intermediate
+  advanced
+}
 
 model Course {
   id          Int         @id @default(autoincrement())
