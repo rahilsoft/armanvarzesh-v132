@@ -16,8 +16,6 @@ class TileDTO {
   @Field() type: string;
   @Field({ nullable: true }) variant?: string;
   @Field({ nullable: true }) weight?: number;
-  @Field({ nullable: true }) variant?: string;
-  @Field({ nullable: true }) weight?: number;
   @Field() state: string;
   @Field() createdBy: string;
   @Field() updatedBy: string;
@@ -43,8 +41,6 @@ class UpsertTileInput {
   @Field() page: string;
   @Field({ nullable: true }) order?: number;
   @Field() type: string;
-  @Field({ nullable: true }) variant?: string;
-  @Field({ nullable: true }) weight?: number;
   @Field({ nullable: true }) variant?: string;
   @Field({ nullable: true }) weight?: number;
   @Field({ nullable: true }) state?: string;

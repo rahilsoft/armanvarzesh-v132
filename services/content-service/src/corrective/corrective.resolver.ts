@@ -17,12 +17,12 @@ export class CorrectiveResolver {
   correctiveConditions(){ return this.svc.listConditions(); }
 
   @Mutation(() => ConditionType)
-  upsertCorrectiveCondition(@Args('input') input: CreateConditionInput, @Context() ctx:any){
+  upsertCorrectiveCondition(@Args('input') input: CreateConditionInput, @Context() ctx?: any){
     must(ctx, ['admin']); return this.svc.upsertCondition(input);
   }
 
   @Mutation(() => Boolean)
-  deleteCorrectiveCondition(@Args('code') code:string, @Context() ctx:any){
+  deleteCorrectiveCondition(@Args('code') code:string, @Context() ctx?: any){
     must(ctx, ['admin']); return this.svc.deleteCondition(code);
   }
 
@@ -32,17 +32,17 @@ export class CorrectiveResolver {
   }
 
   @Mutation(() => CorrectiveVideoType)
-  uploadCorrectiveVideo(@Args('input') input: CreateCorrectiveVideoInput, @Context() ctx:any){
+  uploadCorrectiveVideo(@Args('input') input: CreateCorrectiveVideoInput, @Context() ctx?: any){
     must(ctx, ['specialist','coach']); return this.svc.uploadVideo(input);
   }
 
   @Mutation(() => CorrectiveVideoType)
-  updateCorrectiveVideo(@Args('id') id:string, @Args('patch') patch: any, @Context() ctx:any){
+  updateCorrectiveVideo(@Args('id') id:string, @Args('patch') patch: any, @Context() ctx?: any){
     must(ctx, ['specialist','coach']); return this.svc.updateVideo(id, patch);
   }
 
   @Mutation(() => Boolean)
-  approveCorrectiveVideo(@Args('id') id:string, @Args('status', { nullable:true }) status?: string, @Context() ctx:any){
-    must(ctx, ['admin']); return this.svc.approveVideo(id, (status as any)||'APPROVED', { note: (patch as any)?.note, visibility: (patch as any)?.visibility, actorId: ctxUser(ctx)||undefined });
+  approveCorrectiveVideo(@Args('id') id:string, @Args('status', { nullable:true }) status?: string, @Context() ctx?: any){
+    must(ctx, ['admin']); return this.svc.approveVideo(id, (status as any)||'APPROVED', { actorId: (ctx as any)?.user?.id || undefined });
   }
 }

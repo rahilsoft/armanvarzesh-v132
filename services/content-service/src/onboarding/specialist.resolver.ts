@@ -25,7 +25,7 @@ export class SpecialistResolver {
     @Args('maxAge',{nullable:true}) maxAge?:number,
     @Args('bio',{nullable:true}) bio?:string,
     @Args('introVideoUrl',{nullable:true}) introVideoUrl?:string,
-    @Context() ctx:any
+    @Context() ctx?: any
   ): Promise<boolean>{
     mustAny(ctx, ['admin','coach','specialist']);
     await prisma.specialistMeta.upsert({
@@ -37,7 +37,7 @@ export class SpecialistResolver {
   }
 
   @Mutation(()=> Boolean)
-  async pingActive(@Args('specialistId') specialistId:string, @Context() ctx:any): Promise<boolean>{
+  async pingActive(@Args('specialistId') specialistId:string, @Context() ctx?: any): Promise<boolean>{
     mustAny(ctx, ['admin','coach','specialist']);
     await prisma.specialistMeta.update({ where:{ specialistId }, data:{ activeAt: new Date() } });
     return true;

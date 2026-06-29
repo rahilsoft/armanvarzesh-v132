@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 const connection = process.env.REDIS_URL ? new IORedis(process.env.REDIS_URL) : null;
 const queueName = 'media-processing';
-const queue = connection ? new Queue(queueName, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, defaultJobOptions: { attempts: parseInt(process.env.BULLMQ_DEFAULT_ATTEMPTS||'5'), backoff: { type: 'exponential', delay: parseInt(process.env.BULLMQ_BACKOFF_MS||'5000') }, removeOnComplete: parseInt(process.env.BULLMQ_REMOVE_ON_COMPLETE||'1000'), removeOnFail: parseInt(process.env.BULLMQ_REMOVE_ON_FAIL||'5000') },  connection }) : null;
+const queue = connection ? new Queue(queueName, { connection: { url: process.env.BULLMQ_CONNECTION || process.env.REDIS_URL }, defaultJobOptions: { attempts: parseInt(process.env.BULLMQ_DEFAULT_ATTEMPTS||'5'), backoff: { type: 'exponential', delay: parseInt(process.env.BULLMQ_BACKOFF_MS||'5000') }, removeOnComplete: parseInt(process.env.BULLMQ_REMOVE_ON_COMPLETE||'1000'), removeOnFail: parseInt(process.env.BULLMQ_REMOVE_ON_FAIL||'5000') } }) : null;
 
 const s3 = (process.env.S3_BUCKET && process.env.AWS_REGION) ? new S3Client({ region: process.env.AWS_REGION }) : null as any;
 

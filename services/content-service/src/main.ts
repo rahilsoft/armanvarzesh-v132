@@ -123,19 +123,9 @@ cron.schedule('0 2 * * *', async ()=>{
       const specs = await prismaCron.specialistScore.findMany({ where:{ role: r as any }, orderBy:{ lastComputed: 'asc' }, take: 50 });
       for (const s of specs){
         // placeholder; actual compute is in ScoringService — would require DI
-        await prismaCron.specialistScore.update({ where:{ specialistId: s.specialistId }, data:{ lastComputed: new Date() } });
+        await prismaCron.specialistScore.update({ where:{ specialistId: s.specialistId } as any, data:{ lastComputed: new Date() } });
       }
     }
   }catch(e){ console.error('[cron] error', e); }
 });
 
-
-// AUTO (Stage14): basic health/ready endpoints (no deps)
-const http = app.getHttpAdapter().getInstance();
-if (http && typeof http.get === 'function') {
-  if (!http._auto_healthz) {
-    http.get('/healthz', (req, res) => res.status(200).json({ ok: true }));
-    http.get('/readyz', (req, res) => res.status(200).json({ ready: true }));
-    http._auto_healthz = true;
-  }
-}

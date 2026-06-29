@@ -39,7 +39,7 @@ async function pickExerciseForMuscle(code:string){
 
 export async function buildPlanFromTemplate(key: TemplateKey, ownerId: string, title?: string, description?: string){
   const tpl = templates[key]; if (!tpl) throw new Error('template not found');
-  const plan = await prisma.plan.create({ data: { title: title || key, description: description||null, ownerId } });
+  const plan = await prisma.plan.create({ data: { title: title || key, description: description||null, ownerId } as any });
   let dayOrder = 0;
   for (const d of tpl.days){
     const day = await prisma.planDay.create({ data: { planId: plan.id, order: dayOrder++, title: d.title } });

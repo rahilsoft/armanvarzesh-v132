@@ -16,14 +16,14 @@ export class ScoringResolver {
   constructor(private readonly svc: ScoringService){}
 
   @Mutation(()=> Boolean)
-  async upsertWeights(@Args('role') role:ServiceType, @Args('json') json:any, @Context() ctx:any): Promise<boolean>{
+  async upsertWeights(@Args('role') role:ServiceType, @Args('json') json:any, @Context() ctx?: any): Promise<boolean>{
     const r = ctx?.req?.headers?.['x-role']; if (r!=='admin') throw new Error('forbidden');
-    await prisma.scoringWeight.upsert({ where:{ role }, update:{ weights: json }, create:{ role, weights: json } });
+    await prisma.scoringWeights.upsert({ where:{ role }, update:{ weights: json }, create:{ role, weights: json } });
     return true;
   }
 
   @Mutation(()=> String)
-  async recordConversion(@Args('userId') userId:string, @Args('specialistId') specialistId:string, @Args('serviceType') serviceType:ServiceType, @Args('kind') kind:string, @Context() ctx:any): Promise<string>{
+  async recordConversion(@Args('userId') userId:string, @Args('specialistId') specialistId:string, @Args('serviceType') serviceType:ServiceType, @Args('kind') kind:string, @Context() ctx?: any): Promise<string>{
     mustAny(ctx, ['admin','coach','specialist']);
     const r = await prisma.conversionEvent.create({ data:{ userId, specialistId, serviceType, kind } });
     return r.id;

@@ -1,5 +1,5 @@
 
-import { Args, Field, InputType, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Field, InputType, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { PrismaClient, BlockType } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -241,7 +241,7 @@ export class PlanResolver {
   async approveExercise(@Args('id') id:string, @Args('status', {nullable:true}) status?:string, @Context() ctx?:any): Promise<boolean> {
     mustRole(ctx, 'admin');
     const st = status || 'APPROVED';
-    await prisma.exerciseVideo.update({ where:{ id }, data:{ status: st } });
+    await prisma.exerciseVideo.update({ where:{ id }, data:{ status: st as any } });
     return true;
   }
 
@@ -392,7 +392,7 @@ export class PlanResolver {
 
   @Mutation(() => ExerciseDTO)
   async reviewExercise(@Args('id') id: string, @Args('status') status: string): Promise<ExerciseDTO> {
-    const row = await prisma.exerciseVideo.update({ where: { id }, data: { status } });
+    const row = await prisma.exerciseVideo.update({ where: { id }, data: { status: status as any } });
     try{ await enqueueMediaProcessing(row.id); }catch(e){}
     return row as any;
   }
@@ -526,7 +526,7 @@ export class PlanResolver {
   // ---------- Plans ----------
 
   @Query(()=> String)
-  async getAssignedPlan(@Args('id') id:string, @Context() ctx:any): Promise<string> {
+  async getAssignedPlan(@Args('id') id:string, @Context() ctx?: any): Promise<string> {
     mustAny(ctx, ['coach','specialist','user','admin']);
     const a:any = await prisma.planAssignment.findUnique({ where:{ id } });
     if (!a) throw new Error('assignment not found');
@@ -535,7 +535,7 @@ export class PlanResolver {
   }
 
   @Mutation(()=> Boolean)
-  async logCorrectiveCheck(@Args('assignmentId') assignmentId:string, @Args('dayIndex') dayIndex:number, @Args('itemKey') itemKey:string, @Args('value') value:string, @Context() ctx:any): Promise<boolean> {
+  async logCorrectiveCheck(@Args('assignmentId') assignmentId:string, @Args('dayIndex') dayIndex:number, @Args('itemKey') itemKey:string, @Args('value') value:string, @Context() ctx?: any): Promise<boolean> {
     mustAny(ctx, ['user','coach','specialist','admin']);
     await prisma.correctiveProgress.create({ data:{ assignmentId, dayIndex, itemKey, value } as any });
     return true;
@@ -543,7 +543,7 @@ export class PlanResolver {
 
 
   @Mutation(()=> String)
-  async createCorrectivePlan(@Args('title') title:string, @Args('daysJson') daysJson:string, @Context() ctx:any): Promise<string> {
+  async createCorrectivePlan(@Args('title') title:string, @Args('daysJson') daysJson:string, @Context() ctx?: any): Promise<string> {
     mustRole(ctx, 'specialist');
     const by = ctxUser(ctx) || 'unknown';
     const plan = await prisma.plan.create({ data:{ title, kind: 'CORRECTIVE' as any, createdBy: by, json: daysJson } as any });
@@ -551,7 +551,7 @@ export class PlanResolver {
   }
 
   @Mutation(()=> String)
-  async assignPlanToUser(@Args('planId') planId:string, @Args('userId') userId:string, @Args('startDate') startDate:string, @Args('sessionsPerWeek',{nullable:true}) sessionsPerWeek?:number, @Context() ctx:any): Promise<string>{
+  async assignPlanToUser(@Args('planId') planId:string, @Args('userId') userId:string, @Args('startDate') startDate:string, @Args('sessionsPerWeek',{nullable:true}) sessionsPerWeek?:number, @Context() ctx?:any): Promise<string>{
     mustAny(ctx, ['coach','specialist','admin']);
     const a = await prisma.planAssignment.create({ data:{ planId, userId, startDate: new Date(startDate), sessionsPerWeek: sessionsPerWeek||3 } as any });
     return (a as any).id;
@@ -572,7 +572,6 @@ export class PlanResolver {
       let order = 0;
       for (const exId of (exerciseIds||[])){
         const item:any = await tx.planBlockItem.create({ data:{ blockId: created.id, order: order++, exerciseId: exId, note: '' } as any });
-      const item = await prisma.planBlockItem.create({ data:{ blockId: block.id, order: order++, exerciseId: exId, note: '' } as any });
       // default one set for combo blocks, 3x10 for single blocks
       if ((type||'SINGLE').toUpperCase()==='SINGLE'){
         for (let i=0;i<3;i++){
@@ -687,7 +686,7 @@ export class PlanResolver {
   @Query(() => [PlanSessionNoteDTO])
   async sessionNotes(@Args('sessionId') sessionId:string): Promise<PlanSessionNoteDTO[]> {
     const rows:any[] = await prisma.planSessionNote.findMany({ where:{ sessionId }, orderBy:{ createdAt:'desc' } });
-     __searchCache.set(key, { t: Date.now(), v: rows }); return rows as any;
+    return rows as any;
   }
 
   @Mutation(() => PlanSessionNoteDTO)
@@ -722,94 +721,6 @@ export class PlanResolver {
     return await this.sessionDetail(sessionId) as any;
   }
 
-
-  @Mutation(() => Boolean)
-  async reorderPlanBlocks(@Args('dayId') dayId:string, @Args('orderedIds', { type: () => [String] }) orderedIds:string[]): Promise<boolean> {
-    for (let i=0;i<orderedIds.length;i++){ await prisma.planBlock.update({ where:{ id: orderedIds[i] }, data: { order: i } }); }
-    return true;
-  }
-  @Mutation(() => Boolean)
-  async reorderPlanItems(@Args('blockId') blockId:string, @Args('orderedIds', { type: () => [String] }) orderedIds:string[]): Promise<boolean> {
-    for (let i=0;i<orderedIds.length;i++){ await prisma.planBlockItem.update({ where:{ id: orderedIds[i] }, data: { order: i } }); }
-    return true;
-  }
-  @Mutation(() => String)
-  async duplicateBlock(@Args('blockId') blockId:string): Promise<string> {
-    const b:any = await prisma.planBlock.findUnique({ where:{ id:blockId }, include:{ items:{ include:{ sets:true } } } });
-    if (!b) throw new Error('block not found');
-    const nb = await prisma.planBlock.create({ data:{ dayId:b.dayId, order:b.order+1, type:b.type, section:b.section, protocol:b.protocol, protocolParams:b.protocolParams } });
-    let ord = 0;
-    for (const it of b.items){
-      const ni = await prisma.planBlockItem.create({ data:{ blockId: nb.id, order: ord++, exerciseId: it.exerciseId, note: it.note } });
-      for (const s of it.sets){
-        await prisma.planSet.create({ data:{ itemId: ni.id, order: s.order, reps: s.reps, rest: s.rest, targetWeight: s.targetWeight, targetRPE: s.targetRPE } });
-      }
-    }
-    return nb.id;
-  }
-  @Mutation(() => String)
-  async duplicateDay(@Args('dayId') dayId:string): Promise<string> {
-    const d:any = await prisma.planDay.findUnique({ where:{ id:dayId }, include:{ blocks:{ include:{ items:{ include:{ sets:true } } } } } });
-    if (!d) throw new Error('day not found');
-    const nd = await prisma.planDay.create({ data:{ planId:d.planId, order:d.order+1, title: d.title } });
-    let bOrd=0;
-    for (const b of d.blocks){
-      const nb = await prisma.planBlock.create({ data:{ dayId: nd.id, order:bOrd++, type:b.type, section:b.section, protocol:b.protocol, protocolParams:b.protocolParams } });
-      let iOrd=0;
-      for (const it of b.items){
-        const ni = await prisma.planBlockItem.create({ data:{ blockId: nb.id, order: iOrd++, exerciseId: it.exerciseId, note: it.note } });
-        for (const s of it.sets){
-          await prisma.planSet.create({ data:{ itemId: ni.id, order: s.order, reps: s.reps, rest: s.rest, targetWeight: s.targetWeight, targetRPE: s.targetRPE } });
-        }
-      }
-    }
-    return nd.id;
-  }
-
-
-  @Mutation(() => Boolean)
-  async updateBlockMeta(@Args('blockId') blockId:string, @Args('section', {nullable:true}) section?:string, @Args('type', {nullable:true}) type?:string, @Args('rounds', {nullable:true}) rounds?:number, @Args('restBetweenItemsSec', {nullable:true}) restBetweenItemsSec?:number): Promise<boolean> {
-    const data:any = {};
-    if (section !== undefined) data.section = section;
-    if (type !== undefined) data.type = type;
-    if (rounds !== undefined) data.rounds = rounds;
-    if (restBetweenItemsSec !== undefined) data.restBetweenItemsSec = restBetweenItemsSec;
-    await prisma.planBlock.update({ where:{ id: blockId }, data });
-    return true;
-  }
-
-
-  @Query(() => [PlanSessionNoteDTO])
-  async sessionNotes(@Args('sessionId') sessionId:string): Promise<PlanSessionNoteDTO[]> {
-    const rows:any[] = await prisma.planSessionNote.findMany({ where:{ sessionId }, orderBy:{ createdAt:'desc' } });
-     __searchCache.set(key, { t: Date.now(), v: rows }); return rows as any;
-  }
-
-  @Mutation(() => PlanSessionNoteDTO)
-  async upsertSessionNote(@Args('input') input: UpsertSessionNoteInput, @Context() ctx?:any): Promise<PlanSessionNoteDTO> {
-    const role = (input.role || ctxRole(ctx) || 'user').toString().toUpperCase();
-    const authorId = input.authorId || ctxUser(ctx);
-    const row:any = await prisma.planSessionNote.create({ data: { sessionId: input.sessionId, role, authorId, text: input.text||null, audioUrl: input.audioUrl||null } });
-    return row as any;
-  }
-
-
-  @Mutation(() => Boolean)
-  async bulkAddItemsToBlock(@Args('blockId') blockId:string, @Args({ name:'exerciseIds', type: () => [String] }) exerciseIds:string[], @Context() ctx?:any): Promise<boolean> {
-    mustRole(ctx, 'coach');
-    const b:any = await prisma.planBlock.findUnique({ where:{ id:blockId } });
-    if (!b) throw new Error('block not found');
-    let order = await prisma.planBlockItem.count({ where:{ blockId } });
-    for (const exId of exerciseIds||[]){
-      const item = await prisma.planBlockItem.create({ data:{ blockId, order: order++, exerciseId: exId, note: '' } as any });
-      if ((b.type||'SINGLE').toUpperCase()==='SINGLE'){
-        for (let i=0;i<3;i++){ await prisma.planSet.create({ data:{ itemId: item.id, order:i, reps:10, rest:60 } as any }); }
-      } else {
-        await prisma.planSet.create({ data:{ itemId: item.id, order:0, reps:10, rest:30 } as any });
-      }
-    }
-    return true;
-  }
 
   @Mutation(() => SessionDetailDTO)
   async completeSession(@Args('sessionId') sessionId:string): Promise<SessionDetailDTO> {
@@ -847,7 +758,7 @@ export class PlanResolver {
     const { id, title, description, days, ownerId } = input as any;
     let planId = id;
     if (!planId){
-      const p = await prisma.plan.create({ data: { title, description, ownerId } });
+      const p = await prisma.plan.create({ data: { title, description, ownerId } as any });
       planId = p.id;
     } else {
       await prisma.plan.update({ where: { id: planId }, data: { title, description } });
@@ -867,7 +778,7 @@ export class PlanResolver {
       const d = days[di]; const day = await prisma.planDay.create({ data: { planId, order: d.order, title: d.title||null, note: d.note||null, voiceUrl: d.voiceUrl||null } });
       for (const bi in (d.blocks||[])){
         const b = d.blocks[bi];
-        const block = await prisma.planBlock.create({ data: { dayId: day.id, order: b.order, type: (b.type||'SINGLE') as any, protocol: b.protocol||null, protocolParams: b.protocolParams? JSON.parse(b.protocolParams): null, restBetweenItems: b.restBetweenItems||null } });
+        const block = await prisma.planBlock.create({ data: { dayId: day.id, order: b.order, type: (b.type||'SINGLE') as any, protocol: b.protocol||null, protocolParams: b.protocolParams? JSON.parse(b.protocolParams): null, restBetweenItemsSec: b.restBetweenItems||null } });
         for (const ii in (b.items||[])){
           const it = b.items[ii];
           const item = await prisma.planBlockItem.create({ data: { blockId: block.id, order: it.order, exerciseId: it.exerciseId, note: it.note||null } });
@@ -891,11 +802,11 @@ export class PlanResolver {
   @Mutation(() => PlanDTO)
   async duplicatePlan(@Args('id') id: string): Promise<PlanDTO> {
     const p:any = await this.plan(id);
-    const clone = await prisma.plan.create({ data: { title: `کپی از ${p.title}`, description: p.description, ownerId: p.ownerId } });
+    const clone = await prisma.plan.create({ data: { title: `کپی از ${p.title}`, description: p.description, ownerId: p.ownerId } as any });
     for (const d of p.days){
       const nd = await prisma.planDay.create({ data: { planId: clone.id, order: d.order, title: d.title, note: d.note, voiceUrl: d.voiceUrl } });
       for (const b of d.blocks){
-        const nb = await prisma.planBlock.create({ data: { dayId: nd.id, order: b.order, type: b.type as any, protocol: b.protocol, protocolParams: b.protocolParams? JSON.parse(b.protocolParams): null, restBetweenItems: b.restBetweenItems||null } });
+        const nb = await prisma.planBlock.create({ data: { dayId: nd.id, order: b.order, type: b.type as any, protocol: b.protocol, protocolParams: b.protocolParams? JSON.parse(b.protocolParams): null, restBetweenItemsSec: b.restBetweenItems||null } });
         for (const it of b.items){
           const nit = await prisma.planBlockItem.create({ data: { blockId: nb.id, order: it.order, exerciseId: it.exerciseId, note: it.note } });
           for (const s of it.sets){
@@ -1019,7 +930,7 @@ export class PlanResolver {
     @Args('restDays', { type: () => [String] }) restDays: string[],
     @Args('durationDays') durationDays: number,
   ): Promise<AssignmentDTO> {
-    const assign = await prisma.planAssignment.create({ data: { planId, clientId, startDate: new Date(startDate), sessionsPerWeek, restDays, durationDays } });
+    const assign = await prisma.planAssignment.create({ data: { planId, clientId, startDate: new Date(startDate), sessionsPerWeek, restDays, durationDays } as any });
     // Generate sessions: simple sequential mapping dayIndex → next training day skipping restDays
     const plan = await prisma.plan.findUnique({ where: { id: planId }, include: { days: true } });
     let cur = new Date(startDate);

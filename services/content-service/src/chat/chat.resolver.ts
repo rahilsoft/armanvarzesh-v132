@@ -12,7 +12,7 @@ function must(ctx:any, roles:string[]){ if (process.env.SKIP_AUTH==='1') return;
 @Resolver()
 export class ChatResolver {
   @Mutation(()=> String)
-  async ensureThread(@Args('specialistId') specialistId:string, @Args('userId') userId:string, @Context() ctx:any): Promise<string>{
+  async ensureThread(@Args('specialistId') specialistId:string, @Args('userId') userId:string, @Context() ctx?: any): Promise<string>{
     must(ctx, ['specialist','user','coach']);
     const t = await prisma.chatThread.findFirst({ where:{ specialistId, userId } });
     if (t) return t.id;
@@ -21,7 +21,7 @@ export class ChatResolver {
   }
 
   @Mutation(()=> Boolean)
-  async sendMessage(@Args('threadId') threadId:string, @Args('body',{nullable:true}) body?:string, @Args('voiceUrl',{nullable:true}) voiceUrl?:string, @Context() ctx:any): Promise<boolean>{
+  async sendMessage(@Args('threadId') threadId:string, @Args('body',{nullable:true}) body?:string, @Args('voiceUrl',{nullable:true}) voiceUrl?:string, @Context() ctx?: any): Promise<boolean>{
     const role = ctxRole(ctx); const uid = ctxUser(ctx) || 'anon';
     const msg = await prisma.chatMessage.create({ data:{ threadId, senderId: uid, senderRole: (role as any)||'user', body: body||null, voiceUrl: voiceUrl||null } });
     try{ wsBroadcast(threadId, msg); }catch(e){}
@@ -29,14 +29,14 @@ export class ChatResolver {
   }
 
   @Query(()=> String)
-  async listThreads(@Args('specialistId') specialistId:string, @Context() ctx:any): Promise<string>{
+  async listThreads(@Args('specialistId') specialistId:string, @Context() ctx?: any): Promise<string>{
     must(ctx, ['specialist','admin']);
     const rows = await prisma.chatThread.findMany({ where:{ specialistId }, orderBy:{ createdAt:'desc' } });
     return JSON.stringify(rows);
   }
 
   @Query(()=> String)
-  async messages(@Args('threadId') threadId:string, @Args('after',{nullable:true}) after?:string, @Context() ctx:any): Promise<string>{
+  async messages(@Args('threadId') threadId:string, @Args('after',{nullable:true}) after?:string, @Context() ctx?: any): Promise<string>{
     const where:any = { threadId };
     if (after) where.createdAt = { gt: new Date(after) };
     const rows = await prisma.chatMessage.findMany({ where, orderBy:{ createdAt:'asc' }, take: 200 });

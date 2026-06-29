@@ -103,7 +103,7 @@ export class ScoringService {
 
     const metrics = { followup, multimodal, biweekly, endterm, renewal, goalFocus, freeToPremium, contentQuality, responsiveness, baselineBoost };
     await this.prisma.specialistScore.upsert({
-      where:{ specialistId },
+      where:{ specialistId } as any,
       update:{ role, totalScore: total, metrics, lastComputed: new Date() },
       create:{ specialistId, role, totalScore: total, metrics, lastComputed: new Date() }
     });

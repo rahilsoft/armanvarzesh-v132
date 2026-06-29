@@ -12,14 +12,14 @@ export class OnboardingResolver {
   constructor(private readonly scoring: ScoringService){}
 
   @Mutation(()=> Boolean)
-  async saveUserOnboarding(@Args('profileJson') profileJson:string, @Context() ctx:any): Promise<boolean>{
+  async saveUserOnboarding(@Args('profileJson') profileJson:string, @Context() ctx?: any): Promise<boolean>{
     const uid = ctxUser(ctx) || 'anon';
     await prisma.userMeta.upsert({ where:{ userId: uid }, update:{ json: profileJson }, create:{ userId: uid, json: profileJson } } as any);
     return true;
   }
 
   @Mutation(()=> String)
-  async ensureLead(@Args('specialistId') specialistId:string, @Args('serviceType') serviceType:ServiceType, @Context() ctx:any): Promise<string>{
+  async ensureLead(@Args('specialistId') specialistId:string, @Args('serviceType') serviceType:ServiceType, @Context() ctx?: any): Promise<string>{
     const uid = ctxUser(ctx) || 'anon';
     const lead = await prisma.lead.create({ data:{ userId: uid, specialistId, serviceType } });
     // ایجاد چت
