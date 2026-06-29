@@ -50,7 +50,7 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
     referrerPolicy: { policy: 'no-referrer' },
     hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
   }));
-  app.use(compression());
+  app.use(compression() as any);
   app.use(express.json({ limit: '1mb' }));
   if (opts.enableCors !== false) {
     app.use(cors({
@@ -124,7 +124,7 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
     return server;
   };
 
-  return { app, registry, logger, config: env, start };
+  return { app, registry, logger, config: env as any, start };
 }
 
 export async function createHttpService(opts: ServiceKitOptions) {

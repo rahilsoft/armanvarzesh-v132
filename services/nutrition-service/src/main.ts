@@ -18,7 +18,7 @@ const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 @Controller()
-class MetricsController {
+export class MetricsController {
   @Get('/metrics')
   async metrics(): Promise<string> {
     return register.metrics();

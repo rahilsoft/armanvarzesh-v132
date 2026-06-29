@@ -8,7 +8,7 @@ export const EnvSchema = z.object({
   NODE_ENV: z.string().default('development')
 });
 
-export type EnvConfig = z.infer<typeof EnvSchema> & { CORS_ORIGINS: string[] };
+export type EnvConfig = Omit<z.infer<typeof EnvSchema>, 'CORS_ORIGINS'> & { CORS_ORIGINS: string[] };
 
 export function loadEnv(partial?: Partial<Record<string,string>>): EnvConfig {
   const parsed = EnvSchema.parse({ ...process.env, ...partial });

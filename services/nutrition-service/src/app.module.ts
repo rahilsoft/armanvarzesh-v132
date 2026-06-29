@@ -36,7 +36,7 @@ import { PrismaService } from './database/prisma.service';
         return { store: await redisStore({ url }), ttl: 1000 * 60 };
       },
     }),MetricsModule,
-    ThrottlerModule.forRoot({ ttl: Number(process.env.RATE_LIMIT_TTL) || 60, limit: Number(process.env.RATE_LIMIT_LIMIT) || 100 }),
+    ThrottlerModule.forRoot([{ ttl: Number(process.env.RATE_LIMIT_TTL) || 60, limit: Number(process.env.RATE_LIMIT_LIMIT) || 100  }]),
     ConfigModule.forRoot({ isGlobal: true, validationSchema: envValidationSchema }),
     HealthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
