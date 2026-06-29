@@ -28,10 +28,10 @@ export class AuthService {
     return { user: { id: user.id, email: user.email }, ...tokens };
   }
 
-  async refresh(userId: string, refreshToken: string) {
-    const tokenHash = await argon2.hash(refreshToken);
-    const token = await this.prisma.refreshToken.findFirst({ where: { userId } });
+  async refresh(refreshToken: string, userId?: string) {
+    const token = await this.prisma.refreshToken.findFirst({ where: userId ? { userId } : undefined });
     if (!token) throw new UnauthorizedException('No refresh token');
+    userId = token.userId;
     // Simplified: compare just by verifying (since stored is hash)
     const valid = await argon2.verify(token.tokenHash, refreshToken);
     if (!valid || (token.expiresAt && token.expiresAt < new Date())) {

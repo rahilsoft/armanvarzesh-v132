@@ -16,12 +16,12 @@ export class AuthResolver {
 
   @Mutation(() => User)
   async register(@Args('input') input: RegisterInput) {
-    return this.authService.register(input);
+    return this.authService.register(input.email, input.password);
   }
 
   @Mutation(() => AuthTokens)
   async login(@Args('input') input: LoginInput) {
-    return this.authService.login(input);
+    return this.authService.login(input.email, input.password);
   }
 
   @Mutation(() => AuthTokens)
