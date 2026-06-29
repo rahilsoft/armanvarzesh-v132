@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
     "test:cov": "jest --coverage",
-    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "format:check": "prettier -c . || echo \"no prettier\"",
     "clean": "rimraf dist || true",
     "format": "prettier --write .",
