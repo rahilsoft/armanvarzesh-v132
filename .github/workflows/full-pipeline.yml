@@ -50,13 +50,14 @@ jobs:
           PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
           if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
           echo "Using prisma CLI: $PRISMA"
-          for d in services/* app/* packages/*; do
-            if [ -f "$d/prisma/schema.prisma" ]; then
-              echo "::group::prisma generate $d"
-              (cd "$d" && node "$PRISMA" generate --schema prisma/schema.prisma)
-              echo "::endgroup::"
-            fi
-          done
+          # Find every schema (some live at non-standard paths, e.g. the backend's
+          # app/backend/src/database/prisma/schema.prisma). Generate each; output
+          # dir is declared relative to the schema in its generator block.
+          while IFS= read -r schema; do
+            echo "::group::prisma generate $schema"
+            node "$PRISMA" generate --schema "$schema" || exit 1
+            echo "::endgroup::"
+          done < <(find services app packages -name schema.prisma -not -path '*/node_modules/*' -not -path '*/generated/*')
 
       - name: Typecheck (all workspaces)
         run: pnpm -r --if-present run typecheck
@@ -98,18 +99,16 @@ jobs:
           PRISMA="$(ls "$GITHUB_WORKSPACE"/node_modules/.pnpm/prisma@*/node_modules/prisma/build/index.js 2>/dev/null | head -1)"
           if [ -z "$PRISMA" ]; then echo "prisma CLI not found in pnpm store" >&2; exit 1; fi
           echo "Using prisma CLI: $PRISMA"
-          for d in services/* app/*; do
-            if [ -f "$d/prisma/schema.prisma" ]; then
-              name=$(basename "$d" | tr '-' '_')
-              echo "::group::db push $d -> db $name"
-              PGPASSWORD=arman psql -h localhost -U arman -d arman \
-                -c "CREATE DATABASE \"$name\";" || true
-              ( cd "$d" && \
-                DATABASE_URL="postgresql://arman:arman@localhost:5432/$name?schema=public" \
-                node "$PRISMA" db push --schema prisma/schema.prisma --skip-generate --accept-data-loss )
-              echo "::endgroup::"
-            fi
-          done
+          while IFS= read -r schema; do
+            # unique db name derived from the full schema path
+            name=$(echo "${schema%/schema.prisma}" | tr -c 'a-zA-Z0-9' '_')
+            echo "::group::db push $schema -> db $name"
+            PGPASSWORD=arman psql -h localhost -U arman -d arman \
+              -c "CREATE DATABASE \"$name\";" || true
+            DATABASE_URL="postgresql://arman:arman@localhost:5432/$name?schema=public" \
+              node "$PRISMA" db push --schema "$schema" --skip-generate --accept-data-loss || exit 1
+            echo "::endgroup::"
+          done < <(find services app -name schema.prisma -not -path '*/node_modules/*' -not -path '*/generated/*')
 
   # ---------------------------------------------------------------------------
   # 3) Best-effort end-to-end against the marketing/admin frontends.
