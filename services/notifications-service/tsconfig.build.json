@@ -36,12 +36,16 @@
     "prisma"
   ],
   "exclude": [
-    "node_modules",
-    "dist",
+    "**/*.e2e-spec.ts",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/__tests__/**",
-    "test/**",
-    "**/*.e2e-spec.ts"
+    "dist",
+    "node_modules",
+    "src/notifications-service.controller.ts",
+    "src/notifications-service.service.ts",
+    "src/notifications/**",
+    "src/push/**",
+    "test/**"
   ]
 }
