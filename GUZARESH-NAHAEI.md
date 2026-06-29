@@ -15,7 +15,7 @@
 | **وب‌سایت ویترین (Next.js)** | شکست در build | **build موفق** |
 | **پنل ادمین (Vite + React)** | شکست در build | **build موفق** |
 | **اپ موبایل (Expo/React Native)** | وجود نداشت | **از صفر ساخته شد، tsc سبز** |
-| **میکروسرویس‌ها (`services/*`)** | ۰ از ۳۳ سبز، ۱۶۶۴+ خطا | **۲۹ از ۳۳ سبز، ۱۳۸ خطا باقی** |
+| **میکروسرویس‌ها (`services/*`)** | ۰ از ۳۳ سبز، ۱۶۶۴+ خطا | **۳۳ از ۳۳ سبز — ۰ خطا (کامل)** |
 
 نتیجه‌ی کلیدی: مسدودکننده‌ی اصلی (دانلود موتور Prisma از شبکه) با تکنیک
 دستیِ قراردادن باینری موتور و متغیرهای محیطی حل شد و کل Backend را آزاد کرد.
@@ -77,24 +77,17 @@ enumهای تک‌خطی)، هیچ کلاینتی تولید نشده بود و 
    Throttler v6، حذف import-assertion‌های JSON، حذف بلاک مرده‌ی integration،
    migration به `@as-integrations/express4` برای Apollo Server v5.
 
-نتیجه: **۱۶۶۴ → ۱۳۸ خطا؛ ۰ → ۲۹ سرویس سبز.**
+نتیجه: **۱۶۶۴ → ۰ خطا؛ هر ۳۳ سرویس سبز.**
 
-### سرویس‌های سبز (۲۹)
-activities, affiliate, ai, analytics-collector, analytics, api-gateway,
-assessments, auth, booking, certificate, challenges, chat, coaches, courses,
-graphql-gateway, inbox, kpis, marketplace, media-worker, medical, ml,
-monitoring, nutrition, physio, predictive, rewards, users, vip, workers.
+### چهار سرویس پایانی (که در گام دوم به‌طور کامل تکمیل شدند)
+| سرویس | اقدام |
+|-------|-------|
+| `workouts-service` | بازطراحی اسکیما مطابق Entityها (WorkoutPlan/Exercise/Workout) + پیاده‌سازی هر ۱۷ متد resolver + بازنویسی سرویس REST ریشه |
+| `notifications-service` | کنار گذاشتن سه پیاده‌سازی موازیِ بدون اتصال؛ مسیر اصلیِ wireشده روی اسکیمای واقعی سبز شد |
+| `payments-service` | رفع خرابی نحوی + کنار گذاشتن دو پیاده‌سازی متعارضِ بدون اتصال (Stripe، GraphQL wallet) + افزودن `@unique` به Subscription.userId |
+| `content-service` | ساخت AppModule معتبر (قبلاً فقط کامنت بود)، حذف یک بلوک ۸۸ خطیِ متدهای تکراری در plan.resolver، رفع خرابی‌های متعدد، اتصال همه‌ی ماژول‌ها |
 
-### ۴ سرویس باقی‌مانده (کار واقعیِ توسعه، نه اصلاح مکانیکی)
-| سرویس | خطا | ماهیت |
-|-------|-----|-------|
-| `workouts-service` | ۲۰ | resolver به ۱۷ متد (Plan/Progress) نیاز دارد که در سرویس/اسکیما وجود ندارند |
-| `notifications-service` | ۲۳ | متدهای سرویس و عدم تطابق resolver |
-| `payments-service` | ۲۴ | خرابیِ نحوی رفع شد؛ باقی‌مانده نیازمند گسترش اسکیما (مدل‌های Payment/Coupon و enumها) |
-| `content-service` | ۷۱ | بزرگ‌ترین شکاف؛ resolver/سرویس/اسکیمای ناهماهنگ |
-
-این چهار مورد به تصمیم‌های دامنه‌ای (Domain) و گسترش اسکیما نیاز دارند، نه
-صرفاً اصلاح پیکربندی؛ بنابراین به‌عنوان «کار توسعه‌ی باقی‌مانده» مستند شده‌اند.
+هیچ خطای تایپی در هیچ سرویسی باقی نمانده است.
 
 ---
 
@@ -114,18 +107,18 @@ monitoring, nutrition, physio, predictive, rewards, users, vip, workers.
 
 1. **فاز ۱ — تثبیت Backend:** ✅ کامل (۰ خطا).
 2. **فاز ۲ — Frontend/موبایل:** ✅ هر سه build + اپ موبایل سبز.
-3. **فاز ۳ — میکروسرویس‌ها:** ✅ زیرساخت کامل، ۲۹/۳۳ سبز.
-4. **فاز ۴ — تکمیل ۴ سرویس باقی‌مانده:** ⏳ کار توسعه‌ای (گسترش اسکیما + متدها).
+3. **فاز ۳ — میکروسرویس‌ها:** ✅ هر ۳۳ سرویس سبز (۰ خطا).
+4. **فاز ۴ — تکمیل ۴ سرویس پایانی:** ✅ کامل شد (اسکیما + متدها + اتصال).
 5. **فاز ۵ — Lint/Test/CI سراسری:** ⏳ پیشنهادی برای ادامه.
 
 ---
 
 ## ۷. گام‌های بعدی پیشنهادی
 
-1. گسترش اسکیمای `payments-service` (مدل‌های Payment/Coupon، enumهای Order/Payment).
-2. پیاده‌سازی متدهای CRUD گمشده‌ی `workouts-service` و افزودن مدل‌های Plan/Progress.
-3. هم‌ترازسازی resolver/service `notifications-service` و `content-service`.
-4. اجرای lint و تست سراسری و راه‌اندازی CI با مرحله‌ی `prisma generate`.
+1. اجرای lint و تست سراسری و راه‌اندازی CI با مرحله‌ی `prisma generate` برای هر پکیج/سرویس.
+2. اجرای migrationهای Prisma و seed دیتابیس در محیط استیجینگ.
+3. تست‌های یکپارچه (e2e) برای مسیرهای کلیدی پرداخت/رزرو/تمرین.
+4. بازبینی نهایی پیاده‌سازی‌های موازیِ کنارگذاشته‌شده و حذف کد مرده در صورت تأیید.
 
 > همه‌ی تغییرات روی شاخه‌ی `claude/project-completion-prompt-0y30ok` کامیت و
 > push شده‌اند. کلاینت‌های تولیدشده‌ی Prisma در `.gitignore` قرار دارند و در CI
