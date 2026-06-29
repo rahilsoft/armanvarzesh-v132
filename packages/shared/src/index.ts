@@ -5,3 +5,4 @@ export * from './common/interceptors/transform.interceptor';
 export * from './common/filters/http-exception.filter';
 export * from './common/dto/pagination.dto';
 export * from './infra/health-indicators';
+export * from './common/pipes/zod-validation.pipe';

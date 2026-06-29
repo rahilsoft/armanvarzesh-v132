@@ -1,6 +1,6 @@
-import { WearablesModule } from '../wearables/wearables.module';
-import { HabitsModule } from '../habits/habits.module';
-import { HydrationModule } from '../hydration/hydration.module';
+import { WearablesModule } from './wearables/wearables.module';
+import { HabitsModule } from './habits/habits.module';
+import { HydrationModule } from './hydration/hydration.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { EnvValidationModule } from '@arman/shared';
 import { CacheModule } from '@nestjs/cache-manager';

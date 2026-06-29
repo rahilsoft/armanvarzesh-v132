@@ -31,7 +31,7 @@ import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
 
 async function bootstrap() {
   const globalPrefix = process.env.API_PREFIX || '';
-  await initTelemetry();
+  await initTracing();
   const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
