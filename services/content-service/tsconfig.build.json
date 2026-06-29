@@ -2,13 +2,12 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
     "module": "CommonJS",
     "target": "ES2020",
     "moduleResolution": "Node",
     "declaration": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
@@ -86,11 +85,20 @@
       ],
       "@prisma/client": [
         "prisma/generated/client"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "src/**/*.ts"

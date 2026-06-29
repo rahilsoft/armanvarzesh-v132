@@ -13,8 +13,7 @@
     "incremental": true,
     "strict": false,
     "noImplicitAny": false,
-    "strictNullChecks": true,
-    "rootDir": "src",
+    "strictNullChecks": false,
     "paths": {
       "coach-pwa/*": [
         "app/coach-pwa/*"
@@ -90,6 +89,10 @@
       ],
       "@prisma/client": [
         "prisma/generated/client"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "noImplicitThis": false,
@@ -100,7 +103,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

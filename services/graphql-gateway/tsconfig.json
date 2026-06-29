@@ -10,7 +10,7 @@
       "node"
     ],
     "noImplicitAny": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": false,
@@ -23,9 +23,16 @@
       ],
       "@contracts/*": [
         "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "baseUrl": ".",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

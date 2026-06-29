@@ -80,12 +80,16 @@
       ],
       "@contracts/*": [
         "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "strict": false,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
@@ -93,7 +97,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src"

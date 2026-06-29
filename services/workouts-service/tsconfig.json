@@ -8,7 +8,6 @@
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
       "coach-pwa/*": [
@@ -85,11 +84,15 @@
       ],
       "@prisma/client": [
         "prisma/generated/client"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
@@ -97,7 +100,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

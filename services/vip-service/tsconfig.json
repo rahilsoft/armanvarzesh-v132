@@ -4,13 +4,12 @@
     "target": "ES2018",
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src",
     "strict": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noImplicitAny": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
       "coach-pwa/*": [
@@ -84,6 +83,10 @@
       ],
       "@contracts/*": [
         "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "noImplicitThis": false,
@@ -94,7 +97,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

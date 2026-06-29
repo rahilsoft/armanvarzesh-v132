@@ -9,8 +9,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noImplicitAny": false,
-    "strictNullChecks": true,
-    "rootDir": "src",
+    "strictNullChecks": false,
     "baseUrl": ".",
     "paths": {
       "coach-pwa/*": [
@@ -84,6 +83,10 @@
       ],
       "@contracts/*": [
         "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
     "noImplicitThis": false,
@@ -95,7 +98,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

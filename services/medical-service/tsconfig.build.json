@@ -1,2 +1,36 @@
-
-{ "extends":"./tsconfig.json","compilerOptions":{ "declaration": true, "outDir":"./dist" }, "include":["src/**/*"] }
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "strict": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@arman/*": [
+        "../../packages/*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
+      ],
+      "@prisma/client": [
+        "prisma/generated/client"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
