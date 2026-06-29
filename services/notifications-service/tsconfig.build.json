@@ -42,10 +42,6 @@
     "**/__tests__/**",
     "dist",
     "node_modules",
-    "src/notifications-service.controller.ts",
-    "src/notifications-service.service.ts",
-    "src/notifications/**",
-    "src/push/**",
     "test/**"
   ]
 }

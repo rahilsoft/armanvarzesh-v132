@@ -42,9 +42,6 @@
     "**/__tests__/**",
     "dist",
     "node_modules",
-    "src/payments-service.controller.ts",
-    "src/payments-service.service.ts",
-    "src/payments/**",
     "test/**"
   ]
 }
