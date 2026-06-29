@@ -147,7 +147,7 @@ async function startNodeSdkTracing(args: { serviceName:string; serviceVersion:st
     traceExporter: exporter,
     instrumentations: [ getNodeAutoInstrumentations({
       // reasonable defaults; can be tuned per-service later
-      '@opentelemetry/instrumentation-http': { ignoreIncomingPaths: [/\/metrics/i] },
+      '@opentelemetry/instrumentation-http': { ignoreIncomingPaths: [/\/metrics/i] } as any,
       '@opentelemetry/instrumentation-express': {},
       '@opentelemetry/instrumentation-graphql': {},
       '@opentelemetry/instrumentation-pg': {},
@@ -163,4 +163,12 @@ async function startNodeSdkTracing(args: { serviceName:string; serviceVersion:st
   };
   process.once('SIGTERM', stop);
   process.once('SIGINT', stop);
+}
+/**
+ * Convenience entry point used by services: initialize OpenTelemetry and start
+ * the metrics server. Accepts an optional app/options bag for forward-compat.
+ */
+export function registerObservability(_app?: any, opts: OtelInitOptions = {}): void {
+  try { initOpenTelemetry(opts); } catch { /* never crash on telemetry init */ }
+  try { startMetricsServer(); } catch { /* metrics server is best-effort */ }
 }

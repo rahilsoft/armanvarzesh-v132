@@ -42,12 +42,7 @@ async function bootstrap() {
           res.setHeader('Content-Type', register.contentType);
           res.end(await register.metrics());
         } catch (err) {
-          res.status(500).send((err as Error)?.message ?? 'failed to collect metrics');
-          const metrics = await register.metrics();
-          res.setHeader('Content-Type', register.contentType);
-          res.status(200).end(metrics);
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unable to collect metrics';
+          const message = err instanceof Error ? err.message : 'Unable to collect metrics';
           res.status(500).end(message);
         }
       });

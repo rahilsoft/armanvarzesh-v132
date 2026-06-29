@@ -57,5 +57,19 @@ export { buildJwtVerifier, subjectFromReq } from './jwt';
 export { buildUserAwareRateLimit } from './userRateLimit';
 export { cspMiddleware } from './csp';
 
-/** Alias kept for services that expect a `buildSecurityMiddleware` entry point. */
-export const buildSecurityMiddleware = applyBasicHardening;
+/**
+ * Build individual security middlewares for services that wire them onto the
+ * app themselves (e.g. `app.use(sec.cors)`).
+ */
+export function buildSecurityMiddleware(opts: SecurityOptions = {}): {
+  cors: RequestHandler;
+  helmet: RequestHandler;
+  hpp: RequestHandler;
+} {
+  const origin = opts.corsOrigin ?? process.env.CORS_ORIGIN ?? '*';
+  return {
+    cors: cors({ origin, credentials: true }) as unknown as RequestHandler,
+    helmet: helmet() as unknown as RequestHandler,
+    hpp: hpp() as unknown as RequestHandler,
+  };
+}

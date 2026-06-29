@@ -72,7 +72,6 @@ if (http && typeof http.get === 'function') {
     res.json({ status: "ok", uptime: process.uptime(), timestamp: Date.now() });
   });
 
-  \1
   // eslint-disable-next-line no-console
   console.log('Certificate service listening on', process.env.PORT || 3017);
 }
