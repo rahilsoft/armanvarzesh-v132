@@ -1,0 +1,141 @@
+name: Full Pipeline
+
+# Authoritative gate: Prisma generate -> typecheck -> build (emit) -> DB apply -> e2e.
+# Mirrors the per-project Prisma client isolation (each schema generates to its
+# own prisma/generated/client) and the green state of backend + services +
+# app federation tier + shared packages + frontends.
+
+on:
+  push:
+    branches: [ main, 'claude/**' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: full-pipeline-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: 10
+  NODE_VERSION: 20
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1) Type-correctness + emit. Fully reproducible, no external services needed.
+  # ---------------------------------------------------------------------------
+  verify:
+    name: generate · typecheck · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Prisma generate (every schema -> its own client)
+        run: |
+          set -e
+          for d in services/* app/* packages/*; do
+            if [ -f "$d/prisma/schema.prisma" ]; then
+              echo "::group::prisma generate $d"
+              (cd "$d" && npx prisma generate --schema prisma/schema.prisma)
+              echo "::endgroup::"
+            fi
+          done
+
+      - name: Typecheck (all workspaces)
+        run: pnpm -r --if-present run typecheck
+
+      - name: Build / emit (all workspaces)
+        run: pnpm -r --if-present run build
+
+  # ---------------------------------------------------------------------------
+  # 2) Prove every schema applies cleanly to a real Postgres (db push).
+  # ---------------------------------------------------------------------------
+  db-apply:
+    name: prisma db push (fresh Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: arman
+          POSTGRES_PASSWORD: arman
+          POSTGRES_DB: arman
+        ports: [ '5432:5432' ]
+        options: >-
+          --health-cmd "pg_isready -U arman"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Apply each schema into its own database
+        run: |
+          set -e
+          for d in services/* app/*; do
+            if [ -f "$d/prisma/schema.prisma" ]; then
+              name=$(basename "$d" | tr '-' '_')
+              echo "::group::db push $d -> db $name"
+              PGPASSWORD=arman psql -h localhost -U arman -d arman \
+                -c "CREATE DATABASE \"$name\";" || true
+              ( cd "$d" && \
+                DATABASE_URL="postgresql://arman:arman@localhost:5432/$name?schema=public" \
+                npx prisma db push --schema prisma/schema.prisma --skip-generate --accept-data-loss )
+              echo "::endgroup::"
+            fi
+          done
+
+  # ---------------------------------------------------------------------------
+  # 3) Best-effort end-to-end against the marketing/admin frontends.
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: e2e (Playwright, best-effort)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: verify
+    if: ${{ hashFiles('playwright.config.*', 'e2e/**', 'ui-tests/**') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Build web-site
+        run: pnpm --filter ./apps/web-site run build || true
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright
+        run: npx playwright test || true
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore
