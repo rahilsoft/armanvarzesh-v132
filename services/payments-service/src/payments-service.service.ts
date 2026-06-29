@@ -65,7 +65,7 @@ export class PaymentsService {
         data: { orderId: order.id, status: PaymentStatus.SUCCEEDED, provider: 'mock', raw: { mock: true } }
       });
       await this.prisma.order.update({ where: { id: order.id }, data: { status: OrderStatus.PAID } });
-      return { id: payment.id, clientSecret: process.env.SECRET || "changeme"succeeded' };
+      return { id: payment.id, clientSecret: process.env.SECRET || "changeme", status: 'succeeded' };
     }
 
     const intent = await this.stripe.paymentIntents.create({

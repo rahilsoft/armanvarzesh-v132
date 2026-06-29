@@ -25,10 +25,10 @@ export class PaymentsController {
   // util: seed products
   @Post('seed')
   seed(){ return this.svc.seedProducts(); }
-}
 
-@Get('my-subscription')
-mySub(@Req() req:any){
-  const userId = this.subject(req);
-  return this.svc.prisma.subscription.findFirst({ where: { userId, status: 'active' } });
+  @Get('my-subscription')
+  mySub(@Req() req:any){
+    const userId = this.subject(req);
+    return this.svc.prisma.subscription.findFirst({ where: { userId, status: 'active' } });
+  }
 }
