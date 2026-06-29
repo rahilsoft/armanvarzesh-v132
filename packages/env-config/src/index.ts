@@ -14,7 +14,7 @@ export const EnvSchema = z.object({
 
 export type Env = z.infer<typeof EnvSchema>;
 
-export function validateEnv(raw: NodeJS.ProcessEnv): Env {
+export function validateEnv(raw: Record<string, string | undefined>): Env {
   const parsed = EnvSchema.safeParse(raw);
   if (!parsed.success) {
     console.error('❌ Invalid environment variables:', parsed.error.flatten().fieldErrors);

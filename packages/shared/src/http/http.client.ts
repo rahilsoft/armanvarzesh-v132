@@ -8,7 +8,7 @@ class HttpClient {
   private instance: AxiosInstance;
 
   constructor() {
-    this.instance = http.create({
+    this.instance = axios.create({
       timeout: 10000,
       headers: { 'User-Agent': 'ArmanFit/1.0' },
     });

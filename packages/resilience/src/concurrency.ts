@@ -9,6 +9,6 @@ export async function mapWithConcurrency<T, R>(items: T[], limit: number, worker
     }
   }
   const runners = Array.from({ length: Math.max(1, limit) }, run);
-  await Promise.all(runners.map(r => r()));
+  await Promise.all(runners);
   return results;
 }

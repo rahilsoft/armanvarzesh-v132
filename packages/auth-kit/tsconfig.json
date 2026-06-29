@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "module": "ES2022",
+    "module": "commonjs",
     "target": "ES2022",
-    "declaration": true,
-    "strict": true,
-    "moduleResolution": "Bundler",
+    "declaration": false,
+    "strict": false,
+    "moduleResolution": "node",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
       "coach-pwa/*": [
@@ -78,18 +77,45 @@
       ],
       "@user-pwa/*": [
         "app/user-pwa/*"
+      ],
+      "@arman/*": [
+        "../*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
     },
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "useUnknownInCatchVariables": true
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "useUnknownInCatchVariables": false,
+    "strictPropertyInitialization": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "composite": false,
+    "noEmit": true
   },
   "include": [
     "src"
   ],
-  "extends": "../../tsconfig.base.json"
+  "extends": "../../tsconfig.base.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "test/**",
+    "**/*.e2e-spec.ts",
+    "src/main.ts",
+    "**/*.example.ts"
+  ]
 }
