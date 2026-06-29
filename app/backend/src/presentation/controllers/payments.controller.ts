@@ -12,7 +12,7 @@ export class PaymentsController {
   constructor(private readonly payments: PaymentsUseCase) {}
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
-  @Post(API_ROUTES.payments.base.ROOT)
+  @Post(API_ROUTES.payments.base)
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(new SanitizePipe(), new ValidationPipe({ whitelist: true, transform: true }))
   async create(
@@ -34,7 +34,7 @@ export class PaymentsController {
   }
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
-  @Get(API_ROUTES.payments.base.ROOT)
+  @Get(API_ROUTES.payments.base)
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(CacheControlInterceptor)
   @cacheControl('private, max-age=15, stale-while-revalidate=30')

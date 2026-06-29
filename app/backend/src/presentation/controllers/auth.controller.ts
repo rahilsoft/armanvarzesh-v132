@@ -10,14 +10,14 @@ export class AuthController {
   constructor(private readonly auth: AuthUseCase) {}
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
-  @Post(API_ROUTES.auth.base.LOGIN)
+  @Post(API_ROUTES.auth.login)
   @UsePipes(new SanitizePipe(), new ValidationPipe({ whitelist: true, transform: true }))
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto.username, dto.password);
   }
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
-  @Post(API_ROUTES.auth.base.REFRESH)
+  @Post(API_ROUTES.auth.refresh)
   @UsePipes(new SanitizePipe(), new ValidationPipe({ whitelist: true, transform: true }))
   refresh(@Body() dto: RefreshDto) {
     return this.auth.refresh(dto.token);

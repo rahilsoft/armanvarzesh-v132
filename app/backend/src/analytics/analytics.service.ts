@@ -6,7 +6,6 @@ import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly cache: CacheService){}
   constructor(private prisma: PrismaService) {}
 
   async addKpi(userId: number, kpi: string, value: number): Promise<any> {

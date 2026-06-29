@@ -15,7 +15,7 @@ export class SafePrismaService extends PrismaClient {
   /** Only allow parameterized $executeRaw via Prisma.sql to avoid SQLi. */
   async exec(sql: Prisma.Sql): Promise<number> {
     try {
-      // @ts-expect-error types align at runtime
+      // @ts-ignore types align at runtime
       return await this.$executeRaw(sql);
     } catch (e: any) {
       this.logger.error(`$executeRaw failed: ${e?.message || e}`);
@@ -26,7 +26,7 @@ export class SafePrismaService extends PrismaClient {
   /** Only allow parameterized $queryRaw via Prisma.sql to avoid SQLi. */
   async query<T = unknown>(sql: Prisma.Sql): Promise<T> {
     try {
-      // @ts-expect-error types align at runtime
+      // @ts-ignore types align at runtime
       return await this.$queryRaw<T>(sql);
     } catch (e: any) {
       this.logger.error(`$queryRaw failed: ${e?.message || e}`);
