@@ -40,7 +40,7 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
 
   // Initialize custom telemetry (backwards compatibility)
-  await initTelemetry();
+  await initTelemetry('backend');
 
   const env = validateEnv(process.env);
   await initTelemetry('backend');
@@ -73,7 +73,7 @@ async function bootstrap() {
 
   // CORS (read from env, with logging if blocked)
   app.enableCors({
-    origin: (origin, cb) => {
+    origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
       const list = (process.env.CORS_ORIGINS || '')
         .split(',')
         .map((s) => s.trim())
@@ -97,14 +97,14 @@ async function bootstrap() {
 // AUTO (Stage14): basic health/ready endpoints (no deps)
 if (http && typeof http.get === 'function') {
   if (!http._auto_healthz) {
-    http.get('/healthz', (_req, res) => res.status(200).json({ ok: true }));
-    http.get('/readyz', (_req, res) => res.status(200).json({ ready: true }));
+    http.get('/healthz', (_req: any, res: any) => res.status(200).json({ ok: true }));
+    http.get('/readyz', (_req: any, res: any) => res.status(200).json({ ready: true }));
     http._auto_healthz = true;
   }
 }
 
-  app.set("etag", "strong");
-  app.use((req, res, next) => { if (req.method === "GET") { res.setHeader("Cache-Control", process.env.DEFAULT_CACHE || "public, max-age=60, stale-while-revalidate=300"); } next(); });
+  if (http && typeof http.set === 'function') http.set("etag", "strong");
+  app.use((req: any, res: any, next: any) => { if (req.method === "GET") { res.setHeader("Cache-Control", process.env.DEFAULT_CACHE || "public, max-age=60, stale-while-revalidate=300"); } next(); });
 
   
   // Replace basic rate limiter with a user‑aware, distributed limiter from @arman/security-middleware.
