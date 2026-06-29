@@ -8,13 +8,13 @@ import { UploadUrl, DownloadUrl } from './entities/upload.entity';
 export class UploadsResolver {
   constructor(private readonly storage: StorageService) {}
 
-  @Roles('user','coach','admin')
+  @Roles('user' as any,'coach','admin')
     @Mutation(() => UploadUrl)
   async createUploadUrl(@Args('input') input: CreateUploadUrlInput): Promise<UploadUrl> {
     return this.storage.createUploadUrl(input.key, input.contentType);
   }
 
-  @Roles('user','coach','admin')
+  @Roles('user' as any,'coach','admin')
     @Query(() => DownloadUrl)
   async signedDownloadUrl(@Args('key') key: string): Promise<DownloadUrl> {
     return this.storage.createDownloadUrl(key);

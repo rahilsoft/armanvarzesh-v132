@@ -10,13 +10,13 @@ export class AuthResolver {
 
   @Mutation(() => String)
   async login(@Args('input') input: LoginInput) {
-    const result = await this.authService.login(input);
+    const result = await this.authService.login(input as any);
     return result.accessToken;
   }
 
   @Mutation(() => String)
   async register(@Args('input') input: RegisterInput) {
-    const result = await this.authService.register(input);
+    const result = await this.authService.register(input as any);
     return result.accessToken;
   }
 }

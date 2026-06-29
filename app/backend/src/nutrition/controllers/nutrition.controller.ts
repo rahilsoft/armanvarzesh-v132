@@ -16,6 +16,6 @@ export class NutritionController {
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<any> {
-    return this.nutritionService.findOne(Number(id));
+    return this.nutritionService.findOne(String(id));
   }
 }

@@ -13,7 +13,7 @@ export class WebhookController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post('webhook')
-  async handle(@Req() req, @Res() res) {
+  async handle(@Req() req: any, @Res() res: any) {
     const secret = process.env.PAYMENT_WEBHOOK_SECRET || '';
     const sig = req.headers['x-signature'] as string | undefined;
     const raw = (req as any).rawBody || JSON.stringify(req.body || {});

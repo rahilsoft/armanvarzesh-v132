@@ -4,7 +4,7 @@ import type { AxiosError } from 'axios';
 // Replace with a real HTTP client later; for now keep shape minimal:
 async function httpPost(url: string, data: any, headers?: Record<string, string>): Promise<{ data: any }> {
   const axios = await import('axios');
-  const res = await http.default.post(url, data, { headers });
+  const res = await axios.default.post(url, data, { headers });
   return { data: res.data };
 }
 
