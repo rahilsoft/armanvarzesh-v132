@@ -39,6 +39,9 @@ importers:
 
   .:
     dependencies:
+      '@as-integrations/express4':
+        specifier: 1.1.2
+        version: 1.1.2(@apollo/server@5.0.0(graphql@16.9.0))(express@5.1.0)
       '@clickhouse/client':
         specifier: 1.4.0
         version: 1.4.0
@@ -4528,6 +4531,13 @@ packages:
 
   '@apollographql/graphql-playground-html@1.6.29':
     resolution: {integrity: sha512-xCcXpoz52rI4ksJSdOCxeOCn2DLocxwHf9dVT/Q90Pte1LX+LY+91SFtJF3KXVHH8kEin+g1KKCQPKBjZJfWNA==}
+
+  '@as-integrations/express4@1.1.2':
+    resolution: {integrity: sha512-PGeMcwoOKdYnZ4LtsmM7aLNoel3tbK8wKnfyahdRau1qb7wLbuaXB35zg3w34Ov4bm3WJtO3yzd8Bw5jVE+aIQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@apollo/server': 5.0.0
+      express: ^4.0.0
 
   '@assemblyscript/loader@0.19.23':
     resolution: {integrity: sha512-ulkCYfFbYj01ie1MDOyxv2F6SpRN1TOj7fQxbP07D6HmeR+gr2JLSmINKjga2emB+b1L2KGrFKBTc+e00p54nw==}
@@ -18909,6 +18919,11 @@ snapshots:
   '@apollographql/graphql-playground-html@1.6.29':
     dependencies:
       xss: 1.0.15
+
+  '@as-integrations/express4@1.1.2(@apollo/server@5.0.0(graphql@16.9.0))(express@5.1.0)':
+    dependencies:
+      '@apollo/server': 5.0.0(graphql@16.9.0)
+      express: 5.1.0
 
   '@assemblyscript/loader@0.19.23': {}
 

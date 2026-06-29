@@ -157,6 +157,7 @@
     "pnpm": ">=10 <11"
   },
   "dependencies": {
+    "@as-integrations/express4": "1.1.2",
     "@clickhouse/client": "1.4.0",
     "@nestjs/apollo": "13.1.0",
     "@nestjs/cache-manager": "2.2.2",

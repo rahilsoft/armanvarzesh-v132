@@ -60,3 +60,15 @@ model Attachment {
   createdAt  DateTime @default(now())
   message    Message  @relation(fields:[messageId], references:[id], onDelete: Cascade)
 }
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  threadId   String
+  senderId   String
+  senderRole String
+  body       String?
+  voiceUrl   String?
+  createdAt  DateTime @default(now())
+
+  @@index([threadId], map: "idx_chatmessage_thread")
+}
