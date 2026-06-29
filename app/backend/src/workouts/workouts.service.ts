@@ -31,6 +31,11 @@ export class WorkoutsService {
     return this.prisma.workout.findMany({ take: Number(process.env.API_DEFAULT_PAGE_SIZE) || 20,  where: { userId } });
   }
 
+  /** Alias for findByUser(), used by the GraphQL resolver. */
+  async findAllByUser(userId: number) {
+    return this.findByUser(userId);
+  }
+
   async findAll() {
     return this.prisma.workout.findMany();
   }

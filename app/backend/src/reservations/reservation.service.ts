@@ -82,3 +82,26 @@ export class ReservationService {
     return (this.prisma as any).reservation.findMany({ where, orderBy: { createdAt: 'asc' } });
   }
 }
+
+@Injectable()
+export class AvailabilityService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createAvailability(input: { coachId: number | string; startsAt: Date | string; endsAt: Date | string; rrule?: string }) {
+    return (this.prisma as any).availabilitySlot.create({
+      data: {
+        coachId: Number(input.coachId),
+        startsAt: new Date(input.startsAt),
+        endsAt: new Date(input.endsAt),
+        rrule: input.rrule ?? null,
+      },
+    });
+  }
+
+  async listCoachAvailability(coachId: number | string) {
+    return (this.prisma as any).availabilitySlot.findMany({
+      where: { coachId: Number(coachId) },
+      orderBy: { startsAt: 'asc' },
+    });
+  }
+}

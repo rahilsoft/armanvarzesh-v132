@@ -23,7 +23,7 @@ const sdk = new NodeSDK({
 
 sdk.start().then(() => {
   console.log(`[OTEL] SDK started for ${serviceName}`);
-}).catch(err => {
+}).catch((err: any) => {
   console.error('[OTEL] SDK failed to start', err);
 });
 
