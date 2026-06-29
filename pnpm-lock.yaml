@@ -45,6 +45,9 @@ importers:
       '@clickhouse/client':
         specifier: 1.4.0
         version: 1.4.0
+      '@graphql-tools/utils':
+        specifier: 10.5.4
+        version: 10.5.4(graphql@16.9.0)
       '@nestjs/apollo':
         specifier: 13.1.0
         version: 13.1.0(@apollo/gateway@2.11.2(encoding@0.1.13)(graphql@16.9.0))(@apollo/server@5.0.0(graphql@16.9.0))(@apollo/subgraph@2.11.2(graphql@16.9.0))(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.4)(@nestjs/graphql@13.1.0(@apollo/subgraph@2.11.2(graphql@16.9.0))(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.1.4)(class-transformer@0.5.1)(class-validator@0.14.1)(graphql@16.9.0)(reflect-metadata@0.2.2))(graphql@16.9.0)
@@ -123,6 +126,9 @@ importers:
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
+      execa:
+        specifier: 9.5.1
+        version: 9.5.1
       express-rate-limit:
         specifier: ^8.0.1
         version: 8.1.0(express@5.1.0)
@@ -135,6 +141,9 @@ importers:
       graphql-subscriptions:
         specifier: 2.0.0
         version: 2.0.0(graphql@16.9.0)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.9.0)
       helmet:
         specifier: ^7.1.0
         version: 7.2.0
@@ -6073,6 +6082,12 @@ packages:
 
   '@graphql-tools/schema@10.0.25':
     resolution: {integrity: sha512-/PqE8US8kdQ7lB9M5+jlW8AyVjRGCKU7TSktuW3WNKSKmDO0MK1wakvb5gGdyT49MjAIb4a3LWxIpwo5VygZuw==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      graphql: 16.9.0
+
+  '@graphql-tools/utils@10.5.4':
+    resolution: {integrity: sha512-XHnyCWSlg1ccsD8s0y6ugo5GZ5TpkTiFVNPSYms5G0s6Z/xTuSmiLBfeqgkfaCwLmLaQnRCmNDL2JRnqc2R5bQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: 16.9.0
@@ -12663,6 +12678,10 @@ packages:
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
+
+  execa@9.5.1:
+    resolution: {integrity: sha512-QY5PPtSonnGwhhHDNI7+3RvY285c7iuJFFB+lU+oEzMY/gEGJ808owqJsrr8Otd1E/x07po1LkUBmdAc5duPAg==}
+    engines: {node: ^18.19.0 || >=20.5.0}
 
   execa@9.6.0:
     resolution: {integrity: sha512-jpWzZ1ZhwUmeWRhS7Qv3mhpOhLfwI+uAX4e5fOcXqwMR7EcJ0pj2kV1CVzHVMX/LphnKWD3LObjZCoJ71lKpHw==}
@@ -21221,6 +21240,14 @@ snapshots:
     dependencies:
       '@graphql-tools/merge': 9.1.1(graphql@16.9.0)
       '@graphql-tools/utils': 10.9.1(graphql@16.9.0)
+      graphql: 16.9.0
+      tslib: 2.8.1
+
+  '@graphql-tools/utils@10.5.4(graphql@16.9.0)':
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
+      cross-inspect: 1.0.1
+      dset: 3.1.4
       graphql: 16.9.0
       tslib: 2.8.1
 
@@ -30565,6 +30592,21 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
+
+  execa@9.5.1:
+    dependencies:
+      '@sindresorhus/merge-streams': 4.0.0
+      cross-spawn: 7.0.6
+      figures: 6.1.0
+      get-stream: 9.0.1
+      human-signals: 8.0.1
+      is-plain-obj: 4.1.0
+      is-stream: 4.0.1
+      npm-run-path: 6.0.0
+      pretty-ms: 9.3.0
+      signal-exit: 4.1.0
+      strip-final-newline: 4.0.0
+      yoctocolors: 2.1.2
 
   execa@9.6.0:
     dependencies:

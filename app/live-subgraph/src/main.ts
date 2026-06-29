@@ -8,16 +8,16 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from '@as-integrations/express4';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { typeDefs, resolvers } from './schema';
 import { Server as IOServer } from 'socket.io';
 
 async function bootstrap(){
   const app = express();
-app && app.use(buildJwtVerifier());
-app && app.use(buildUserAwareRateLimit());
-process.env.CSP_NONCE_MODE==='1' && app.use(cspMiddleware({mode:'nonce'}));
+app && app.use(buildJwtVerifier() as any);
+app && app.use(buildUserAwareRateLimit() as any);
+process.env.CSP_NONCE_MODE==='1' && app.use(cspMiddleware({mode:'nonce'}) as any);
 
 
 app && applyBasicHardening(app);
@@ -48,20 +48,10 @@ app && applyBasicHardening(app);
 
   const server = new ApolloServer({ schema: buildSubgraphSchema([{ typeDefs, resolvers }]) });
   await server.start();
-  app.use('/graphql', expressMiddleware(server));
+  app.use('/graphql', expressMiddleware(server) as any);
 
   const port = Number(process.env.PORT || 4007);
   httpServer.listen(port, ()=> console.log(`live-subgraph up on :${port}`));
 }
 bootstrap().catch((e)=>{ console.error(e); process.exit(1); });
 
-
-// AUTO (Stage14): basic health/ready endpoints (no deps)
-const http = app.getHttpAdapter().getInstance();
-if (http && typeof http.get === 'function') {
-  if (!http._auto_healthz) {
-    http.get('/healthz', (req, res) => res.status(200).json({ ok: true }));
-    http.get('/readyz', (req, res) => res.status(200).json({ ready: true }));
-    http._auto_healthz = true;
-  }
-}

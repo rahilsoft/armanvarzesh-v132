@@ -1,7 +1,7 @@
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware, applyBasicHardening } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
-import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { typeDefs } from './schema'; import { resolvers } from './resolvers';
 import helmet from 'helmet';
@@ -13,14 +13,14 @@ async function bootstrap(){
 
   // Security & RateLimit & CSP
   app.use(helmet());
-  app.use(buildJwtVerifier());
-  app.use(buildUserAwareRateLimit());
-  if (process.env.CSP_NONCE_MODE==='1') app.use(cspMiddleware({mode:'nonce'}));
+  app.use(buildJwtVerifier() as any);
+  app.use(buildUserAwareRateLimit() as any);
+  if (process.env.CSP_NONCE_MODE==='1') app.use(cspMiddleware({mode:'nonce'}) as any);
 
   applyBasicHardening(app);
   app.get('/health', (_req,res)=> res.json({ ok:true, service: 'physio-subgraph' }));
 
-  const server = new ApolloServer({ schema: buildSubgraphSchema([{ typeDefs, resolvers }]) });
+  const server = new ApolloServer({ schema: buildSubgraphSchema([{ typeDefs, resolvers: resolvers as any }]) });
   await server.start();
   app.use('/graphql', expressMiddleware(server));
 

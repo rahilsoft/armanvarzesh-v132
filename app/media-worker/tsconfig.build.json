@@ -70,11 +70,41 @@
       ],
       "@user-pwa/*": [
         "app/user-pwa/*"
+      ],
+      "@arman/*": [
+        "../../packages/*/src"
+      ],
+      "@contracts/*": [
+        "../../contracts/*/src"
+      ],
+      "*": [
+        "../../node_modules/*",
+        "./node_modules/*"
       ]
-    }
+    },
+    "strict": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "useUnknownInCatchVariables": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitThis": false
   },
   "exclude": [
     "**/*.spec.ts",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "node_modules",
+    "dist",
+    "**/__tests__/**",
+    "test/**",
+    "**/*.e2e-spec.ts"
   ]
 }

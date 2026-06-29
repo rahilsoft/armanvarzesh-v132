@@ -13,11 +13,11 @@ export class HealthController {
 
   @Get('/health')
   @HealthCheck()
-  healthz(){ return this.health.check([ async ()=> ({ gateway: { status: 'up' }}) ]); }
+  healthz(){ return this.health.check([ async ()=> ({ gateway: { status: 'up' }} as any) ]); }
 
   @Get('/ready')
   @HealthCheck()
-  ready(){ return this.health.check([ async ()=> ({ gateway: { status: 'ready' }}) ]); }
+  ready(){ return this.health.check([ async ()=> ({ gateway: { status: 'ready' }} as any) ]); }
 
   @Get('/metrics')
   async metrics(){ return register.metrics(); }

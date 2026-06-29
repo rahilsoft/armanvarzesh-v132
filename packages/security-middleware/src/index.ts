@@ -73,3 +73,12 @@ export function buildSecurityMiddleware(opts: SecurityOptions = {}): {
     hpp: hpp() as unknown as RequestHandler,
   };
 }
+
+/**
+ * Build a configured CORS middleware. Accepts `{ origins }` (array) or falls
+ * back to `CORS_ORIGIN` / wildcard.
+ */
+export function buildCors(opts: { origins?: (string | RegExp)[]; credentials?: boolean } = {}): RequestHandler {
+  const origin = opts.origins && opts.origins.length ? opts.origins : (process.env.CORS_ORIGIN ?? '*');
+  return cors({ origin: origin as any, credentials: opts.credentials ?? true }) as unknown as RequestHandler;
+}
