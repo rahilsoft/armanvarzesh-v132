@@ -114,23 +114,37 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: verify
-    if: ${{ hashFiles('playwright.config.*', 'e2e/**', 'ui-tests/**') != '' }}
     steps:
       - uses: actions/checkout@v4
+      # Skip the rest of the job unless an e2e harness is actually present.
+      # (hashFiles cannot be used in a job-level `if:`, so gate at step level.)
+      - id: detect
+        run: |
+          if ls playwright.config.* >/dev/null 2>&1 || [ -d e2e ] || [ -d ui-tests ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
       - uses: pnpm/action-setup@v4
+        if: steps.detect.outputs.present == 'true'
         with:
           version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
+        if: steps.detect.outputs.present == 'true'
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
       - name: Install dependencies
+        if: steps.detect.outputs.present == 'true'
         run: pnpm install --no-frozen-lockfile
       - name: Build web-site
+        if: steps.detect.outputs.present == 'true'
         run: pnpm --filter ./apps/web-site run build || true
       - name: Install Playwright browser
+        if: steps.detect.outputs.present == 'true'
         run: npx playwright install --with-deps chromium
       - name: Run Playwright
+        if: steps.detect.outputs.present == 'true'
         run: npx playwright test || true
       - name: Upload report
         if: always()
