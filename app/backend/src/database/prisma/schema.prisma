@@ -427,3 +427,42 @@ model Course {
   specialist   Specialist @relation(fields: [specialistId], references: [id])
   @@index([specialistId], map: "idx_Course_specialistId")
 }
+
+model Experiment {
+  id         Int      @id @default(autoincrement())
+  name       String
+  hypothesis String?
+  createdAt  DateTime @default(now())
+}
+
+model Refund {
+  id               Int      @id @default(autoincrement())
+  paymentId        Int
+  amountCents      Int
+  providerRefundId String?
+  createdAt        DateTime @default(now())
+
+  @@index([paymentId], map: "idx_Refund_paymentId")
+}
+
+model WebhookEvent {
+  id          Int       @id @default(autoincrement())
+  eventId     String    @unique
+  provider    String?
+  payload     Json?
+  processedAt DateTime?
+  success     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model Subscription {
+  id               Int       @id @default(autoincrement())
+  userId           String
+  provider         String
+  externalId       String
+  status           String
+  currentPeriodEnd DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@unique([provider, externalId], name: "provider_externalId")
+}

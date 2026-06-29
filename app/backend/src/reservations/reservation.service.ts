@@ -56,4 +56,29 @@ export class ReservationService {
     const updated = await this.prisma.reservation.update({ where: { id_version: { id: reservationId, version: found.version } }, data: { status: 'CANCELED', version: { increment: 1 } } });
     return updated as any;
   }
+
+  async listByUser(userId: number) {
+    if (this.isMemory()) {
+      return Array.from(mem.reservations.values()).filter((r) => String(r.userId) === String(userId));
+    }
+    return (this.prisma as any).reservation.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  async listByCoach(coachId: number) {
+    if (this.isMemory()) return [];
+    return (this.prisma as any).reservation.findMany({ where: { coachId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  async findUpcomingSessions(rangeStart?: Date, rangeEnd?: Date) {
+    if (this.isMemory()) {
+      return Array.from(mem.reservations.values()).filter((r) => r.status === 'ACTIVE');
+    }
+    const where: any = { status: 'ACTIVE' };
+    if (rangeStart || rangeEnd) {
+      where.startsAt = {};
+      if (rangeStart) where.startsAt.gte = rangeStart;
+      if (rangeEnd) where.startsAt.lt = rangeEnd;
+    }
+    return (this.prisma as any).reservation.findMany({ where, orderBy: { createdAt: 'asc' } });
+  }
 }

@@ -25,4 +25,14 @@ export class WalletService {
   async debit(userId: number, amount: number) {
     return this.prisma.wallet.update({ where: { userId }, data: { balance: { decrement: amount } } });
   }
+
+  /** Add credit to a user's wallet (creating it if needed). */
+  async addCredit(userId: number, amount: number) {
+    return this.upsert(userId, amount);
+  }
+
+  /** Withdraw funds from a user's wallet. */
+  async withdraw(userId: number, amount: number) {
+    return this.debit(userId, amount);
+  }
 }

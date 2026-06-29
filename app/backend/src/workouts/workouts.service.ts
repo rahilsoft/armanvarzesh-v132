@@ -34,4 +34,25 @@ export class WorkoutsService {
   async findAll() {
     return this.prisma.workout.findMany();
   }
+
+  /** Alias for remove(), used by the GraphQL resolver. */
+  async delete(id: number) {
+    return this.remove(id);
+  }
+
+  /**
+   * Record the actual performance data for a workout by merging it into the
+   * workout's JSON `data` field under an `actual` key.
+   */
+  async logActual(id: number, input: any) {
+    const existing = await this.prisma.workout.findUniqueOrThrow({ where: { id } });
+    const current =
+      existing.data && typeof existing.data === 'object' && !Array.isArray(existing.data)
+        ? (existing.data as Record<string, unknown>)
+        : {};
+    return this.prisma.workout.update({
+      where: { id },
+      data: { data: { ...current, actual: input ?? null } as Prisma.JsonValue },
+    });
+  }
 }
