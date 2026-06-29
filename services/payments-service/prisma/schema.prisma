@@ -51,7 +51,7 @@ model Order {
 
 model Subscription {
   id          String   @id
-  userId      String
+  userId      String   @unique
   planId      String
   status      String   @default("active") // active|canceled
   startedAt   DateTime

@@ -7,40 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Exercise {
+model WorkoutPlan {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  userId      Int?
+  createdAt   DateTime   @default(now())
+  exercises   Exercise[]
+  workouts    Workout[]
+}
 
-  id        String   @id @default(uuid())
+model Exercise {
+  id        Int         @id @default(autoincrement())
+  planId    Int
+  plan      WorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
   name      String
-  muscle    String
-  level     String   // beginner/intermediate/advanced
-  equipment String[] // e.g. ["dumbbell","barbell","bodyweight"]
-  createdAt DateTime @default(now())
-  items     WorkoutItem[]
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  restTime  Int?
+  notes     String?
+  createdAt DateTime    @default(now())
+
+  @@index([planId], map: "idx_Exercise_planId")
 }
 
 model Workout {
+  id        Int          @id @default(autoincrement())
+  planId    Int?
+  plan      WorkoutPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  userId    Int
+  date      DateTime     @default(now())
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  notes     String?
+  mediaUrl  String?
+  createdAt DateTime     @default(now())
 
-  id        String   @id @default(uuid())
-  userId    String
-  title     String
-  level     String
-  goal      String    // strength/hypertrophy/fatloss
-  createdAt DateTime @default(now())
-  items     WorkoutItem[]
   @@index([userId], map: "idx_Workout_userId")
-}
-
-model WorkoutItem {
-
-  id         String   @id @default(uuid())
-  workout    Workout  @relation(fields: [workoutId], references: [id])
-  workoutId  String
-  exercise   Exercise @relation(fields: [exerciseId], references: [id])
-  exerciseId String
-  sets       Int      @default(3)
-  reps       Int      @default(12)
-  restSec    Int      @default(60)
-  orderIdx   Int
-  @@index([workoutId], map: "idx_WorkoutItem_workoutId")
-  @@index([exerciseId], map: "idx_WorkoutItem_exerciseId")
 }
