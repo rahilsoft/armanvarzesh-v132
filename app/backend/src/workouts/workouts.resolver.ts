@@ -39,7 +39,7 @@ export class WorkoutsResolver {
     @Args('userId', { type: () => Int }) userId: number,
     @Args('input') input: CreateWorkoutInput
   ) {
-    return this.workoutsService.create(userId, input);
+    return this.workoutsService.create({ title: input.title, data: input as any, userId });
   }
 
   @Mutation(() => Workout)

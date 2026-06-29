@@ -27,7 +27,7 @@ export class JwtKidService {
   sign(payload: any, expiresIn = process.env.JWT_EXPIRES_IN || '3600s'): string {
     const secret = this.keys[this.active];
     if (!secret) throw new Error('No secret for active kid');
-    return jwt.sign(payload, secret, { algorithm: this.alg, header: { kid: this.active }, expiresIn });
+    return jwt.sign(payload, secret, { algorithm: this.alg, header: { alg: this.alg, kid: this.active }, expiresIn } as any);
   }
 
   /** Verify a JWT using the appropriate key. If asymmetric, prefer JWT_PUBLIC_KEYS env. */

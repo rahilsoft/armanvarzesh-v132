@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class CoachesService {
   constructor(private prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<Coach | undefined> {
+  async findByEmail(email: string): Promise<any> {
     return this.prisma.coach.findUnique({ where: { email } });
   }
   async create(coach: any): Promise<any> {

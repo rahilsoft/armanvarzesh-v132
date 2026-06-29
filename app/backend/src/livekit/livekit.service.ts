@@ -43,11 +43,11 @@ export class LivekitService {
     if (options?.livestreamUrl) {
       return egress.startRoomCompositeEgress(roomName, {
         livestreamOutputs: [{ url: options.livestreamUrl }],
-      });
+      } as any);
     }
     return egress.startRoomCompositeEgress(roomName, {
       fileOutputs: [{ filename: options?.filepath || `recordings/${roomName}-${Date.now()}.mp4` }],
-    });
+    } as any);
   }
 
   async stopEgress(egressId: string) {

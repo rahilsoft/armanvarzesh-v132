@@ -78,7 +78,12 @@ export class NotificationsService {
 
   /** Fetch a user's notification channel preferences (defaults when unset). */
   async getPreferences(userId: string | number) {
-    return { userId: String(userId), channels: { push: true, email: true, sms: false } };
+    return {
+      userId: String(userId),
+      marketingOptIn: false,
+      channels: ['push', 'email'] as Array<'push' | 'web' | 'email'>,
+      updatedAt: new Date().toISOString(),
+    };
   }
 
   /** Persist a user's notification channel preferences. */

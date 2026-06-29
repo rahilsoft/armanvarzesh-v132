@@ -86,7 +86,7 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
     return { authority, amount, status: ok ? 'paid' : 'failed', ok };
   }
 
-  async listByUser(input: { userId: string | number; limit?: number; cursor?: string }) {
+  async listByUser(input: { userId: string | number; limit?: number; cursor?: string }): Promise<{ items: any[]; nextCursor: string | null }> {
     const limit = input.limit ?? 20;
     const rows = await this.prisma.query<any>(
       Prisma.sql`SELECT id, "userId", amount, authority, status, "createdAt" FROM "Payment" WHERE "userId" = ${Number(input.userId)} ORDER BY "createdAt" DESC LIMIT ${limit}`,
@@ -115,7 +115,7 @@ export async function toNextCursor(rows: PaymentRow[]): Promise<string | null> {
 export class PaymentsServiceExtended extends PaymentsService {
   async listByUser(input: ListPaymentsInput): Promise<{ items: PaymentRow[]; nextCursor: string | null }> {
     const limit = Math.max(1, Math.min(200, Number(input.limit ?? 20)));
-    const cur = decodeCursor(input.cursor);
+    const cur = decodeCursor(input.cursor) ?? undefined;
     const sql = Prisma.sql`
       SELECT id, user_id, amount_cents, currency, status, created_at, idempotency_key
       FROM payments
@@ -124,7 +124,7 @@ export class PaymentsServiceExtended extends PaymentsService {
       ORDER BY created_at DESC, id DESC
       LIMIT ${limit}
     `;
-    const items = await (this as any).prisma.query<PaymentRow>(sql);
+    const items = await (this as any).prisma.query(sql) as PaymentRow[];
     const nextCursor = await toNextCursor(items);
     return { items, nextCursor };
   }

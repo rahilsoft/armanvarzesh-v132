@@ -13,9 +13,7 @@ export class PaymentService {
 
     const res = await this.zarinpal.requestPayment(
       input.amount,
-      callbackUrl,
-      'Payment for ArmanVarzesh',
-      '', ''
+      'Payment for ArmanVarzesh'
     );
 
     if (res.Status !== 100) {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const EnvSchema = z.object({
   NODE_ENV: z.enum(['development','test','staging','production']).default('development'),
-  PORT: z.string().regex(/^\d+$/).transform(Number).default('3000'),
+  PORT: z.string().regex(/^\d+$/).default('3000').transform(Number),
   DATABASE_URL: z.string().url().or(z.string().startsWith('postgres')).describe('PostgreSQL connection string'),
   REDIS_URL: z.string().optional(),
   JWT_ISSUER: z.string().optional(),

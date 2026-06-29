@@ -21,7 +21,7 @@ function safeFindUser(users: AdminUser[], username: string): AdminUser | undefin
 @Controller('admin')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class AdminController {
-  @Throttle(5, 60)
+  @Throttle({ default: { limit: 5, ttl: 60 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(@Body() body: AdminLoginDto) {

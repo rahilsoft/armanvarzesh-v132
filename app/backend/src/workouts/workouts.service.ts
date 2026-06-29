@@ -7,7 +7,7 @@ export class WorkoutsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: { title: string; data?: Prisma.JsonValue; userId?: number }) {
-    return this.prisma.workout.create({ data: { title: data.title, data: data.data ?? undefined, userId: data.userId ?? undefined } });
+    return this.prisma.workout.create({ data: { title: data.title, data: (data.data ?? undefined) as Prisma.InputJsonValue, userId: data.userId ?? undefined } });
   }
 
   async update(id: number, data: Partial<{ title: string; data: Prisma.JsonValue; userId: number }>) {
@@ -57,7 +57,7 @@ export class WorkoutsService {
         : {};
     return this.prisma.workout.update({
       where: { id },
-      data: { data: { ...current, actual: input ?? null } as Prisma.JsonValue },
+      data: { data: { ...current, actual: input ?? null } as Prisma.InputJsonValue },
     });
   }
 }
