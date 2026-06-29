@@ -91,3 +91,7 @@ coverage
 # Build artifacts
 *.tsbuildinfo
 apps/web-site/public/fallback-*.js
+
+# Prisma generated clients (regenerated via prisma generate)
+**/prisma/generated/
+src/database/prisma/generated/
