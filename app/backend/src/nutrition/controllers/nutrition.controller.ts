@@ -9,13 +9,13 @@ export class NutritionController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get()
-  async findAll(): Promise<Meal[]> {
+  async findAll(): Promise<any[]> {
     return this.nutritionService.findAll();
   }
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Meal> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.nutritionService.findOne(Number(id));
   }
 }

@@ -9,13 +9,13 @@ export class ExperimentsController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get()
-  async findAll(): Promise<Experiment[]> {
+  async findAll(): Promise<any[]> {
     return this.experimentsService.findAll();
   }
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Experiment> {
+  async findOne(@Param('id') id: number): Promise<any> {
     return this.experimentsService.findOne(Number(id));
   }
 }

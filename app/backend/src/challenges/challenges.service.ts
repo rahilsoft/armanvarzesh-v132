@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class ChallengesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Challenge>): Promise<Challenge> {
+  async create(input: Partial<Challenge>): Promise<any> {
     return this.prisma.challenge.create({ data: { name: input.name, description: input.description, duration: input.duration, createdAt: new Date() } });
   }
   async join(userId: number, challengeId: number): Promise<boolean> {
@@ -15,17 +15,17 @@ export class ChallengesService {
     const challenge = await this.prisma.challenge.findUnique({ where: { id: challengeId } });
     return !!challenge;
   }
-  async findAll(): Promise<Challenge[]> {
+  async findAll(): Promise<any[]> {
     return this.prisma.challenge.findMany();
   }
-  async findOne(id: number): Promise<Challenge> {
+  async findOne(id: number): Promise<any> {
     return this.prisma.challenge.findUnique({ where: { id } });
   }
 
   /**
    * Update an existing challenge. Returns the updated challenge or null if not found.
    */
-  async update(id: number, input: Partial<Challenge>): Promise<Challenge> {
+  async update(id: number, input: Partial<Challenge>): Promise<any> {
     return this.prisma.challenge.update({ where: { id }, data: { name: input.name, description: input.description, duration: input.duration } });
   }
 

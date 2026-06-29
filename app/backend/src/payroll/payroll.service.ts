@@ -7,20 +7,20 @@ import { PrismaService } from '../database/prisma.service';
 export class PayrollService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Payroll>): Promise<Payroll> {
+  async create(input: Partial<Payroll>): Promise<any> {
     return this.prisma.payroll.create({ data: { coachName: input.coachName, amount: input.amount, period: input.period, createdAt: new Date() } });
   }
-  async findAll(): Promise<Payroll[]> {
+  async findAll(): Promise<any[]> {
     return this.prisma.payroll.findMany();
   }
-  async findOne(id: number): Promise<Payroll> {
+  async findOne(id: number): Promise<any> {
     return this.prisma.payroll.findUnique({ where: { id } });
   }
 
   /**
    * Update an existing payroll record. Returns the updated record or null.
    */
-  async update(id: number, input: Partial<Payroll>): Promise<Payroll> {
+  async update(id: number, input: Partial<Payroll>): Promise<any> {
     return this.prisma.payroll.update({ where: { id }, data: { coachName: input.coachName, amount: input.amount, period: input.period } });
   }
 

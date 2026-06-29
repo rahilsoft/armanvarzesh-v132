@@ -7,7 +7,7 @@ import { PrismaService } from '../database/prisma.service';
 export class AiService {
   constructor(private prisma: PrismaService) {}
 
-  async generateWorkoutPlan(userId: number, input: any): Promise<AiEntity> {
+  async generateWorkoutPlan(userId: number, input: any): Promise<any> {
     // Persist the generated plan using Prisma. This simple implementation
     // stores the plan text and associates it with the user. In a real
     // scenario, `input` could be used to customize the plan.
@@ -26,7 +26,7 @@ export class AiService {
    * string, but in a real system you would use `input` to tailor the
    * recommendations to the user's goals and dietary preferences.
    */
-  async generateNutritionPlan(userId: number, input: any): Promise<AiEntity> {
+  async generateNutritionPlan(userId: number, input: any): Promise<any> {
     return this.prisma.aiEntity.create({
       data: {
         userId,
@@ -35,7 +35,7 @@ export class AiService {
       }
     });
   }
-  async getLatestPlan(userId: number): Promise<AiEntity> {
+  async getLatestPlan(userId: number): Promise<any> {
     // Retrieve the latest plan by ordering by creation date descending.
     return this.prisma.aiEntity.findFirst({
       where: { userId },

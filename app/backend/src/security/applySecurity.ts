@@ -1,6 +1,6 @@
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { JwtKidService } from './security/jwt-rotator.service';
+import { JwtKidService } from './jwt-rotator.service';
 
 export function applySecurity(app: any) {
   app.use(helmet({

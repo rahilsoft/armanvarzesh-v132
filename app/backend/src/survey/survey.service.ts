@@ -7,20 +7,20 @@ import { PrismaService } from '../database/prisma.service';
 export class SurveyService {
   constructor(private prisma: PrismaService) {}
 
-  async create(input: Partial<Survey>): Promise<Survey> {
+  async create(input: Partial<Survey>): Promise<any> {
     return this.prisma.survey.create({ data: { title: input.title, question: input.question, createdAt: new Date() } });
   }
-  async findAll(): Promise<Survey[]> {
+  async findAll(): Promise<any[]> {
     return this.prisma.survey.findMany();
   }
-  async findOne(id: number): Promise<Survey> {
+  async findOne(id: number): Promise<any> {
     return this.prisma.survey.findUnique({ where: { id } });
   }
 
   /**
    * Update an existing survey. Returns the updated survey or null if not found.
    */
-  async update(id: number, input: Partial<Survey>): Promise<Survey> {
+  async update(id: number, input: Partial<Survey>): Promise<any> {
     return this.prisma.survey.update({ where: { id }, data: { title: input.title, question: input.question } });
   }
 
