@@ -66,7 +66,7 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
   // Rate limit (per IP) - overridable via env
   const windowMs = Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000);
   const max = Number(process.env.RATE_LIMIT_MAX || 100);
-  app.use(rateLimit({ windowMs, max, standardHeaders: true, legacyHeaders: false }));
+  app.use(rateLimit({ windowMs, max, standardHeaders: true, legacyHeaders: false }) as any);
 
   // Prometheus registry + HTTP metrics
   const registry = new Registry();
