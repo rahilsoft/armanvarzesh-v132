@@ -1,35 +1,40 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import type { Request } from 'express';
+import { AuthService, SessionContext } from './auth.service';
 import { LoginDto, RegisterDto, RefreshDto } from './auth.dto';
 import { JwtAuthGuard } from './jwt.guard';
+
+function contextOf(req: Request): SessionContext {
+  return {
+    userAgent: req.headers['user-agent'],
+    ip: req.ip,
+  };
+}
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    return this.auth.register(dto.email, dto.password);
+  async register(@Body() dto: RegisterDto, @Req() req: Request) {
+    return this.auth.register(dto.email, dto.password, contextOf(req));
   }
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.auth.login(dto.email, dto.password);
+  async login(@Body() dto: LoginDto, @Req() req: Request) {
+    return this.auth.login(dto.email, dto.password, contextOf(req));
   }
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
 
+  // No access-token guard: the refresh token authenticates this call itself
+  // (the access token is expected to be expired by the time it is used).
   @Post('refresh')
-  @UseGuards(JwtAuthGuard)
-  async refresh(@Req() req: any, @Body() dto: RefreshDto) {
-    return this.auth.refresh(req.user.sub, dto.refreshToken);
+  async refresh(@Body() dto: RefreshDto, @Req() req: Request) {
+    return this.auth.refresh(dto.refreshToken, contextOf(req));
   }
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  me(@Req() req: any) {
+  me(@Req() req: Request & { user: { sub: string; email: string } }) {
     return { userId: req.user.sub, email: req.user.email };
   }
 }

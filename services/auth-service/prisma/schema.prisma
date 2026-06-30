@@ -40,10 +40,19 @@ model RefreshToken {
   id           String   @id @default(uuid())
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  tokenHash    String   @unique
+  // Split-token model: the client holds `selector.verifier`. `selector` is a
+  // public, indexed lookup key; `verifierHash` is the argon2 hash of the secret
+  // half (argon2 is salted, so we can never query by it — hence the selector).
+  selector     String   @unique
+  verifierHash String
   createdAt    DateTime @default(now())
   expiresAt    DateTime
   revokedAt    DateTime?
+  // Rotation lineage: set when this token is rotated, enabling reuse/theft
+  // detection (a revoked token being presented for refresh).
+  replacedById String?
+  userAgent    String?
+  ip           String?
   @@index([userId], map: "idx_RefreshToken_userId")
 }
 model Device {
