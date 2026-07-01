@@ -14,10 +14,19 @@ model User {
   email     String    @unique
   name      String
   password  String?
+  // Canonical credential hash (argon2) for first-party user auth. `password`
+  // is retained only for legacy rows and is not used by the auth flow.
+  passwordHash     String?
   role      String?
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?
   createdAt DateTime  @default(now())
 
   // relations
+  sessions            Session[]
+  refreshTokens       RefreshToken[]
+  devices             Device[]
+  passwordResetTokens PasswordResetToken[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -466,4 +475,64 @@ model Subscription {
   createdAt        DateTime  @default(now())
 
   @@unique([provider, externalId], name: "provider_externalId")
+}
+
+// ---------------------------------------------------------------------------
+// Auth domain (canonical). Ported from the former services/auth-service using
+// the modular-monolith core (Int primary keys). Security-critical design:
+// - passwords hashed with argon2 (stored on User.passwordHash)
+// - refresh tokens use the split selector/verifier model with rotation and
+//   reuse/theft detection (see auth module).
+// ---------------------------------------------------------------------------
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Session_userId")
+}
+
+model RefreshToken {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  // Split-token model: the client holds `selector.verifier`. `selector` is a
+  // public, indexed lookup key; `verifierHash` is the argon2 hash of the secret
+  // half (argon2 is salted, so we can never query by it — hence the selector).
+  selector     String    @unique
+  verifierHash String
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  // Rotation lineage: set when this token is rotated, enabling reuse/theft
+  // detection (a revoked token being presented for refresh).
+  replacedById Int?
+  userAgent    String?
+  ip           String?
+  @@index([userId], map: "idx_RefreshToken_userId")
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  name      String?
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Device_userId")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  @@index([userId], map: "idx_PasswordResetToken_userId")
 }
