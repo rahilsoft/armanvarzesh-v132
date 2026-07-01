@@ -24,6 +24,7 @@ import { ChatModule } from './chat/chat.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { AppCacheModule } from './cache/cache.module';
 import { AdminController } from './auth/admin.controller';
+import { UserAuthModule } from './auth/user-auth.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -51,6 +52,7 @@ import { AdminController } from './auth/admin.controller';
     NutritionModule,
     ChatModule,
     ReviewsModule,
+    UserAuthModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
