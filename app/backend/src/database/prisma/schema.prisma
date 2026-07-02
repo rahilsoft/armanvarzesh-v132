@@ -47,6 +47,8 @@ model User {
   appointments        Appointment[]
   physioAssignments   PhysioAssignment[]
   romMeasures         RomMeasure[]
+  enrollments         CourseEnrollment[]
+  certificates        Certificate[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -473,9 +475,15 @@ model Course {
   specialistId Int
   title        String
   description  String?
+  // LMS fields folded from services/courses-service
+  summary      String?
+  difficulty   String?
   price        Int
   duration     Int
   createdAt    DateTime   @default(now())
+  assets       CourseAsset[]
+  enrollments  CourseEnrollment[]
+  certificates Certificate[]
 
   specialist   Specialist @relation(fields: [specialistId], references: [id])
   @@index([specialistId], map: "idx_Course_specialistId")
@@ -1042,4 +1050,47 @@ model RomMeasure {
   angle     Int
   createdAt DateTime @default(now())
   @@index([userId, createdAt], map: "idx_RomMeasure_user_time")
+}
+
+
+// ---------------------------------------------------------------------------
+// Courses/LMS domain — encrypted course assets, enrollments and verifiable
+// certificates. Folded from services/courses-service (schema; its service was
+// an in-memory stub) and services/certificate-service (JWT+QR issue/verify).
+// The two Certificate shapes are merged into one canonical model.
+// ---------------------------------------------------------------------------
+model CourseAsset {
+  id        Int      @id @default(autoincrement())
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId  Int
+  idx       Int
+  encUrl    String   // encrypted chunk URL (signed)
+  durationS Int
+  createdAt DateTime @default(now())
+  @@index([courseId, idx], map: "idx_CourseAsset_course_idx")
+}
+
+model CourseEnrollment {
+  id         Int      @id @default(autoincrement())
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId   Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  enrolledAt DateTime @default(now())
+  @@unique([courseId, userId])
+}
+
+model Certificate {
+  id       Int      @id @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  course   Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  courseId Int?
+  kind     String   @default("course")
+  code     String   @unique
+  qrToken  String
+  payload  Json?
+  revoked  Boolean  @default(false)
+  issuedAt DateTime @default(now())
+  @@index([userId], map: "idx_Certificate_user")
 }
