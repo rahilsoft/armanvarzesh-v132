@@ -1,5 +1,4 @@
 import { Logger } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 
 export abstract class BaseRepository {
   protected readonly logger = new Logger(this.constructor.name);

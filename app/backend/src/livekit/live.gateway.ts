@@ -14,13 +14,18 @@ export class LiveGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   private logger = new Logger('LiveGateway');
   private kicked = new Map<string, Set<string>>(); // room -> identities kicked
 
-  afterInit(...args:any[]){
+  afterInit(..._args:any[]){
     try{
       const url = process.env.REDIS_TLS_URL || process.env.REDIS_URL;
       if (url){
         const pub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
         const sub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
-        // @ts-ignore
+        // Optional dependency: only present when the Redis-backed socket.io
+        // adapter is deployed; the surrounding try/catch keeps single-node
+        // setups working without it. (The old code referenced createAdapter
+        // without any import — it could never have worked; @ts-ignore hid it.)
+        // eslint-disable-next-line @typescript-eslint/no-var-requires -- optional runtime dependency, loaded lazily
+        const { createAdapter } = require('@socket.io/redis-adapter');
         this.server.adapter(createAdapter(pub, sub, { key: process.env.LIVE_WS_REDIS_PREFIX || 'socketio' }));
       }
     }catch(e){ /* ignore */ }

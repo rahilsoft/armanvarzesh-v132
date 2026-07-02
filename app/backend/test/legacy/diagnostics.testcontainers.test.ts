@@ -2,7 +2,7 @@ import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import request from 'supertest';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../../src/app.module';
 import helmet from "helmet";
 
 let pg: StartedTestContainer;

@@ -24,7 +24,7 @@ export class ReservationsResolver {
 
   @Mutation(() => Reservation)
   async bookReservation(@Args('input') input: CreateReservationInput) {
-    const data = await this.resv.reserve(input.userId, input.slotId);
+    const _data = await this.resv.reserve(input.userId, input.slotId);
     return {
       id: 'resv_'+Date.now(),
       userId: input.userId,

@@ -1,6 +1,6 @@
 
 export class WorkoutEngine {
-  static buildPlan(goal: string, fitnessLevel?: string): string {
+  static buildPlan(goal: string, _fitnessLevel?: string): string {
     // Real implementation would use ML, stats, etc.
     if (goal === 'fat-loss') {
       return 'Fat-loss HIIT plan: 4x/week, 30 min';

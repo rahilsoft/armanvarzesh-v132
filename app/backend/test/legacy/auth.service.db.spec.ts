@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../../src/auth/auth.service';
 import { UsersService } from '../../src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
 
 jest.mock('argon2', () => ({
   verify: jest.fn(async (hash: string, plain: string) => plain === 'okpwd'),

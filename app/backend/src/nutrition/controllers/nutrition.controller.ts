@@ -1,7 +1,6 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { NutritionService } from '../nutrition.service';
-import { Meal } from '../entities/meal.entity';
 
 @Controller('meals')
 export class NutritionController {

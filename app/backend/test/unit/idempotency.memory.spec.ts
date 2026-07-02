@@ -1,4 +1,4 @@
-import { IdempotencyService } from '../src/common/idempotency/idempotency.service';
+import { IdempotencyService } from '../../src/common/idempotency/idempotency.service';
 
 describe('IdempotencyService (memory)', () => {
   beforeAll(() => { process.env.REDIS_URL = 'memory://local'; process.env.IDEMPOTENCY_TTL = '10'; });

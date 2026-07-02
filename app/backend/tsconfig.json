@@ -34,12 +34,6 @@
       "@coach-pwa/*": [
         "app/coach-pwa/*"
       ],
-      "activity-subgraph/*": [
-        "app/activity-subgraph/*"
-      ],
-      "@activity-subgraph/*": [
-        "app/activity-subgraph/*"
-      ],
       "user-app/*": [
         "app/user-app/*"
       ],

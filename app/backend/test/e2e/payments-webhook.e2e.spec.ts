@@ -1,11 +1,12 @@
 import { Test } from '@nestjs/testing';
+import bodyParser from 'body-parser';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import * as crypto from 'crypto';
-import { PaymentsController } from '../src/payments/payments.controller';
-import { PaymentsService } from '../src/payments/payments.service';
-import { IdempotencyService } from '../src/common/idempotency/idempotency.service';
-import { WebhookSignatureGuard } from '../src/common/webhook/webhook-signature.guard';
+import { PaymentsController } from '../../src/payments/payments.controller';
+import { PaymentsService } from '../../src/payments/payments.service';
+import { IdempotencyService } from '../../src/common/idempotency/idempotency.service';
+import { WebhookSignatureGuard } from '../../src/common/webhook/webhook-signature.guard';
 
 describe('Payments Webhook E2E', () => {
   let app: INestApplication;
@@ -19,7 +20,7 @@ describe('Payments Webhook E2E', () => {
     }).compile();
     app = moduleRef.createNestApplication();
     // inject rawBody support
-    const bodyParser = require('body-parser');
+
     app.use(bodyParser.json({ verify: (req: any, res: any, buf: Buffer) => { req.rawBody = buf; } }));
     await app.init();
   });

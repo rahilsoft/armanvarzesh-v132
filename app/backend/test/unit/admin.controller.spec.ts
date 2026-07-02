@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdminController } from '../src/auth/admin.controller';
+import { AdminController } from '../../src/auth/admin.controller';
 import * as jwt from 'jsonwebtoken';
 
 describe('AdminController', () => {

@@ -74,7 +74,7 @@ class ZarinpalPaymentProvider implements PaymentProvider {
     return this.breaker.exec(() => withBackoff(async () => {
       try {
         const mod: any = await import('zarinpal-checkout');
-        const zarinpal = mod.create(this.merchantId, true);
+        const _zarinpal = mod.create(this.merchantId, true);
         const status = (payload?.status || payload?.Status || '').toString();
         const authority = payload?.Authority || payload?.authority;
         if (status.toUpperCase() === 'OK' && authority) {

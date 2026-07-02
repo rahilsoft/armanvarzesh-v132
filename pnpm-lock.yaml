@@ -554,6 +554,9 @@ importers:
       '@types/passport-local':
         specifier: ^1.0.38
         version: 1.0.38
+      '@types/supertest':
+        specifier: 2.0.16
+        version: 2.0.16
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8

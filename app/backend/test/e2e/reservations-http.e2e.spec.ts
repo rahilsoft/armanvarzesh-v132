@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { ReservationsController } from '../src/reservations/reservations.controller';
-import { ReservationService } from '../src/reservations/reservation.service';
+import { ReservationsController } from '../../src/reservations/reservations.controller';
+import { ReservationService } from '../../src/reservations/reservation.service';
 
 describe('Reservations E2E (memory optimistic)', () => {
   let app: INestApplication;

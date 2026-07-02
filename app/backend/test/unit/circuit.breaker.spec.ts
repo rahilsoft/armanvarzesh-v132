@@ -1,4 +1,4 @@
-import { CircuitBreaker } from '../src/common/retry/circuitBreaker';
+import { CircuitBreaker } from '../../src/common/retry/circuitBreaker';
 
 describe('CircuitBreaker', () => {
   it('opens after threshold and recovers after cooldown', async () => {

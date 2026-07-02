@@ -21,7 +21,7 @@ export class AuditInterceptor implements NestInterceptor {
     const userId = req?.user?.id || 'anon';
     const cid = req?.correlationId || req?.headers?.['x-correlation-id'] || 'no-cid';
     const t0 = Date.now();
-    return next.handle().pipe(tap((res) => {
+    return next.handle().pipe(tap((_res) => {
       const dt = Date.now() - t0;
       const line = JSON.stringify({ ts: new Date().toISOString(), action, userId, cid, method: req?.method, url: req?.url, dt });
       writeAudit(line);

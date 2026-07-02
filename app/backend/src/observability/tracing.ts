@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires --
+   OpenTelemetry packages are optional runtime dependencies: they are
+   require()d lazily inside try/catch so the backend still boots when the
+   otel stack is not deployed (OTEL_EXPORTER_OTLP_ENDPOINT unset). */
 /**
  * Execute `fn` inside a tracing span when OpenTelemetry is available, otherwise
  * just run `fn`. Keeps call sites simple and dependency-free at runtime.

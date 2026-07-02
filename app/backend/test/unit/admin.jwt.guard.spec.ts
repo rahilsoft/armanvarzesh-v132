@@ -1,4 +1,4 @@
-import { AdminJwtGuard } from '../src/auth/admin.jwt.guard';
+import { AdminJwtGuard } from '../../src/auth/admin.jwt.guard';
 import * as jwt from 'jsonwebtoken';
 import * as fs from 'fs';
 import { generateKeyPairSync } from 'crypto';

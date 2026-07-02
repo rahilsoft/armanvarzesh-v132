@@ -1,6 +1,6 @@
-import { PaymentsController } from '../src/payments/payments.controller';
-import { PaymentsService } from '../src/payments/payments.service';
-import { ListPaymentsDto } from '../src/payments/dto/list-payments.dto';
+import { PaymentsController } from '../../src/payments/payments.controller';
+import { PaymentsService } from '../../src/payments/payments.service';
+import { ListPaymentsDto } from '../../src/payments/dto/list-payments.dto';
 import { UnauthorizedException } from '@nestjs/common';
 
 describe('PaymentsController listMine', () => {

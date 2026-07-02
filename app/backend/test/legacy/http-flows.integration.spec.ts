@@ -3,12 +3,12 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import * as bcrypt from 'bcryptjs';
 
-import { AuthController } from './src/auth/auth.controller';
-import { AuthService } from './src/auth/auth.service';
-import { JwtAuthGuard } from './src/auth/jwt.guard';
-import { PaymentsController } from './src/payments/payments.controller';
-import { PaymentsService } from './src/payments/payments.service';
-import { SafePrismaService } from './src/common/database/prisma.safe';
+import { AuthController } from '../../src/auth/auth.controller';
+import { AuthService } from '../../src/auth/auth.service';
+import { JwtAuthGuard } from '../../src/auth/jwt.guard';
+import { PaymentsController } from '../../src/payments/payments.controller';
+import { PaymentsService } from '../../src/payments/payments.service';
+import { SafePrismaService } from '../../src/common/database/prisma.safe';
 
 class InMemoryPrisma extends SafePrismaService {
   private payments: any[] = [];
@@ -16,7 +16,7 @@ class InMemoryPrisma extends SafePrismaService {
     // crude detection for idempotency select
     const s = String(_sql);
     if (s.includes('FROM payments') && s.includes('idempotency_key')) {
-      const match = /idempotency_key\s*=\s*\$\{(.+?)\}/.exec(s);
+      const _match = /idempotency_key\s*=\s*\$\{(.+?)\}/.exec(s);
       // We can't parse template literal placeholder reliably; assume no duplicate
       return [] as any;
     }

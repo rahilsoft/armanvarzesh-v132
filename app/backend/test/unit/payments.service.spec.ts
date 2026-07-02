@@ -1,4 +1,4 @@
-import { PaymentsService } from './src/payments/payments.service';
+import { PaymentsService } from '../../src/payments/payments.service';
 
 class MockPrisma {
   public queries: any[] = [];

@@ -1,5 +1,4 @@
-import { RolesGuard } from '../src/auth/roles.guard';
-import { ROLES_KEY } from '../src/auth/roles.decorator';
+import { RolesGuard } from '../../src/auth/roles.guard';
 import { Reflector } from '@nestjs/core';
 
 function mockCtx(role?: any){

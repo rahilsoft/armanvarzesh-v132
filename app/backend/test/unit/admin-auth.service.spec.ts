@@ -1,4 +1,4 @@
-import { AuthService } from './src/auth/auth.service';
+import { AuthService } from '../../src/auth/auth.service';
 import * as bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {

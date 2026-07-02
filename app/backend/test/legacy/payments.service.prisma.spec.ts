@@ -3,8 +3,8 @@ import { PaymentsService } from '../../src/payments/payments.service';
 import { PrismaService } from '../../src/database/prisma.service';
 
 class ZarinpalServiceMock {
-  async requestPayment(amount: number, callbackUrl: string, description: string) { return 'AUTH123'; }
-  async verifyPayment(authority: string, amount: number) { return true; }
+  async requestPayment(_amount: number, _callbackUrl: string, _description: string) { return 'AUTH123'; }
+  async verifyPayment(_authority: string, _amount: number) { return true; }
 }
 
 const prismaMock = {

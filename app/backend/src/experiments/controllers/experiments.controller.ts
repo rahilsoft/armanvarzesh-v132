@@ -1,7 +1,6 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { ExperimentsService } from '../experiments.service';
-import { Experiment } from '../entities/experiment.entity';
 
 @Controller('experiments')
 export class ExperimentsController {

@@ -5,7 +5,7 @@ export interface PaymentProvider {
 }
 
 export class LocalPaymentProvider implements PaymentProvider {
-  async fetchOrderStatus(orderId: string): Promise<PaymentStatus> {
+  async fetchOrderStatus(_orderId: string): Promise<PaymentStatus> {
     // منطق شبیه‌سازی‌شده
     return 'SUCCEEDED';
   }

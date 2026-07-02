@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 // If PrismaService exists, we use it; otherwise fallback to memory
 let PrismaServiceRef: any;
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- optional: falls back to in-memory store when Prisma is absent
 try { PrismaServiceRef = require('../database/prisma.service').PrismaService; } catch {}
 
 type MemRecord = { at: number, hash?: string };
