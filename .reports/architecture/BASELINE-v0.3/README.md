@@ -1,10 +1,10 @@
 # v0.3-architecture-baseline
 
 Checkpoint taken **before the Workout fold** begins. Tag
-`v0.3-architecture-baseline` → commit `5755c9f8ad5f` is the rollback point.
+`v0.3-architecture-baseline` → commit `7c9f0f8` is the rollback point.
 The tag exists locally; this remote rejects tag pushes (403 on refs/tags —
 push access is scoped to the work branch), so recreate it with:
-`git tag -a v0.3-architecture-baseline 5755c9f8ad5f`. As rollback point: if the
+`git tag -a v0.3-architecture-baseline 7c9f0f8`. As rollback point: if the
 Workout fold goes wrong, `git reset/revert` to this tag restores a state where
 backend typecheck is green and all 16 folded-domain unit tests pass.
 
