@@ -24,6 +24,7 @@ import { AppCacheModule } from './cache/cache.module';
 import { AdminController } from './auth/admin.controller';
 import { UserAuthModule } from './auth/user-auth.module';
 import { WorkoutsModule } from './workouts/workouts.module';
+import { ReservationsModule } from './reservations/reservations.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -53,6 +54,7 @@ import { WorkoutsModule } from './workouts/workouts.module';
     ReviewsModule,
     UserAuthModule,
     WorkoutsModule,
+    ReservationsModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],

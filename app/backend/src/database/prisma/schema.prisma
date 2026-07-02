@@ -38,6 +38,7 @@ model User {
   nutritionGoal       NutritionGoal?
   hydrationLogs       HydrationLog[]
   habits              Habit[]
+  bookings            Booking[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -291,6 +292,9 @@ model Reservation {
   status     String   @default("active")
   version    Int      @default(1)
 
+  // Optimistic locking: updates address rows by (id, version) so a stale
+  // writer misses and can retry (folded Booking domain requirement).
+  @@unique([id, version], map: "uq_Reservation_id_version")
   @@unique([resourceId, startsAt, endsAt])
   @@index([userId, startsAt, endsAt])
   @@index([resourceId])  // added by phase5
@@ -726,4 +730,39 @@ model HabitLog {
   createdAt  DateTime @default(now())
   @@index([habitId, occurredAt], map: "idx_HabitLog_habit_occurredAt")
   @@index([occurredAt], map: "idx_HabitLog_occurredAt")
+}
+
+
+// ---------------------------------------------------------------------------
+// Booking domain — coach slots with holds/capacity and bookings (folded from
+// services/booking-service; String cuid ids converted to core Int PKs; its
+// unused Audit model is superseded by the canonical AuditLog).
+// ---------------------------------------------------------------------------
+model Slot {
+  id          Int       @id @default(autoincrement())
+  coachId     Int
+  startUTC    DateTime
+  endUTC      DateTime
+  capacity    Int       @default(1)
+  holdToken   String?
+  holdExpires DateTime?
+  createdAt   DateTime  @default(now())
+  bookings    Booking[]
+  @@index([coachId, startUTC], map: "idx_Slot_coach_start")
+  @@index([holdExpires], map: "idx_Slot_holdExpires")
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  coachId    Int
+  slot       Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  slotId     Int
+  status     String   // PENDING | CONFIRMED | CANCELLED
+  mode       String   // online | in_person
+  paymentRef String?
+  createdAt  DateTime @default(now())
+  @@index([userId, status], map: "idx_Booking_user_status")
+  @@index([slotId, status], map: "idx_Booking_slot_status")
 }
