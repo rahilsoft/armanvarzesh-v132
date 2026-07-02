@@ -20,6 +20,14 @@ model User {
   role      String?
   twoFactorEnabled Boolean  @default(false)
   twoFactorSecret  String?
+  // Demographic / profile attributes (folded from the former users-service).
+  // Optional; used to personalise workout & nutrition plans.
+  age          Int?
+  gender       String?
+  height       Float?
+  weight       Float?
+  goals        String?
+  fitnessLevel String?
   createdAt DateTime  @default(now())
 
   // relations
