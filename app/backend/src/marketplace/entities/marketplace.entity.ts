@@ -15,6 +15,13 @@ export class Marketplace {
   @Field(() => Int)
   price: number;
 
+  // Folded from the former marketplace-service.
+  @Field({ nullable: true })
+  type?: string | null;
+
+  @Field(() => Int, { nullable: true })
+  createdBy?: number | null;
+
   @Field()
   createdAt: Date;
 }

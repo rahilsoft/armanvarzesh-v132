@@ -14,7 +14,7 @@ export class MarketplaceController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Marketplace> {
+  async findOne(@Param('id') id: number): Promise<Marketplace | null> {
     return this.marketplaceService.findOne(Number(id));
   }
 }

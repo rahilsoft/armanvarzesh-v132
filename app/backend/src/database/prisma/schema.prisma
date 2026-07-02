@@ -174,7 +174,12 @@ model Marketplace {
   name        String
   description String
   price       Int
+  // Folded from services/marketplace-service (its Purchase concept is NOT a
+  // new model: purchases go through the canonical Payments Product/Order flow).
+  type        String?
+  createdBy   Int?
   createdAt   DateTime @default(now())
+  @@index([type], map: "idx_Marketplace_type")
 }
 
 model Meal {
