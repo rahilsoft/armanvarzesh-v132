@@ -31,3 +31,34 @@ model Outbox {
   payload   Json
   createdAt DateTime @default(now())
 }
+
+
+// Handoff from content-service (dismemberment step 7): push-device registry
+// and scheduled notification tasks belong to the Notifications extension
+// service (extension layer keeps String cuid ids per the PK decision).
+model DeviceToken {
+  id             String    @id @default(cuid())
+  userId         String
+  platform       String    // ios | android | web
+  token          String    @unique
+  enabled        Boolean   @default(true)
+  lastSeenAt     DateTime  @default(now())
+  lastNotifiedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  @@index([userId])
+}
+
+model NotificationTask {
+  id        String   @id @default(cuid())
+  userId    String
+  planId    String?
+  type      String   // MEAL_REMINDER | WATER_REMINDER | SURVEY_INVITE | ...
+  dueAt     DateTime
+  payload   Json?
+  status    String   @default("PENDING") // PENDING | SENT | CANCELLED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, dueAt])
+  @@index([userId])
+}

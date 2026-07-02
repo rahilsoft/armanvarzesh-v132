@@ -50,6 +50,7 @@ model User {
   enrollments         CourseEnrollment[]
   certificates        Certificate[]
   assessmentAttempts  AssessmentAttempt[]
+  trainingProfile     UserTrainingProfile?
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -1762,4 +1763,24 @@ model CorrectiveProgress {
   value        String
   createdAt    DateTime         @default(now())
   @@unique([assignmentId, dayIndex, itemKey])
+}
+
+
+// ---------------------------------------------------------------------------
+// Extended training profile (1:1 with User) — folded from content-service's
+// UserProfile + UserMeta (dismemberment step 7). heightCm/weightKg were
+// duplicates of User.height/weight and are NOT ported; the canonical columns
+// remain the source of truth.
+// ---------------------------------------------------------------------------
+model UserTrainingProfile {
+  userId       Int      @id
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingEnv  String?
+  equipment    Json?    // array of equipment
+  injuries     Json?    // array of injuries
+  measurements Json?
+  medical      Json?
+  meta         Json?    // former UserMeta.json (free-form per-user metadata)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
