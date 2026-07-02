@@ -39,6 +39,11 @@ model User {
   hydrationLogs       HydrationLog[]
   habits              Habit[]
   bookings            Booking[]
+  pointEvents         PointEvent[]
+  userBadges          UserBadge[]
+  streaks             Streak[]
+  referrals           Referral[]
+  challengeEntries    ChallengeParticipant[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -105,8 +110,15 @@ model Challenge {
   id          Int      @id @default(autoincrement())
   name        String
   description String
+  // Legacy column (pre-fold rows); windowed challenges use startAt/endAt.
   duration    Int
+  rules       Json?
+  reward      Json?
+  startAt     DateTime?
+  endAt       DateTime?
   createdAt   DateTime @default(now())
+  participants ChallengeParticipant[]
+  @@index([startAt, endAt], map: "idx_Challenge_window")
 }
 
 model Cms {
@@ -765,4 +777,103 @@ model Booking {
   createdAt  DateTime @default(now())
   @@index([userId, status], map: "idx_Booking_user_status")
   @@index([slotId, status], map: "idx_Booking_slot_status")
+}
+
+
+// ---------------------------------------------------------------------------
+// Gamification domain — challenges, points, badges, streaks, VIP tiers,
+// referrals and commissions. Folded from services/challenges-service and
+// services/rewards-service (String ids -> core Int PKs, FKs to User added);
+// vip-service and affiliate-service were in-memory stubs fully subsumed by
+// VipTier / Referral / Commission. Independently extractable module (ADR-B1).
+// ---------------------------------------------------------------------------
+model ChallengeParticipant {
+  id          Int       @id @default(autoincrement())
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  challengeId Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  status      String    @default("joined") // joined | completed
+  progress    Json?
+  points      Int       @default(0)
+  joinedAt    DateTime  @default(now())
+  completedAt DateTime?
+  @@unique([challengeId, userId])
+  @@index([challengeId, points], map: "idx_Participant_leaderboard")
+}
+
+model PointEvent {
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  type           String
+  amount         Int
+  meta           Json?
+  idempotencyKey String   @unique
+  createdAt      DateTime @default(now())
+  @@index([userId, createdAt], map: "idx_PointEvent_user_time")
+}
+
+model Badge {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  name      String
+  criteria  Json?
+  createdAt DateTime @default(now())
+  holders   UserBadge[]
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId   Int
+  createdAt DateTime @default(now())
+  @@unique([userId, badgeId])
+}
+
+model Streak {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  kind      String
+  count     Int       @default(0)
+  lastDate  DateTime?
+  createdAt DateTime  @default(now())
+  @@unique([userId, kind])
+}
+
+model VipTier {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  threshold Int
+  perks     Json?
+  createdAt DateTime @default(now())
+}
+
+model Referral {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  inviter   User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId Int
+  createdAt DateTime @default(now())
+}
+
+model ReferralUse {
+  id        Int      @id @default(autoincrement())
+  code      String
+  inviterId Int
+  inviteeId Int
+  createdAt DateTime @default(now())
+  @@unique([code, inviteeId])
+}
+
+model Commission {
+  id        Int      @id @default(autoincrement())
+  inviterId Int
+  amount    Int
+  status    String   // pending | paid
+  createdAt DateTime @default(now())
+  @@index([inviterId, status], map: "idx_Commission_inviter_status")
 }

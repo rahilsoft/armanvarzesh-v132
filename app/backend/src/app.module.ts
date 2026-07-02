@@ -25,6 +25,7 @@ import { AdminController } from './auth/admin.controller';
 import { UserAuthModule } from './auth/user-auth.module';
 import { WorkoutsModule } from './workouts/workouts.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { GamificationModule } from './gamification/gamification.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -55,6 +56,7 @@ import { ReservationsModule } from './reservations/reservations.module';
     UserAuthModule,
     WorkoutsModule,
     ReservationsModule,
+    GamificationModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
