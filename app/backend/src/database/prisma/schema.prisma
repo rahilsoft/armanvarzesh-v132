@@ -45,6 +45,8 @@ model User {
   referrals           Referral[]
   challengeEntries    ChallengeParticipant[]
   appointments        Appointment[]
+  physioAssignments   PhysioAssignment[]
+  romMeasures         RomMeasure[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -968,4 +970,76 @@ model Result {
   appointment Appointment?
   summary     String
   createdAt   DateTime     @default(now())
+}
+
+
+// ---------------------------------------------------------------------------
+// Physio domain — rehab protocols, assignments, sessions, pain (VAS) and
+// range-of-motion tracking (folded from services/physio-service; String ids
+// -> core Int PKs, FKs to User added; PhysioSession.date String kept as an
+// ISO day key by design — it identifies the local calendar day).
+// ---------------------------------------------------------------------------
+model PhysioProtocol {
+  id        Int          @id @default(autoincrement())
+  name      String
+  area      String
+  weeks     Int
+  steps     PhysioStep[]
+  createdAt DateTime     @default(now())
+}
+
+model PhysioStep {
+  id         Int            @id @default(autoincrement())
+  week       Int
+  day        Int
+  exerciseId Int?
+  notes      String?
+  seconds    Int?
+  videoUrl   String?
+  protocol   PhysioProtocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  protocolId Int
+  @@index([protocolId, week, day], map: "idx_PhysioStep_protocol_week_day")
+}
+
+model PhysioAssignment {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  protocolId Int
+  startedAt  DateTime
+  archivedAt DateTime?
+  sessions   PhysioSession[]
+  @@index([userId, archivedAt], map: "idx_PhysioAssignment_user_active")
+}
+
+model PhysioSession {
+  id           Int              @id @default(autoincrement())
+  assignment   PhysioAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  date         String
+  completed    Boolean          @default(false)
+  completedAt  DateTime?
+  painLogs     PainLog[]
+  @@unique([assignmentId, date])
+}
+
+model PainLog {
+  id        Int           @id @default(autoincrement())
+  session   PhysioSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  score     Int
+  notes     String?
+  createdAt DateTime      @default(now())
+  @@index([sessionId, createdAt], map: "idx_PainLog_session_time")
+}
+
+model RomMeasure {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  joint     String
+  side      String
+  angle     Int
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt], map: "idx_RomMeasure_user_time")
 }
