@@ -1502,3 +1502,196 @@ model ScoringWeights {
   role    SpecialistType @unique
   weights Json
 }
+
+
+// ---------------------------------------------------------------------------
+// CMS group — page tiles with versioning/publish audit, survey system, intake
+// forms, moderation log, feature flags and CRM leads/conversions. Folded from
+// services/content-service (dismemberment step 5; cuid -> Int PKs).
+// ---------------------------------------------------------------------------
+enum TileState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum LeadStatus {
+  OPEN
+  CONVERTED
+  CHURNED
+}
+
+model Tile {
+  id        Int            @id @default(autoincrement())
+  page      String
+  order     Int            @default(0)
+  type      String
+  variant   String?
+  weight    Float?
+  logicalId String?
+  state     TileState      @default(DRAFT)
+  data      Json
+  createdBy Int?
+  updatedBy Int?
+  version   Int            @default(1)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  versions  TileVersion[]
+  audits    PublishAudit[]
+  @@index([page, state, order], map: "idx_Tile_page_state_order")
+}
+
+model TileVersion {
+  id        Int       @id @default(autoincrement())
+  tile      Tile      @relation(fields: [tileId], references: [id], onDelete: Cascade)
+  tileId    Int
+  version   Int
+  data      Json
+  state     TileState
+  authorId  Int?
+  createdAt DateTime  @default(now())
+  @@index([tileId, version], map: "idx_TileVersion_tile_version")
+}
+
+model PublishAudit {
+  id        Int        @id @default(autoincrement())
+  tile      Tile       @relation(fields: [tileId], references: [id], onDelete: Cascade)
+  tileId    Int
+  action    String     // UPSERT | DELETE | PUBLISH
+  actorId   Int?
+  fromState TileState?
+  toState   TileState?
+  snapshot  Json?
+  createdAt DateTime   @default(now())
+  @@index([tileId], map: "idx_PublishAudit_tile")
+}
+
+model SurveyTemplate {
+  id          Int             @id @default(autoincrement())
+  code        String          @unique
+  title       String
+  serviceType SpecialistType?
+  periodDays  Int?
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model SurveyTask {
+  id           Int             @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType?
+  templateCode String
+  dueAt        DateTime
+  completedAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  @@index([userId], map: "idx_SurveyTask_user")
+  @@index([dueAt], map: "idx_SurveyTask_due")
+}
+
+model SurveyResponse {
+  id           Int      @id @default(autoincrement())
+  templateCode String
+  userId       Int
+  specialistId Int
+  rating       Int
+  comment      String?
+  createdAt    DateTime @default(now())
+  @@index([specialistId, templateCode], map: "idx_SurveyResponse_spec_code")
+}
+
+model SurveyInvite {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  templateCode String
+  dueAt        DateTime
+  createdAt    DateTime @default(now())
+  @@index([userId, specialistId], map: "idx_SurveyInvite_user_spec")
+}
+
+model IntakeForm {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique
+  title       String
+  active      Boolean          @default(false)
+  version     Int              @default(1)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  questions   IntakeQuestion[]
+  responses   IntakeResponse[]
+}
+
+model IntakeQuestion {
+  id          Int        @id @default(autoincrement())
+  form        IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId      Int
+  key         String
+  label       String
+  type        String     // text | number | select | multiselect | date | ...
+  description String?
+  placeholder String?
+  options     Json?
+  required    Boolean    @default(false)
+  section     String?
+  order       Int        @default(0)
+  validation  Json?
+  @@index([formId, order], map: "idx_IntakeQuestion_form_order")
+}
+
+model IntakeResponse {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  form        IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId      Int
+  formVersion Int
+  answers     Json
+  createdAt   DateTime   @default(now())
+  @@index([userId], map: "idx_IntakeResponse_user")
+}
+
+model ModerationLog {
+  id        Int      @id @default(autoincrement())
+  entity    String   // CorrectiveVideo | ExerciseVideo | ...
+  entityId  Int
+  action    String   // APPROVE | REJECT | EDIT
+  note      String?
+  actorId   Int?
+  createdAt DateTime @default(now())
+  @@index([entity, entityId], map: "idx_ModerationLog_entity")
+}
+
+model FeatureFlag {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       Boolean  @default(false)
+  description String?
+  updatedBy   Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType
+  status       LeadStatus     @default(OPEN)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  @@index([specialistId, serviceType], map: "idx_Lead_spec_service")
+  @@index([userId], map: "idx_Lead_user")
+}
+
+model ConversionEvent {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType
+  kind         String         // FREE_TO_PREMIUM | RENEWAL
+  at           DateTime       @default(now())
+  @@index([specialistId, serviceType], map: "idx_Conversion_spec_service")
+}
