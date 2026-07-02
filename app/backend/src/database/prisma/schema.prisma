@@ -35,6 +35,9 @@ model User {
   refreshTokens       RefreshToken[]
   devices             Device[]
   passwordResetTokens PasswordResetToken[]
+  nutritionGoal       NutritionGoal?
+  hydrationLogs       HydrationLog[]
+  habits              Habit[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -659,4 +662,68 @@ model Exercise {
   notes     String?
   createdAt DateTime    @default(now())
   @@index([planId], map: "idx_Exercise_planId")
+}
+
+
+// ---------------------------------------------------------------------------
+// Nutrition domain — goals, hydration and habit tracking (folded from
+// services/nutrition-service, Int PKs preserved; FKs to the canonical User
+// added, which the standalone service could not have).
+// ---------------------------------------------------------------------------
+model NutritionGoal {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int      @unique
+  calories  Float
+  protein   Float
+  carbs     Float
+  fats      Float
+  createdAt DateTime @default(now())
+  @@index([userId], map: "idx_NutritionGoal_userId")
+}
+
+model HydrationLog {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  occurredAt DateTime @db.Timestamptz(6)
+  ml         Int
+  source     String?  @db.VarChar(64)
+  createdAt  DateTime @default(now())
+  @@index([userId, occurredAt], map: "idx_HydrationLog_userId_occurredAt")
+  @@index([occurredAt], map: "idx_HydrationLog_occurredAt")
+}
+
+enum HabitType {
+  water
+  steps
+  training
+  calorie
+}
+
+model Habit {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      HabitType
+  target    Float
+  cadence   Json
+  tz        String
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  logs      HabitLog[]
+  @@index([userId, type], map: "idx_Habit_user_type")
+  @@index([active], map: "idx_Habit_active")
+}
+
+model HabitLog {
+  id         Int      @id @default(autoincrement())
+  habit      Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId    Int
+  occurredAt DateTime @db.Timestamptz(6)
+  value      Float
+  meta       Json?
+  createdAt  DateTime @default(now())
+  @@index([habitId, occurredAt], map: "idx_HabitLog_habit_occurredAt")
+  @@index([occurredAt], map: "idx_HabitLog_occurredAt")
 }
