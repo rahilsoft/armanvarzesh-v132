@@ -431,6 +431,10 @@ enum SpecialistType {
   COACH
   NUTRITIONIST
   CORRECTIVE
+  // Added by the Specialist* fold (content-service ServiceType merge)
+  PHYSICAL_THERAPIST
+  PSYCHOLOGIST
+  SPECIALIST
 }
 
 enum ContentType {
@@ -446,6 +450,16 @@ model Specialist {
   bio         String?
   videoUrl    String?
   rating      Float         @default(0)
+  // Profile/audience fields merged from content-service SpecialistProfile/Meta
+  displayName String?
+  avatarUrl   String?
+  tags        Json?
+  genderFocus String?       // male | female | any
+  minAge      Int?
+  maxAge      Int?
+  languages   String?       // comma separated, e.g. fa,en
+  thumbnailUrl String?
+  activeAt    DateTime?
   createdAt   DateTime      @default(now())
 
   user        User          @relation(fields: [userId], references: [id])
@@ -1452,4 +1466,39 @@ model NutritionPlanMealLog {
   updatedAt DateTime @updatedAt
   @@unique([planId, dayIndex, mealKey])
   @@index([userId, planId], map: "idx_NPMealLog_user_plan")
+}
+
+
+// ---------------------------------------------------------------------------
+// Specialist scoring — weighted quality score per specialist+role with
+// history and configurable weights (folded from services/content-service,
+// dismemberment step 4; cuid -> Int PKs, specialistId FK -> Specialist).
+// ---------------------------------------------------------------------------
+model SpecialistScore {
+  id           Int            @id @default(autoincrement())
+  specialistId Int
+  role         SpecialistType
+  totalScore   Float
+  metrics      Json?
+  lastComputed DateTime       @default(now())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  @@unique([specialistId, role])
+  @@index([role, totalScore], map: "idx_SpecScore_role_total")
+}
+
+model SpecialistScoreHistory {
+  id           Int            @id @default(autoincrement())
+  specialistId Int
+  role         SpecialistType
+  totalScore   Float
+  metrics      Json?
+  at           DateTime       @default(now())
+  @@index([specialistId, role, at], map: "idx_SpecScoreHist")
+}
+
+model ScoringWeights {
+  id      Int            @id @default(autoincrement())
+  role    SpecialistType @unique
+  weights Json
 }
