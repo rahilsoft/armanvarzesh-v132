@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { IsIn, IsInt, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsInt, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
 import { CheckoutService } from './checkout.service';
 
 /**
