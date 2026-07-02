@@ -14,7 +14,7 @@ export class CoachesController {
 
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Coach> {
+  async findOne(@Param('id') id: number): Promise<Coach | null> {
     return this.coachesService.findOne(Number(id));
   }
 }

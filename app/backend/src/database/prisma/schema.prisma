@@ -142,6 +142,13 @@ model Coach {
   email     String   @unique
   name      String
   expertise String
+  // Profile fields folded from services/coaches-service. Its `password`
+  // column was NOT ported: coach credentials belong to the canonical User
+  // auth (the standalone service needed its own credential store).
+  speciality     String?
+  certifications String?
+  bio            String?
+  verified       Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 

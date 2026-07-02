@@ -15,6 +15,19 @@ export class Coach {
   @Field()
   expertise: string;
 
+  // Profile fields folded from the former coaches-service.
+  @Field({ nullable: true })
+  speciality?: string | null;
+
+  @Field({ nullable: true })
+  certifications?: string | null;
+
+  @Field({ nullable: true })
+  bio?: string | null;
+
+  @Field()
+  verified: boolean;
+
   @Field()
   createdAt: Date;
 }

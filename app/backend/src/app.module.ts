@@ -29,6 +29,7 @@ import { MedicalModule } from './medical/medical.module';
 import { PhysioModule } from './physio/physio.module';
 import { CoursesModule } from './courses/courses.module';
 import { AssessmentsModule } from './assessments/assessments.module';
+import { CoachesModule } from './coaches/coaches.module';
 import { GamificationModule } from './gamification/gamification.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
@@ -65,6 +66,7 @@ import { GamificationModule } from './gamification/gamification.module';
     PhysioModule,
     CoursesModule,
     AssessmentsModule,
+    CoachesModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
