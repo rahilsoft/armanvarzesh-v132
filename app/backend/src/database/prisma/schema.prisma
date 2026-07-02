@@ -479,6 +479,11 @@ model Subscription {
   provider         String
   externalId       String
   status           String
+  // Plan-based subscription fields (folded from payments-service). For the
+  // internal checkout flow provider="internal" and externalId=userId, so the
+  // existing (provider,externalId) unique key doubles as the per-user key.
+  planId           String?
+  startedAt        DateTime?
   currentPeriodEnd DateTime?
   createdAt        DateTime  @default(now())
 
@@ -543,4 +548,71 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   @@index([userId], map: "idx_PasswordResetToken_userId")
+}
+
+// ---------------------------------------------------------------------------
+// Payments — checkout/entitlement flow (folded from services/payments-service).
+// Core Int primary keys; provider-linked entities keep the external id as a
+// String @unique reference so no PSP identifier is lost.
+// ---------------------------------------------------------------------------
+model Product {
+  id          Int      @id @default(autoincrement())
+  // Stable catalog slug (e.g. "plan-pro"); the former service's string id.
+  code        String   @unique
+  kind        String   // plan | booking
+  name        String
+  amountCents Int
+  currency    String   @default("EUR")
+  interval    String?  // month | year (for plans)
+  createdAt   DateTime @default(now())
+  checkoutSessions CheckoutSession[]
+  orders           Order[]
+}
+
+model CheckoutSession {
+  id                Int      @id @default(autoincrement())
+  // External PSP session id (formerly the row id); public, opaque, unique.
+  providerSessionId String   @unique
+  userId            Int
+  product           Product  @relation(fields: [productId], references: [id])
+  productId         Int
+  amountCents       Int
+  currency          String
+  status            String   @default("open") // open | paid | expired | cancelled
+  metadata          Json?
+  createdAt         DateTime @default(now())
+  @@index([userId], map: "idx_CheckoutSession_userId")
+}
+
+model PaymentEvent {
+  id        Int      @id @default(autoincrement())
+  provider  String
+  // PSP event id — idempotency key for webhook processing.
+  eventId   String   @unique
+  type      String
+  sessionId Int?
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+  amountCents Int
+  currency    String
+  status      String   @default("paid") // paid | refunded
+  paymentRef  String
+  createdAt   DateTime @default(now())
+  @@index([userId], map: "idx_Order_userId")
+}
+
+model DomainEventOutbox {
+  id          Int       @id @default(autoincrement())
+  type        String
+  data        Json
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+  @@index([processedAt], map: "idx_DomainEventOutbox_processedAt")
 }
