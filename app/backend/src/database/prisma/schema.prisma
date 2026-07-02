@@ -49,6 +49,7 @@ model User {
   romMeasures         RomMeasure[]
   enrollments         CourseEnrollment[]
   certificates        Certificate[]
+  assessmentAttempts  AssessmentAttempt[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -1093,4 +1094,57 @@ model Certificate {
   revoked  Boolean  @default(false)
   issuedAt DateTime @default(now())
   @@index([userId], map: "idx_Certificate_user")
+}
+
+
+// ---------------------------------------------------------------------------
+// Assessments domain — structured assessments with a JSON-driven scoring rule
+// engine (folded from services/assessments-service; String ids -> Int PKs,
+// FK to User). The canonical Survey model (simple Q&A) is a different, older
+// concept and is untouched.
+// ---------------------------------------------------------------------------
+model Assessment {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  domain      String
+  level       String?
+  durationMin Int       @default(10)
+  sections    Section[]
+  attempts    AssessmentAttempt[]
+  createdAt   DateTime  @default(now())
+}
+
+model Section {
+  id           Int        @id @default(autoincrement())
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentId Int
+  title        String
+  order        Int        @default(0)
+  questions    Question[]
+  @@index([assessmentId, order], map: "idx_Section_assessment_order")
+}
+
+model Question {
+  id        Int     @id @default(autoincrement())
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId Int
+  type      String  // single | multi | number | boolean
+  text      String
+  options   Json?
+  scoring   Json?   // rule fragment: { weight?, map?, range? }
+  @@index([sectionId], map: "idx_Question_section")
+}
+
+model AssessmentAttempt {
+  id             Int        @id @default(autoincrement())
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  assessment     Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentId   Int
+  answers        Json       // [{questionId, value}...]
+  score          Int
+  recommendation Json?
+  createdAt      DateTime   @default(now())
+  @@index([userId, assessmentId], map: "idx_Attempt_user_assessment")
 }
