@@ -1160,3 +1160,79 @@ model AssessmentAttempt {
   createdAt      DateTime   @default(now())
   @@index([userId, assessmentId], map: "idx_Attempt_user_assessment")
 }
+
+
+// ---------------------------------------------------------------------------
+// Workout exercise catalog — videos, muscles, equipment, sports and the 3D
+// anatomy config. Folded from services/content-service (dismemberment step 1
+// of the committed matrix; cuid String ids -> core Int PKs). Prerequisite for
+// the Plan* engine fold (PlanBlockItem references ExerciseVideo).
+// ---------------------------------------------------------------------------
+enum ExerciseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ExerciseVideo {
+  id           Int            @id @default(autoincrement())
+  title        String
+  videoUrl     String
+  audioUrl     String?
+  description  String?
+  level        String?        // BEGINNER | INTERMEDIATE | ADVANCED
+  kind         String?        // STRENGTH | CARDIO | FLEXIBILITY | ...
+  ownerId      Int?
+  status       ExerciseStatus @default(PENDING)
+  durationSec  Int?
+  thumbnailUrl String?
+  viewCount    Int            @default(0)
+  likeCount    Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  primaryMuscles   MuscleRef[]        @relation("ExercisePrimaryMuscles")
+  secondaryMuscles MuscleRef[]        @relation("ExerciseSecondaryMuscles")
+  equipment        EquipmentCatalog[]
+  sports           Sport[]
+
+  @@index([status], map: "idx_ExerciseVideo_status")
+  @@index([ownerId], map: "idx_ExerciseVideo_owner")
+  @@index([title], map: "idx_ExerciseVideo_title")
+}
+
+model Sport {
+  id             Int             @id @default(autoincrement())
+  name           String
+  exerciseVideos ExerciseVideo[]
+  @@index([name], map: "idx_Sport_name")
+}
+
+model EquipmentCatalog {
+  id             Int             @id @default(autoincrement())
+  name           String
+  exerciseVideos ExerciseVideo[]
+  @@index([name], map: "idx_EquipmentCatalog_name")
+}
+
+// Named MuscleRef to avoid squatting the bare `Muscle` name while the legacy
+// content-service schema still exists; the table is "Muscle".
+model MuscleRef {
+  id                 Int             @id @default(autoincrement())
+  code               String          @unique
+  name               String
+  primaryExercises   ExerciseVideo[] @relation("ExercisePrimaryMuscles")
+  secondaryExercises ExerciseVideo[] @relation("ExerciseSecondaryMuscles")
+  @@map("Muscle")
+}
+
+model AnatomyConfig {
+  id        Int      @id @default(autoincrement())
+  gender    String   // male | female
+  modelUrl  String
+  meshMap   Json     // mapping of muscle codes to 3D mesh regions
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([gender, active], map: "idx_AnatomyConfig_gender_active")
+}
