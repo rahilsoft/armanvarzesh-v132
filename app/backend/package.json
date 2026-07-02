@@ -79,7 +79,15 @@
     "twilio": "^5.0.0",
     "kavenegar": "^1.1.4",
     "zarinpal-checkout": "^0.2.5",
-    "qrcode": "1.5.4"
+    "qrcode": "1.5.4",
+    "@arman/graphql-dataloader": "workspace:*",
+    "@arman/graphql-utils": "workspace:*",
+    "@arman/observability": "workspace:*",
+    "@arman/auth-kit": "workspace:*",
+    "@arman/env-config": "workspace:*",
+    "@arman/http-client": "workspace:*",
+    "@arman/integration": "workspace:*",
+    "@arman/security-middleware": "workspace:*"
   },
   "devDependencies": {
     "@types/compression": "^1.7.5",

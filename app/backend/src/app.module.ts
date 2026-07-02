@@ -32,6 +32,7 @@ import { AssessmentsModule } from './assessments/assessments.module';
 import { CoachesModule } from './coaches/coaches.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { CmsModule } from './cms/cms.module';
+import { PaymentsModule } from './payments/payments.module';
 import { GamificationModule } from './gamification/gamification.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
@@ -71,6 +72,7 @@ import { GamificationModule } from './gamification/gamification.module';
     CoachesModule,
     MarketplaceModule,
     CmsModule,
+    PaymentsModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],

@@ -361,6 +361,30 @@ importers:
       '@apollo/server':
         specifier: 5.0.0
         version: 5.0.0(graphql@16.9.0)
+      '@arman/auth-kit':
+        specifier: workspace:*
+        version: link:../../packages/auth-kit
+      '@arman/env-config':
+        specifier: workspace:*
+        version: link:../../packages/env-config
+      '@arman/graphql-dataloader':
+        specifier: workspace:*
+        version: link:../../packages/graphql-dataloader
+      '@arman/graphql-utils':
+        specifier: workspace:*
+        version: link:../../packages/graphql-utils
+      '@arman/http-client':
+        specifier: workspace:*
+        version: link:../../packages/http-client
+      '@arman/integration':
+        specifier: workspace:*
+        version: link:../../packages/integration
+      '@arman/observability':
+        specifier: workspace:*
+        version: link:../../packages/observability
+      '@arman/security-middleware':
+        specifier: workspace:*
+        version: link:../../packages/security-middleware
       '@aws-sdk/client-s3':
         specifier: ^3.600.0
         version: 3.906.0

@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { CheckoutService } from './checkout.service';
+import { CheckoutController } from './checkout.controller';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePaymentUseCase } from '../application/payments/create-payment.usecase';
 
 @Module({
-  controllers: [PaymentsController],
+  controllers: [PaymentsController, CheckoutController],
   providers: [PaymentsService, CheckoutService, PrismaService, CreatePaymentUseCase],
   exports: [CreatePaymentUseCase, CheckoutService]
 })
