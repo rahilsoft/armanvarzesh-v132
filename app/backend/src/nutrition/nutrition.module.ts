@@ -9,6 +9,7 @@ import { PlansService } from './plans.service';
 import { NutritionGoalsService } from './goals.service';
 import { HydrationService } from './hydration.service';
 import { HabitsService } from './habits.service';
+import { NutritionPlanGeneratorService } from './plan-generator.service';
 import { NutritionTrackingController } from './controllers/tracking.controller';
 import { WearablesController } from './controllers/wearables.controller';
 
@@ -17,11 +18,12 @@ import { WearablesController } from './controllers/wearables.controller';
     NutritionService, NutritionResolver, PrismaService, PlansService,
     // Folded from services/nutrition-service (goals / hydration / habits).
     NutritionGoalsService, HydrationService, HabitsService,
+    NutritionPlanGeneratorService,
   ],
   controllers: [
     CalculatorController, FoodController, PlanController,
     NutritionTrackingController, WearablesController,
   ],
-  exports: [NutritionService, PlansService, NutritionGoalsService, HydrationService, HabitsService],
+  exports: [NutritionService, PlansService, NutritionGoalsService, HydrationService, HabitsService, NutritionPlanGeneratorService],
 })
 export class NutritionModule {}

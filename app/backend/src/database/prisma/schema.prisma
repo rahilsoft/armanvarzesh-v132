@@ -378,6 +378,11 @@ model Food {
   carbs     Float
   fat       Float
   calories  Float    // per 100g
+  // Merged from content-service Food (dismemberment step 3)
+  nameFa    String?
+  nameEn    String?
+  unitsJson Json?    // e.g. {"cup":240,"tbsp":15,"egg":50}
+  createdBy Int?
   createdAt DateTime @default(now())
 
   mealLogs  MealLog[]
@@ -1397,4 +1402,54 @@ model PlanSetLog {
   createdAt    DateTime    @default(now())
   @@index([sessionId], map: "idx_PlanSetLog_session")
   @@index([planSetId], map: "idx_PlanSetLog_set")
+}
+
+
+// ---------------------------------------------------------------------------
+// Nutrition planning — templates and generated calendar plans (folded from
+// services/content-service, dismemberment step 3; cuid -> Int PKs). The
+// content-service "MealLog" was a plan-meal check log, a different concept
+// from the canonical MealLog (food-quantity log) — renamed
+// NutritionPlanMealLog to end the collision.
+// ---------------------------------------------------------------------------
+model NutritionTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  goal      String?
+  json      Json
+  createdBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([name], map: "idx_NutritionTemplate_name")
+}
+
+model NutritionPlan {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  createdBy  Int?
+  startDate  DateTime
+  weeks      Int
+  status     String   @default("ACTIVE")
+  json       Json     // full calendar with meals & items & totals
+  totalsJson Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  mealLogs   NutritionPlanMealLog[]
+  @@index([userId, status], map: "idx_NutritionPlan_user_status")
+}
+
+model NutritionPlanMealLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  plan      NutritionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId    Int
+  dayIndex  Int
+  mealKey   String   // breakfast | snack | lunch | dinner | ...
+  checked   Boolean  @default(false)
+  photoUrl  String?
+  aiJson    Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([planId, dayIndex, mealKey])
+  @@index([userId, planId], map: "idx_NPMealLog_user_plan")
 }
