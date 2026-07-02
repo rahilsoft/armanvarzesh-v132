@@ -1049,6 +1049,7 @@ model PhysioAssignment {
   startedAt  DateTime
   archivedAt DateTime?
   sessions   PhysioSession[]
+  correctiveChecks CorrectiveProgress[]
   @@index([userId, archivedAt], map: "idx_PhysioAssignment_user_active")
 }
 
@@ -1694,4 +1695,71 @@ model ConversionEvent {
   kind         String         // FREE_TO_PREMIUM | RENEWAL
   at           DateTime       @default(now())
   @@index([specialistId, serviceType], map: "idx_Conversion_spec_service")
+}
+
+
+// ---------------------------------------------------------------------------
+// Physio corrective content — condition taxonomy, moderated corrective videos
+// and per-assignment corrective progress checks. Folded from
+// services/content-service (dismemberment step 6; cuid -> Int PKs).
+// CorrectiveProgress.assignmentId references the canonical PhysioAssignment.
+// ---------------------------------------------------------------------------
+enum CorrectiveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Visibility {
+  PRIVATE
+  PUBLIC
+}
+
+model Condition {
+  id          Int                        @id @default(autoincrement())
+  code        String                     @unique
+  nameFa      String
+  nameEn      String?
+  description String?
+  videos      CorrectiveVideoCondition[]
+}
+
+model CorrectiveVideo {
+  id         Int                        @id @default(autoincrement())
+  title      String
+  url        String
+  equipment  String?
+  notes      String?
+  voiceUrl   String?
+  uploadedBy Int
+  status     CorrectiveStatus           @default(PENDING)
+  reviewNote String?
+  reviewedBy Int?
+  reviewedAt DateTime?
+  visibility Visibility                 @default(PRIVATE)
+  createdAt  DateTime                   @default(now())
+  updatedAt  DateTime                   @updatedAt
+  conditions CorrectiveVideoCondition[]
+  @@index([uploadedBy], map: "idx_CorrectiveVideo_uploader")
+  @@index([status], map: "idx_CorrectiveVideo_status")
+}
+
+model CorrectiveVideoCondition {
+  id            Int             @id @default(autoincrement())
+  video         CorrectiveVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId       Int
+  condition     Condition       @relation(fields: [conditionCode], references: [code], onDelete: Cascade)
+  conditionCode String
+  @@unique([videoId, conditionCode])
+}
+
+model CorrectiveProgress {
+  id           Int              @id @default(autoincrement())
+  assignment   PhysioAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  dayIndex     Int
+  itemKey      String
+  value        String
+  createdAt    DateTime         @default(now())
+  @@unique([assignmentId, dayIndex, itemKey])
 }
