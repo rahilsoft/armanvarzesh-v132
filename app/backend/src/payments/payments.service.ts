@@ -40,6 +40,9 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
         throw new ConflictException('Duplicate payment (idempotency)');
       }
     } catch (e: any) {
+      // The duplicate rejection must escape — the blanket catch was swallowing
+      // it, so duplicate payments were never actually rejected here.
+      if (e instanceof ConflictException) throw e;
       // If table doesn't exist or column missing, continue to attempt insert and let DB decide
     }
 

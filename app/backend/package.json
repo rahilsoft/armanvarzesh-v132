@@ -7,14 +7,16 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "jest src",
     "clean": "rimraf dist || rm -rf dist",
     "start:prod": "node dist/main.js",
     "lint": "eslint .",
     "dev": "ts-node src/index.ts || echo \"no dev\"",
     "coverage": "echo \"no coverage\"",
     "prisma:generate": "prisma generate --schema src/database/prisma/schema.prisma",
-    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json",
+    "test:e2e": "jest e2e test/e2e --runInBand",
+    "test:legacy": "jest test --testPathIgnorePatterns \"test/e2e/\""
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",

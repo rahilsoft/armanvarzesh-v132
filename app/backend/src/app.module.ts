@@ -1,6 +1,4 @@
 import { JwksModule } from './jwks.module';
-import { HealthModule } from './health/health.module';
-import { PresentationModule } from './presentation/presentation.module';
 import { Module } from '@nestjs/common';
 import { JwksController } from './auth/jwks.controller';
 import { APP_GUARD } from '@nestjs/core';
@@ -25,6 +23,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { AppCacheModule } from './cache/cache.module';
 import { AdminController } from './auth/admin.controller';
 import { UserAuthModule } from './auth/user-auth.module';
+import { WorkoutsModule } from './workouts/workouts.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -53,6 +52,7 @@ import { UserAuthModule } from './auth/user-auth.module';
     ChatModule,
     ReviewsModule,
     UserAuthModule,
+    WorkoutsModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
