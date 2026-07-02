@@ -62,3 +62,18 @@ model NotificationTask {
   @@index([status, dueAt])
   @@index([userId])
 }
+
+
+// Handoff from inbox-service (extension-layer consolidation): the in-app
+// notification inbox belongs to the Notifications extension service.
+model NotificationInbox {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  type      String
+  payload   Json
+  deeplink  String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  @@index([userId, createdAt], map: "idx_inbox_user_created")
+  @@index([userId, readAt], map: "idx_inbox_user_read")
+}

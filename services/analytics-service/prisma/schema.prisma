@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Canonical Analytics extension-service schema (extension-layer
+// consolidation): Event ingestion folded from analytics-collector and the
+// daily KPI rollup folded from analytics-collector/kpis-service.
+model Event {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  ts        DateTime
+  props     Json?
+  piiHash   Json?
+  idemKey   String   @unique
+  createdAt DateTime @default(now())
+  @@index([userId, ts], map: "idx_Event_user_ts")
+  @@index([name, ts], map: "idx_Event_name_ts")
+}
+
+model KpiDaily {
+  date                  DateTime @id
+  dau                   Int
+  sessions              Int
+  signups               Int
+  purchases             Int
+  adherence             Float
+  conversionSignupToSub Float
+  createdAt             DateTime @default(now())
+}

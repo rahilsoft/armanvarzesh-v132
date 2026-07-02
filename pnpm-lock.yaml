@@ -2057,6 +2057,9 @@ importers:
       '@nestjs/platform-express':
         specifier: 11.1.4
         version: 11.1.4(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.4)
+      '@prisma/client':
+        specifier: 5.22.0
+        version: 5.22.0(prisma@5.22.0)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -2076,6 +2079,9 @@ importers:
         specifier: ^7.8.1
         version: 7.8.2
     devDependencies:
+      prisma:
+        specifier: 5.22.0
+        version: 5.22.0
       typescript:
         specifier: 5.6.2
         version: 5.6.2
