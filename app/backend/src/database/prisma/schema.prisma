@@ -44,6 +44,7 @@ model User {
   streaks             Streak[]
   referrals           Referral[]
   challengeEntries    ChallengeParticipant[]
+  appointments        Appointment[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -876,4 +877,95 @@ model Commission {
   status    String   // pending | paid
   createdAt DateTime @default(now())
   @@index([inviterId, status], map: "idx_Commission_inviter_status")
+}
+
+
+// ---------------------------------------------------------------------------
+// Medical domain — facilities, doctors, health tests, clinical appointments
+// (folded from services/medical-service; String ids -> core Int PKs, FK to
+// User added). The service's `Slot` is renamed `ClinicSlot`: clinical
+// scheduling is a different bounded context from the coach-booking `Slot`.
+// ---------------------------------------------------------------------------
+model Facility {
+  id        Int      @id @default(autoincrement())
+  name      String
+  city      String
+  geoLat    Float?
+  geoLng    Float?
+  doctors   Doctor[]
+  tests     HealthTest[]
+  createdAt DateTime @default(now())
+}
+
+model Doctor {
+  id         Int      @id @default(autoincrement())
+  name       String
+  specialty  String?
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  facilityId Int
+  slots      ClinicSlot[]
+  createdAt  DateTime @default(now())
+}
+
+model HealthTest {
+  id              Int      @id @default(autoincrement())
+  name            String
+  code            String   @unique
+  requiresFasting Boolean  @default(false)
+  facility        Facility? @relation(fields: [facilityId], references: [id], onDelete: SetNull)
+  facilityId      Int?
+  createdAt       DateTime @default(now())
+  bundles         TestBundleOnTest[]
+}
+
+model TestBundle {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  tests     TestBundleOnTest[]
+}
+
+model TestBundleOnTest {
+  bundle   TestBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  bundleId Int
+  test     HealthTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId   Int
+  @@id([bundleId, testId])
+}
+
+model ClinicSlot {
+  id        Int      @id @default(autoincrement())
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctorId  Int
+  startUTC  DateTime
+  endUTC    DateTime
+  capacity  Int      @default(1)
+  holds     Int      @default(0)
+  createdAt DateTime @default(now())
+  appointments Appointment[]
+  @@index([doctorId, startUTC], map: "idx_ClinicSlot_doctor_start")
+}
+
+model Appointment {
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  facilityId   Int
+  doctorId     Int
+  clinicSlot   ClinicSlot @relation(fields: [clinicSlotId], references: [id], onDelete: Cascade)
+  clinicSlotId Int
+  status       String   // pending | confirmed | cancelled
+  fasting      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  result       Result?  @relation(fields: [resultId], references: [id], onDelete: SetNull)
+  resultId     Int?     @unique
+  @@index([userId, status], map: "idx_Appointment_user_status")
+  @@index([clinicSlotId, status], map: "idx_Appointment_slot_status")
+}
+
+model Result {
+  id          Int          @id @default(autoincrement())
+  appointment Appointment?
+  summary     String
+  createdAt   DateTime     @default(now())
 }
