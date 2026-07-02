@@ -1195,6 +1195,7 @@ model ExerciseVideo {
   secondaryMuscles MuscleRef[]        @relation("ExerciseSecondaryMuscles")
   equipment        EquipmentCatalog[]
   sports           Sport[]
+  planBlockItems   PlanBlockItem[]
 
   @@index([status], map: "idx_ExerciseVideo_status")
   @@index([ownerId], map: "idx_ExerciseVideo_owner")
@@ -1235,4 +1236,165 @@ model AnatomyConfig {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([gender, active], map: "idx_AnatomyConfig_gender_active")
+}
+
+
+// ---------------------------------------------------------------------------
+// Workout Plan* engine — structured training plans (days/blocks/items/sets),
+// assignments with generated session schedules, set logging and notes.
+// Folded from services/content-service (dismemberment step 2; cuid -> Int).
+// ---------------------------------------------------------------------------
+enum PlanKind {
+  WORKOUT
+  CORRECTIVE
+  NUTRITION
+}
+
+enum BlockType {
+  SINGLE
+  SUPERSET
+  TRISET
+  CIRCUIT
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Plan {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String?
+  kind        PlanKind         @default(WORKOUT)
+  ownerId     Int?
+  createdBy   Int?
+  status      String           @default("DRAFT") // DRAFT | PUBLISHED
+  version     Int              @default(1)
+  json        Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  days        PlanDay[]
+  assignments PlanAssignment[]
+  @@index([ownerId], map: "idx_Plan_owner")
+  @@index([status], map: "idx_Plan_status")
+}
+
+model PlanDay {
+  id       Int         @id @default(autoincrement())
+  plan     Plan        @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId   Int
+  order    Int
+  title    String?
+  note     String?
+  voiceUrl String?
+  blocks   PlanBlock[]
+  @@index([planId, order], map: "idx_PlanDay_plan_order")
+}
+
+model PlanBlock {
+  id                  Int             @id @default(autoincrement())
+  day                 PlanDay         @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  dayId               Int
+  order               Int
+  type                BlockType       @default(SINGLE)
+  section             String?         // WARMUP | MAIN | COOLDOWN
+  protocol            String?         // FIVExFIVE | GVT | EMOM | HIIT
+  protocolParams      Json?
+  rounds              Int?
+  restBetweenItemsSec Int?
+  items               PlanBlockItem[]
+  @@index([dayId, order], map: "idx_PlanBlock_day_order")
+}
+
+model PlanBlockItem {
+  id         Int           @id @default(autoincrement())
+  block      PlanBlock     @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  blockId    Int
+  order      Int
+  exercise   ExerciseVideo @relation(fields: [exerciseId], references: [id])
+  exerciseId Int
+  note       String?
+  sets       PlanSet[]
+  @@index([blockId, order], map: "idx_PlanBlockItem_block_order")
+  @@index([exerciseId], map: "idx_PlanBlockItem_exercise")
+}
+
+model PlanSet {
+  id           Int          @id @default(autoincrement())
+  item         PlanBlockItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       Int
+  order        Int
+  reps         Int?
+  weight       Float?
+  rest         Int?    // seconds
+  tempo        String? // e.g. "3-1-1-0"
+  rpe          Float?
+  durationSec  Int?
+  targetWeight Float?
+  targetRPE    Float?
+  logs         PlanSetLog[]
+  @@index([itemId, order], map: "idx_PlanSet_item_order")
+}
+
+model PlanAssignment {
+  id              Int           @id @default(autoincrement())
+  plan            Plan          @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId          Int
+  clientId        Int
+  startDate       DateTime
+  sessionsPerWeek Int           @default(3)
+  restDays        Json?         // day names: ["Sun","Sat"]
+  durationDays    Int           @default(28)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  sessions        PlanSession[]
+  @@index([clientId], map: "idx_PlanAssignment_client")
+  @@index([planId], map: "idx_PlanAssignment_plan")
+}
+
+model PlanSession {
+  id           Int               @id @default(autoincrement())
+  assignment   PlanAssignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  dayIndex     Int
+  date         DateTime
+  status       SessionStatus     @default(SCHEDULED)
+  completedAt  DateTime?
+  clientId     Int?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  notes        PlanSessionNote[]
+  setLogs      PlanSetLog[]
+  @@index([assignmentId], map: "idx_PlanSession_assignment")
+  @@index([clientId, date], map: "idx_PlanSession_client_date")
+}
+
+model PlanSessionNote {
+  id        Int         @id @default(autoincrement())
+  session   PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  authorId  Int?
+  role      String      // USER | COACH | SPECIALIST
+  text      String?
+  audioUrl  String?
+  createdAt DateTime    @default(now())
+  @@index([sessionId], map: "idx_PlanSessionNote_session")
+}
+
+model PlanSetLog {
+  id           Int         @id @default(autoincrement())
+  session      PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId    Int
+  planSet      PlanSet     @relation(fields: [planSetId], references: [id])
+  planSetId    Int
+  actualReps   Int
+  actualWeight Float?
+  rpe          Float?
+  note         String?
+  createdAt    DateTime    @default(now())
+  @@index([sessionId], map: "idx_PlanSetLog_session")
+  @@index([planSetId], map: "idx_PlanSetLog_set")
 }

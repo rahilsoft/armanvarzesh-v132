@@ -6,6 +6,7 @@ import { WorkoutsResolver } from './workouts.resolver';
 import { WorkoutPlansService } from './workout-plans.service';
 import { WorkoutPlansResolver } from './workout-plans.resolver';
 import { ExerciseCatalogService } from './exercise-catalog.service';
+import { PlanEngineService } from './plan-engine.service';
 import { PrismaService } from '../database/prisma.service';
 
 @Module({
@@ -13,8 +14,8 @@ import { PrismaService } from '../database/prisma.service';
     LoaderFactory, PrismaService,
     WorkoutsService, WorkoutsResolver,
     WorkoutPlansService, WorkoutPlansResolver,
-    ExerciseCatalogService,
+    ExerciseCatalogService, PlanEngineService,
   ],
-  exports: [WorkoutsService, WorkoutPlansService, ExerciseCatalogService]
+  exports: [WorkoutsService, WorkoutPlansService, ExerciseCatalogService, PlanEngineService]
 })
 export class WorkoutsModule {}
