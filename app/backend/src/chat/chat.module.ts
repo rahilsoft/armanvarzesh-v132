@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MediaQueueModule } from '../mediaqueue/mediaqueue.module';
-import { StorageModule } from '../storage/storage.module';
 import { ChatService } from './chat.service';
 import { ChatResolver } from './chat.resolver';
 import { PrismaService } from '../database/prisma.service';

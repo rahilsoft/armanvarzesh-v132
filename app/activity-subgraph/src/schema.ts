@@ -52,7 +52,7 @@ export const resolvers = {
     },
     loadSummary: async (user: { id: string }) => {
       const userId = user.id;
-      const workouts = await prisma.workout.findMany({ where: { userId }, orderBy: { startedAt: 'asc' } });
+      const workouts = await prisma.trainingSession.findMany({ where: { userId }, orderBy: { startedAt: 'asc' } });
       const loads = workouts.map(w => combinedLoad({ userId, startedAt: w.startedAt.toISOString(), endedAt: w.endedAt?.toISOString()||w.startedAt.toISOString(), minutes: w.minutes||0, sRPE: w.sRPE||undefined, avgHR: w.avgHR||undefined, maxHR: w.maxHR||undefined }));
       return { recent7: rollingAverage(loads,7), recent28: rollingAverage(loads,28), state: classifyLoad(rollingAverage(loads,7), rollingAverage(loads,28)) };
     },
@@ -70,7 +70,7 @@ export const resolvers = {
       return shapeRings(row, goals);
     },
     loadSummary: async (_: any, { userId }: any) => {
-      const workouts = await prisma.workout.findMany({ where: { userId }, orderBy: { startedAt: 'asc' } });
+      const workouts = await prisma.trainingSession.findMany({ where: { userId }, orderBy: { startedAt: 'asc' } });
       const loads = workouts.map(w => combinedLoad({ userId, startedAt: w.startedAt.toISOString(), endedAt: w.endedAt?.toISOString()||w.startedAt.toISOString(), minutes: w.minutes||0, sRPE: w.sRPE||undefined, avgHR: w.avgHR||undefined, maxHR: w.maxHR||undefined }));
       return { recent7: rollingAverage(loads,7), recent28: rollingAverage(loads,28), state: classifyLoad(rollingAverage(loads,7), rollingAverage(loads,28)) };
     },

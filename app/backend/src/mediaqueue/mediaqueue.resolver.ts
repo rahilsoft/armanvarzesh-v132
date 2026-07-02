@@ -1,4 +1,3 @@
-import { Roles } from '../auth/roles.decorator';
 import { Resolver, Mutation, Args, ObjectType, Field } from '@nestjs/graphql';
 import { MediaQueueService } from './mediaqueue.service';
 import { EnqueueTranscodeInput, EnqueueImageInput } from './dto/enqueue.input';

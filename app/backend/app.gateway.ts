@@ -8,7 +8,7 @@ export class AppGateway {
   server: Server;
 
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  handleMessage(@MessageBody() data: any, @ConnectedSocket() _client: Socket) {
     this.server.emit('message', data);
   }
 

@@ -1,4 +1,3 @@
-import { withRetry } from '../retry.util';
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { NotificationsService } from '../notifications.service';

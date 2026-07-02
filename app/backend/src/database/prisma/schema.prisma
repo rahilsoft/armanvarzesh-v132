@@ -14,10 +14,27 @@ model User {
   email     String    @unique
   name      String
   password  String?
+  // Canonical credential hash (argon2) for first-party user auth. `password`
+  // is retained only for legacy rows and is not used by the auth flow.
+  passwordHash     String?
   role      String?
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?
+  // Demographic / profile attributes (folded from the former users-service).
+  // Optional; used to personalise workout & nutrition plans.
+  age          Int?
+  gender       String?
+  height       Float?
+  weight       Float?
+  goals        String?
+  fitnessLevel String?
   createdAt DateTime  @default(now())
 
   // relations
+  sessions            Session[]
+  refreshTokens       RefreshToken[]
+  devices             Device[]
+  passwordResetTokens PasswordResetToken[]
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -188,12 +205,25 @@ model Workout {
 
   id        Int      @id @default(autoincrement())
   title     String
-  data      Json
+  // Legacy free-form payload (pre-fold rows). The structured columns below,
+  // folded from services/workouts-service, are the canonical representation.
+  data      Json?
   userId    Int?
+  plan      WorkoutPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planId    Int?
+  date      DateTime?
+  duration  Int?
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  notes     String?
+  mediaUrl  String?
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
   @@index([userId], map: "idx_Workout_userId")
+  @@index([planId], map: "idx_Workout_planId")
 }
 
 model Message {
@@ -462,8 +492,171 @@ model Subscription {
   provider         String
   externalId       String
   status           String
+  // Plan-based subscription fields (folded from payments-service). For the
+  // internal checkout flow provider="internal" and externalId=userId, so the
+  // existing (provider,externalId) unique key doubles as the per-user key.
+  planId           String?
+  startedAt        DateTime?
   currentPeriodEnd DateTime?
   createdAt        DateTime  @default(now())
 
   @@unique([provider, externalId], name: "provider_externalId")
+}
+
+// ---------------------------------------------------------------------------
+// Auth domain (canonical). Ported from the former services/auth-service using
+// the modular-monolith core (Int primary keys). Security-critical design:
+// - passwords hashed with argon2 (stored on User.passwordHash)
+// - refresh tokens use the split selector/verifier model with rotation and
+//   reuse/theft detection (see auth module).
+// ---------------------------------------------------------------------------
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Session_userId")
+}
+
+model RefreshToken {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  // Split-token model: the client holds `selector.verifier`. `selector` is a
+  // public, indexed lookup key; `verifierHash` is the argon2 hash of the secret
+  // half (argon2 is salted, so we can never query by it — hence the selector).
+  selector     String    @unique
+  verifierHash String
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  // Rotation lineage: set when this token is rotated, enabling reuse/theft
+  // detection (a revoked token being presented for refresh).
+  replacedById Int?
+  userAgent    String?
+  ip           String?
+  @@index([userId], map: "idx_RefreshToken_userId")
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  name      String?
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Device_userId")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  @@index([userId], map: "idx_PasswordResetToken_userId")
+}
+
+// ---------------------------------------------------------------------------
+// Payments — checkout/entitlement flow (folded from services/payments-service).
+// Core Int primary keys; provider-linked entities keep the external id as a
+// String @unique reference so no PSP identifier is lost.
+// ---------------------------------------------------------------------------
+model Product {
+  id          Int      @id @default(autoincrement())
+  // Stable catalog slug (e.g. "plan-pro"); the former service's string id.
+  code        String   @unique
+  kind        String   // plan | booking
+  name        String
+  amountCents Int
+  currency    String   @default("EUR")
+  interval    String?  // month | year (for plans)
+  createdAt   DateTime @default(now())
+  checkoutSessions CheckoutSession[]
+  orders           Order[]
+}
+
+model CheckoutSession {
+  id                Int      @id @default(autoincrement())
+  // External PSP session id (formerly the row id); public, opaque, unique.
+  providerSessionId String   @unique
+  userId            Int
+  product           Product  @relation(fields: [productId], references: [id])
+  productId         Int
+  amountCents       Int
+  currency          String
+  status            String   @default("open") // open | paid | expired | cancelled
+  metadata          Json?
+  createdAt         DateTime @default(now())
+  @@index([userId], map: "idx_CheckoutSession_userId")
+}
+
+model PaymentEvent {
+  id        Int      @id @default(autoincrement())
+  provider  String
+  // PSP event id — idempotency key for webhook processing.
+  eventId   String   @unique
+  type      String
+  sessionId Int?
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+  amountCents Int
+  currency    String
+  status      String   @default("paid") // paid | refunded
+  paymentRef  String
+  createdAt   DateTime @default(now())
+  @@index([userId], map: "idx_Order_userId")
+}
+
+model DomainEventOutbox {
+  id          Int       @id @default(autoincrement())
+  type        String
+  data        Json
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+  @@index([processedAt], map: "idx_DomainEventOutbox_processedAt")
+}
+
+
+// ---------------------------------------------------------------------------
+// Workout domain — structured training plans (folded from
+// services/workouts-service, Int PKs preserved as-is).
+// ---------------------------------------------------------------------------
+model WorkoutPlan {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  userId      Int?
+  createdAt   DateTime   @default(now())
+  exercises   Exercise[]
+  workouts    Workout[]
+  @@index([userId], map: "idx_WorkoutPlan_userId")
+}
+
+model Exercise {
+  id        Int         @id @default(autoincrement())
+  plan      WorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId    Int
+  name      String
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  restTime  Int?
+  notes     String?
+  createdAt DateTime    @default(now())
+  @@index([planId], map: "idx_Exercise_planId")
 }

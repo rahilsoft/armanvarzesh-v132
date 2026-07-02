@@ -11,7 +11,7 @@ const schema = z.object({
 });
 
 export default function FormDemo() {
-  const { control, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema) });
+  const { control, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(schema as any) });
   return (
     <div className="container card">
       <h2>فرم نمونه</h2>

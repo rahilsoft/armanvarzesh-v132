@@ -7,14 +7,18 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "jest src test/unit",
     "clean": "rimraf dist || rm -rf dist",
     "start:prod": "node dist/main.js",
     "lint": "eslint .",
     "dev": "ts-node src/index.ts || echo \"no dev\"",
     "coverage": "echo \"no coverage\"",
     "prisma:generate": "prisma generate --schema src/database/prisma/schema.prisma",
-    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
+    "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json",
+    "test:e2e": "jest test/e2e --runInBand",
+    "test:legacy": "jest test/legacy",
+    "test:integration": "jest test/integration --runInBand --passWithNoTests",
+    "test:all": "jest"
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",
@@ -86,8 +90,9 @@
     "@types/passport-local": "^1.0.38",
     "@types/uuid": "^9.0.8",
     "prisma": "^5.22.0",
-    "supertest": "^7.0.0",
-    "typescript": "^5.6.2"
+    "supertest": "7.0.0",
+    "typescript": "^5.6.2",
+    "@types/supertest": "2.0.16"
   },
   "engines": {
     "node": ">=20.0.0 <21",

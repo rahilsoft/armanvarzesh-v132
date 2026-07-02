@@ -9,7 +9,7 @@ export class PaymentService {
 
   async makePayment(input: PaymentInput) {
     this.logger.log(`Starting payment for user ${input.userId} amount ${input.amount}`);
-    const callbackUrl = `https://yourdomain.com/payment/callback`;
+    const _callbackUrl = `https://yourdomain.com/payment/callback`;
 
     const res = await this.zarinpal.requestPayment(
       input.amount,

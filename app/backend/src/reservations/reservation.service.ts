@@ -30,11 +30,16 @@ export class ReservationService {
       return r;
     }
     // Prisma optimistic - requires `version` column
-    // @ts-ignore
+    // KNOWN SCHEMA DRIFT (Booking domain, pending fold): the canonical schema
+    // has no `Slot` model and `Reservation` uses Int ids + a different unique
+    // key. This service was written against booking-service's schema. The
+    // Booking fold reconciles it; until then these paths are only reachable
+    // with RESERVATIONS_BACKEND!=memory, which no deployment sets.
+    // @ts-expect-error Slot model does not exist in the canonical schema yet (Booking fold)
     const slotExists = await this.prisma.slot.findUnique?.({ where: { id: slotId } });
     if (!slotExists) { /* optionally create slot */ }
     // create
-    // @ts-ignore
+    // @ts-expect-error Reservation shape differs (string slotId vs canonical Int resource key) until the Booking fold
     const created = await this.prisma.reservation.create({ data: { userId, slotId, status: 'ACTIVE', version: 1 } });
     return created as any;
   }
@@ -50,9 +55,10 @@ export class ReservationService {
       return r;
     }
     // Prisma optimistic update (version bump)
-    // @ts-ignore
+    // KNOWN SCHEMA DRIFT (Booking domain, pending fold) — see create() above.
+    // @ts-expect-error canonical Reservation.id is Int, this legacy path passes a string id
     const found = await this.prisma.reservation.findUnique({ where: { id: reservationId } });
-    // @ts-ignore
+    // @ts-expect-error canonical schema has no id_version compound key (Booking fold reconciles optimistic locking)
     const updated = await this.prisma.reservation.update({ where: { id_version: { id: reservationId, version: found.version } }, data: { status: 'CANCELED', version: { increment: 1 } } });
     return updated as any;
   }

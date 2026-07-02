@@ -1,7 +1,6 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { CmsService } from '../cms.service';
-import { Cms } from '../entities/cms.entity';
 
 @Controller('contents')
 export class CmsController {

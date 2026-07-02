@@ -1,10 +1,9 @@
 import { handleStripeEvent } from './stripe-handlers';
 // Phase H′ — Stripe webhook mount (Express) 
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import Stripe from 'stripe';
 
 export function mountStripeWebhook(app: any) {
-  const express = require('express');
   // Raw body is required by Stripe to verify signatures
   app.use('/payments/stripe/webhook', express.raw({ type: 'application/json' }));
 

@@ -1,29 +1,13 @@
 
-import rateLimit from 'express-rate-limit';
-import { TraceEnrichInterceptor } from './observability/trace-enrich.interceptor';
 import { initTracing } from './observability/tracing';
 import { initMetrics, metricsMiddleware, metricsHandler } from './observability/metrics';
-import { JsonLogger } from './observability/logger';
-import { DoubleConfirmGuard } from './common/double-confirm.guard';
-import { AuditInterceptor } from './common/audit.interceptor';
-import { RolesGuard } from './common/roles.guard';
-import { mountStripeWebhook } from './payments/stripe-webhook';
-import { paymentsRateLimiter } from './payments/rate-limit';
-import { RedactLoggingInterceptor } from './common/redact-logging.interceptor';
-import { correlationMiddleware } from './common/correlation.middleware';
-import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
-import { applyBasicHardening } from '@arman/security-middleware';
+import { buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';
-import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
-import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { NestFactory } from '@nestjs/core';
 import { validateEnv } from '@arman/env-config';
 import helmet from 'helmet';
 import { initTelemetry } from '@arman/observability';
 import { AppModule } from './app.module';
-import { register as promRegister } from "prom-client";
 // removed duplicate helmet import
 import compression from 'compression';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
