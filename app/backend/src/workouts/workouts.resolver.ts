@@ -39,7 +39,9 @@ export class WorkoutsResolver {
     @Args('userId', { type: () => Int }) userId: number,
     @Args('input') input: CreateWorkoutInput
   ) {
-    return this.workoutsService.create({ title: input.title, data: input as any, userId });
+    // Structured fields persist to real columns now (pre-fold they were
+    // stuffed into the `data` JSON blob).
+    return this.workoutsService.create({ ...input, userId });
   }
 
   @Mutation(() => Workout)
@@ -69,6 +71,7 @@ export class WorkoutsResolver {
 
   @ResolveField(() => User, { name: 'user', nullable: true })
   user(@Parent() item: Workout) {
+    if (item.userId == null) return null;
     return this.userById.load(item.userId);
   }
 }

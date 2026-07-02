@@ -38,7 +38,10 @@ model Award {
   meta Json?
   @@index([userId,code])
 }
-model Workout {
+// Training-load telemetry for the Activity domain (sRPE / heart-rate based).
+// Renamed from `Workout` to end the name collision with the canonical Workout
+// entity owned by the modular monolith; @@map keeps the existing table.
+model TrainingSession {
   id String @id @default(cuid())
   userId String
   startedAt DateTime
@@ -48,4 +51,5 @@ model Workout {
   avgHR Int?
   maxHR Int?
   @@index([userId,startedAt])
+  @@map("Workout")
 }
