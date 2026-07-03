@@ -41,7 +41,9 @@ import { GamificationModule } from './gamification/gamification.module';
       pinoHttp: {
         level: process.env.LOG_LEVEL || 'info',
         redact: ['req.headers.authorization', 'res.headers["set-cookie"]'],
-        transport: process.env.NODE_ENV !== 'production'
+        // Only in local development — pino-pretty is a dev-only transport and
+        // is not installed for test/CI/production (matches logging.module.ts).
+        transport: process.env.NODE_ENV === 'development'
           ? { target: 'pino-pretty', options: { colorize: true } }
           : undefined,
       }

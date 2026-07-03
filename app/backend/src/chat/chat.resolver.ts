@@ -6,7 +6,7 @@ import { StorageService } from '../storage/storage.service';
 import { ChatService } from './chat.service';
 import { Message } from './entities/message.entity';
 import { SendMessageInput, SendAttachmentInput } from './dto/message.input';
-import { PUB_SUB } from '../notifications/notifications.module';
+import { PUB_SUB } from './pubsub.provider';
 
 /**
  * GraphQL resolver exposing chat operations. Supports sending messages,
