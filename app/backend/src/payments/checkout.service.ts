@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 
 /**
@@ -58,57 +59,78 @@ export class CheckoutService {
     };
   }
 
-  /** Idempotent PSP webhook handler (idempotency enforced by PaymentEvent.eventId @unique). */
+  /**
+   * Idempotent PSP webhook handler. Idempotency is enforced by the
+   * PaymentEvent.eventId unique index; all state changes (event record, session
+   * status, order, subscription/entitlement, outbox) run in a single
+   * transaction so a mid-flow failure never leaves a half-applied payment.
+   */
   async webhook(
     provider: string,
     eventId: string,
     type: string,
     payload: { sessionId?: string; paymentId?: string; [k: string]: unknown },
   ): Promise<{ ok: true; duplicate?: true; idempotent?: true }> {
+    // Fast idempotency short-circuit; the unique index below is the race-safe
+    // guard for concurrent deliveries of the same event.
+    const seen = await this.prisma.paymentEvent.findUnique({ where: { eventId } });
+    if (seen) return { ok: true, duplicate: true };
+
     try {
-      await this.prisma.paymentEvent.create({
-        data: { provider, eventId, type, payload: payload as any },
-      });
-    } catch {
-      // Unique violation on eventId => already processed.
-      return { ok: true, duplicate: true };
-    }
-
-    if (type !== 'payment_succeeded') return { ok: true };
-
-    const providerSessionId = String(payload.sessionId ?? '');
-    const paymentRef = String(payload.paymentId ?? '');
-    const session = await this.prisma.checkoutSession.findUnique({ where: { providerSessionId } });
-    if (!session) throw new BadRequestException('SESSION_NOT_FOUND');
-    if (session.status === 'paid') return { ok: true, idempotent: true };
-
-    await this.prisma.checkoutSession.update({ where: { id: session.id }, data: { status: 'paid' } });
-    await this.prisma.order.create({
-      data: {
-        userId: session.userId,
-        productId: session.productId,
-        amountCents: session.amountCents,
-        currency: session.currency,
-        paymentRef,
-      },
-    });
-
-    const product = await this.prisma.product.findUnique({ where: { id: session.productId } });
-    if (product?.kind === 'plan') {
-      await this.grantPlanEntitlement(session.userId, product.code, product.interval);
-    } else if (product?.kind === 'booking') {
-      const bookingId = (session.metadata as { bookingId?: unknown } | null)?.bookingId;
-      if (bookingId !== undefined && bookingId !== null) {
-        await this.prisma.domainEventOutbox.create({
-          data: { type: 'BOOKING_PAYMENT_SUCCEEDED', data: { bookingId, paymentRef } as any },
+      return await this.prisma.$transaction(async (tx) => {
+        // Record the event first: a concurrent duplicate trips the unique
+        // index and aborts the whole transaction (nothing half-applied).
+        await tx.paymentEvent.create({
+          data: { provider, eventId, type, payload: payload as any },
         });
-      }
+
+        if (type !== 'payment_succeeded') return { ok: true } as const;
+
+        const providerSessionId = String(payload.sessionId ?? '');
+        const paymentRef = String(payload.paymentId ?? '');
+        const session = await tx.checkoutSession.findUnique({ where: { providerSessionId } });
+        if (!session) throw new BadRequestException('SESSION_NOT_FOUND');
+        if (session.status === 'paid') return { ok: true, idempotent: true } as const;
+
+        await tx.checkoutSession.update({ where: { id: session.id }, data: { status: 'paid' } });
+        await tx.order.create({
+          data: {
+            userId: session.userId,
+            productId: session.productId,
+            amountCents: session.amountCents,
+            currency: session.currency,
+            paymentRef,
+          },
+        });
+
+        const product = await tx.product.findUnique({ where: { id: session.productId } });
+        if (product?.kind === 'plan') {
+          await this.grantPlanEntitlement(tx, session.userId, product.code, product.interval);
+        } else if (product?.kind === 'booking') {
+          const bookingId = (session.metadata as { bookingId?: unknown } | null)?.bookingId;
+          if (bookingId !== undefined && bookingId !== null) {
+            await tx.domainEventOutbox.create({
+              data: { type: 'BOOKING_PAYMENT_SUCCEEDED', data: { bookingId, paymentRef } as any },
+            });
+          }
+        }
+        return { ok: true } as const;
+      });
+    } catch (e) {
+      // Concurrent duplicate delivery lost the race on the unique index.
+      if ((e as { code?: string })?.code === 'P2002') return { ok: true, duplicate: true };
+      throw e;
     }
-    return { ok: true };
   }
 
-  /** Activate/renew a plan subscription and emit an entitlement event. */
-  private async grantPlanEntitlement(userId: number, planCode: string, interval: string | null): Promise<void> {
+  /** Activate/renew a plan subscription and emit an entitlement event. Runs on
+   *  the caller's transaction client so it is atomic with the order write. */
+  private async grantPlanEntitlement(
+    tx: Prisma.TransactionClient,
+    userId: number,
+    planCode: string,
+    interval: string | null,
+  ): Promise<void> {
     const now = new Date();
     const monthsToAdd = interval === 'year' ? 12 : 1;
     const end = new Date(Date.UTC(
@@ -116,7 +138,7 @@ export class CheckoutService {
       now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(),
     ));
     const externalId = String(userId);
-    await this.prisma.subscription.upsert({
+    await tx.subscription.upsert({
       where: { provider_externalId: { provider: 'internal', externalId } },
       update: { planId: planCode, status: 'active', startedAt: now, currentPeriodEnd: end },
       create: {
@@ -124,7 +146,7 @@ export class CheckoutService {
         planId: planCode, status: 'active', startedAt: now, currentPeriodEnd: end,
       },
     });
-    await this.prisma.domainEventOutbox.create({
+    await tx.domainEventOutbox.create({
       data: { type: 'ENTITLEMENT_GRANTED', data: { userId, planCode } as any },
     });
   }

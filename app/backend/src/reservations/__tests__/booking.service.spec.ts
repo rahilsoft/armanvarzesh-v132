@@ -13,8 +13,11 @@ function makePrismaMock() {
 
   const matchStatus = (b: any, cond: any) => (cond?.in ? cond.in.includes(b.status) : b.status === cond);
 
-  return {
+  const mock: any = {
     _slots: slots, _bookings: bookings,
+    // Interactive transaction: run the callback against this same mock (the
+    // in-memory store has no real rollback, which is fine for these unit tests).
+    $transaction: async (arg: any) => (Array.isArray(arg) ? Promise.all(arg) : arg(mock)),
     slot: {
       create: async ({ data }: any) => { const s = { id: seq++, capacity: 1, holdToken: null, holdExpires: null, createdAt: new Date(), ...data }; slots.push(s); return s; },
       findUnique: async ({ where }: any) => slots.find((s) => s.id === where.id) ?? null,
@@ -40,6 +43,7 @@ function makePrismaMock() {
       },
     },
   };
+  return mock;
 }
 
 const hour = 60 * 60 * 1000;

@@ -18,9 +18,12 @@ function makePrismaMock() {
 
   const bySessionId = (sid: string) => sessions.find((s) => s.providerSessionId === sid);
 
-  return {
+  const mock: any = {
     _products: products, _sessions: sessions, _events: events,
     _orders: orders, _subs: subs, _outbox: outbox,
+    // Interactive transaction: run the callback against this same mock (the
+    // in-memory store has no real rollback, which is fine for these unit tests).
+    $transaction: async (arg: any) => (Array.isArray(arg) ? Promise.all(arg) : arg(mock)),
     product: {
       upsert: async ({ where, create }: any) => {
         let p = products.find((x) => x.code === where.code);
@@ -37,8 +40,9 @@ function makePrismaMock() {
       update: async ({ where, data }: any) => { const s = sessions.find((x) => x.id === where.id); Object.assign(s, data); return s; },
     },
     paymentEvent: {
+      findUnique: async ({ where }: any) => events.find((e) => e.eventId === where.eventId) ?? null,
       create: async ({ data }: any) => {
-        if (events.some((e) => e.eventId === data.eventId)) { const err: any = new Error('unique'); throw err; }
+        if (events.some((e) => e.eventId === data.eventId)) { const err: any = new Error('unique'); err.code = 'P2002'; throw err; }
         const e = { id: seq++, ...data }; events.push(e); return e;
       },
     },
@@ -57,6 +61,7 @@ function makePrismaMock() {
     },
     domainEventOutbox: { create: async ({ data }: any) => { const e = { id: seq++, ...data }; outbox.push(e); return e; } },
   };
+  return mock;
 }
 
 function make() {
@@ -92,7 +97,7 @@ describe('CheckoutService (Payments fold)', () => {
     expect(prisma._orders).toHaveLength(1);
     expect(prisma._orders[0].paymentRef).toBe('pay-1');
     expect(prisma._subs[0]).toMatchObject({ provider: 'internal', externalId: '7', planId: 'plan-pro', status: 'active' });
-    expect(prisma._outbox.some((e) => e.type === 'ENTITLEMENT_GRANTED')).toBe(true);
+    expect(prisma._outbox.some((e: any) => e.type === 'ENTITLEMENT_GRANTED')).toBe(true);
   });
 
   it('is idempotent: a duplicate eventId is ignored', async () => {
@@ -112,7 +117,7 @@ describe('CheckoutService (Payments fold)', () => {
     prisma._products.push({ id: 999, code: 'book-1', kind: 'booking', name: 'Session', amountCents: 5000, currency: 'EUR', interval: null });
     const { sessionId } = await svc.checkout(3, 'book-1', { bookingId: 'bk-1' });
     await svc.webhook('psp', 'evt-b', 'payment_succeeded', { sessionId, paymentId: 'pay-b' });
-    expect(prisma._outbox.some((e) => e.type === 'BOOKING_PAYMENT_SUCCEEDED' && e.data.bookingId === 'bk-1')).toBe(true);
+    expect(prisma._outbox.some((e: any) => e.type === 'BOOKING_PAYMENT_SUCCEEDED' && e.data.bookingId === 'bk-1')).toBe(true);
   });
 
   it('changePlan applies proration credit for a remaining period', async () => {

@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { Booking, Slot } from '@prisma/client';
+import { Booking, Slot, Prisma } from '@prisma/client';
 
 /**
  * Coach-slot booking with holds, capacity and user-overlap protection —
@@ -41,23 +41,27 @@ export class BookingService {
   }
 
   async createBooking(userId: number, coachId: number, slotId: number, mode: string): Promise<BookingCreated> {
-    const slot = await this.prisma.slot.findUnique({ where: { id: slotId } });
-    if (!slot) throw new BadRequestException('SLOT_NOT_FOUND');
-    if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
+    // Capacity/overlap check and the booking insert run in one serializable
+    // transaction so two concurrent requests cannot both pass the capacity
+    // check and overbook the slot.
+    const booking = await this.prisma.$transaction(async (tx) => {
+      const slot = await tx.slot.findUnique({ where: { id: slotId } });
+      if (!slot) throw new BadRequestException('SLOT_NOT_FOUND');
+      if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
 
-    // Expire a stale hold on this slot.
-    if (slot.holdExpires && slot.holdExpires.getTime() < Date.now()) {
-      await this.prisma.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null } });
-    }
+      // Expire a stale hold on this slot.
+      if (slot.holdExpires && slot.holdExpires.getTime() < Date.now()) {
+        await tx.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null } });
+      }
 
-    const activeCount = await this.prisma.booking.count({ where: { slotId, status: { in: ACTIVE } } });
-    if (activeCount >= slot.capacity) throw new BadRequestException('SLOT_FULL');
+      const activeCount = await tx.booking.count({ where: { slotId, status: { in: ACTIVE } } });
+      if (activeCount >= slot.capacity) throw new BadRequestException('SLOT_FULL');
 
-    await this.assertNoUserOverlap(userId, slot);
+      await this.assertNoUserOverlap(tx, userId, slot);
 
-    const booking = await this.prisma.booking.create({
-      data: { userId, coachId, slotId, status: 'PENDING', mode },
-    });
+      return tx.booking.create({ data: { userId, coachId, slotId, status: 'PENDING', mode } });
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+
     // Payment checkout is created by the Payments domain; URL shape kept from
     // the former service until PAYMENTS-WIRE exposes the live checkout route.
     return {
@@ -76,14 +80,18 @@ export class BookingService {
   }
 
   async reschedule(userId: number, id: number, newSlotId: number): Promise<Booking> {
-    const b = await this.prisma.booking.findUnique({ where: { id } });
-    if (!b || b.userId !== userId) throw new BadRequestException('NOT_FOUND_OR_FORBIDDEN');
-    const newSlot = await this.prisma.slot.findUnique({ where: { id: newSlotId } });
-    if (!newSlot) throw new BadRequestException('SLOT_NOT_FOUND');
-    const activeCount = await this.prisma.booking.count({ where: { slotId: newSlotId, status: { in: ACTIVE } } });
-    if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
-    await this.assertNoUserOverlap(userId, newSlot, id);
-    return this.prisma.booking.update({ where: { id }, data: { slotId: newSlotId } });
+    // Same check-then-write race as createBooking: capacity/overlap check and
+    // the move are atomic under a serializable transaction.
+    return this.prisma.$transaction(async (tx) => {
+      const b = await tx.booking.findUnique({ where: { id } });
+      if (!b || b.userId !== userId) throw new BadRequestException('NOT_FOUND_OR_FORBIDDEN');
+      const newSlot = await tx.slot.findUnique({ where: { id: newSlotId } });
+      if (!newSlot) throw new BadRequestException('SLOT_NOT_FOUND');
+      const activeCount = await tx.booking.count({ where: { slotId: newSlotId, status: { in: ACTIVE } } });
+      if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
+      await this.assertNoUserOverlap(tx, userId, newSlot, id);
+      return tx.booking.update({ where: { id }, data: { slotId: newSlotId } });
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
   }
 
   async holdSlot(slotId: number): Promise<{ token: string; expiresAt: string }> {
@@ -129,8 +137,13 @@ export class BookingService {
   /** Reject when the user already has an active booking overlapping `slot`.
    *  Single query with the slot included (the original looked each slot up in
    *  a loop). */
-  private async assertNoUserOverlap(userId: number, slot: Slot, excludeBookingId?: number): Promise<void> {
-    const mine = await this.prisma.booking.findMany({
+  private async assertNoUserOverlap(
+    tx: Prisma.TransactionClient,
+    userId: number,
+    slot: Slot,
+    excludeBookingId?: number,
+  ): Promise<void> {
+    const mine = await tx.booking.findMany({
       where: {
         userId,
         status: { in: ACTIVE },
