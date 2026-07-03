@@ -26,7 +26,7 @@ export class Exercise {
   @Field(() => Int, { nullable: true })
   restTime!: number | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   notes!: string | null;
 
   @Field(() => GraphQLISODateTime)

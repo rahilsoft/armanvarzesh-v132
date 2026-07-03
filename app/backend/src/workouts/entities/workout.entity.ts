@@ -31,10 +31,10 @@ export class Workout {
   @Field(() => Number, { nullable: true })
   rpe!: number | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   notes!: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   mediaUrl!: string | null;
 
   @Field(() => Number, { nullable: true })

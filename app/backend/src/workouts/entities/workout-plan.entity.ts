@@ -10,7 +10,7 @@ export class WorkoutPlan {
   @Field()
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description!: string | null;
 
   @Field(() => Int, { nullable: true })

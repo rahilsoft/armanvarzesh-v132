@@ -15,8 +15,9 @@ export class Marketplace {
   @Field(() => Int)
   price: number;
 
-  // Folded from the former marketplace-service.
-  @Field({ nullable: true })
+  // Folded from the former marketplace-service. Explicit `() => String`
+  // is required because a `string | null` union reflects as Object.
+  @Field(() => String, { nullable: true })
   type?: string | null;
 
   @Field(() => Int, { nullable: true })
