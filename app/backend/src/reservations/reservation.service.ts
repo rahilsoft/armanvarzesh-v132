@@ -1,9 +1,21 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
-type Reservation = { id: string; userId: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt: Date };
+type Reservation = { id: string; userId: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date };
 
 const mem = { reservations: new Map<string, Reservation>(), slots: new Set<string>() };
+
+/** Map a canonical (Int-keyed) reservation row to this service's legacy
+ *  string-id shape. The canonical Reservation has no createdAt column. */
+function toLegacyReservation(row: { id: number; userId: number; resourceId: number; status: string; version: number }): Reservation {
+  return {
+    id: String(row.id),
+    userId: String(row.userId),
+    slotId: String(row.resourceId),
+    status: row.status === 'CANCELED' ? 'CANCELED' : 'ACTIVE',
+    version: row.version,
+  };
+}
 
 @Injectable()
 export class ReservationService {
@@ -29,14 +41,24 @@ export class ReservationService {
       mem.reservations.set(r.id, r);
       return r;
     }
-    // Prisma optimistic - requires `version` column
-    // @ts-ignore
-    const slotExists = await this.prisma.slot.findUnique?.({ where: { id: slotId } });
-    if (!slotExists) { /* optionally create slot */ }
-    // create
-    // @ts-ignore
-    const created = await this.prisma.reservation.create({ data: { userId, slotId, status: 'ACTIVE', version: 1 } });
-    return created as any;
+    // Prisma path (Booking fold): Slot is now a canonical model and
+    // Reservation is addressed with Int keys. The slot's time range fills the
+    // reservation window, and the (resourceId, startsAt, endsAt) unique key
+    // rejects double-booking at the database.
+    if (!this.prisma) throw new ConflictException('Persistence unavailable');
+    const slot = await this.prisma.slot.findUnique({ where: { id: Number(slotId) } });
+    if (!slot) throw new ConflictException('Slot not found');
+    const created = await this.prisma.reservation.create({
+      data: {
+        userId: Number(userId),
+        resourceId: slot.id,
+        startsAt: slot.startUTC,
+        endsAt: slot.endUTC,
+        status: 'ACTIVE',
+        version: 1,
+      },
+    });
+    return toLegacyReservation(created);
   }
 
   async cancel(reservationId: string): Promise<Reservation> {
@@ -49,12 +71,16 @@ export class ReservationService {
       mem.reservations.set(r.id, r);
       return r;
     }
-    // Prisma optimistic update (version bump)
-    // @ts-ignore
-    const found = await this.prisma.reservation.findUnique({ where: { id: reservationId } });
-    // @ts-ignore
-    const updated = await this.prisma.reservation.update({ where: { id_version: { id: reservationId, version: found.version } }, data: { status: 'CANCELED', version: { increment: 1 } } });
-    return updated as any;
+    // Prisma optimistic update (version bump). The Booking fold added the
+    // (id, version) compound unique, so a stale writer misses the row.
+    if (!this.prisma) throw new ConflictException('Persistence unavailable');
+    const found = await this.prisma.reservation.findUnique({ where: { id: Number(reservationId) } });
+    if (!found) throw new ConflictException('Not found');
+    const updated = await this.prisma.reservation.update({
+      where: { id_version: { id: found.id, version: found.version } },
+      data: { status: 'CANCELED', version: { increment: 1 } },
+    });
+    return toLegacyReservation(updated);
   }
 
   async listByUser(userId: number) {

@@ -38,7 +38,6 @@ export class AuthUseCase {
 
     // The repository returns a public user; we need hash, so we fetch raw record quickly (if needed)
     // For simplicity, attempt to read via public user + prisma delegate fallback:
-    // @ts-ignore - unsafe but pragmatic: SafePrismaService is usually exposed globally
     const prisma = (globalThis as any).prisma || null;
     let hash = '';
     if (prisma?.user?.findUnique) {

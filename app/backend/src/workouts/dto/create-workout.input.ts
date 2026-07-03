@@ -5,6 +5,10 @@ export class CreateWorkoutInput {
   @Field()
   title!: string;
 
+  // Optional link to a structured WorkoutPlan (folded Workout domain).
+  @Field(() => Int, { nullable: true })
+  planId?: number;
+
   @Field(() => GraphQLISODateTime, { nullable: true })
   date?: Date;
 

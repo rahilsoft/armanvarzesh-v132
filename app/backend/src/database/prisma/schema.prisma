@@ -14,10 +14,43 @@ model User {
   email     String    @unique
   name      String
   password  String?
+  // Canonical credential hash (argon2) for first-party user auth. `password`
+  // is retained only for legacy rows and is not used by the auth flow.
+  passwordHash     String?
   role      String?
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?
+  // Demographic / profile attributes (folded from the former users-service).
+  // Optional; used to personalise workout & nutrition plans.
+  age          Int?
+  gender       String?
+  height       Float?
+  weight       Float?
+  goals        String?
+  fitnessLevel String?
   createdAt DateTime  @default(now())
 
   // relations
+  sessions            Session[]
+  refreshTokens       RefreshToken[]
+  devices             Device[]
+  passwordResetTokens PasswordResetToken[]
+  nutritionGoal       NutritionGoal?
+  hydrationLogs       HydrationLog[]
+  habits              Habit[]
+  bookings            Booking[]
+  pointEvents         PointEvent[]
+  userBadges          UserBadge[]
+  streaks             Streak[]
+  referrals           Referral[]
+  challengeEntries    ChallengeParticipant[]
+  appointments        Appointment[]
+  physioAssignments   PhysioAssignment[]
+  romMeasures         RomMeasure[]
+  enrollments         CourseEnrollment[]
+  certificates        Certificate[]
+  assessmentAttempts  AssessmentAttempt[]
+  trainingProfile     UserTrainingProfile?
   payments        Payment[]
   analytics       AnalyticsEntity[]
   aiEntities      AiEntity[]
@@ -84,8 +117,15 @@ model Challenge {
   id          Int      @id @default(autoincrement())
   name        String
   description String
+  // Legacy column (pre-fold rows); windowed challenges use startAt/endAt.
   duration    Int
+  rules       Json?
+  reward      Json?
+  startAt     DateTime?
+  endAt       DateTime?
   createdAt   DateTime @default(now())
+  participants ChallengeParticipant[]
+  @@index([startAt, endAt], map: "idx_Challenge_window")
 }
 
 model Cms {
@@ -103,6 +143,13 @@ model Coach {
   email     String   @unique
   name      String
   expertise String
+  // Profile fields folded from services/coaches-service. Its `password`
+  // column was NOT ported: coach credentials belong to the canonical User
+  // auth (the standalone service needed its own credential store).
+  speciality     String?
+  certifications String?
+  bio            String?
+  verified       Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
@@ -128,7 +175,12 @@ model Marketplace {
   name        String
   description String
   price       Int
+  // Folded from services/marketplace-service (its Purchase concept is NOT a
+  // new model: purchases go through the canonical Payments Product/Order flow).
+  type        String?
+  createdBy   Int?
   createdAt   DateTime @default(now())
+  @@index([type], map: "idx_Marketplace_type")
 }
 
 model Meal {
@@ -188,12 +240,25 @@ model Workout {
 
   id        Int      @id @default(autoincrement())
   title     String
-  data      Json
+  // Legacy free-form payload (pre-fold rows). The structured columns below,
+  // folded from services/workouts-service, are the canonical representation.
+  data      Json?
   userId    Int?
+  plan      WorkoutPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planId    Int?
+  date      DateTime?
+  duration  Int?
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  notes     String?
+  mediaUrl  String?
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
   @@index([userId], map: "idx_Workout_userId")
+  @@index([planId], map: "idx_Workout_planId")
 }
 
 model Message {
@@ -258,6 +323,9 @@ model Reservation {
   status     String   @default("active")
   version    Int      @default(1)
 
+  // Optimistic locking: updates address rows by (id, version) so a stale
+  // writer misses and can retry (folded Booking domain requirement).
+  @@unique([id, version], map: "uq_Reservation_id_version")
   @@unique([resourceId, startsAt, endsAt])
   @@index([userId, startsAt, endsAt])
   @@index([resourceId])  // added by phase5
@@ -311,6 +379,11 @@ model Food {
   carbs     Float
   fat       Float
   calories  Float    // per 100g
+  // Merged from content-service Food (dismemberment step 3)
+  nameFa    String?
+  nameEn    String?
+  unitsJson Json?    // e.g. {"cup":240,"tbsp":15,"egg":50}
+  createdBy Int?
   createdAt DateTime @default(now())
 
   mealLogs  MealLog[]
@@ -359,6 +432,10 @@ enum SpecialistType {
   COACH
   NUTRITIONIST
   CORRECTIVE
+  // Added by the Specialist* fold (content-service ServiceType merge)
+  PHYSICAL_THERAPIST
+  PSYCHOLOGIST
+  SPECIALIST
 }
 
 enum ContentType {
@@ -374,6 +451,16 @@ model Specialist {
   bio         String?
   videoUrl    String?
   rating      Float         @default(0)
+  // Profile/audience fields merged from content-service SpecialistProfile/Meta
+  displayName String?
+  avatarUrl   String?
+  tags        Json?
+  genderFocus String?       // male | female | any
+  minAge      Int?
+  maxAge      Int?
+  languages   String?       // comma separated, e.g. fa,en
+  thumbnailUrl String?
+  activeAt    DateTime?
   createdAt   DateTime      @default(now())
 
   user        User          @relation(fields: [userId], references: [id])
@@ -421,9 +508,15 @@ model Course {
   specialistId Int
   title        String
   description  String?
+  // LMS fields folded from services/courses-service
+  summary      String?
+  difficulty   String?
   price        Int
   duration     Int
   createdAt    DateTime   @default(now())
+  assets       CourseAsset[]
+  enrollments  CourseEnrollment[]
+  certificates Certificate[]
 
   specialist   Specialist @relation(fields: [specialistId], references: [id])
   @@index([specialistId], map: "idx_Course_specialistId")
@@ -462,8 +555,1232 @@ model Subscription {
   provider         String
   externalId       String
   status           String
+  // Plan-based subscription fields (folded from payments-service). For the
+  // internal checkout flow provider="internal" and externalId=userId, so the
+  // existing (provider,externalId) unique key doubles as the per-user key.
+  planId           String?
+  startedAt        DateTime?
   currentPeriodEnd DateTime?
   createdAt        DateTime  @default(now())
 
   @@unique([provider, externalId], name: "provider_externalId")
+}
+
+// ---------------------------------------------------------------------------
+// Auth domain (canonical). Ported from the former services/auth-service using
+// the modular-monolith core (Int primary keys). Security-critical design:
+// - passwords hashed with argon2 (stored on User.passwordHash)
+// - refresh tokens use the split selector/verifier model with rotation and
+//   reuse/theft detection (see auth module).
+// ---------------------------------------------------------------------------
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Session_userId")
+}
+
+model RefreshToken {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  // Split-token model: the client holds `selector.verifier`. `selector` is a
+  // public, indexed lookup key; `verifierHash` is the argon2 hash of the secret
+  // half (argon2 is salted, so we can never query by it — hence the selector).
+  selector     String    @unique
+  verifierHash String
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  // Rotation lineage: set when this token is rotated, enabling reuse/theft
+  // detection (a revoked token being presented for refresh).
+  replacedById Int?
+  userAgent    String?
+  ip           String?
+  @@index([userId], map: "idx_RefreshToken_userId")
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  name      String?
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  @@index([userId], map: "idx_Device_userId")
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  @@index([userId], map: "idx_PasswordResetToken_userId")
+}
+
+// ---------------------------------------------------------------------------
+// Payments — checkout/entitlement flow (folded from services/payments-service).
+// Core Int primary keys; provider-linked entities keep the external id as a
+// String @unique reference so no PSP identifier is lost.
+// ---------------------------------------------------------------------------
+model Product {
+  id          Int      @id @default(autoincrement())
+  // Stable catalog slug (e.g. "plan-pro"); the former service's string id.
+  code        String   @unique
+  kind        String   // plan | booking
+  name        String
+  amountCents Int
+  currency    String   @default("EUR")
+  interval    String?  // month | year (for plans)
+  createdAt   DateTime @default(now())
+  checkoutSessions CheckoutSession[]
+  orders           Order[]
+}
+
+model CheckoutSession {
+  id                Int      @id @default(autoincrement())
+  // External PSP session id (formerly the row id); public, opaque, unique.
+  providerSessionId String   @unique
+  userId            Int
+  product           Product  @relation(fields: [productId], references: [id])
+  productId         Int
+  amountCents       Int
+  currency          String
+  status            String   @default("open") // open | paid | expired | cancelled
+  metadata          Json?
+  createdAt         DateTime @default(now())
+  @@index([userId], map: "idx_CheckoutSession_userId")
+}
+
+model PaymentEvent {
+  id        Int      @id @default(autoincrement())
+  provider  String
+  // PSP event id — idempotency key for webhook processing.
+  eventId   String   @unique
+  type      String
+  sessionId Int?
+  payload   Json
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+  amountCents Int
+  currency    String
+  status      String   @default("paid") // paid | refunded
+  paymentRef  String
+  createdAt   DateTime @default(now())
+  @@index([userId], map: "idx_Order_userId")
+}
+
+model DomainEventOutbox {
+  id          Int       @id @default(autoincrement())
+  type        String
+  data        Json
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+  @@index([processedAt], map: "idx_DomainEventOutbox_processedAt")
+}
+
+
+// ---------------------------------------------------------------------------
+// Workout domain — structured training plans (folded from
+// services/workouts-service, Int PKs preserved as-is).
+// ---------------------------------------------------------------------------
+model WorkoutPlan {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  userId      Int?
+  createdAt   DateTime   @default(now())
+  exercises   Exercise[]
+  workouts    Workout[]
+  @@index([userId], map: "idx_WorkoutPlan_userId")
+}
+
+model Exercise {
+  id        Int         @id @default(autoincrement())
+  plan      WorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId    Int
+  name      String
+  sets      Int?
+  reps      Int?
+  weight    Float?
+  rpe       Float?
+  restTime  Int?
+  notes     String?
+  createdAt DateTime    @default(now())
+  @@index([planId], map: "idx_Exercise_planId")
+}
+
+
+// ---------------------------------------------------------------------------
+// Nutrition domain — goals, hydration and habit tracking (folded from
+// services/nutrition-service, Int PKs preserved; FKs to the canonical User
+// added, which the standalone service could not have).
+// ---------------------------------------------------------------------------
+model NutritionGoal {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int      @unique
+  calories  Float
+  protein   Float
+  carbs     Float
+  fats      Float
+  createdAt DateTime @default(now())
+  @@index([userId], map: "idx_NutritionGoal_userId")
+}
+
+model HydrationLog {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  occurredAt DateTime @db.Timestamptz(6)
+  ml         Int
+  source     String?  @db.VarChar(64)
+  createdAt  DateTime @default(now())
+  @@index([userId, occurredAt], map: "idx_HydrationLog_userId_occurredAt")
+  @@index([occurredAt], map: "idx_HydrationLog_occurredAt")
+}
+
+enum HabitType {
+  water
+  steps
+  training
+  calorie
+}
+
+model Habit {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      HabitType
+  target    Float
+  cadence   Json
+  tz        String
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  logs      HabitLog[]
+  @@index([userId, type], map: "idx_Habit_user_type")
+  @@index([active], map: "idx_Habit_active")
+}
+
+model HabitLog {
+  id         Int      @id @default(autoincrement())
+  habit      Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId    Int
+  occurredAt DateTime @db.Timestamptz(6)
+  value      Float
+  meta       Json?
+  createdAt  DateTime @default(now())
+  @@index([habitId, occurredAt], map: "idx_HabitLog_habit_occurredAt")
+  @@index([occurredAt], map: "idx_HabitLog_occurredAt")
+}
+
+
+// ---------------------------------------------------------------------------
+// Booking domain — coach slots with holds/capacity and bookings (folded from
+// services/booking-service; String cuid ids converted to core Int PKs; its
+// unused Audit model is superseded by the canonical AuditLog).
+// ---------------------------------------------------------------------------
+model Slot {
+  id          Int       @id @default(autoincrement())
+  coachId     Int
+  startUTC    DateTime
+  endUTC      DateTime
+  capacity    Int       @default(1)
+  holdToken   String?
+  holdExpires DateTime?
+  createdAt   DateTime  @default(now())
+  bookings    Booking[]
+  @@index([coachId, startUTC], map: "idx_Slot_coach_start")
+  @@index([holdExpires], map: "idx_Slot_holdExpires")
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  coachId    Int
+  slot       Slot     @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  slotId     Int
+  status     String   // PENDING | CONFIRMED | CANCELLED
+  mode       String   // online | in_person
+  paymentRef String?
+  createdAt  DateTime @default(now())
+  @@index([userId, status], map: "idx_Booking_user_status")
+  @@index([slotId, status], map: "idx_Booking_slot_status")
+}
+
+
+// ---------------------------------------------------------------------------
+// Gamification domain — challenges, points, badges, streaks, VIP tiers,
+// referrals and commissions. Folded from services/challenges-service and
+// services/rewards-service (String ids -> core Int PKs, FKs to User added);
+// vip-service and affiliate-service were in-memory stubs fully subsumed by
+// VipTier / Referral / Commission. Independently extractable module (ADR-B1).
+// ---------------------------------------------------------------------------
+model ChallengeParticipant {
+  id          Int       @id @default(autoincrement())
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  challengeId Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  status      String    @default("joined") // joined | completed
+  progress    Json?
+  points      Int       @default(0)
+  joinedAt    DateTime  @default(now())
+  completedAt DateTime?
+  @@unique([challengeId, userId])
+  @@index([challengeId, points], map: "idx_Participant_leaderboard")
+}
+
+model PointEvent {
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  type           String
+  amount         Int
+  meta           Json?
+  idempotencyKey String   @unique
+  createdAt      DateTime @default(now())
+  @@index([userId, createdAt], map: "idx_PointEvent_user_time")
+}
+
+model Badge {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  name      String
+  criteria  Json?
+  createdAt DateTime @default(now())
+  holders   UserBadge[]
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId   Int
+  createdAt DateTime @default(now())
+  @@unique([userId, badgeId])
+}
+
+model Streak {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  kind      String
+  count     Int       @default(0)
+  lastDate  DateTime?
+  createdAt DateTime  @default(now())
+  @@unique([userId, kind])
+}
+
+model VipTier {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  threshold Int
+  perks     Json?
+  createdAt DateTime @default(now())
+}
+
+model Referral {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  inviter   User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+  inviterId Int
+  createdAt DateTime @default(now())
+}
+
+model ReferralUse {
+  id        Int      @id @default(autoincrement())
+  code      String
+  inviterId Int
+  inviteeId Int
+  createdAt DateTime @default(now())
+  @@unique([code, inviteeId])
+}
+
+model Commission {
+  id        Int      @id @default(autoincrement())
+  inviterId Int
+  amount    Int
+  status    String   // pending | paid
+  createdAt DateTime @default(now())
+  @@index([inviterId, status], map: "idx_Commission_inviter_status")
+}
+
+
+// ---------------------------------------------------------------------------
+// Medical domain — facilities, doctors, health tests, clinical appointments
+// (folded from services/medical-service; String ids -> core Int PKs, FK to
+// User added). The service's `Slot` is renamed `ClinicSlot`: clinical
+// scheduling is a different bounded context from the coach-booking `Slot`.
+// ---------------------------------------------------------------------------
+model Facility {
+  id        Int      @id @default(autoincrement())
+  name      String
+  city      String
+  geoLat    Float?
+  geoLng    Float?
+  doctors   Doctor[]
+  tests     HealthTest[]
+  createdAt DateTime @default(now())
+}
+
+model Doctor {
+  id         Int      @id @default(autoincrement())
+  name       String
+  specialty  String?
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  facilityId Int
+  slots      ClinicSlot[]
+  createdAt  DateTime @default(now())
+}
+
+model HealthTest {
+  id              Int      @id @default(autoincrement())
+  name            String
+  code            String   @unique
+  requiresFasting Boolean  @default(false)
+  facility        Facility? @relation(fields: [facilityId], references: [id], onDelete: SetNull)
+  facilityId      Int?
+  createdAt       DateTime @default(now())
+  bundles         TestBundleOnTest[]
+}
+
+model TestBundle {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  tests     TestBundleOnTest[]
+}
+
+model TestBundleOnTest {
+  bundle   TestBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  bundleId Int
+  test     HealthTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId   Int
+  @@id([bundleId, testId])
+}
+
+model ClinicSlot {
+  id        Int      @id @default(autoincrement())
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctorId  Int
+  startUTC  DateTime
+  endUTC    DateTime
+  capacity  Int      @default(1)
+  holds     Int      @default(0)
+  createdAt DateTime @default(now())
+  appointments Appointment[]
+  @@index([doctorId, startUTC], map: "idx_ClinicSlot_doctor_start")
+}
+
+model Appointment {
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  facilityId   Int
+  doctorId     Int
+  clinicSlot   ClinicSlot @relation(fields: [clinicSlotId], references: [id], onDelete: Cascade)
+  clinicSlotId Int
+  status       String   // pending | confirmed | cancelled
+  fasting      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  result       Result?  @relation(fields: [resultId], references: [id], onDelete: SetNull)
+  resultId     Int?     @unique
+  @@index([userId, status], map: "idx_Appointment_user_status")
+  @@index([clinicSlotId, status], map: "idx_Appointment_slot_status")
+}
+
+model Result {
+  id          Int          @id @default(autoincrement())
+  appointment Appointment?
+  summary     String
+  createdAt   DateTime     @default(now())
+}
+
+
+// ---------------------------------------------------------------------------
+// Physio domain — rehab protocols, assignments, sessions, pain (VAS) and
+// range-of-motion tracking (folded from services/physio-service; String ids
+// -> core Int PKs, FKs to User added; PhysioSession.date String kept as an
+// ISO day key by design — it identifies the local calendar day).
+// ---------------------------------------------------------------------------
+model PhysioProtocol {
+  id        Int          @id @default(autoincrement())
+  name      String
+  area      String
+  weeks     Int
+  steps     PhysioStep[]
+  createdAt DateTime     @default(now())
+}
+
+model PhysioStep {
+  id         Int            @id @default(autoincrement())
+  week       Int
+  day        Int
+  exerciseId Int?
+  notes      String?
+  seconds    Int?
+  videoUrl   String?
+  protocol   PhysioProtocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  protocolId Int
+  @@index([protocolId, week, day], map: "idx_PhysioStep_protocol_week_day")
+}
+
+model PhysioAssignment {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  protocolId Int
+  startedAt  DateTime
+  archivedAt DateTime?
+  sessions   PhysioSession[]
+  correctiveChecks CorrectiveProgress[]
+  @@index([userId, archivedAt], map: "idx_PhysioAssignment_user_active")
+}
+
+model PhysioSession {
+  id           Int              @id @default(autoincrement())
+  assignment   PhysioAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  date         String
+  completed    Boolean          @default(false)
+  completedAt  DateTime?
+  painLogs     PainLog[]
+  @@unique([assignmentId, date])
+}
+
+model PainLog {
+  id        Int           @id @default(autoincrement())
+  session   PhysioSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  score     Int
+  notes     String?
+  createdAt DateTime      @default(now())
+  @@index([sessionId, createdAt], map: "idx_PainLog_session_time")
+}
+
+model RomMeasure {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  joint     String
+  side      String
+  angle     Int
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt], map: "idx_RomMeasure_user_time")
+}
+
+
+// ---------------------------------------------------------------------------
+// Courses/LMS domain — encrypted course assets, enrollments and verifiable
+// certificates. Folded from services/courses-service (schema; its service was
+// an in-memory stub) and services/certificate-service (JWT+QR issue/verify).
+// The two Certificate shapes are merged into one canonical model.
+// ---------------------------------------------------------------------------
+model CourseAsset {
+  id        Int      @id @default(autoincrement())
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId  Int
+  idx       Int
+  encUrl    String   // encrypted chunk URL (signed)
+  durationS Int
+  createdAt DateTime @default(now())
+  @@index([courseId, idx], map: "idx_CourseAsset_course_idx")
+}
+
+model CourseEnrollment {
+  id         Int      @id @default(autoincrement())
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId   Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  enrolledAt DateTime @default(now())
+  @@unique([courseId, userId])
+}
+
+model Certificate {
+  id       Int      @id @default(autoincrement())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  course   Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  courseId Int?
+  kind     String   @default("course")
+  code     String   @unique
+  qrToken  String
+  payload  Json?
+  revoked  Boolean  @default(false)
+  issuedAt DateTime @default(now())
+  @@index([userId], map: "idx_Certificate_user")
+}
+
+
+// ---------------------------------------------------------------------------
+// Assessments domain — structured assessments with a JSON-driven scoring rule
+// engine (folded from services/assessments-service; String ids -> Int PKs,
+// FK to User). The canonical Survey model (simple Q&A) is a different, older
+// concept and is untouched.
+// ---------------------------------------------------------------------------
+model Assessment {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  domain      String
+  level       String?
+  durationMin Int       @default(10)
+  sections    Section[]
+  attempts    AssessmentAttempt[]
+  createdAt   DateTime  @default(now())
+}
+
+model Section {
+  id           Int        @id @default(autoincrement())
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentId Int
+  title        String
+  order        Int        @default(0)
+  questions    Question[]
+  @@index([assessmentId, order], map: "idx_Section_assessment_order")
+}
+
+model Question {
+  id        Int     @id @default(autoincrement())
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId Int
+  type      String  // single | multi | number | boolean
+  text      String
+  options   Json?
+  scoring   Json?   // rule fragment: { weight?, map?, range? }
+  @@index([sectionId], map: "idx_Question_section")
+}
+
+model AssessmentAttempt {
+  id             Int        @id @default(autoincrement())
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  assessment     Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentId   Int
+  answers        Json       // [{questionId, value}...]
+  score          Int
+  recommendation Json?
+  createdAt      DateTime   @default(now())
+  @@index([userId, assessmentId], map: "idx_Attempt_user_assessment")
+}
+
+
+// ---------------------------------------------------------------------------
+// Workout exercise catalog — videos, muscles, equipment, sports and the 3D
+// anatomy config. Folded from services/content-service (dismemberment step 1
+// of the committed matrix; cuid String ids -> core Int PKs). Prerequisite for
+// the Plan* engine fold (PlanBlockItem references ExerciseVideo).
+// ---------------------------------------------------------------------------
+enum ExerciseStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ExerciseVideo {
+  id           Int            @id @default(autoincrement())
+  title        String
+  videoUrl     String
+  audioUrl     String?
+  description  String?
+  level        String?        // BEGINNER | INTERMEDIATE | ADVANCED
+  kind         String?        // STRENGTH | CARDIO | FLEXIBILITY | ...
+  ownerId      Int?
+  status       ExerciseStatus @default(PENDING)
+  durationSec  Int?
+  thumbnailUrl String?
+  viewCount    Int            @default(0)
+  likeCount    Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  primaryMuscles   MuscleRef[]        @relation("ExercisePrimaryMuscles")
+  secondaryMuscles MuscleRef[]        @relation("ExerciseSecondaryMuscles")
+  equipment        EquipmentCatalog[]
+  sports           Sport[]
+  planBlockItems   PlanBlockItem[]
+
+  @@index([status], map: "idx_ExerciseVideo_status")
+  @@index([ownerId], map: "idx_ExerciseVideo_owner")
+  @@index([title], map: "idx_ExerciseVideo_title")
+}
+
+model Sport {
+  id             Int             @id @default(autoincrement())
+  name           String
+  exerciseVideos ExerciseVideo[]
+  @@index([name], map: "idx_Sport_name")
+}
+
+model EquipmentCatalog {
+  id             Int             @id @default(autoincrement())
+  name           String
+  exerciseVideos ExerciseVideo[]
+  @@index([name], map: "idx_EquipmentCatalog_name")
+}
+
+// Named MuscleRef to avoid squatting the bare `Muscle` name while the legacy
+// content-service schema still exists; the table is "Muscle".
+model MuscleRef {
+  id                 Int             @id @default(autoincrement())
+  code               String          @unique
+  name               String
+  primaryExercises   ExerciseVideo[] @relation("ExercisePrimaryMuscles")
+  secondaryExercises ExerciseVideo[] @relation("ExerciseSecondaryMuscles")
+  @@map("Muscle")
+}
+
+model AnatomyConfig {
+  id        Int      @id @default(autoincrement())
+  gender    String   // male | female
+  modelUrl  String
+  meshMap   Json     // mapping of muscle codes to 3D mesh regions
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([gender, active], map: "idx_AnatomyConfig_gender_active")
+}
+
+
+// ---------------------------------------------------------------------------
+// Workout Plan* engine — structured training plans (days/blocks/items/sets),
+// assignments with generated session schedules, set logging and notes.
+// Folded from services/content-service (dismemberment step 2; cuid -> Int).
+// ---------------------------------------------------------------------------
+enum PlanKind {
+  WORKOUT
+  CORRECTIVE
+  NUTRITION
+}
+
+enum BlockType {
+  SINGLE
+  SUPERSET
+  TRISET
+  CIRCUIT
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Plan {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String?
+  kind        PlanKind         @default(WORKOUT)
+  ownerId     Int?
+  createdBy   Int?
+  status      String           @default("DRAFT") // DRAFT | PUBLISHED
+  version     Int              @default(1)
+  json        Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  days        PlanDay[]
+  assignments PlanAssignment[]
+  @@index([ownerId], map: "idx_Plan_owner")
+  @@index([status], map: "idx_Plan_status")
+}
+
+model PlanDay {
+  id       Int         @id @default(autoincrement())
+  plan     Plan        @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId   Int
+  order    Int
+  title    String?
+  note     String?
+  voiceUrl String?
+  blocks   PlanBlock[]
+  @@index([planId, order], map: "idx_PlanDay_plan_order")
+}
+
+model PlanBlock {
+  id                  Int             @id @default(autoincrement())
+  day                 PlanDay         @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  dayId               Int
+  order               Int
+  type                BlockType       @default(SINGLE)
+  section             String?         // WARMUP | MAIN | COOLDOWN
+  protocol            String?         // FIVExFIVE | GVT | EMOM | HIIT
+  protocolParams      Json?
+  rounds              Int?
+  restBetweenItemsSec Int?
+  items               PlanBlockItem[]
+  @@index([dayId, order], map: "idx_PlanBlock_day_order")
+}
+
+model PlanBlockItem {
+  id         Int           @id @default(autoincrement())
+  block      PlanBlock     @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  blockId    Int
+  order      Int
+  exercise   ExerciseVideo @relation(fields: [exerciseId], references: [id])
+  exerciseId Int
+  note       String?
+  sets       PlanSet[]
+  @@index([blockId, order], map: "idx_PlanBlockItem_block_order")
+  @@index([exerciseId], map: "idx_PlanBlockItem_exercise")
+}
+
+model PlanSet {
+  id           Int          @id @default(autoincrement())
+  item         PlanBlockItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId       Int
+  order        Int
+  reps         Int?
+  weight       Float?
+  rest         Int?    // seconds
+  tempo        String? // e.g. "3-1-1-0"
+  rpe          Float?
+  durationSec  Int?
+  targetWeight Float?
+  targetRPE    Float?
+  logs         PlanSetLog[]
+  @@index([itemId, order], map: "idx_PlanSet_item_order")
+}
+
+model PlanAssignment {
+  id              Int           @id @default(autoincrement())
+  plan            Plan          @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId          Int
+  clientId        Int
+  startDate       DateTime
+  sessionsPerWeek Int           @default(3)
+  restDays        Json?         // day names: ["Sun","Sat"]
+  durationDays    Int           @default(28)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  sessions        PlanSession[]
+  @@index([clientId], map: "idx_PlanAssignment_client")
+  @@index([planId], map: "idx_PlanAssignment_plan")
+}
+
+model PlanSession {
+  id           Int               @id @default(autoincrement())
+  assignment   PlanAssignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  dayIndex     Int
+  date         DateTime
+  status       SessionStatus     @default(SCHEDULED)
+  completedAt  DateTime?
+  clientId     Int?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  notes        PlanSessionNote[]
+  setLogs      PlanSetLog[]
+  @@index([assignmentId], map: "idx_PlanSession_assignment")
+  @@index([clientId, date], map: "idx_PlanSession_client_date")
+}
+
+model PlanSessionNote {
+  id        Int         @id @default(autoincrement())
+  session   PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+  authorId  Int?
+  role      String      // USER | COACH | SPECIALIST
+  text      String?
+  audioUrl  String?
+  createdAt DateTime    @default(now())
+  @@index([sessionId], map: "idx_PlanSessionNote_session")
+}
+
+model PlanSetLog {
+  id           Int         @id @default(autoincrement())
+  session      PlanSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId    Int
+  planSet      PlanSet     @relation(fields: [planSetId], references: [id])
+  planSetId    Int
+  actualReps   Int
+  actualWeight Float?
+  rpe          Float?
+  note         String?
+  createdAt    DateTime    @default(now())
+  @@index([sessionId], map: "idx_PlanSetLog_session")
+  @@index([planSetId], map: "idx_PlanSetLog_set")
+}
+
+
+// ---------------------------------------------------------------------------
+// Nutrition planning — templates and generated calendar plans (folded from
+// services/content-service, dismemberment step 3; cuid -> Int PKs). The
+// content-service "MealLog" was a plan-meal check log, a different concept
+// from the canonical MealLog (food-quantity log) — renamed
+// NutritionPlanMealLog to end the collision.
+// ---------------------------------------------------------------------------
+model NutritionTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  goal      String?
+  json      Json
+  createdBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([name], map: "idx_NutritionTemplate_name")
+}
+
+model NutritionPlan {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  createdBy  Int?
+  startDate  DateTime
+  weeks      Int
+  status     String   @default("ACTIVE")
+  json       Json     // full calendar with meals & items & totals
+  totalsJson Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  mealLogs   NutritionPlanMealLog[]
+  @@index([userId, status], map: "idx_NutritionPlan_user_status")
+}
+
+model NutritionPlanMealLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  plan      NutritionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  planId    Int
+  dayIndex  Int
+  mealKey   String   // breakfast | snack | lunch | dinner | ...
+  checked   Boolean  @default(false)
+  photoUrl  String?
+  aiJson    Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([planId, dayIndex, mealKey])
+  @@index([userId, planId], map: "idx_NPMealLog_user_plan")
+}
+
+
+// ---------------------------------------------------------------------------
+// Specialist scoring — weighted quality score per specialist+role with
+// history and configurable weights (folded from services/content-service,
+// dismemberment step 4; cuid -> Int PKs, specialistId FK -> Specialist).
+// ---------------------------------------------------------------------------
+model SpecialistScore {
+  id           Int            @id @default(autoincrement())
+  specialistId Int
+  role         SpecialistType
+  totalScore   Float
+  metrics      Json?
+  lastComputed DateTime       @default(now())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  @@unique([specialistId, role])
+  @@index([role, totalScore], map: "idx_SpecScore_role_total")
+}
+
+model SpecialistScoreHistory {
+  id           Int            @id @default(autoincrement())
+  specialistId Int
+  role         SpecialistType
+  totalScore   Float
+  metrics      Json?
+  at           DateTime       @default(now())
+  @@index([specialistId, role, at], map: "idx_SpecScoreHist")
+}
+
+model ScoringWeights {
+  id      Int            @id @default(autoincrement())
+  role    SpecialistType @unique
+  weights Json
+}
+
+
+// ---------------------------------------------------------------------------
+// CMS group — page tiles with versioning/publish audit, survey system, intake
+// forms, moderation log, feature flags and CRM leads/conversions. Folded from
+// services/content-service (dismemberment step 5; cuid -> Int PKs).
+// ---------------------------------------------------------------------------
+enum TileState {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum LeadStatus {
+  OPEN
+  CONVERTED
+  CHURNED
+}
+
+model Tile {
+  id        Int            @id @default(autoincrement())
+  page      String
+  order     Int            @default(0)
+  type      String
+  variant   String?
+  weight    Float?
+  logicalId String?
+  state     TileState      @default(DRAFT)
+  data      Json
+  createdBy Int?
+  updatedBy Int?
+  version   Int            @default(1)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  versions  TileVersion[]
+  audits    PublishAudit[]
+  @@index([page, state, order], map: "idx_Tile_page_state_order")
+}
+
+model TileVersion {
+  id        Int       @id @default(autoincrement())
+  tile      Tile      @relation(fields: [tileId], references: [id], onDelete: Cascade)
+  tileId    Int
+  version   Int
+  data      Json
+  state     TileState
+  authorId  Int?
+  createdAt DateTime  @default(now())
+  @@index([tileId, version], map: "idx_TileVersion_tile_version")
+}
+
+model PublishAudit {
+  id        Int        @id @default(autoincrement())
+  tile      Tile       @relation(fields: [tileId], references: [id], onDelete: Cascade)
+  tileId    Int
+  action    String     // UPSERT | DELETE | PUBLISH
+  actorId   Int?
+  fromState TileState?
+  toState   TileState?
+  snapshot  Json?
+  createdAt DateTime   @default(now())
+  @@index([tileId], map: "idx_PublishAudit_tile")
+}
+
+model SurveyTemplate {
+  id          Int             @id @default(autoincrement())
+  code        String          @unique
+  title       String
+  serviceType SpecialistType?
+  periodDays  Int?
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model SurveyTask {
+  id           Int             @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType?
+  templateCode String
+  dueAt        DateTime
+  completedAt  DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  @@index([userId], map: "idx_SurveyTask_user")
+  @@index([dueAt], map: "idx_SurveyTask_due")
+}
+
+model SurveyResponse {
+  id           Int      @id @default(autoincrement())
+  templateCode String
+  userId       Int
+  specialistId Int
+  rating       Int
+  comment      String?
+  createdAt    DateTime @default(now())
+  @@index([specialistId, templateCode], map: "idx_SurveyResponse_spec_code")
+}
+
+model SurveyInvite {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  templateCode String
+  dueAt        DateTime
+  createdAt    DateTime @default(now())
+  @@index([userId, specialistId], map: "idx_SurveyInvite_user_spec")
+}
+
+model IntakeForm {
+  id          Int              @id @default(autoincrement())
+  slug        String           @unique
+  title       String
+  active      Boolean          @default(false)
+  version     Int              @default(1)
+  publishedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  questions   IntakeQuestion[]
+  responses   IntakeResponse[]
+}
+
+model IntakeQuestion {
+  id          Int        @id @default(autoincrement())
+  form        IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId      Int
+  key         String
+  label       String
+  type        String     // text | number | select | multiselect | date | ...
+  description String?
+  placeholder String?
+  options     Json?
+  required    Boolean    @default(false)
+  section     String?
+  order       Int        @default(0)
+  validation  Json?
+  @@index([formId, order], map: "idx_IntakeQuestion_form_order")
+}
+
+model IntakeResponse {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  form        IntakeForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId      Int
+  formVersion Int
+  answers     Json
+  createdAt   DateTime   @default(now())
+  @@index([userId], map: "idx_IntakeResponse_user")
+}
+
+model ModerationLog {
+  id        Int      @id @default(autoincrement())
+  entity    String   // CorrectiveVideo | ExerciseVideo | ...
+  entityId  Int
+  action    String   // APPROVE | REJECT | EDIT
+  note      String?
+  actorId   Int?
+  createdAt DateTime @default(now())
+  @@index([entity, entityId], map: "idx_ModerationLog_entity")
+}
+
+model FeatureFlag {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       Boolean  @default(false)
+  description String?
+  updatedBy   Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType
+  status       LeadStatus     @default(OPEN)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  @@index([specialistId, serviceType], map: "idx_Lead_spec_service")
+  @@index([userId], map: "idx_Lead_user")
+}
+
+model ConversionEvent {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  specialistId Int
+  serviceType  SpecialistType
+  kind         String         // FREE_TO_PREMIUM | RENEWAL
+  at           DateTime       @default(now())
+  @@index([specialistId, serviceType], map: "idx_Conversion_spec_service")
+}
+
+
+// ---------------------------------------------------------------------------
+// Physio corrective content — condition taxonomy, moderated corrective videos
+// and per-assignment corrective progress checks. Folded from
+// services/content-service (dismemberment step 6; cuid -> Int PKs).
+// CorrectiveProgress.assignmentId references the canonical PhysioAssignment.
+// ---------------------------------------------------------------------------
+enum CorrectiveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Visibility {
+  PRIVATE
+  PUBLIC
+}
+
+model Condition {
+  id          Int                        @id @default(autoincrement())
+  code        String                     @unique
+  nameFa      String
+  nameEn      String?
+  description String?
+  videos      CorrectiveVideoCondition[]
+}
+
+model CorrectiveVideo {
+  id         Int                        @id @default(autoincrement())
+  title      String
+  url        String
+  equipment  String?
+  notes      String?
+  voiceUrl   String?
+  uploadedBy Int
+  status     CorrectiveStatus           @default(PENDING)
+  reviewNote String?
+  reviewedBy Int?
+  reviewedAt DateTime?
+  visibility Visibility                 @default(PRIVATE)
+  createdAt  DateTime                   @default(now())
+  updatedAt  DateTime                   @updatedAt
+  conditions CorrectiveVideoCondition[]
+  @@index([uploadedBy], map: "idx_CorrectiveVideo_uploader")
+  @@index([status], map: "idx_CorrectiveVideo_status")
+}
+
+model CorrectiveVideoCondition {
+  id            Int             @id @default(autoincrement())
+  video         CorrectiveVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId       Int
+  condition     Condition       @relation(fields: [conditionCode], references: [code], onDelete: Cascade)
+  conditionCode String
+  @@unique([videoId, conditionCode])
+}
+
+model CorrectiveProgress {
+  id           Int              @id @default(autoincrement())
+  assignment   PhysioAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignmentId Int
+  dayIndex     Int
+  itemKey      String
+  value        String
+  createdAt    DateTime         @default(now())
+  @@unique([assignmentId, dayIndex, itemKey])
+}
+
+
+// ---------------------------------------------------------------------------
+// Extended training profile (1:1 with User) — folded from content-service's
+// UserProfile + UserMeta (dismemberment step 7). heightCm/weightKg were
+// duplicates of User.height/weight and are NOT ported; the canonical columns
+// remain the source of truth.
+// ---------------------------------------------------------------------------
+model UserTrainingProfile {
+  userId       Int      @id
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainingEnv  String?
+  equipment    Json?    // array of equipment
+  injuries     Json?    // array of injuries
+  measurements Json?
+  medical      Json?
+  meta         Json?    // former UserMeta.json (free-form per-user metadata)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

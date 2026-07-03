@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { createPublicKey } from 'crypto';
 
-type KeyEntry = {
+type _KeyEntry = {
   privateKey: string;
   publicKey: string;
 };

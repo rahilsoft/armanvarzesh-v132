@@ -1,7 +1,6 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { LiveService } from '../live.service';
-import { Live } from '../entities/live.entity';
 
 @Controller('live')
 export class LiveController {

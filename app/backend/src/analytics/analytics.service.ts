@@ -1,7 +1,5 @@
 
 import { Injectable } from '@nestjs/common';
-import { CacheService } from '../cache/cache.service';
-import { AnalyticsEntity } from './entities/analytics.entity';
 import { PrismaService } from '../database/prisma.service';
 
 @Injectable()

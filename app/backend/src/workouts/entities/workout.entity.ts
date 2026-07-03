@@ -6,8 +6,11 @@ export class Workout {
   @Field(() => Int)
   id!: number;
 
-  @Field(() => Int)
-  userId!: number;
+  @Field(() => Int, { nullable: true })
+  userId!: number | null;
+
+  @Field(() => Int, { nullable: true })
+  planId?: number | null;
 
   @Field()
   title!: string;
@@ -24,13 +27,14 @@ export class Workout {
   @Field(() => Int, { nullable: true })
   reps!: number | null;
 
-  @Field(() => Int, { nullable: true })
+  // rpe is a Float column (e.g. 7.5) — Number maps to GraphQL Float.
+  @Field(() => Number, { nullable: true })
   rpe!: number | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   notes!: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   mediaUrl!: string | null;
 
   @Field(() => Number, { nullable: true })

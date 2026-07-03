@@ -1,6 +1,4 @@
 import { JwksModule } from './jwks.module';
-import { HealthModule } from './health/health.module';
-import { PresentationModule } from './presentation/presentation.module';
 import { Module } from '@nestjs/common';
 import { JwksController } from './auth/jwks.controller';
 import { APP_GUARD } from '@nestjs/core';
@@ -24,6 +22,18 @@ import { ChatModule } from './chat/chat.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { AppCacheModule } from './cache/cache.module';
 import { AdminController } from './auth/admin.controller';
+import { UserAuthModule } from './auth/user-auth.module';
+import { WorkoutsModule } from './workouts/workouts.module';
+import { ReservationsModule } from './reservations/reservations.module';
+import { MedicalModule } from './medical/medical.module';
+import { PhysioModule } from './physio/physio.module';
+import { CoursesModule } from './courses/courses.module';
+import { AssessmentsModule } from './assessments/assessments.module';
+import { CoachesModule } from './coaches/coaches.module';
+import { MarketplaceModule } from './marketplace/marketplace.module';
+import { CmsModule } from './cms/cms.module';
+import { PaymentsModule } from './payments/payments.module';
+import { GamificationModule } from './gamification/gamification.module';
 
 @Module({ imports: [ JwksModule, AppCacheModule, LivekitModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -31,7 +41,9 @@ import { AdminController } from './auth/admin.controller';
       pinoHttp: {
         level: process.env.LOG_LEVEL || 'info',
         redact: ['req.headers.authorization', 'res.headers["set-cookie"]'],
-        transport: process.env.NODE_ENV !== 'production'
+        // Only in local development — pino-pretty is a dev-only transport and
+        // is not installed for test/CI/production (matches logging.module.ts).
+        transport: process.env.NODE_ENV === 'development'
           ? { target: 'pino-pretty', options: { colorize: true } }
           : undefined,
       }
@@ -51,6 +63,18 @@ import { AdminController } from './auth/admin.controller';
     NutritionModule,
     ChatModule,
     ReviewsModule,
+    UserAuthModule,
+    WorkoutsModule,
+    ReservationsModule,
+    GamificationModule,
+    MedicalModule,
+    PhysioModule,
+    CoursesModule,
+    AssessmentsModule,
+    CoachesModule,
+    MarketplaceModule,
+    CmsModule,
+    PaymentsModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],

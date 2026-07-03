@@ -1,4 +1,3 @@
-import { PrismaService } from '../database/prisma.service';
 import { Controller, Post, Req, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { IdempotencyService } from '../common/services/idempotency.service';
 import * as crypto from 'crypto';

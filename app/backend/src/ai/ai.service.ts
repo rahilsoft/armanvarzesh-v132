@@ -1,13 +1,12 @@
 
 import { Injectable } from '@nestjs/common';
-import { AiEntity } from './entities/ai.entity';
 import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class AiService {
   constructor(private prisma: PrismaService) {}
 
-  async generateWorkoutPlan(userId: number, input: any): Promise<any> {
+  async generateWorkoutPlan(userId: number, _input: any): Promise<any> {
     // Persist the generated plan using Prisma. This simple implementation
     // stores the plan text and associates it with the user. In a real
     // scenario, `input` could be used to customize the plan.
@@ -26,7 +25,7 @@ export class AiService {
    * string, but in a real system you would use `input` to tailor the
    * recommendations to the user's goals and dietary preferences.
    */
-  async generateNutritionPlan(userId: number, input: any): Promise<any> {
+  async generateNutritionPlan(userId: number, _input: any): Promise<any> {
     return this.prisma.aiEntity.create({
       data: {
         userId,

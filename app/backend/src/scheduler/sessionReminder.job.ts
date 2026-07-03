@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { ReservationService } from '../reservations/reservation.service';
 import { ReminderService } from '../notification/reminder.service';
-import { subMinutes, isWithinInterval } from 'date-fns';
+import { subMinutes } from 'date-fns';
 
 @Injectable()
 export class SessionReminderJob {

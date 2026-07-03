@@ -2,7 +2,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { WalletService } from './wallet.service';
 import { Wallet } from './entities/wallet.entity';
-import { WalletInput } from './dto/wallet.input';
 
 @Resolver(() => Wallet)
 export class WalletResolver {

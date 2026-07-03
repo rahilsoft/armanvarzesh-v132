@@ -2,20 +2,53 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '@prisma/client';
 
+/** Structured workout-session fields (canonical columns, folded from the
+ *  former services/workouts-service). `data` remains for legacy payloads. */
+export interface WorkoutWriteInput {
+  title?: string;
+  userId?: number;
+  planId?: number;
+  date?: Date;
+  duration?: number;
+  sets?: number;
+  reps?: number;
+  weight?: number;
+  rpe?: number;
+  notes?: string;
+  mediaUrl?: string;
+  data?: Prisma.InputJsonValue;
+}
+
+/** Keep only defined, known columns — never forward arbitrary keys to Prisma. */
+function pickWorkoutFields(input: WorkoutWriteInput): Partial<WorkoutWriteInput> {
+  const out: Partial<WorkoutWriteInput> = {};
+  const keys: (keyof WorkoutWriteInput)[] = [
+    'title', 'userId', 'planId', 'date', 'duration',
+    'sets', 'reps', 'weight', 'rpe', 'notes', 'mediaUrl', 'data',
+  ];
+  for (const k of keys) {
+    if (input[k] !== undefined) (out as Record<string, unknown>)[k] = input[k];
+  }
+  return out;
+}
+
 @Injectable()
 export class WorkoutsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: { title: string; data?: Prisma.JsonValue; userId?: number }) {
-    return this.prisma.workout.create({ data: { title: data.title, data: (data.data ?? undefined) as Prisma.InputJsonValue, userId: data.userId ?? undefined } });
+  async create(data: WorkoutWriteInput & { title: string }) {
+    // Pre-fold, the structured fields were stuffed into the `data` JSON blob
+    // because the columns did not exist; they are now real columns.
+    return this.prisma.workout.create({
+      data: { ...pickWorkoutFields(data), title: data.title } as Prisma.WorkoutUncheckedCreateInput,
+    });
   }
 
-  async update(id: number, data: Partial<{ title: string; data: Prisma.JsonValue; userId: number }>) {
-    const patch: any = {};
-    if (typeof data.title !== 'undefined') patch.title = data.title;
-    if (typeof data.data  !== 'undefined') patch.data = data.data as Prisma.JsonValue;
-    if (typeof data.userId !== 'undefined') patch.userId = data.userId;
-    return this.prisma.workout.update({ where: { id }, data: patch });
+  async update(id: number, data: Partial<WorkoutWriteInput>) {
+    return this.prisma.workout.update({
+      where: { id },
+      data: pickWorkoutFields(data) as Prisma.WorkoutUncheckedUpdateInput,
+    });
   }
 
   async remove(id: number) {
@@ -49,7 +82,7 @@ export class WorkoutsService {
    * Record the actual performance data for a workout by merging it into the
    * workout's JSON `data` field under an `actual` key.
    */
-  async logActual(id: number, input: any) {
+  async logActual(id: number, input: Partial<WorkoutWriteInput> | null) {
     const existing = await this.prisma.workout.findUniqueOrThrow({ where: { id } });
     const current =
       existing.data && typeof existing.data === 'object' && !Array.isArray(existing.data)

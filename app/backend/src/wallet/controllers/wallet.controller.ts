@@ -1,7 +1,6 @@
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { WalletService } from '../wallet.service';
-import { Wallet } from '../entities/wallet.entity';
 
 @Controller('wallets')
 export class WalletController {

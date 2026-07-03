@@ -5,11 +5,9 @@ import { applySecurity } from './src/security/applySecurity';
 import { mountMetricsEndpoint } from './src/observability/metrics';
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import compression from 'compression';
 import helmet from "helmet";
-import { register as promRegister } from "prom-client";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
