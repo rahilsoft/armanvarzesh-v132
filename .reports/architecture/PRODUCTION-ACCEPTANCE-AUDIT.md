@@ -136,3 +136,29 @@ relay worker (`services/workers` still a stub).
 
 Only after P0-1, P0-2, P1-1…P1-4 are eliminated **and re-verified from the
 repository** may production readiness be reconsidered.
+
+---
+
+## Resolution Log (Engineer Mode)
+
+Fixes are applied one blocker per commit and re-verified against the
+repository. Status updated as each lands.
+
+- **P0-1 · Access control — RESOLVED** (`d92d7ac`). Added `@CurrentUser()` +
+  `@Public()` decorators; made `JwtAuthGuard` reflector-aware. Guarded every
+  folded controller (payments/checkout, booking, medical, physio, assessments,
+  gamification, courses, nutrition tracking, wearables) with
+  `@UseGuards(JwtAuthGuard)`, deriving identity from the JWT and deleting the
+  client-supplied `userId` DTO fields / path params. Removed the wearables
+  `x-user-id` header/query impersonation fallback. Public catalog reads stay
+  `@Public()`. `marketplace` is a read-only public catalog (no body `userId`,
+  no mutations) — no guard needed. Verified: typecheck ✓, lint ✓, 115 unit ✓.
+- **P0-2 · Webhook forgery — RESOLVED** (`d92d7ac`). Added
+  `verifyWebhookSignature()` (HMAC-SHA256 over canonical JSON, constant-time
+  compare, fail-closed in production). Wired into the payments checkout
+  webhook, booking `payments/success` callback, and medical results-ready
+  webhook. The legacy `payments/webhook.controller.ts` already verified HMAC.
+- **P1-1 · Build** — pending.
+- **P1-2 · Dockerfile** — pending.
+- **P1-3 · Transactions** — pending.
+- **P1-4 · E2E** — pending.
