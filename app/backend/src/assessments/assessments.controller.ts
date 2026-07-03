@@ -1,25 +1,29 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { IsArray, IsInt } from 'class-validator';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { IsArray } from 'class-validator';
 import { AssessmentsService, Answer } from './assessments.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { Public } from '../common/auth/public.decorator';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
 class SubmitDto {
-  @IsInt() userId!: number;
   @IsArray() answers!: Answer[];
 }
 
 @Controller('assessments')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class AssessmentsController {
   constructor(private readonly assessments: AssessmentsService) {}
 
+  @Public()
   @Get()
   list() {
     return this.assessments.list();
   }
 
   @Get('mine')
-  mine(@Query('userId', ParseIntPipe) userId: number) {
-    return this.assessments.myAttempts(userId);
+  mine(@CurrentUser() user: AuthPrincipal) {
+    return this.assessments.myAttempts(user.userId);
   }
 
   @Get('results/:attemptId')
@@ -27,13 +31,14 @@ export class AssessmentsController {
     return this.assessments.assessmentResult(attemptId);
   }
 
+  @Public()
   @Get(':id')
   get(@Param('id', ParseIntPipe) id: number) {
     return this.assessments.getAssessment(id);
   }
 
   @Post(':id/submit')
-  submit(@Param('id', ParseIntPipe) id: number, @Body() dto: SubmitDto) {
-    return this.assessments.submitAssessment({ userId: dto.userId, assessmentId: id, answers: dto.answers });
+  submit(@CurrentUser() user: AuthPrincipal, @Param('id', ParseIntPipe) id: number, @Body() dto: SubmitDto) {
+    return this.assessments.submitAssessment({ userId: user.userId, assessmentId: id, answers: dto.answers });
   }
 }

@@ -1,70 +1,69 @@
-import { Body, Controller, Get, Post, Query, ParseIntPipe, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsIn, IsInt, IsOptional, IsString, Max, Min, MinLength } from 'class-validator';
 import { PhysioService } from './physio.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
 /** Canonical REST surface for the Physio domain (folded from
- *  services/physio-service; ids now Int). */
+ *  services/physio-service; ids now Int). User identity comes from the JWT. */
 
 class AssignDto {
-  @IsInt() userId!: number;
   @IsInt() protocolId!: number;
 }
 
 class CompleteSessionDto {
-  @IsInt() userId!: number;
   @IsInt() sessionId!: number;
 }
 
 class LogPainDto {
-  @IsInt() userId!: number;
   @IsInt() sessionId!: number;
   @IsInt() @Min(0) @Max(10) score!: number;
   @IsOptional() @IsString() notes?: string;
 }
 
 class RecordRomDto {
-  @IsInt() userId!: number;
   @IsString() @MinLength(1) joint!: string;
   @IsIn(['left', 'right', 'bilateral']) side!: 'left' | 'right' | 'bilateral';
   @IsInt() @Min(0) @Max(360) angle!: number;
 }
 
 @Controller('physio')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class PhysioController {
   constructor(private readonly physio: PhysioService) {}
 
   @Post('assign')
-  assign(@Body() dto: AssignDto) {
-    return this.physio.assignProtocol(dto.userId, dto.protocolId);
+  assign(@CurrentUser() user: AuthPrincipal, @Body() dto: AssignDto) {
+    return this.physio.assignProtocol(user.userId, dto.protocolId);
   }
 
   @Get('myPlan')
-  myPlan(@Query('userId', ParseIntPipe) userId: number) {
-    return this.physio.myPlan(userId);
+  myPlan(@CurrentUser() user: AuthPrincipal) {
+    return this.physio.myPlan(user.userId);
   }
 
   @Post('sessions/complete')
-  complete(@Body() dto: CompleteSessionDto) {
-    return this.physio.completeSession(dto.sessionId, dto.userId);
+  complete(@CurrentUser() user: AuthPrincipal, @Body() dto: CompleteSessionDto) {
+    return this.physio.completeSession(dto.sessionId, user.userId);
   }
 
   @Post('pain')
-  logPain(@Body() dto: LogPainDto) {
-    return this.physio.logPain(dto.sessionId, dto.score, dto.notes, dto.userId);
+  logPain(@CurrentUser() user: AuthPrincipal, @Body() dto: LogPainDto) {
+    return this.physio.logPain(dto.sessionId, dto.score, dto.notes, user.userId);
   }
 
   @Post('rom')
-  recordRom(@Body() dto: RecordRomDto) {
-    return this.physio.recordRom(dto.userId, dto.joint, dto.side, dto.angle);
+  recordRom(@CurrentUser() user: AuthPrincipal, @Body() dto: RecordRomDto) {
+    return this.physio.recordRom(user.userId, dto.joint, dto.side, dto.angle);
   }
 
   @Get('progress')
   progress(
-    @Query('userId', ParseIntPipe) userId: number,
+    @CurrentUser() user: AuthPrincipal,
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
-    return this.physio.progress(userId, { from, to });
+    return this.physio.progress(user.userId, { from, to });
   }
 }

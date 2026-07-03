@@ -1,15 +1,18 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Type } from 'class-transformer';
 import { IsDate, IsInt, IsObject, IsOptional, IsString, MinLength } from 'class-validator';
 import { Prisma } from '@prisma/client';
 import { RewardsService } from './rewards.service';
 import { ChallengesService } from './challenges.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { Public } from '../common/auth/public.decorator';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
 /** Canonical REST surface for the Gamification domain (folded from
- *  challenges/rewards/vip/affiliate services). */
+ *  challenges/rewards/vip/affiliate services). User identity comes from the
+ *  JWT; self-scoped routes never trust a client-supplied user id. */
 
 class IngestEventDto {
-  @IsInt() userId!: number;
   @IsString() @MinLength(1) type!: string;
   @IsInt() amount!: number;
   @IsOptional() @IsObject() meta?: Record<string, unknown>;
@@ -17,13 +20,11 @@ class IngestEventDto {
 }
 
 class ClaimBadgeDto {
-  @IsInt() userId!: number;
   @IsInt() badgeId!: number;
 }
 
 class UseReferralDto {
   @IsString() @MinLength(2) code!: string;
-  @IsInt() inviteeId!: number;
 }
 
 class CreateChallengeDto {
@@ -35,10 +36,6 @@ class CreateChallengeDto {
   @IsOptional() @IsObject() reward?: Record<string, unknown>;
 }
 
-class JoinChallengeDto {
-  @IsInt() userId!: number;
-}
-
 class AddPointsDto {
   @IsInt() userId!: number;
   @IsInt() points!: number;
@@ -46,6 +43,7 @@ class AddPointsDto {
 }
 
 @Controller('gamification')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class GamificationController {
   constructor(
@@ -55,39 +53,39 @@ export class GamificationController {
 
   /*** Rewards / VIP / Referrals ***/
 
-  @Get('rewards/:userId')
-  myRewards(@Param('userId', ParseIntPipe) userId: number) {
-    return this.rewards.myRewards(userId);
+  @Get('rewards')
+  myRewards(@CurrentUser() user: AuthPrincipal) {
+    return this.rewards.myRewards(user.userId);
   }
 
-  @Get('vip/:userId')
-  vipStatus(@Param('userId', ParseIntPipe) userId: number) {
-    return this.rewards.myVipStatus(userId);
+  @Get('vip')
+  vipStatus(@CurrentUser() user: AuthPrincipal) {
+    return this.rewards.myVipStatus(user.userId);
   }
 
   @Post('events')
-  ingest(@Body() dto: IngestEventDto) {
-    return this.rewards.ingestEvent(dto.userId, dto.type, dto.amount, dto.meta as Prisma.InputJsonValue | undefined, dto.idempotencyKey);
+  ingest(@CurrentUser() user: AuthPrincipal, @Body() dto: IngestEventDto) {
+    return this.rewards.ingestEvent(user.userId, dto.type, dto.amount, dto.meta as Prisma.InputJsonValue | undefined, dto.idempotencyKey);
   }
 
   @Post('badges/claim')
-  claimBadge(@Body() dto: ClaimBadgeDto) {
-    return this.rewards.claimBadge(dto.userId, dto.badgeId);
+  claimBadge(@CurrentUser() user: AuthPrincipal, @Body() dto: ClaimBadgeDto) {
+    return this.rewards.claimBadge(user.userId, dto.badgeId);
   }
 
-  @Post('referrals/:inviterId')
-  createReferral(@Param('inviterId', ParseIntPipe) inviterId: number) {
-    return this.rewards.createReferral(inviterId);
+  @Post('referrals')
+  createReferral(@CurrentUser() user: AuthPrincipal) {
+    return this.rewards.createReferral(user.userId);
   }
 
   @Post('referrals/use')
-  useReferral(@Body() dto: UseReferralDto) {
-    return this.rewards.useReferral(dto.code, dto.inviteeId);
+  useReferral(@CurrentUser() user: AuthPrincipal, @Body() dto: UseReferralDto) {
+    return this.rewards.useReferral(dto.code, user.userId);
   }
 
-  @Post('commissions/payout/:inviterId')
-  payout(@Param('inviterId', ParseIntPipe) inviterId: number) {
-    return this.rewards.payoutCommission(inviterId);
+  @Post('commissions/payout')
+  payout(@CurrentUser() user: AuthPrincipal) {
+    return this.rewards.payoutCommission(user.userId);
   }
 
   /*** Challenges ***/
@@ -101,14 +99,15 @@ export class GamificationController {
     });
   }
 
+  @Public()
   @Get('challenges')
   listChallenges(@Query('activeAt') activeAt?: string) {
     return this.challenges.listChallenges(activeAt ? new Date(activeAt) : undefined);
   }
 
   @Post('challenges/:id/join')
-  join(@Param('id', ParseIntPipe) id: number, @Body() dto: JoinChallengeDto) {
-    return this.challenges.joinChallenge(id, dto.userId);
+  join(@CurrentUser() user: AuthPrincipal, @Param('id', ParseIntPipe) id: number) {
+    return this.challenges.joinChallenge(id, user.userId);
   }
 
   @Post('challenges/:id/points')
@@ -116,6 +115,7 @@ export class GamificationController {
     return this.challenges.addPoints(id, dto.userId, dto.points, dto.progress as Prisma.InputJsonValue | undefined);
   }
 
+  @Public()
   @Get('challenges/:id/leaderboard')
   leaderboard(@Param('id', ParseIntPipe) id: number) {
     return this.challenges.leaderboard(id);

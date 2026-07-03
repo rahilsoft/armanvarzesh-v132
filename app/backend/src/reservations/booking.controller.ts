@@ -1,10 +1,15 @@
-import { Body, Controller, Get, Post, Query, ParseIntPipe, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsIn, IsInt, IsISO8601, IsOptional, IsString, Min } from 'class-validator';
 import { BookingService } from './booking.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { Public } from '../common/auth/public.decorator';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
+import { verifyWebhookSignature } from '../common/security/webhook-signature';
 
 /**
- * Canonical REST surface for the Booking domain (folded from
- * services/booking-service — same `/booking/*` routes, ids now Int).
+ * Canonical REST surface for the Booking domain. User identity comes from the
+ * JWT (not the body). `payments/success` is the async callback from the
+ * Payments outbox relay — authenticated by HMAC signature.
  */
 
 class CreateSlotDto {
@@ -15,19 +20,16 @@ class CreateSlotDto {
 }
 
 class CreateBookingDto {
-  @IsInt() userId!: number;
   @IsInt() coachId!: number;
   @IsInt() slotId!: number;
   @IsIn(['online', 'in_person']) mode!: string;
 }
 
-class CancelBookingDto {
-  @IsInt() userId!: number;
+class BookingIdDto {
   @IsInt() id!: number;
 }
 
 class RescheduleDto {
-  @IsInt() userId!: number;
   @IsInt() id!: number;
   @IsInt() newSlotId!: number;
 }
@@ -39,9 +41,11 @@ class HoldDto {
 class PaymentSuccessDto {
   @IsInt() bookingId!: number;
   @IsString() paymentRef!: string;
+  @IsOptional() @IsString() signature?: string;
 }
 
 @Controller('booking')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class BookingController {
   constructor(private readonly booking: BookingService) {}
@@ -52,18 +56,18 @@ export class BookingController {
   }
 
   @Post('create')
-  create(@Body() dto: CreateBookingDto) {
-    return this.booking.createBooking(dto.userId, dto.coachId, dto.slotId, dto.mode);
+  create(@CurrentUser() user: AuthPrincipal, @Body() dto: CreateBookingDto) {
+    return this.booking.createBooking(user.userId, dto.coachId, dto.slotId, dto.mode);
   }
 
   @Post('cancel')
-  cancel(@Body() dto: CancelBookingDto) {
-    return this.booking.cancelBooking(dto.userId, dto.id);
+  cancel(@CurrentUser() user: AuthPrincipal, @Body() dto: BookingIdDto) {
+    return this.booking.cancelBooking(user.userId, dto.id);
   }
 
   @Post('reschedule')
-  reschedule(@Body() dto: RescheduleDto) {
-    return this.booking.reschedule(dto.userId, dto.id, dto.newSlotId);
+  reschedule(@CurrentUser() user: AuthPrincipal, @Body() dto: RescheduleDto) {
+    return this.booking.reschedule(user.userId, dto.id, dto.newSlotId);
   }
 
   @Post('hold')
@@ -71,15 +75,18 @@ export class BookingController {
     return this.booking.holdSlot(dto.slotId);
   }
 
-  // Receiving end of the Payments-domain BOOKING_PAYMENT_SUCCEEDED outbox event.
+  // Public: receiving end of the Payments-domain BOOKING_PAYMENT_SUCCEEDED
+  // event (delivered by the outbox relay). Authenticated by HMAC signature.
+  @Public()
   @Post('payments/success')
   paymentSuccess(@Body() dto: PaymentSuccessDto) {
+    verifyWebhookSignature('booking', dto, process.env.PAYMENTS_WEBHOOK_SECRET);
     return this.booking.confirmPayment(dto.bookingId, dto.paymentRef);
   }
 
   @Get('mine')
-  mine(@Query('userId', ParseIntPipe) userId: number) {
-    return this.booking.listMy(userId);
+  mine(@CurrentUser() user: AuthPrincipal) {
+    return this.booking.listMy(user.userId);
   }
 
   @Post('cron/expire')

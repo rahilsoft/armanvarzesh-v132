@@ -1,10 +1,11 @@
-import { Body, Controller, Post, Req, UsePipes, ValidationPipe } from '@nestjs/common';
-import type { Request } from 'express';
+import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsISO8601, IsNumber, ValidateNested } from 'class-validator';
 import client from 'prom-client';
 import { HabitType, Prisma } from '@prisma/client';
 import { HabitsService } from '../habits.service';
+import { JwtAuthGuard } from '../../auth/jwt.guard';
+import { CurrentUser, AuthPrincipal } from '../../common/auth/current-user.decorator';
 
 /**
  * Wearable data ingestion (folded from services/nutrition-service). Maps
@@ -12,7 +13,8 @@ import { HabitsService } from '../habits.service';
  * include them. heartRate/calories datapoints are accepted but not persisted
  * here — continuous telemetry belongs to the Activity domain (ADR-B9).
  * The original's zod pipe (via undeclared @arman/shared) is replaced with
- * class-validator, the monolith's standard.
+ * class-validator, the monolith's standard. User identity comes from the JWT —
+ * the former x-user-id header / query fallback (an impersonation hole) is gone.
  */
 
 enum WearableProvider { healthkit = 'healthkit', googlefit = 'googlefit' }
@@ -36,14 +38,14 @@ const wearableLag = new client.Gauge({
 });
 
 @Controller('v1/wearables')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class WearablesController {
   constructor(private readonly habits: HabitsService) {}
 
   @Post('ingest')
-  async ingest(@Body() body: IngestDto, @Req() req: Request & { user?: { sub?: string; id?: string } }) {
-    const userId = Number(req.user?.sub || req.user?.id || req.headers['x-user-id'] || req.query.userId);
-    if (!Number.isInteger(userId) || userId <= 0) return { ok: false, reason: 'missing userId' };
+  async ingest(@CurrentUser() user: AuthPrincipal, @Body() body: IngestDto) {
+    const userId = user.userId;
     const now = Date.now();
     let logged = 0;
     const meta: Prisma.InputJsonValue = { source: body.provider };

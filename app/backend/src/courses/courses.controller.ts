@@ -1,9 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { IsInt, IsObject, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { Prisma } from '@prisma/client';
 import { CoursesService } from './courses.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { Public } from '../common/auth/public.decorator';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
-/** Canonical REST surface for the Courses/LMS domain. */
+/** Canonical REST surface for the Courses/LMS domain. User identity comes from
+ *  the JWT; the catalog listing and certificate verification are public. */
 
 class CreateCourseDto {
   @IsInt() specialistId!: number;
@@ -30,10 +34,7 @@ class AddAssetDto {
   @IsInt() @Min(0) durationS!: number;
 }
 
-class EnrollDto { @IsInt() userId!: number; }
-
 class IssueCertificateDto {
-  @IsInt() userId!: number;
   @IsOptional() @IsInt() courseId?: number;
   @IsOptional() @IsString() kind?: string;
   @IsOptional() @IsObject() payload?: Record<string, unknown>;
@@ -43,6 +44,7 @@ class VerifyDto { @IsString() @MinLength(10) token!: string; }
 class RevokeDto { @IsString() @MinLength(2) code!: string; }
 
 @Controller('courses')
+@UseGuards(JwtAuthGuard)
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class CoursesController {
   constructor(private readonly courses: CoursesService) {}
@@ -52,6 +54,7 @@ export class CoursesController {
     return this.courses.createCourse(dto);
   }
 
+  @Public()
   @Get()
   list(@Query('difficulty') difficulty?: string) {
     return this.courses.listCourses(difficulty);
@@ -78,8 +81,8 @@ export class CoursesController {
   }
 
   @Post(':id/enroll')
-  enroll(@Param('id', ParseIntPipe) id: number, @Body() dto: EnrollDto) {
-    return this.courses.enroll(id, dto.userId);
+  enroll(@CurrentUser() user: AuthPrincipal, @Param('id', ParseIntPipe) id: number) {
+    return this.courses.enroll(id, user.userId);
   }
 
   @Get(':id/enrollments')
@@ -88,10 +91,11 @@ export class CoursesController {
   }
 
   @Post('certificates/issue')
-  issue(@Body() dto: IssueCertificateDto) {
-    return this.courses.issueCertificate(dto.userId, dto.courseId ?? null, dto.kind, dto.payload as Prisma.InputJsonValue | undefined);
+  issue(@CurrentUser() user: AuthPrincipal, @Body() dto: IssueCertificateDto) {
+    return this.courses.issueCertificate(user.userId, dto.courseId ?? null, dto.kind, dto.payload as Prisma.InputJsonValue | undefined);
   }
 
+  @Public()
   @Post('certificates/verify')
   verify(@Body() dto: VerifyDto) {
     return this.courses.verifyCertificate(dto.token);
