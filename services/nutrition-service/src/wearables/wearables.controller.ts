@@ -6,6 +6,7 @@ import { ZodValidationPipe } from '@arman/shared';
 import * as client from 'prom-client';
 import { HabitsService } from '../habits/habits.service';
 import { HabitType } from '@prisma/client';
+import { userIdFromReq } from '../auth/req-user';
 
 const ingestDto = z.object({
   provider: z.enum(['healthkit','googlefit']),
@@ -31,7 +32,7 @@ export class WearablesController {
 
   @Post('ingest')
   async ingest(@Body(new ZodValidationPipe(ingestDto)) body: any, @Req() req: any) {
-    const userId = Number(req.user?.id || req.headers['x-user-id'] || req.query.userId);
+    const userId = userIdFromReq(req);
     const now = Date.now();
     for (const dp of body.datapoints) {
       const at = new Date(dp.at);

@@ -1,8 +1,9 @@
 
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient } from '@prisma/client';
+import { ctxUser } from '../auth/ctx';
 const prisma = new PrismaClient();
-function uid(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id']||'user-demo'; }catch(e){ return 'user-demo'; } }
+function uid(ctx:any){ const u = ctxUser(ctx); if (!u) throw new Error('unauthenticated'); return u; }
 @Resolver()
 export class SurveyResolver {
   @Mutation(()=> Boolean)

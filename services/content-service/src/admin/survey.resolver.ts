@@ -2,7 +2,7 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient, ServiceType } from '@prisma/client';
 const prisma = new PrismaClient();
-function ctxRole(ctx:any){ try{ return ctx?.req?.headers?.['x-role']||'guest'; }catch(e){ return 'guest'; } }
+import { ctxRole } from '../auth/ctx';
 function mustAdmin(ctx:any){ if (process.env.SKIP_AUTH==='1') return; if (ctxRole(ctx)!=='admin') throw new Error('forbidden'); }
 
 @Resolver()

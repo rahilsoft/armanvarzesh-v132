@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, Req, ForbiddenException } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { subjectFromReq } from '@arman/security-middleware';
+import { verifyWebhookSignature } from './security/webhook';
 
 @Controller('payments')
 export class PaymentsController {
@@ -13,7 +14,8 @@ export class PaymentsController {
   }
 
   @Post('webhook')
-  webhook(@Body() body:{ provider:string, eventId:string, type:string, payload:any }){
+  webhook(@Req() req:any, @Body() body:{ provider:string, eventId:string, type:string, payload:any }){
+    verifyWebhookSignature(req, body);
     return this.svc.webhook(body.provider, body.eventId, body.type, body.payload);
   }
 

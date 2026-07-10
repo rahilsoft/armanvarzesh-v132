@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from './prisma';
 
 function uid(): string { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
   const r = Math.random()*16|0, v = c==='x'? r : (r&0x3|0x8); return v.toString(16);
@@ -38,7 +38,7 @@ function smoothTrack(points:{lat:number,lng:number,ts:number,elevM?:number}[]){
 
 @Injectable()
 export class ActivitiesService {
-  prisma = new PrismaClient();
+  prisma = getPrisma();
 
   async createRoute(userId: string, name: string, polyline: string, difficulty?: string, city?: string){
     if (!name || !polyline) throw new BadRequestException('MISSING_FIELDS');

@@ -2,6 +2,7 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AffiliateService } from './affiliate.service';
+import { userIdFromReq } from './auth/req-user';
 
 @ApiTags('affiliate')
 @ApiBearerAuth()
@@ -11,7 +12,7 @@ export class AffiliateController {
 
   @Get('me')
   async me(@Req() req: any) {
-    const userId = Number(req.user?.id || req.headers['x-user-id'] || 1);
+    const userId = userIdFromReq(req);
     return this.svc.me(userId);
   }
 

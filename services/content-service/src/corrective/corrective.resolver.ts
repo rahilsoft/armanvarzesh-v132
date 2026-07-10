@@ -5,8 +5,9 @@ import { ConditionType, CorrectiveVideoType } from './entities/condition.entity'
 import { CreateConditionInput } from './dto/create-condition.input';
 import { CreateCorrectiveVideoInput } from './dto/create-corrective-video.input';
 import { SearchCorrectiveInput } from './dto/search-corrective.input';
+import { ctxRole } from '../auth/ctx';
 
-function role(ctx:any){ try { return ctx?.req?.headers?.['x-role'] || 'guest'; } catch { return 'guest'; } }
+function role(ctx:any){ return ctxRole(ctx); }
 function must(ctx:any, roles:string[]){ if (process.env.SKIP_AUTH==='1') return; const r = role(ctx); if (!roles.includes(r) && r!=='admin') throw new Error('forbidden'); }
 
 @Resolver()

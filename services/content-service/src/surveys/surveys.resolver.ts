@@ -3,9 +3,8 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { SurveysService } from './surveys.service';
 import { PrismaClient, ServiceType } from '@prisma/client';
 
+import { ctxUser, ctxRole } from '../auth/ctx';
 const prisma = new PrismaClient();
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
-function ctxRole(ctx:any){ try{ return ctx?.req?.headers?.['x-role'] || 'guest'; }catch(e){ return 'guest'; } }
 
 @Resolver()
 export class SurveysResolver {
