@@ -58,8 +58,13 @@ class ComplexBlockInput {
 @ObjectType() class SessionSimDTO { @Field() sessionId:string; @Field() totalSeconds:number; @Field(() => [BlockSimDTO]) blocks: BlockSimDTO[]; }
 
 
-function ctxRole(ctx:any){ try{ const h = ctx?.req?.headers||{}; const b = (h['authorization']||'').toString(); if (b.startsWith('Bearer ')){ try{ const t = b.slice(7); const d:any = jwt.verify(t, process.env.JWT_SECRET||'dev'); return d?.role||'guest'; }catch(e){} } return h['x-role']||ctx?.role||'guest'; }catch(e){ return 'guest'; } }
-function ctxUser(ctx:any){ try{ const h = ctx?.req?.headers||{}; const b = (h['authorization']||'').toString(); if (b.startsWith('Bearer ')){ try{ const t = b.slice(7); const d:any = jwt.verify(t, process.env.JWT_SECRET||'dev'); return d?.sub||d?.userId||null; }catch(e){} } return h['x-user-id']||ctx?.userId||null; }catch(e){ return null; } }
+// Identity comes ONLY from a verified Bearer JWT. No x-role/x-user-id header
+// fallback (that allowed impersonation) and no 'dev' fallback secret (that
+// allowed forgery). JWT_SECRET is required; verification pins HS256.
+function ctxJwtSecret(){ const s = process.env.JWT_SECRET; if(!s || s.length < 16){ throw new Error('JWT_SECRET is not configured (minimum 16 characters required)'); } return s; }
+function ctxClaims(ctx:any): any | null { const h = ctx?.req?.headers||{}; const b = (h['authorization']||'').toString(); if (!b.startsWith('Bearer ')) return null; try{ return jwt.verify(b.slice(7), ctxJwtSecret(), { algorithms: ['HS256'] }) as any; }catch(e){ return null; } }
+function ctxRole(ctx:any){ return ctxClaims(ctx)?.role || 'guest'; }
+function ctxUser(ctx:any){ const d = ctxClaims(ctx); return d?.sub || d?.userId || null; }
 function mustRole(ctx:any, role:'admin'|'coach'|'user'|'specialist'){ if (process.env.SKIP_AUTH==='1') return; const r = ctxRole(ctx); if (r!==role && r!=='admin') throw new Error('forbidden'); }
 
 

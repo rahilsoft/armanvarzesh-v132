@@ -14,7 +14,10 @@ export class CoursesService {
   }
 
   async license(courseId: number, userId: number, deviceId: string) {
-    const secret = process.env.LICENSE_SECRET || 'dev-license';
+    const secret = process.env.LICENSE_SECRET;
+    if (!secret || secret.length < 16) {
+      throw new Error('LICENSE_SECRET is not configured (minimum 16 characters required)');
+    }
     const payload = JSON.stringify({ courseId, userId, deviceId, ts: Date.now() });
     const token = CryptoJS.HmacSHA256(payload, secret).toString();
     return { ok: true, token };

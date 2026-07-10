@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@
 import * as jwt from 'jsonwebtoken';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
+import { certSecret } from '../config/secret';
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
@@ -14,7 +15,7 @@ export class RolesGuard implements CanActivate {
     const t = token.replace('Bearer ','').trim();
     if (!t) throw new ForbiddenException('No token');
     try {
-      const payload:any = jwt.verify(t, process.env.CERT_SECRET || 'change_me');
+      const payload:any = jwt.verify(t, certSecret(), { algorithms: ['HS256'] });
       const roles = payload.roles || payload.role || [];
       const ok = (Array.isArray(roles)?roles:[roles]).some((r:string)=> required.includes(r));
       if (!ok) throw new ForbiddenException('Insufficient role');
