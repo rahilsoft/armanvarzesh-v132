@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { ZodValidationPipe } from '@arman/shared';
 import { HabitsService } from './habits.service';
 import { HabitType } from '@prisma/client';
+import { userIdFromReq } from '../auth/req-user';
 
 const createHabitDto = z.object({
   type: z.nativeEnum(HabitType),
@@ -27,7 +28,7 @@ export class HabitsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createHabitDto)) body: any, @Req() req: any) {
-    const userId = Number(req.user?.id || req.headers['x-user-id'] || req.query.userId);
+    const userId = userIdFromReq(req);
     return this.svc.createHabit({
       userId,
       type: body.type,
@@ -49,7 +50,7 @@ export class HabitsController {
 
   @Get('today')
   async today(@Req() req: any) {
-    const userId = Number(req.user?.id || req.headers['x-user-id'] || req.query.userId);
+    const userId = userIdFromReq(req);
     return this.svc.getToday(userId);
   }
 }
