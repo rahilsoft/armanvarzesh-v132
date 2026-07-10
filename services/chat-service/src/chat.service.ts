@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from './prisma';
 
 function uid(): string { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
   const r = Math.random()*16|0, v = c==='x'? r : (r&0x3|0x8); return v.toString(16);
@@ -10,7 +10,7 @@ const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
 @Injectable()
 export class ChatService {
-  prisma = new PrismaClient();
+  prisma = getPrisma();
 
   async ensureThread(userId: string, coachId: string){
     let t = await this.prisma.thread.findFirst({ where: { userId, coachId } });

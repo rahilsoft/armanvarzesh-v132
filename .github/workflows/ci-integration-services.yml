@@ -43,7 +43,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       minio:
-        image: minio/minio:RELEASE.2024-12-07T00-00-00Z
+        image: minio/minio:RELEASE.2024-12-18T13-15-44Z
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
@@ -61,16 +61,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # pnpm must be set up BEFORE setup-node, otherwise `cache: 'pnpm'` runs
+      # while pnpm is not yet on PATH ("Unable to locate executable file: pnpm").
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Install deps
         run: pnpm install

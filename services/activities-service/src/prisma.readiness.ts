@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from './prisma';
 
 @Injectable()
 export class PrismaReadiness {
-  private prisma = new PrismaClient();
+  private prisma = getPrisma();
   async ping(): Promise<boolean> {
     try {
       // SELECT 1; if DB is reachable, it should succeed

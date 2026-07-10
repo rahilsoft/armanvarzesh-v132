@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from './prisma';
 import hbs from 'handlebars';
 
 function uid(): string { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -23,7 +23,7 @@ function buildICS(event:{ uid:string, title:string, startUTC:string, endUTC:stri
 
 @Injectable()
 export class NotificationsService {
-  prisma = new PrismaClient();
+  prisma = getPrisma();
   QUIET_START = Number(process.env.QUIET_START_HOUR||22);
   QUIET_END   = Number(process.env.QUIET_END_HOUR||7);
   MAX_ATTEMPTS = 5;

@@ -3,7 +3,8 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('home renders and has no critical a11y violations', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/Arman Varzesh/i);
+  // The site title is Persian ("آرمان ورزش — …"); assert the real brand title.
+  await expect(page).toHaveTitle(/آرمان ورزش/);
 
   const accessibilityScanResults = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa'])

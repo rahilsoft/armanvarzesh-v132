@@ -1,10 +1,9 @@
 
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient, ServiceType } from '@prisma/client';
+import { ctxRole } from '../auth/ctx';
 const prisma = new PrismaClient();
 
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
-function ctxRole(ctx:any){ try{ return ctx?.req?.headers?.['x-role'] || 'guest'; }catch(e){ return 'guest'; } }
 function mustAny(ctx:any, roles:string[]){ if (process.env.SKIP_AUTH==='1') return; const r = ctxRole(ctx); if (r==='admin') return; if (!roles.includes(r)) throw new Error('forbidden'); }
 
 @Resolver()

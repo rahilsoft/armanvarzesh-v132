@@ -3,6 +3,7 @@ import { Controller, Get, Param, Post, Req, Body } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { z } from 'zod';
 import { CoursesService } from './courses.service';
+import { userIdFromReq } from './auth/req-user';
 
 const licenseDto = z.object({ deviceId: z.string().min(4) });
 
@@ -20,7 +21,7 @@ export class CoursesController {
   @Post('courses/:id/license')
   async license(@Param('id') id: string, @Body() body: any, @Req() req: any) {
     const v = licenseDto.parse(body);
-    const userId = Number(req.user?.id || req.headers['x-user-id'] || req.query.userId);
+    const userId = userIdFromReq(req);
     return this.svc.license(Number(id), userId, v.deviceId);
   }
 }

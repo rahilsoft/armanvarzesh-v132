@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { HydrationService } from './hydration.service';
 import { ZodValidationPipe } from '@arman/shared';
 import { z } from 'zod';
+import { userIdFromReq } from '../auth/req-user';
 
 const createDto = z.object({
   ml: z.number().int().min(10).max(10000),
@@ -19,9 +20,9 @@ export class HydrationController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createDto)) body: z.infer<typeof createDto>, @Req() req: any) {
-    const userId = req.user?.id || req.headers['x-user-id'] || req.query.userId;
+    const userId = userIdFromReq(req);
     return this.svc.create({
-      userId: Number(userId),
+      userId,
       ml: body.ml,
       occurredAt: body.occurredAt ? new Date(body.occurredAt) : new Date(),
       source: body.source || 'manual',
@@ -30,9 +31,9 @@ export class HydrationController {
 
   @Get()
   async range(@Query('from') from?: string, @Query('to') to?: string, @Req() req?: any) {
-    const userId = req?.user?.id || req?.headers?.['x-user-id'] || req?.query?.userId;
+    const userId = userIdFromReq(req);
     const fromDt = from ? new Date(from) : new Date(Date.now() - 7*24*3600*1000);
     const toDt = to ? new Date(to) : new Date();
-    return this.svc.getRange(Number(userId), fromDt, toDt);
+    return this.svc.getRange(userId, fromDt, toDt);
   }
 }
