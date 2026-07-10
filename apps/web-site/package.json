@@ -55,7 +55,7 @@
     "react-chartjs-2": "^5.2.0",
     "@apollo/client": "^3.11.0",
     "lottie-web": "^5.12.2",
-    "jose": "^5.9.3",
+    "jose": "^6.2.3",
     "web-vitals": "^4.2.0",
     "@arman/http-client": "workspace:*",
     "@arman/state": "workspace:*",
