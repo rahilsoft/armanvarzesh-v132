@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from '../prisma';
 
 /**
  * Chat Persistence Service
@@ -7,7 +7,7 @@ import { PrismaClient } from '@prisma/client';
  */
 @Injectable()
 export class ChatPersistenceService {
-  private prisma = new PrismaClient();
+  private prisma = getPrisma();
 
   async saveMessage(data: {
     threadId: string;
