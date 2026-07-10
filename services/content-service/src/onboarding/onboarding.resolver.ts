@@ -3,8 +3,8 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient, ServiceType } from '@prisma/client';
 import { ScoringService } from '../scoring/scoring.service';
 
+import { ctxUser } from '../auth/ctx';
 const prisma = new PrismaClient();
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
 function must(ctx:any){ if (process.env.SKIP_AUTH==='1') return; if (!ctxUser(ctx)) throw new Error('unauthenticated'); }
 
 @Resolver()

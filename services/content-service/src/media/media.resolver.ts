@@ -3,9 +3,9 @@ import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient } from '@prisma/client';
 import { Queue } from 'bullmq';
 
+import { ctxUser, ctxRole } from '../auth/ctx';
 const prisma = new PrismaClient();
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
-function mustAny(ctx:any, roles:string[]){ const r = ctx?.req?.headers?.['x-role']||'guest'; if (r==='admin') return; if (!roles.includes(r)) throw new Error('forbidden'); }
+function mustAny(ctx:any, roles:string[]){ const r = ctxRole(ctx); if (r==='admin') return; if (!roles.includes(r)) throw new Error('forbidden'); }
 
 @Resolver()
 export class MediaResolver {

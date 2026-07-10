@@ -3,9 +3,9 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { PrismaClient } from '@prisma/client';
 import { NutritionService } from './nutrition.service';
 
+import { ctxUser, ctxRole } from '../auth/ctx';
 const prisma = new PrismaClient();
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
-function must(ctx:any, role='admin'){ const r = ctx?.req?.headers?.['x-role']||'guest'; if (process.env.SKIP_AUTH==='1') return; if (r===role) return; if (role==='any' && r!=='guest') return; throw new Error('forbidden'); }
+function must(ctx:any, role='admin'){ const r = ctxRole(ctx); if (process.env.SKIP_AUTH==='1') return; if (r===role) return; if (role==='any' && r!=='guest') return; throw new Error('forbidden'); }
 
 @Resolver()
 export class NutritionResolver {

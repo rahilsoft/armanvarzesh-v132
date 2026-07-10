@@ -4,9 +4,8 @@ import { PrismaClient } from '@prisma/client';
 import { wsBroadcast } from '../main';
 
 const prisma = new PrismaClient();
+import { ctxUser, ctxRole } from '../auth/ctx';
 function now(){ return new Date(); }
-function ctxUser(ctx:any){ try{ return ctx?.req?.headers?.['x-user-id'] || null; }catch(e){ return null; } }
-function ctxRole(ctx:any){ try{ return ctx?.req?.headers?.['x-role'] || 'guest'; }catch(e){ return 'guest'; } }
 function must(ctx:any, roles:string[]){ if (process.env.SKIP_AUTH==='1') return; const r = ctxRole(ctx); if (!roles.includes(r) && r!=='admin') throw new Error('forbidden'); }
 
 @Resolver()
