@@ -23,7 +23,6 @@ RUN addgroup -S app && adduser -S app -G app
 COPY --from=build /repo/node_modules ./node_modules
 COPY --from=build /repo/app/backend/dist ./app/backend/dist
 COPY --from=build /repo/app/backend/package.json ./app/backend/package.json
-COPY --from=build /repo/app/backend/src/database/prisma/generated ./app/backend/src/database/prisma/generated
 USER app
 ENV PORT=4000
 EXPOSE 4000

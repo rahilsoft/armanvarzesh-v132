@@ -12,9 +12,6 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@prisma/client": [
-        "src/database/prisma/generated/client"
-      ],
       "@arman/auth-kit": [
         "../../packages/auth-kit/src/index.ts"
       ],
