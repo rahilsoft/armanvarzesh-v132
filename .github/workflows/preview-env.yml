@@ -40,7 +40,7 @@ jobs:
         run: |
           helm upgrade --install backend .             --namespace $NS             --set image.tag=pr-${{ github.sha }}             --set env.DATABASE_URL=${{ secrets.PREVIEW_DATABASE_URL }}             --wait --timeout 5m
       - name: Print services
-        env: { NS: ${{ steps.ns.outputs.ns }} }
+        env: { NS: "${{ steps.ns.outputs.ns }}" }
         run: kubectl get svc -n $NS
       - name: Set BASE_URL (cluster ingress)
         run: |

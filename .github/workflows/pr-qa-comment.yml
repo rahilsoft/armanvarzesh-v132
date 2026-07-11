@@ -17,7 +17,7 @@ jobs:
       run: lhci collect --url="${{ secrets.PREVIEW_BASE_URL }}" --numberOfRuns=1 --output html --out-folder .lhci || true
     - name: Run Playwright smoke
       run: npx playwright test tests/web/playwright-smoke.spec.ts
-      env: { BASE_URL: ${{ secrets.PREVIEW_BASE_URL }} }
+      env: { BASE_URL: "${{ secrets.PREVIEW_BASE_URL }}" }
     - name: Run axe-core smoke
       run: node tests/a11y/axe-smoke.js ${{ secrets.PREVIEW_BASE_URL }}
     - name: Summarize & Comment
