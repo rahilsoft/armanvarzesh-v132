@@ -20,13 +20,16 @@ WORKDIR /repo
 ENV NODE_ENV=production
 RUN addgroup -S app && adduser -S app -G app
 # Compiled output, the module graph it resolves against, and the manifest.
+# app/backend/node_modules holds the pnpm symlinks the compiled code resolves
+# third-party requires through; without it only root-level deps resolve.
 COPY --from=build /repo/node_modules ./node_modules
+COPY --from=build /repo/app/backend/node_modules ./app/backend/node_modules
 COPY --from=build /repo/app/backend/dist ./app/backend/dist
 COPY --from=build /repo/app/backend/package.json ./app/backend/package.json
 USER app
 ENV PORT=4000
 EXPOSE 4000
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:$PORT/health || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:$PORT/healthz || exit 1
 # Emit layout mirrors the workspace root (rootDir covers the monorepo), so the
 # entrypoint lives under dist/app/backend/src/.
 CMD ["node", "app/backend/dist/app/backend/src/main.js"]
