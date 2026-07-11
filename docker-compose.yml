@@ -109,7 +109,9 @@ services:
     build: ./services/api-gateway
     environment:
       PORT: 8080
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      # No default on purpose: compose fails fast instead of booting with a
+      # publicly-known signing key.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be provided via the environment}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       USERS_SERVICE_URL: http://users-service:4001
       NODE_ENV: ${NODE_ENV:-development}
@@ -161,9 +163,9 @@ services:
   grafana:
     image: grafana/grafana:latest
     environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      # Grafana's stock admin/admin + forced first-login password change;
+      # anonymous Admin with the login form disabled was an open admin panel.
+      - GF_AUTH_ANONYMOUS_ENABLED=false
     volumes:
       - grafana_data:/var/lib/grafana
     ports:
