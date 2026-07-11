@@ -13,7 +13,7 @@
     "@arman/integration": "workspace:*"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean --sourcemap",
     "start": "node dist/main.js",
     "start:dev": "tsx src/main.ts",
     "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
