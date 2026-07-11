@@ -106,11 +106,12 @@ jobs:
     needs: [setup, lint_typecheck_test]
     steps:
       - uses: actions/checkout@v4
+      # pnpm must be set up BEFORE setup-node so `cache: 'pnpm'` can find it.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
-      - uses: pnpm/action-setup@v4
       - run: pnpm install --frozen-lockfile
       - name: Generate Prisma clients (services build against them)
         run: pnpm run db:generate:all
@@ -124,11 +125,12 @@ jobs:
     needs: setup
     steps:
       - uses: actions/checkout@v4
+      # pnpm must be set up BEFORE setup-node so `cache: 'pnpm'` can find it.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
-      - uses: pnpm/action-setup@v4
       - run: pnpm install --frozen-lockfile
       - name: CycloneDX SBOM
         run: |
