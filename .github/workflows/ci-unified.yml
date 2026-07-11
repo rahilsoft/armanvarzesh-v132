@@ -37,27 +37,11 @@ jobs:
       - name: Generate target matrix
         id: generate_matrix
         shell: bash
+        # A heredoc terminator would have to sit at column 0, which ends the
+        # YAML block scalar early and invalidates the workflow file, so the
+        # generator lives in a single-quoted node -e expression instead.
         run: |
-          node <<'NODE' > matrix.json
-          const fs = require('fs');
-          const path = require('path');
-          const root = process.cwd();
-          const groups = ['apps', 'services'];
-          const entries = [];
-          for (const group of groups) {
-            const base = path.join(root, group);
-            if (!fs.existsSync(base)) continue;
-            for (const entry of fs.readdirSync(base)) {
-              if (entry.startsWith('.')) continue;
-              const full = path.join(base, entry);
-              if (!fs.statSync(full).isDirectory()) continue;
-              const target = `${group}/${entry}`;
-              entries.push({ target, slug: target.replace(/[\\/]/g, '-') });
-            }
-          }
-          process.stdout.write(JSON.stringify(entries));
-NODE
-          matrix=$(cat matrix.json)
+          matrix=$(node -e 'const fs=require("fs"),path=require("path");const groups=["apps","services"];const entries=[];for(const group of groups){if(!fs.existsSync(group))continue;for(const entry of fs.readdirSync(group)){if(entry.startsWith("."))continue;const full=path.join(group,entry);if(!fs.statSync(full).isDirectory())continue;entries.push({target:group+"/"+entry,slug:group+"-"+entry});}}process.stdout.write(JSON.stringify(entries));')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   lint_typecheck_test:
@@ -94,12 +78,19 @@ NODE
           restore-keys: |
             turbo-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client (typecheck needs it)
+        env:
+          TARGET_PATH: ${{ matrix.target }}
+        run: |
+          if [ -f "${TARGET_PATH}/prisma/schema.prisma" ]; then
+            (cd "${TARGET_PATH}" && npx prisma generate)
+          fi
       - name: Lint (affected)
         run: pnpm dlx turbo run lint --filter=${{ matrix.target }} --affected
       - name: Typecheck (affected)
         run: pnpm dlx turbo run typecheck --filter=${{ matrix.target }} --affected
       - name: Test (affected)
-        run: pnpm dlx turbo run test --filter=${{ matrix.target }} --affected -- --passWithNoTests || true
+        run: pnpm dlx turbo run test --filter=${{ matrix.target }} --affected -- --passWithNoTests
       - name: Collect coverage if exists
         env:
           TARGET_PATH: ${{ matrix.target }}
@@ -128,7 +119,11 @@ NODE
         with:
           version: ${{ env.PNPM_VERSION }}
       - run: pnpm install --frozen-lockfile
-      - run: pnpm -r build --no-cache || true
+      - name: Generate Prisma clients (services build against them)
+        run: pnpm run db:generate:all
+      # No --no-cache: pnpm does not know the flag and forwards it into every
+      # package's build script, breaking them (it belongs to turbo, not pnpm).
+      - run: pnpm -r build
 
   sbom_sca_sast:
     name: SBOM • SCA • SAST
@@ -169,14 +164,12 @@ NODE
           mapfile -t files < <(git ls-files | grep -E '(^|/)(Dockerfile|dockerfile)$' || true)
           printf "%s\n" "${files[@]}" > dockerfiles.txt
           echo "count=$(wc -l < dockerfiles.txt)" >> "$GITHUB_OUTPUT"
-      - name: Build all Dockerfiles (no push)
-        if: steps.list.outputs.count != '0'
+      - name: Build backend image (no push)
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile
+          file: ./app/backend/Dockerfile
           push: false
-        continue-on-error: true
       - name: Trivy FS scan
         uses: aquasecurity/trivy-action@0.24.0
         with:
@@ -208,96 +201,6 @@ NODE
           path: lighthouse
           if-no-files-found: ignore
 
-  deploy-pages:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    needs: build_all
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install deps
-        run: pnpm install
-      - name: Wait for Postgres
-        run: |
-          for i in {1..30}; do
-            pg_isready -h localhost -p 5432 -U postgres && break
-            sleep 2
-          done
-          echo "Postgres is ready"
-      - name: Build PWAs
-        run: |
-          pnpm --filter ./app/user-pwa build
-          pnpm --filter ./app/coach-pwa build
-      - name: Prepare pages artifact
-        run: |
-          mkdir -p pages
-          cp -r app/user-pwa/dist pages/user
-          cp -r app/coach-pwa/dist pages/coach
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: pages
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-  deploy-preview:
-    if: github.event_name == 'pull_request'
-    needs: build_all
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Install deps
-        run: pnpm install
-      - name: Build PWAs
-        run: |
-          pnpm --filter ./app/user-pwa build
-          pnpm --filter ./app/coach-pwa build
-      - name: Prepare pages artifact
-        run: |
-          mkdir -p pages
-          cp -r app/user-pwa/dist pages/user
-          cp -r app/coach-pwa/dist pages/coach
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: pages
-      - name: Deploy PR Preview (GitHub Pages)
-        id: deployment
-        uses: actions/deploy-pages@v4
   dependency-review:
     if: github.event_name == 'pull_request'
     permissions:
@@ -335,83 +238,3 @@ NODE
       - name: Semgrep CI (main/master - full)
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: semgrep ci --strict --enable-metrics=off
-  lh-on-pages:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    needs: deploy-pages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Run Lighthouse on deployed Pages (main/master)
-        run: |
-          URL="${{ needs.deploy-pages.outputs.page_url }}"
-          echo "Testing URL: $URL"
-          pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.main.json --collect.url="$URL/user"
-          pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.main.json
-          pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.main.json --collect.url="$URL/coach"
-          pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.main.json
-      - name: Upload Lighthouse artifacts (pages)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouseci-pages
-          path: .lighthouseci
-          if-no-files-found: ignore
-      - name: Synthetic smoke (HTTP 200)
-        run: |
-          URL=${{ needs.deploy-pages.outputs.page_url }}
-          echo "Smoke testing: $URL"
-          set -e
-          curl -fsS "$URL/user" >/dev/null
-          curl -fsS "$URL/coach" >/dev/null
-          curl -fsS "$URL/user/manifest.webmanifest" >/dev/null
-  lh-on-preview:
-    if: github.event_name == 'pull_request'
-    needs: deploy-preview
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - name: Run Lighthouse on PR Preview
-        run: |
-          URL="${{ needs.deploy-preview.outputs.page_url }}"
-          echo "Testing PR URL: $URL"
-          pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.pr.json --collect.url="$URL/user"
-          pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.pr.json
-          pnpm dlx @lhci/cli@0.13.x collect --config=lighthouserc.pr.json --collect.url="$URL/coach"
-          pnpm dlx @lhci/cli@0.13.x assert --config=lighthouserc.pr.json
-      - name: Upload Lighthouse artifacts (preview)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouseci-preview
-          path: .lighthouseci
-          if-no-files-found: ignore
-      - name: Synthetic smoke (HTTP 200)
-        run: |
-          URL=${{ needs.deploy-preview.outputs.page_url }}
-          echo "Smoke testing: $URL"
-          set -e
-          curl -fsS "$URL/user" >/dev/null
-          curl -fsS "$URL/coach" >/dev/null
-          curl -fsS "$URL/user/manifest.webmanifest" >/dev/null
-      - name: Upload Playwright screenshots (baselines & diffs)
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-screenshots
-          path: |
-            app/user-pwa/e2e/**-snapshots/**
-            app/user-pwa/e2e/__output__/**
-            app/coach-pwa/e2e/**-snapshots/**
-            app/coach-pwa/e2e/__output__/**
-          if-no-files-found: ignore

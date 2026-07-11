@@ -51,7 +51,7 @@
     "lint:all": "pnpm -r lint",
     "test:all": "pnpm -r test -- --ci",
     "coverage:all": "pnpm -r run coverage",
-    "build:all": "pnpm -r build --no-cache",
+    "build:all": "pnpm -r build",
     "sbom:all": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json",
     "scan:secrets": "gitleaks detect --no-git -v || true",
     "scan:deps": "pnpm audit --audit-level=high || true",

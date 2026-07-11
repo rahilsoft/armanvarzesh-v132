@@ -5,7 +5,7 @@
   "main": "src/index.tsx",
   "scripts": {
     "start": "node dist/main.js",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "vite build",
     "dev": "ts-node src/main.ts",
     "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
     "storybook": "storybook dev -p 6007",
