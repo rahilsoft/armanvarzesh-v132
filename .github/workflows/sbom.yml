@@ -16,15 +16,19 @@ jobs:
     - uses: pnpm/action-setup@v4
     - uses: actions/setup-node@v4
       with: { node-version: 20 }
-    - run: pnpm install --frozen-lockfile=false
+    - run: pnpm install --frozen-lockfile
     - name: Generate CycloneDX SBOM (root)
-      run: npx @cyclonedx/cyclonedx-npm --output-file sbom-root.json --spec-version 1.5
+      # --ignore-npm-errors: cyclonedx-npm shells out to `npm ls`, which
+      # reports spurious missing-dep errors against a pnpm-managed tree.
+      run: npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --output-file sbom-root.json --spec-version 1.5
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: sbom-root
         path: sbom-root.json
   dependency-review:
+    # The action only works on pull_request events; on push it fails hard.
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
