@@ -379,12 +379,18 @@ importers:
       '@arman/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
+      '@arman/infra':
+        specifier: workspace:*
+        version: link:../../packages/infra
       '@arman/integration':
         specifier: workspace:*
         version: link:../../packages/integration
       '@arman/observability':
         specifier: workspace:*
         version: link:../../packages/observability
+      '@arman/observability-sdk':
+        specifier: workspace:*
+        version: link:../../packages/observability-sdk
       '@arman/security-middleware':
         specifier: workspace:*
         version: link:../../packages/security-middleware
@@ -505,12 +511,18 @@ importers:
       helmet:
         specifier: ^7.1.0
         version: 7.2.0
+      hpp:
+        specifier: ^0.2.3
+        version: 0.2.3
       ioredis:
         specifier: ^5.4.1
         version: 5.8.1
       joi:
         specifier: ^17.13.3
         version: 17.13.3
+      jose:
+        specifier: ^5.9.6
+        version: 5.9.6
       jsonwebtoken:
         specifier: '>=9.0.0'
         version: 9.0.2
@@ -522,7 +534,7 @@ importers:
         version: 2.14.0
       nestjs-pino:
         specifier: ^4.1.0
-        version: 4.4.1(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.13.1)(rxjs@7.8.2)
+        version: 4.4.1(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.5.0)(rxjs@7.8.2)
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -532,6 +544,12 @@ importers:
       passport-local:
         specifier: ^1.0.0
         version: 1.0.0
+      pg:
+        specifier: ^8.11.0
+        version: 8.16.3
+      pino:
+        specifier: ^9.5.0
+        version: 9.5.0
       pino-http:
         specifier: ^10.3.0
         version: 10.5.0
@@ -562,6 +580,9 @@ importers:
       zarinpal-checkout:
         specifier: ^0.2.5
         version: 0.2.8
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/compression':
         specifier: ^1.7.5
@@ -599,6 +620,9 @@ importers:
       supertest:
         specifier: 7.0.0
         version: 7.0.0
+      tsc-alias:
+        specifier: ^1.8.10
+        version: 1.9.0
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -14392,6 +14416,10 @@ packages:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+  mylas@2.1.14:
+    resolution: {integrity: sha512-BzQguy9W9NJgoVn2mRWzbFrFWWztGCcng2QI9+41frfk+Athwgx3qhqhvStz7ExeUUu7Kzw427sNzHpEZNINog==}
+    engines: {node: '>=16.0.0'}
+
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
@@ -15032,6 +15060,10 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  plimit-lit@1.6.1:
+    resolution: {integrity: sha512-B7+VDyb8Tl6oMJT9oSO2CW8XC/T4UcJGrwOVoNGwOQsQYhlpfajmrMj5xeejqaASq3V/EqThyOeATEOMuSEXiA==}
+    engines: {node: '>=12'}
+
   plist@3.1.1:
     resolution: {integrity: sha512-ZIfcLJC+7E7FBFnDxm9MPmt7D+DidyQ26lewieO75AdhA2ayMtsJSES0iWzqJQbcVRSrTufQoy0DR94xHue0oA==}
     engines: {node: '>=10.4.0'}
@@ -15351,6 +15383,10 @@ packages:
 
   querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+
+  queue-lit@1.5.2:
+    resolution: {integrity: sha512-tLc36IOPeMAubu8BkW8YDBV+WyIgKlYU7zUNs0J5Vk9skSZ4JfGlPOqplP0aHdfv7HL0B2Pg6nwiq60Qc6M2Hw==}
+    engines: {node: '>=12'}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -17071,6 +17107,11 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  tsc-alias@1.9.0:
+    resolution: {integrity: sha512-IZrCInovKxVCwXyKhcdr/HaxSYugKT0w4zyktOE/4115Nzo6gbp/NhkaEeyOG0/H7QoTeXtv+3UHffBYta9oWw==}
+    engines: {node: '>=16.20.2'}
+    hasBin: true
 
   tsconfig-paths-webpack-plugin@4.2.0:
     resolution: {integrity: sha512-zbem3rfRS8BgeNK50Zz5SIQgXzLafiHjOwUAvk/38/o1jHn/V5QAgVUcz884or7WYcPaH3N2CIfUc2u0ul7UcA==}
@@ -30055,7 +30096,7 @@ snapshots:
       fast-json-stringify: 6.1.1
       find-my-way: 9.3.0
       light-my-request: 6.6.0
-      pino: 9.13.1
+      pino: 9.5.0
       process-warning: 5.0.0
       rfdc: 1.4.1
       secure-json-parse: 4.1.0
@@ -31987,7 +32028,7 @@ snapshots:
       '@bufbuild/protobuf': 1.10.1
       '@livekit/protocol': 1.42.0
       camelcase-keys: 9.1.3
-      jose: 5.10.0
+      jose: 5.9.6
 
   load-esm@1.0.2: {}
 
@@ -32798,6 +32839,8 @@ snapshots:
 
   mute-stream@2.0.0: {}
 
+  mylas@2.1.14: {}
+
   mz@2.7.0:
     dependencies:
       any-promise: 1.3.0
@@ -32825,10 +32868,10 @@ snapshots:
       pino-http: 10.5.0
       rxjs: 7.8.2
 
-  nestjs-pino@4.4.1(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.13.1)(rxjs@7.8.2):
+  nestjs-pino@4.4.1(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.5.0)(rxjs@7.8.2):
     dependencies:
       '@nestjs/common': 11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      pino: 9.13.1
+      pino: 9.5.0
       pino-http: 10.5.0
       rxjs: 7.8.2
 
@@ -33448,7 +33491,7 @@ snapshots:
   pino-http@10.5.0:
     dependencies:
       get-caller-file: 2.0.5
-      pino: 9.13.1
+      pino: 9.5.0
       pino-std-serializers: 7.0.0
       process-warning: 5.0.0
 
@@ -33509,6 +33552,10 @@ snapshots:
       playwright-core: 1.56.0
     optionalDependencies:
       fsevents: 2.3.2
+
+  plimit-lit@1.6.1:
+    dependencies:
+      queue-lit: 1.5.2
 
   plist@3.1.1:
     dependencies:
@@ -33834,6 +33881,8 @@ snapshots:
   querystring@0.2.1: {}
 
   querystringify@2.2.0: {}
+
+  queue-lit@1.5.2: {}
 
   queue-microtask@1.2.3: {}
 
@@ -35898,6 +35947,16 @@ snapshots:
   ts-pnp@1.2.0(typescript@5.6.2):
     optionalDependencies:
       typescript: 5.6.2
+
+  tsc-alias@1.9.0:
+    dependencies:
+      chokidar: 3.6.0
+      commander: 9.5.0
+      get-tsconfig: 4.12.0
+      globby: 11.1.0
+      mylas: 2.1.14
+      normalize-path: 3.0.0
+      plimit-lit: 1.6.1
 
   tsconfig-paths-webpack-plugin@4.2.0:
     dependencies:

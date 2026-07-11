@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { IdempotencyRepo } from '@arman/infra/src/idempotency';
 
 @Injectable()
-export class PrismaIdempotencyRepo implements IdempotencyRepo {
+export class PrismaIdempotencyRepo {
   constructor(private readonly prisma: PrismaService) {}
 
   async exists(key: string): Promise<boolean> {
