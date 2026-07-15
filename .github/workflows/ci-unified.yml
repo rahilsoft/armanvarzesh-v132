@@ -81,11 +81,11 @@ jobs:
             (cd "${TARGET_PATH}" && npx prisma generate)
           fi
       - name: Lint (affected)
-        run: pnpm dlx turbo run lint --filter=${{ matrix.target }} --affected
+        run: pnpm dlx turbo run lint --filter=${{ matrix.target }}
       - name: Typecheck (affected)
-        run: pnpm dlx turbo run typecheck --filter=${{ matrix.target }} --affected
+        run: pnpm dlx turbo run typecheck --filter=${{ matrix.target }}
       - name: Test (affected)
-        run: pnpm dlx turbo run test --filter=${{ matrix.target }} --affected -- --passWithNoTests
+        run: pnpm dlx turbo run test --filter=${{ matrix.target }} -- --passWithNoTests
       - name: Collect coverage if exists
         env:
           TARGET_PATH: ${{ matrix.target }}
