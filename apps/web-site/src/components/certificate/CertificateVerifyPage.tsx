@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 
 const CertificateVerifyPage: React.FC = () => {
-  const { certId } = useParams<{ certId: string }>();
+  const { certId: _certId } = useParams<{ certId: string }>();
 
   // Simulate fetch
   const cert = {

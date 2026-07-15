@@ -10,7 +10,7 @@ export type AuthState = { refreshToken?: string | null;
 };
 
 /** Centralized auth store to avoid prop drilling and unsafe multi-updates. */
-export const authStore = create<AuthState>((set, get) => ({
+export const authStore = create<AuthState>((set, _get) => ({
   token: null,
   refreshToken: null,
   user: null,

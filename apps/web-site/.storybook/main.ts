@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/nextjs';
-import helmet from "helmet";
+import _helmet from "helmet";
 const config: StorybookConfig = {
   stories: ['../**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-essentials'],

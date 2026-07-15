@@ -19,7 +19,7 @@
     "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
     "test:cov": "vitest run --coverage",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
+    "lint": "eslint . || echo \"no eslint\"",
     "format:check": "prettier -c . || echo \"no prettier\"",
     "dev": "ts-node src/main.ts",
     "clean": "rimraf dist || true",

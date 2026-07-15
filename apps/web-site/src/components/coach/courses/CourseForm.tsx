@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const CourseForm: React.FC = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [cover, setCover] = useState<File | null>(null);
+  const [_cover, setCover] = useState<File | null>(null);
 
   return (
     <div className="bg-white shadow p-6 rounded mb-8">

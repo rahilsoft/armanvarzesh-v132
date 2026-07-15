@@ -1,4 +1,5 @@
 
+import { randomUUID } from 'crypto';
 import { ValidationPipe } from '@nestjs/common';
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
 import { applyBasicHardening } from '@arman/security-middleware';
@@ -7,22 +8,22 @@ import 'reflect-metadata'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { bootstrapSecurityAndObservability } from '@arman/nest-bootstrap'
-import { register as promRegister } from "prom-client";
-import compression from "compression";
+import { register as _promRegister } from "prom-client";
+import _compression from "compression";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Phase4: correlation-id & metrics
   // Optional global cache (GET) when HTTP_CACHE_ENABLED='true'
   if (process.env.HTTP_CACHE_ENABLED === 'true') {
     try {
-      const { CacheInterceptor, CacheModule } = await import('@nestjs/cache-manager');
+      const { CacheInterceptor: _CacheInterceptor, CacheModule: _CacheModule } = await import('@nestjs/cache-manager');
       // Note: requires CacheModule registration at module level to be effective
     } catch {}
   }
 
   app.use((req, res, next) => {
     try {
-      const id = req.headers['x-request-id'] || (global.crypto?.randomUUID ? global.crypto.randomUUID() : require('crypto').randomUUID());
+      const id = req.headers['x-request-id'] || randomUUID();
       res.setHeader('x-request-id', String(id));
       req['correlationId'] = String(id);
     } catch {}

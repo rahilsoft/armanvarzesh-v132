@@ -1,15 +1,12 @@
 import { Worker, Job } from 'bullmq';
 import IORedis from 'ioredis';
 import { env } from './env';
-import { transcodeQueue, imageQueue, defaultOpts, events } from './queues';
+import { events } from './queues';
 import { runFFmpeg, hls720, mp4720, imgWebp, imgAvif } from './ffmpeg';
-import { createWriteStream } from 'node:fs';
-import { uploadFile } from './s3';
 import { randomUUID } from 'node:crypto';
 
 const connection = new IORedis(env.redisUrl);
 const tmp = '/tmp';
-const BUCKET = process.env.S3_BUCKET || 'arman';
 
 async function transcode(job: Job) {
   const { inputUrl, outputKey, preset } = job.data;

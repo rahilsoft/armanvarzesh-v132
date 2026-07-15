@@ -8,7 +8,7 @@
     "start": "next start",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lint": "pnpm -w exec eslint . --ext .ts,.tsx",
+    "lint": "eslint .",
     "analyze": "ANALYZE=true next build",
     "test": "jest --passWithNoTests",
     "test:cov": "jest --coverage",

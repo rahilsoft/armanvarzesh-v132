@@ -40,7 +40,7 @@ export default function FormsAdmin(){
     await load();
   };
 
-  const onEdit = (f:Form)=> setActive(f);
+  const _onEdit = (f:Form)=> setActive(f);
   const onAddQ = async ()=>{
     if (!active) return;
     const key = prompt('کلید؟ (مثلاً weightKg)')||'';

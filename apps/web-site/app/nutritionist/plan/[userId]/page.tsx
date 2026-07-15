@@ -15,7 +15,7 @@ export default function Page({ params }:{ params:{ userId:string } }){
   const [calc,setCalc]=useState<any>(null);
   const [foods,setFoods]=useState<any[]>([]);
   const [tmpl,setTmpl]=useState<any>({name:'Custom',goal:'',days:[{meals:[{name:'breakfast',items:[]},{name:'lunch',items:[]},{name:'dinner',items:[]}]}]});
-  const [weeks,setWeeks]=useState(4); const [start,setStart]=useState<string>(new Date().toISOString().slice(0,10));
+  const [weeks,_setWeeks]=useState(4); const [start,_setStart]=useState<string>(new Date().toISOString().slice(0,10));
 
   const compute=async()=>{ const d=await gql(`query($sex:String!,$age:Int!,$w:Float!,$h:Float!,$a:String!,$g:String){ computeTDEE(sex:$sex, age:$age, weightKg:$w, heightCm:$h, activity:$a, goal:$g) }`,{sex,age,w,h,a:act,g:goal}); setCalc(JSON.parse(d.computeTDEE)); };
   const loadFoods=async(q='')=>{ const d=await gql(`query($q:String){ listFoods(q:$q) }`,{q}); setFoods(JSON.parse(d.listFoods||'[]')); };
@@ -28,13 +28,13 @@ export default function Page({ params }:{ params:{ userId:string } }){
   };
 
   const saveTemplate=async()=>{
-    const d=await gql(`mutation($name:String!,$goal:String,$json:String!){ upsertNutritionTemplate(name:$name, goal:$goal, json:$json) }`,{ name: tmpl.name, goal: tmpl.goal, json: JSON.stringify(tmpl) });
+    const _d=await gql(`mutation($name:String!,$goal:String,$json:String!){ upsertNutritionTemplate(name:$name, goal:$goal, json:$json) }`,{ name: tmpl.name, goal: tmpl.goal, json: JSON.stringify(tmpl) });
     alert('Template saved');
   };
   const generate=async()=>{
     const t=await gql(`mutation($name:String!,$goal:String,$json:String!){ upsertNutritionTemplate(name:$name, goal:$goal, json:$json) }`,{ name: tmpl.name, goal: tmpl.goal, json: JSON.stringify(tmpl) });
     const tpl = JSON.parse(t.upsertNutritionTemplate);
-    const g=await gql(`mutation($u:String!,$tid:String!,$s:String!,$w:Int){ generateNutritionPlan(userId:$u, templateId:$tid, startDate:$s, weeks:$w) }`,{ u: params.userId, tid: tpl.id, s: start, w: weeks });
+    const _g=await gql(`mutation($u:String!,$tid:String!,$s:String!,$w:Int){ generateNutritionPlan(userId:$u, templateId:$tid, startDate:$s, weeks:$w) }`,{ u: params.userId, tid: tpl.id, s: start, w: weeks });
     alert('Plan generated');
   };
 

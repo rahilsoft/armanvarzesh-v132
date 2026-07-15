@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
+import _React from 'react';
 import { Button } from 'antd';
 
 const meta: Meta<typeof Button> = { title: 'Ant/Button', component: Button };

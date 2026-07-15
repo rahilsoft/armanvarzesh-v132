@@ -10,8 +10,8 @@ async function gql(query:string, variables:any={}){
 export default function CoachCalendar({ params }:{ params:{ clientId:string } }){
   const { clientId } = params;
   const [list, setList] = useState<any[]>([]);
-  const [from, setFrom] = useState<string>(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
-  const [to, setTo] = useState<string>(new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).toISOString());
+  const [from, _setFrom] = useState<string>(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
+  const [to, _setTo] = useState<string>(new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).toISOString());
 
   const load = async ()=>{
     const d = await gql(`query($c:String!,$f:String!,$t:String!){ sessionsByClient(clientId:$c, from:$f, to:$t){ id date dayIndex status } }`, { c: clientId, f: from, t: to });

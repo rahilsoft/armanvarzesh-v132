@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run",
     "clean": "rimraf dist || true",
-    "lint": "eslint . --ext .ts,.tsx,.js",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "test:e2e": "echo \"e2e placeholder\"",
     "dev": "nodemon --exec ts-node src/main.ts || echo \"dev script placeholder\"",

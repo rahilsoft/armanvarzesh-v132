@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 export default function LoginPage(){
   const [email, setEmail] = useState('specialist@example.com');
   const [role, setRole] = useState<'specialist'|'coach'|'admin'|'user'>('specialist');
-  const [next, setNext] = useState<string>(()=> (typeof window !== 'undefined' ? (new URLSearchParams(window.location.search).get('next') || '/specialist') : '/specialist'));
+  const [next, _setNext] = useState<string>(()=> (typeof window !== 'undefined' ? (new URLSearchParams(window.location.search).get('next') || '/specialist') : '/specialist'));
 
   const doLogin = async ()=>{
     const url = process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000';

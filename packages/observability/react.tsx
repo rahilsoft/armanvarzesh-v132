@@ -3,7 +3,7 @@ import { logError } from './logger';
 export function ErrorBoundary({ children }: PropsWithChildren){
   return <Boundary>{children}</Boundary>;
 }
-class Boundary extends React.Component<{},{ hasError:boolean; error?: any }>{ 
+class Boundary extends React.Component<React.PropsWithChildren<Record<string, never>>,{ hasError:boolean; error?: any }>{ 
   constructor(props:any){ super(props); this.state={hasError:false}; }
   static getDerivedStateFromError(error:any){ return { hasError:true, error }; }
   componentDidCatch(error:any, info:any){ logError('react_error', { error: String(error), info }); }
