@@ -41,10 +41,10 @@
     "typescript": "^5.5.4"
   },
   "optionalDependencies": {
-    "@opentelemetry/sdk-node": "^0.52.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.52.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.52.0",
-    "@opentelemetry/resources": "^1.10.0"
+    "@opentelemetry/sdk-node": "^0.217.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.75.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.217.0",
+    "@opentelemetry/resources": "^2.9.0"
   },
   "engines": {
     "node": ">=20.0.0 <21",
