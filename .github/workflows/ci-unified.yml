@@ -80,12 +80,15 @@ jobs:
           if [ -f "${TARGET_PATH}/prisma/schema.prisma" ]; then
             (cd "${TARGET_PATH}" && npx prisma generate)
           fi
+      # matrix.target is a directory path (e.g. apps/web-site); turbo treats a
+      # bare --filter value as a package NAME, so the path must be ./-prefixed
+      # to select by directory.
       - name: Lint (affected)
-        run: pnpm dlx turbo run lint --filter=${{ matrix.target }}
+        run: pnpm dlx turbo run lint --filter=./${{ matrix.target }}
       - name: Typecheck (affected)
-        run: pnpm dlx turbo run typecheck --filter=${{ matrix.target }}
+        run: pnpm dlx turbo run typecheck --filter=./${{ matrix.target }}
       - name: Test (affected)
-        run: pnpm dlx turbo run test --filter=${{ matrix.target }} -- --passWithNoTests
+        run: pnpm dlx turbo run test --filter=./${{ matrix.target }} -- --passWithNoTests
       - name: Collect coverage if exists
         env:
           TARGET_PATH: ${{ matrix.target }}
