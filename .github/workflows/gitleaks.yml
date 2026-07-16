@@ -5,8 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
         with:
-          config-path: ""
-          args: "--no-banner --redact --verbose"
+          # gitleaks diffs commit ranges; a shallow single-commit checkout
+          # makes its git log invocation fail ("stderr is not empty") and
+          # the scan covered 0 bytes.
+          fetch-depth: 0
+      - name: gitleaks
+        # gitleaks-action@v2 takes no config-path/args inputs; the ones
+        # previously passed here were silently ignored.
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
