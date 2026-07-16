@@ -69,7 +69,10 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
 
   // Prometheus registry + HTTP metrics
   const registry = new Registry();
-  client.collectDefaultMetrics({ register: registry, prefix: `${env.SERVICE_NAME}_` });
+  // Prometheus metric names only allow [a-zA-Z0-9_:], but service names are
+  // hyphenated (chat-service) — an unsanitized prefix crashes createApp.
+  const metricPrefix = `${env.SERVICE_NAME.replace(/[^a-zA-Z0-9_:]/g, '_')}_`;
+  client.collectDefaultMetrics({ register: registry, prefix: metricPrefix });
 
   const httpDuration = new Histogram({
     name: 'http_request_duration_seconds',
