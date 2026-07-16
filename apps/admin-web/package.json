@@ -7,7 +7,7 @@
     "start": "node dist/main.js",
     "build": "vite build",
     "dev": "ts-node src/main.ts",
-    "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
+    "test": "jest --passWithNoTests",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "preview": "vite preview",

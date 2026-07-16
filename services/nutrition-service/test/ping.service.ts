@@ -1,2 +1,8 @@
-// AUTO-GENERATED STUB to satisfy import path; TODO: replace with real implementation.
-export const __stub = true;
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class PingService {
+  ping(): string {
+    return 'pong';
+  }
+}
