@@ -59,8 +59,8 @@
     "@aws-sdk/client-s3": "^3.645.0",
     "sharp": "^0.33.4",
     "bullmq": "^5.7.1",
-    "ioredis": "^1.0.0",
-    "node-fetch": "^1.0.0",
+    "ioredis": "^5.4.1",
+    "node-fetch": "^2.7.0",
     "@aws-sdk/s3-request-presigner": "^3.891.0",
     "@arman/observability-sdk": "workspace:*",
     "@arman/security-middleware": "workspace:*",
@@ -88,7 +88,8 @@
     "@types/express": "^5.0.3",
     "vitest": "^3.2.4",
     "rimraf": "^5.0.0",
-    "nodemon": "^3.0.0"
+    "nodemon": "^3.0.0",
+    "@types/node-fetch": "^2.6.11"
   },
   "engines": {
     "node": ">=20.0.0 <21",
