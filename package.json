@@ -160,7 +160,8 @@
       "ws@7": "^7.5.11",
       "ws@8": "^8.21.0",
       "handlebars@4": "^4.7.9",
-      "tar@6": "^7.5.20"
+      "tar@6": "^7.5.20",
+      "protobufjs@8": "^8.4.1"
     }
   },
   "devDependencies": {
@@ -225,10 +226,10 @@
     "@nestjs/testing": "11.1.4",
     "@nestjs/throttler": "6.0.0",
     "@opentelemetry/api": "^1.8.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.49.1",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
-    "@opentelemetry/resources": "^1.24.1",
-    "@opentelemetry/sdk-node": "^0.52.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.75.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.217.0",
+    "@opentelemetry/resources": "^2.9.0",
+    "@opentelemetry/sdk-node": "^0.217.0",
     "@opentelemetry/semantic-conventions": "^1.24.1",
     "@types/amqplib": "0.10.5",
     "@types/graphql-depth-limit": "1.1.6",

@@ -1,11 +1,14 @@
 
 'use client';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { logPageview } from '../lib/analytics';
 import { initWebVitals } from '../lib/webvitals';
 
-export default function PageviewListener(){
+// useSearchParams must sit under a Suspense boundary or Next 15 fails the
+// whole page's prerender; this listener lives in the root layout, so the
+// boundary has to be internal to keep every route statically exportable.
+function PageviewListenerInner(){
   const pathname = usePathname();
   const search = useSearchParams();
 
@@ -16,4 +19,12 @@ export default function PageviewListener(){
   }, [pathname, search]);
 
   return null;
+}
+
+export default function PageviewListener(){
+  return (
+    <Suspense fallback={null}>
+      <PageviewListenerInner />
+    </Suspense>
+  );
 }

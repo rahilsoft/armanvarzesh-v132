@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 
 const CONTENT_URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 const UPLOAD_KIND = 'audio';
@@ -231,7 +231,9 @@ async function _qFlush(sessionId:string){
   return ok;
 }
 
-export default function SessionPage({ params, searchParams }:{ params:{ id:string }, searchParams:any }){
+export default function SessionPage(props:{ params: Promise<{ id:string }>, searchParams: Promise<any> }) {
+  const searchParams = use(props.searchParams);
+  const params = use(props.params);
   const id = params.id;
   const clientId = searchParams?.clientId || 'demo-client';
   const [data, setData] = useState<any>(null);

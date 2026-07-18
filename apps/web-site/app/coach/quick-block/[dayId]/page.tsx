@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, use } from 'react';
 
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 async function gql(query:string, variables:any={}){
@@ -7,7 +7,8 @@ async function gql(query:string, variables:any={}){
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
 
-export default function QuickBlock({ params }:{ params:{ dayId:string } }){
+export default function QuickBlock(props:{ params: Promise<{ dayId:string }> }) {
+  const params = use(props.params);
   const dayId = params.dayId;
   const [q, setQ] = useState('');
   const [muscle, setMuscle] = useState('');

@@ -1,11 +1,12 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, use } from 'react';
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 async function gql(query:string, variables:any={}){
   const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json','x-role':'specialist','x-user-id':'me-specialist'}, body: JSON.stringify({ query, variables }) });
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
-export default function Page({ params }:{ params:{ threadId:string }}){
+export default function Page(props:{ params: Promise<{ threadId:string }>}) {
+  const params = use(props.params);
   const { threadId } = params;
   const [msgs, setMsgs] = useState<any[]>([]);
   const [body, setBody] = useState('');

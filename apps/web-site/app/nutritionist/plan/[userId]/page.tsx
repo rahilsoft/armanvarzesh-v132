@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 async function gql(query:string, variables:any={}){
   const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json','x-role':'specialist','x-user-id':'specialist-1'}, body: JSON.stringify({ query, variables }) });
@@ -8,14 +8,15 @@ async function gql(query:string, variables:any={}){
 function Num({label,value,onChange}:{label:string,value:any,onChange:(v:number)=>void}){
   return <label style={{display:'grid',gridTemplateColumns:'120px 1fr',alignItems:'center',gap:8}}>{label}<input type="number" value={value} onChange={e=>onChange(parseFloat(e.target.value||'0'))}/></label>;
 }
-export default function Page({ params }:{ params:{ userId:string } }){
+export default function Page(props:{ params: Promise<{ userId:string }> }) {
+  const params = use(props.params);
   const [sex,setSex]=useState<'male'|'female'>('male');
-  const [age,setAge]=useState(28); const [w,setW]=useState(75); const [h,setH]=useState(178);
-  const [act,setAct]=useState('MODERATE'); const [goal,setGoal]=useState('recomp');
+  const [age,setAge]=useState(28);const [w,setW]=useState(75);const [h,setH]=useState(178);
+  const [act,setAct]=useState('MODERATE');const [goal,setGoal]=useState('recomp');
   const [calc,setCalc]=useState<any>(null);
   const [foods,setFoods]=useState<any[]>([]);
   const [tmpl,setTmpl]=useState<any>({name:'Custom',goal:'',days:[{meals:[{name:'breakfast',items:[]},{name:'lunch',items:[]},{name:'dinner',items:[]}]}]});
-  const [weeks,_setWeeks]=useState(4); const [start,_setStart]=useState<string>(new Date().toISOString().slice(0,10));
+  const [weeks,_setWeeks]=useState(4);const [start,_setStart]=useState<string>(new Date().toISOString().slice(0,10));
 
   const compute=async()=>{ const d=await gql(`query($sex:String!,$age:Int!,$w:Float!,$h:Float!,$a:String!,$g:String){ computeTDEE(sex:$sex, age:$age, weightKg:$w, heightCm:$h, activity:$a, goal:$g) }`,{sex,age,w,h,a:act,g:goal}); setCalc(JSON.parse(d.computeTDEE)); };
   const loadFoods=async(q='')=>{ const d=await gql(`query($q:String){ listFoods(q:$q) }`,{q}); setFoods(JSON.parse(d.listFoods||'[]')); };
