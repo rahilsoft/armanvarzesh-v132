@@ -1,4 +1,3 @@
-ENV NODE_ENV=production
 # syntax=docker/dockerfile:1
 FROM node:20.19.0-alpine AS deps
 WORKDIR /app

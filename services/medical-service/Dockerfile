@@ -1,5 +1,3 @@
-ENV NODE_ENV=production
-
 FROM node:20-alpine
 WORKDIR /app
 

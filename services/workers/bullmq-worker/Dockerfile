@@ -1,5 +1,3 @@
-ENV NODE_ENV=production
-
 FROM node:20.19.0-alpine
 WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* ./
