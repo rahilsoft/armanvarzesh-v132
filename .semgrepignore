@@ -1,0 +1,5 @@
+# Extends semgrep's default ignores (node_modules, .git, etc. stay ignored).
+:include .gitignore
+# Archived workflows are never executed by GitHub Actions; findings in them
+# are dead-code noise that would block the SAST gate.
+.github/workflows_archived/
