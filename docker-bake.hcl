@@ -23,66 +23,77 @@ target "base" { platforms = ["linux/amd64"] }
 
 target "api-gateway" {
   inherits = ["base"]
-  context = "services/api-gateway"
+  context = "."
+  dockerfile = "services/api-gateway/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-gateway:${TAG}"]
 }
 
 target "nutrition-service" {
   inherits = ["base"]
-  context = "services/nutrition-service"
+  context = "."
+  dockerfile = "services/nutrition-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-nutrition:${TAG}"]
 }
 
 target "activities-service" {
   inherits = ["base"]
-  context = "services/activities-service"
+  context = "."
+  dockerfile = "services/activities-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-activities:${TAG}"]
 }
 
 target "challenges-service" {
   inherits = ["base"]
-  context = "services/challenges-service"
+  context = "."
+  dockerfile = "services/challenges-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-challenges:${TAG}"]
 }
 
 target "courses-service" {
   inherits = ["base"]
-  context = "services/courses-service"
+  context = "."
+  dockerfile = "services/courses-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-courses:${TAG}"]
 }
 
 target "kpis-service" {
   inherits = ["base"]
-  context = "services/kpis-service"
+  context = "."
+  dockerfile = "services/kpis-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-kpis:${TAG}"]
 }
 
 target "affiliate-service" {
   inherits = ["base"]
-  context = "services/affiliate-service"
+  context = "."
+  dockerfile = "services/affiliate-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-affiliate:${TAG}"]
 }
 
 target "inbox-service" {
   inherits = ["base"]
-  context = "services/inbox-service"
+  context = "."
+  dockerfile = "services/inbox-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-inbox:${TAG}"]
 }
 
 target "assessments-service" {
   inherits = ["base"]
-  context = "services/assessments-service"
+  context = "."
+  dockerfile = "services/assessments-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-assessments:${TAG}"]
 }
 
 target "rewards-service" {
   inherits = ["base"]
-  context = "services/rewards-service"
+  context = "."
+  dockerfile = "services/rewards-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-rewards:${TAG}"]
 }
 
 target "medical-service" {
   inherits = ["base"]
-  context = "services/medical-service"
+  context = "."
+  dockerfile = "services/medical-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-medical:${TAG}"]
 }

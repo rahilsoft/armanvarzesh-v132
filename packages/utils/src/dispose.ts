@@ -4,12 +4,12 @@ Small helpers to create and dispose timers/intervals and aggregate disposers, pl
 */
 export type Disposer = () => void;
 
-export function withTimeout(ms: number, fn: Function): Disposer {
+export function withTimeout(ms: number, fn: () => void): Disposer {
   const t = setTimeout(() => fn(), ms);
   return () => clearTimeout(t);
 }
 
-export function withInterval(ms: number, fn: Function): Disposer {
+export function withInterval(ms: number, fn: () => void): Disposer {
   const t = setInterval(() => fn(), ms);
   return () => clearInterval(t);
 }

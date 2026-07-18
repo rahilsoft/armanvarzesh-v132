@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
@@ -26,8 +27,25 @@ const SECRET_REGEXES = [
   /ghp_[0-9A-Za-z]{36}/,                   // GitHub token
   /xox[baprs]-[0-9A-Za-z\-]{10,48}/,       // Slack
   /sk_live_[0-9A-Za-z]{10,}/,              // Stripe live
-  /-----BEGIN (RSA|EC|PRIVATE) KEY-----/   // Private keys
+  // Private keys: require a base64 body after the header so documentation
+  // placeholders like `-----BEGIN PRIVATE KEY-----...` don't trip the gate.
+  /-----BEGIN (RSA |EC )?PRIVATE KEY-----(\r?\n)+[A-Za-z0-9+/=]{16,}/
 ];
+
+// Throwaway fixture keys used to sign tokens inside unit tests are expected;
+// Gitleaks in CI remains the authoritative scanner for everything.
+const TEST_FILE_RX = /(^|\/)__tests__\/|\.(spec|test)\.[cm]?[jt]sx?$/;
+
+// verify-clean must not flag artifacts git itself already ignores (generated
+// Prisma clients, local build output); only commit-able files matter here.
+function filterGitIgnored(files) {
+  const res = spawnSync('git', ['check-ignore', '--stdin'], {
+    input: files.map(f => f.rel).join('\n'), encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024
+  });
+  if (res.status !== 0 && res.status !== 1) return files; // git unavailable: scan everything
+  const ignored = new Set(res.stdout.split('\n').filter(Boolean));
+  return files.filter(f => !ignored.has(f.rel));
+}
 
 function isIgnored(p) {
   const parts = p.split(path.sep);
@@ -54,7 +72,7 @@ async function walk(dir, out = []) {
 }
 
 (async () => {
-  const files = await walk(ROOT);
+  const files = filterGitIgnored(await walk(ROOT));
   const problems = [];
   for (const f of files) {
     try {
@@ -69,7 +87,9 @@ async function walk(dir, out = []) {
         }
       }
       // quick secret scan
-      const sample = await fsp.readFile(f.full, { encoding: 'utf-8' }).catch(() => '');
+      const sample = TEST_FILE_RX.test(f.rel)
+        ? ''
+        : await fsp.readFile(f.full, { encoding: 'utf-8' }).catch(() => '');
       if (sample) {
         for (const rx of SECRET_REGEXES) {
           if (rx.test(sample)) { problems.push({ type: 'secret-pattern', file: f.rel, pattern: rx.toString() }); break; }

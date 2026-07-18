@@ -13,13 +13,13 @@
     "@arman/integration": "workspace:*"
   },
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean --sourcemap",
     "start": "node dist/main.js",
     "start:dev": "tsx src/main.ts",
-    "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
+    "test": "jest --passWithNoTests",
     "test:cov": "vitest run --coverage",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
+    "lint": "eslint . || echo \"no eslint\"",
     "format:check": "prettier -c . || echo \"no prettier\"",
     "dev": "ts-node src/main.ts",
     "clean": "rimraf dist || true",
@@ -34,20 +34,22 @@
     "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
   },
   "devDependencies": {
-    "typescript": "^5.6.2",
+    "@arman/service-kit": "workspace:*",
     "@types/express": "^5.0.3",
-    "vitest": "^3.2.4",
     "@types/node": "^20.12.12",
-    "supertest": "^7.0.0",
-    "tsx": "^4.16.0",
-    "ts-node": "^10.9.2",
+    "@types/supertest": "^6.0.2",
     "eslint": "^9.0.0",
-    "prettier": "^3.0.0",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.0",
-    "rimraf": "^5.0.0",
     "nodemon": "^3.0.0",
-    "tsup": "^8.0.1"
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "tsx": "^4.16.0",
+    "typescript": "^5.6.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20.0.0 <21",

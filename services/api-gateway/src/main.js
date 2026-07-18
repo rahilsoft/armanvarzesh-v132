@@ -112,14 +112,6 @@ async function resolveAuthPayload(req) {
 }
 
 async function parseAuth(req){
-  try {
-    const payload = await resolveAuthPayload(req);
-    if (!payload) return null;
-    return { userId: payload.sub || payload.userId, role: payload.role || 'user' };
-const verifier = buildJwtVerifier(process.env);
-const hasVerifier = verifier.hasVerifier;
-
-async function parseAuth(req){
   if (!hasVerifier) return null;
   if (req.user) {
     const payload = req.user;
@@ -354,14 +346,6 @@ app.post('/v1/medical/book', async (req, reply) => {
 
 
 // --- Phase 9: JWKS-based JWT verification (preferred) + device-bind + circuit-breaker fetch ---
-try {
-  const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
-
-  app.addHook('onRequest', async (req, reply) => {
-    if (!hasVerifier) return; // no auth configured
-    try {
-      const payload = await resolveAuthPayload(req);
-      if (!payload) {
 if (hasVerifier) {
   const REQUIRE_DEVICE_ID = (process.env.REQUIRE_DEVICE_ID||'false').toLowerCase()==='true';
 

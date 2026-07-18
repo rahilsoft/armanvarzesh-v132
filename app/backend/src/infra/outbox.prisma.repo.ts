@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { OutboxRepo, OutboxEvent } from '@arman/infra/src/outbox';
+import { OutboxEvent } from '@arman/infra';
 
 type Row = { id: string; aggregate: string; aggregate_id: string; type: string; payload: any; created_at: Date; };
 
 @Injectable()
-export class PrismaOutboxRepo implements OutboxRepo {
+export class PrismaOutboxRepo {
   constructor(private readonly prisma: PrismaService) {}
 
   async insert(e: OutboxEvent): Promise<void> {

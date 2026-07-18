@@ -1,35 +1,19 @@
+# syntax=docker/dockerfile:1
+# Built from the REPO ROOT (docker-bake.hcl / preview-real set context=".").
+# The service depends on workspace packages, so a standalone npm install in
+# this directory can never resolve "workspace:*" — the whole pnpm workspace
+# is the build context instead.
+FROM node:20.19.0-alpine
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+WORKDIR /repo
+COPY . .
+RUN pnpm install --frozen-lockfile --filter "medical-service..."
+RUN if [ -f services/medical-service/prisma/schema.prisma ]; then cd services/medical-service && npx prisma generate --schema prisma/schema.prisma; fi
+RUN pnpm --filter "medical-service" run build
+RUN pnpm prune --prod || true
 ENV NODE_ENV=production
-
-FROM node:20-alpine
-WORKDIR /app
-
-# Install wget for healthcheck and other dependencies
-RUN apk add --no-cache wget
-
-# Copy package files and install dependencies
-COPY package.json ./
-RUN npm install
-
-# Copy Prisma schema and generate client
-COPY prisma ./prisma
-RUN npx prisma generate
-
-# Copy source code
-COPY src ./src
-COPY tsconfig.json tsconfig.build.json ./
-
-# Build TypeScript
-RUN npm run build || echo "Build completed"
-
-# Expose port
-EXPOSE 4020
-
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD wget -qO- http://localhost:${PORT:-4020}/health || exit 1
-
-# Start application
-CMD ["npm", "start"]
-
-# Switch to non-root user
+ENV PORT=4000
+EXPOSE 4000
 USER node
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:$PORT/health || exit 1
+CMD ["node","services/medical-service/dist/services/medical-service/src/main.js"]

@@ -1,6 +1,6 @@
 'use client';
-import React, { useRef, useState, Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useState, Suspense } from 'react';
+import { Canvas} from '@react-three/fiber';
 import { OrbitControls, Environment, Html, useGLTF, Outlines } from '@react-three/drei';
 
 function Model({ url }:{ url:string }){
@@ -12,7 +12,7 @@ function Model({ url }:{ url:string }){
 export default function Anatomy3D(){
   const [gender, setGender] = useState<'male'|'female'>('male');
   const [config, setConfig] = useState<any>(null);
-  const [pickedObj, setPickedObj] = useState<any>(null);
+  const [_pickedObj, setPickedObj] = useState<any>(null);
 
   async function gql(query:string, variables:any={}){
     const r = await fetch(process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL||'', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ query, variables }) });
@@ -27,7 +27,7 @@ export default function Anatomy3D(){
   const maleUrl = (config?.modelUrl && gender==='male') ? config.modelUrl : (process.env.NEXT_PUBLIC_ANATOMY_GLB_MALE || '/assets/anatomy_male.glb');
   const femaleUrl = (config?.modelUrl && gender==='female') ? config.modelUrl : (process.env.NEXT_PUBLIC_ANATOMY_GLB_FEMALE || '/assets/anatomy_female.glb');
 
-  const postMuscle = (code:string)=>{ try{ (window as any).ReactNativeWebView?.postMessage(JSON.stringify({ type:'muscle', code })); }catch(e){} };
+  const _postMuscle = (code:string)=>{ try{ (window as any).ReactNativeWebView?.postMessage(JSON.stringify({ type:'muscle', code })); }catch(e){} };
 
   function selectByMuscle(code:string){ if (!sceneRef.current) return; const sel:any[] = []; const map = (config?.meshMap)||{}; const names = Object.keys(map).filter(k=> map[k]===code); sceneRef.current.traverse((obj:any)=>{ if (names.includes(obj.name)) sel.push(obj); }); setSelection(sel); setPicked(code); try{ (window as any).ReactNativeWebView?.postMessage(JSON.stringify({ type:'muscle', code })); }catch(e){} }
 

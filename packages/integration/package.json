@@ -6,11 +6,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean --sourcemap",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run",
     "clean": "rimraf dist || true",
-    "lint": "eslint . --ext .ts,.tsx,.js",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "test:e2e": "echo \"e2e placeholder\"",
     "dev": "nodemon --exec ts-node src/main.ts || echo \"dev script placeholder\"",

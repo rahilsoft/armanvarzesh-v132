@@ -1,8 +1,8 @@
-import { PaymentsServiceService } from '../src/payments-service.service';
+import { PingService } from '../src/ping.service';
 
 describe('payments-service service', () => {
   it('alive', () => {
-    const s = new PaymentsServiceService();
-    expect(typeof s.health).toBe('function');
+    const s = new PingService();
+    expect(s.ping()).toBe('pong');
   });
 });

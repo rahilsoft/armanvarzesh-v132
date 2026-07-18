@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 
 const CONTENT_URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 const UPLOAD_KIND = 'audio';
@@ -152,7 +152,7 @@ function NotesPanel({ sessionId }:{ sessionId:string }){
   const [list, setList] = React.useState<any[]>([]);
   const [text, setText] = React.useState('');
   const [rec, setRec] = React.useState<MediaRecorder|null>(null);
-  const [recUrl, setRecUrl] = React.useState<string>('');
+  const [_recUrl, setRecUrl] = React.useState<string>('');
   const [busy, setBusy] = React.useState(false);
 
   const load = async ()=>{ setList(await listNotes(sessionId)); };
@@ -217,7 +217,7 @@ function NotesPanel({ sessionId }:{ sessionId:string }){
 const QKEY = (sid:string)=> `pendingLogs:${sid}`;
 function qLoad(sid:string){ try{ return JSON.parse(localStorage.getItem(QKEY(sid))||'[]'); }catch{ return []; } }
 function qSave(sid:string, arr:any[]){ localStorage.setItem(QKEY(sid), JSON.stringify(arr)); }
-async function qFlush(sessionId:string){
+async function _qFlush(sessionId:string){
   const arr = qLoad(sessionId);
   if (!arr.length) return 0;
   let ok=0, rest: any[] = [];
@@ -231,7 +231,9 @@ async function qFlush(sessionId:string){
   return ok;
 }
 
-export default function SessionPage({ params, searchParams }:{ params:{ id:string }, searchParams:any }){
+export default function SessionPage(props:{ params: Promise<{ id:string }>, searchParams: Promise<any> }) {
+  const searchParams = use(props.searchParams);
+  const params = use(props.params);
   const id = params.id;
   const clientId = searchParams?.clientId || 'demo-client';
   const [data, setData] = useState<any>(null);

@@ -34,12 +34,12 @@ export async function initTracing() {
     const { NodeSDK } = require('@opentelemetry/sdk-node');
     const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
     const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
-    const { Resource } = require('@opentelemetry/resources');
+    const { resourceFromAttributes } = require('@opentelemetry/resources');
     const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
     const svc = process.env.OTEL_SERVICE_NAME || 'backend';
     const exporter = new OTLPTraceExporter({ url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/traces' });
     const sdk = new NodeSDK({
-      resource: new Resource({ [SemanticResourceAttributes.SERVICE_NAME]: svc }),
+      resource: resourceFromAttributes({ [SemanticResourceAttributes.SERVICE_NAME]: svc }),
       traceExporter: exporter,
       instrumentations: [ getNodeAutoInstrumentations() ]
     });

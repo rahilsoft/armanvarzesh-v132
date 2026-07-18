@@ -6,7 +6,7 @@ async function gql(query:string, variables:any={}){
   const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json','x-role':'user','x-user-id':'user-demo'}, body: JSON.stringify({ query, variables }) });
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
-export default function Page(){
+function PageInner(){
   const params = useSearchParams();
   const serviceType = (params?.get('serviceType')||'COACH') as 'COACH'|'NUTRITION'|'CORRECTIVE'|'FULL';
   const [list, setList] = useState<any[]>([]);
@@ -43,4 +43,8 @@ export default function Page(){
       </div>
     }
   </div>;
+}
+
+export default function Page(){
+  return <React.Suspense fallback={null}><PageInner /></React.Suspense>;
 }

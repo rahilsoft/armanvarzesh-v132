@@ -21,6 +21,12 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
+      "react": [
+        "./node_modules/@types/react"
+      ],
+      "react-dom": [
+        "./node_modules/@types/react-dom"
+      ],
       "@arman/*": [
         "../../packages/*/src",
         "../../packages/*"

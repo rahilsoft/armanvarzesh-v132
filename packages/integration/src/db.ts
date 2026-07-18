@@ -21,7 +21,6 @@ export function createDbContext(env: NodeJS.ProcessEnv = process.env): DbContext
   const cfg: PoolConfig = { connectionString: parsed.data.DATABASE_URL };
   // Basic SSL toggle for managed Postgres providers
   if ((env.NODE_ENV === 'production' || env.PGSSLMODE === 'require')) {
-    // @ts-ignore
     cfg.ssl = { rejectUnauthorized: false };
   }
   const pool = new Pool(cfg);

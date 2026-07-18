@@ -15,9 +15,19 @@ jobs:
       - name: Build site
         working-directory: apps/web-site
         run: pnpm build
+      # pnpm forwards the literal "--" into the script and Next 15's CLI
+      # then reads "-p" as a project directory; PORT avoids argv entirely.
       - name: Start site
         working-directory: apps/web-site
-        run: pnpm start -- -p 3001 &
+        run: PORT=3001 pnpm start &
+      - name: Wait for site
+        run: |
+          for i in $(seq 1 60); do
+            curl -fsS -o /dev/null http://127.0.0.1:3001/ && exit 0
+            sleep 2
+          done
+          echo "site never became reachable on :3001" >&2
+          exit 1
       - name: Install browsers
         working-directory: apps/web-site
         run: pnpm exec playwright install --with-deps

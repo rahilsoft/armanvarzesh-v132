@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { makeLoader } from '@arman/graphql-utils/src/dataloader';
+import { makeLoader } from '@arman/graphql-utils';
 
 function indexBy<T extends Record<string, any>, K extends keyof T>(rows: T[], key: K): Map<any, T> {
   const m = new Map<any, T>();

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EnvSchema } from './env.schema';
-import { z } from 'zod';
+// import removed (unused)
 
 @Module({
   imports: [

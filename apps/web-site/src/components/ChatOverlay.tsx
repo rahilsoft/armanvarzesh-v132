@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 export default function ChatOverlay({ token }: { token: string }){
   const [messages, setMessages] = useState<{from:string;message:string;ts:number}[]>([]);
   const [input, setInput] = useState('');
-  const [joined, setJoined] = useState(false);
+  const [_joined, setJoined] = useState(false);
   const sockRef = useRef<Socket | null>(null);
   const room = typeof window !== 'undefined' ? window.location.pathname.split('/').pop() || 'public' : 'public';
 
@@ -18,7 +18,7 @@ export default function ChatOverlay({ token }: { token: string }){
     s.on('chat', (m) => setMessages((prev) => [...prev.slice(-199), m]));
     s.on('reaction', (r) => setMessages((prev)=>[...prev, {from:'*',message:`reaction:${r.type}`,ts:r.ts}]));
     s.on('presence', (e) => setMessages((prev)=>[...prev, {from:'system',message:`${e.identity} ${e.type}`,ts:Date.now()}]));
-    s.on('kicked', (e) => { setMessages((prev)=>[...prev,{from:'system',message:`you were kicked`,ts:Date.now()}]); s.disconnect(); });
+    s.on('kicked', (_e) => { setMessages((prev)=>[...prev,{from:'system',message:`you were kicked`,ts:Date.now()}]); s.disconnect(); });
     return () => { s.disconnect(); };
   }, [token]);
 
