@@ -18,9 +18,10 @@ jobs:
       with: { node-version: 20 }
     - run: pnpm install --frozen-lockfile
     - name: Generate CycloneDX SBOM (root)
-      # --ignore-npm-errors: cyclonedx-npm shells out to `npm ls`, which
-      # reports spurious missing-dep errors against a pnpm-managed tree.
-      run: npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --output-file sbom-root.json --spec-version 1.5
+      # cyclonedx-npm shells out to `npm ls`, which cannot parse this
+      # pnpm-managed tree at all any more ("failed to parse npm-ls
+      # response"); cdxgen reads pnpm-lock.yaml natively.
+      run: npx --yes @cyclonedx/cdxgen -t pnpm -o sbom-root.json .
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:

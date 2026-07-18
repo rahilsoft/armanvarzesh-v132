@@ -19,10 +19,13 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    # The gateway depends on workspace packages, so the image builds from
+    # the repo root with the pnpm workspace as context.
     - name: Build & push gateway image
       uses: docker/build-push-action@v6
       with:
-        context: ./services/api-gateway
+        context: .
+        file: ./services/api-gateway/Dockerfile
         push: true
         tags: ghcr.io/${{ github.repository_owner }}/av90-gateway:${{ github.sha }}
     # GITHUB_ENV is job-local; a job output is the only way the tag
