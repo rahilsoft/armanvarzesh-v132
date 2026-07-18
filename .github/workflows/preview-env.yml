@@ -7,59 +7,108 @@ jobs:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
+      # Deploying a preview needs a cluster kubeconfig and a preview DB URL.
+      # Without them there is no cluster to deploy to, so skip cleanly with
+      # a notice instead of failing on an empty kubeconfig.
+      - name: Check preview secrets
+        id: gate
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          PREVIEW_DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+        run: |
+          if [ -n "$KUBE_CONFIG" ] && [ -n "$PREVIEW_DATABASE_URL" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::KUBE_CONFIG / PREVIEW_DATABASE_URL secrets are not configured; preview deploy skipped. Set them in Settings → Secrets to arm this lane."
+            echo "Preview deploy skipped: KUBE_CONFIG / PREVIEW_DATABASE_URL secrets are not configured." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
       - name: Setup Node
+        if: steps.gate.outputs.run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Enable corepack
+        if: steps.gate.outputs.run == 'true'
         run: corepack enable
       - name: Install Helm
+        if: steps.gate.outputs.run == 'true'
         uses: azure/setup-helm@v4
         with:
           version: 'v3.15.2'
       - name: Setup kubectl
+        if: steps.gate.outputs.run == 'true'
         uses: azure/setup-kubectl@v4
         with:
           version: 'v1.30.2'
       - name: Configure kubeconfig
+        if: steps.gate.outputs.run == 'true'
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          printf '%s' "$KUBE_CONFIG" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
       - name: Create preview namespace
+        if: steps.gate.outputs.run == 'true'
         id: ns
         run: |
           NS=pr-${{ github.event.number }}-${{ github.run_id }}
           echo "ns=$NS" >> $GITHUB_OUTPUT
           kubectl create namespace $NS || true
       - name: Helm upgrade --install backend
+        if: steps.gate.outputs.run == 'true'
         working-directory: deploy/helm/armanvarzesh
         env:
           NS: ${{ steps.ns.outputs.ns }}
+          PREVIEW_DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
         run: |
-          helm upgrade --install backend .             --namespace $NS             --set image.tag=pr-${{ github.sha }}             --set env.DATABASE_URL=${{ secrets.PREVIEW_DATABASE_URL }}             --wait --timeout 5m
+          helm upgrade --install backend . --namespace $NS --set image.tag=pr-${{ github.sha }} --set env.DATABASE_URL="$PREVIEW_DATABASE_URL" --wait --timeout 5m
       - name: Print services
+        if: steps.gate.outputs.run == 'true'
         env: { NS: "${{ steps.ns.outputs.ns }}" }
         run: kubectl get svc -n $NS
-      - name: Set BASE_URL (cluster ingress)
-        run: |
-          echo "BASE_URL=${{ secrets.PREVIEW_BASE_URL }}" >> $GITHUB_ENV
-      - name: API Smoke against preview
-        run: pnpm run test:smoke
+      # `pnpm run test:smoke` does not exist in this repo; a health probe
+      # against the preview ingress is the honest minimal smoke here.
+      - name: API smoke against preview
+        if: steps.gate.outputs.run == 'true'
         env:
-          API_BASE_URL: ${{ env.BASE_URL }}
+          API_BASE_URL: ${{ secrets.PREVIEW_BASE_URL }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "::notice::PREVIEW_BASE_URL not configured; skipping API smoke."
+            exit 0
+          fi
+          curl -fsS --retry 5 --retry-delay 5 "$API_BASE_URL/health"
   cleanup:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
+      - name: Check cluster secret
+        id: gate
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          if [ -n "$KUBE_CONFIG" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::KUBE_CONFIG secret is not configured; nothing to clean up."
+          fi
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
       - name: Configure kubeconfig
+        if: steps.gate.outputs.run == 'true'
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          printf '%s' "$KUBE_CONFIG" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
       - name: Delete namespace
+        if: steps.gate.outputs.run == 'true'
         run: |
           NS=pr-${{ github.event.number }}-*
           kubectl delete ns $NS --ignore-not-found=true

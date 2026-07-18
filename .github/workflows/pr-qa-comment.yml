@@ -3,28 +3,56 @@ name: PR QA Comment
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   qa:
     runs-on: ubuntu-latest
     steps:
+    # The whole suite probes a deployed preview URL; without the
+    # PREVIEW_BASE_URL secret there is nothing to test, so skip cleanly
+    # with a notice instead of failing on an empty URL.
+    - name: Check preview URL secret
+      id: gate
+      env:
+        PREVIEW_BASE_URL: ${{ secrets.PREVIEW_BASE_URL }}
+      run: |
+        if [ -n "$PREVIEW_BASE_URL" ]; then
+          echo "run=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "run=false" >> "$GITHUB_OUTPUT"
+          echo "::notice::PREVIEW_BASE_URL secret is not configured; QA smoke suite skipped. Set it in Settings → Secrets to arm this lane."
+          echo "QA skipped: PREVIEW_BASE_URL secret is not configured." >> "$GITHUB_STEP_SUMMARY"
+        fi
     - uses: actions/checkout@v4
+      if: steps.gate.outputs.run == 'true'
     - uses: actions/setup-node@v4
+      if: steps.gate.outputs.run == 'true'
       with: { node-version: 20 }
-    - run: npm i -g @lhci/cli@0.13.x
-    - run: npm i -D @playwright/test @axe-core/playwright playwright
-    - run: npx playwright install --with-deps
+    - if: steps.gate.outputs.run == 'true'
+      run: npm i -g @lhci/cli@0.13.x
+    - if: steps.gate.outputs.run == 'true'
+      run: npm i -D @playwright/test @axe-core/playwright playwright
+    - if: steps.gate.outputs.run == 'true'
+      run: npx playwright install --with-deps
     - name: Run Lighthouse
+      if: steps.gate.outputs.run == 'true'
       run: lhci collect --url="${{ secrets.PREVIEW_BASE_URL }}" --numberOfRuns=1 --output html --out-folder .lhci || true
     - name: Run Playwright smoke
+      if: steps.gate.outputs.run == 'true'
       run: npx playwright test tests/web/playwright-smoke.spec.ts
       env: { BASE_URL: "${{ secrets.PREVIEW_BASE_URL }}" }
     - name: Run axe-core smoke
-      run: node tests/a11y/axe-smoke.js ${{ secrets.PREVIEW_BASE_URL }}
+      if: steps.gate.outputs.run == 'true'
+      env:
+        PREVIEW_BASE_URL: ${{ secrets.PREVIEW_BASE_URL }}
+      run: node tests/a11y/axe-smoke.js "$PREVIEW_BASE_URL"
     - name: Summarize & Comment
+      if: steps.gate.outputs.run == 'true'
       uses: actions/github-script@v7
       with:
         script: |
-          const core = require('@actions/core');
           const fs = require('fs');
           let lh = 'n/a'; try { const f = fs.readFileSync('.lhci/manifest.json','utf8'); const m = JSON.parse(f)[0]; lh = m?.summary?.overall || 'n/a'; } catch(e){}
           const body = `### QA Bot

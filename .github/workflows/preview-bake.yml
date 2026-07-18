@@ -32,13 +32,37 @@ jobs:
     needs: buildx-bake
     runs-on: ubuntu-latest
     steps:
+    # Deploying needs a cluster kubeconfig; without the KUBECONFIG_B64
+    # secret there is no cluster to target, so skip cleanly with a notice.
+    - name: Check cluster secret
+      id: gate
+      env:
+        KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+      run: |
+        if [ -n "$KUBECONFIG_B64" ]; then
+          echo "run=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "run=false" >> "$GITHUB_OUTPUT"
+          echo "::notice::KUBECONFIG_B64 secret is not configured; preview deploy skipped. Set it in Settings → Secrets to arm this lane."
+          echo "Preview deploy skipped: KUBECONFIG_B64 secret is not configured." >> "$GITHUB_STEP_SUMMARY"
+        fi
     - uses: actions/checkout@v4
+      if: steps.gate.outputs.run == 'true'
     - uses: azure/setup-kubectl@v4
+      if: steps.gate.outputs.run == 'true'
       with: { version: 'v1.29.4' }
     - uses: azure/setup-helm@v4
+      if: steps.gate.outputs.run == 'true'
     - name: Kubeconfig
-      run: echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > $HOME/.kube/config
+      if: steps.gate.outputs.run == 'true'
+      env:
+        KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+      run: |
+        mkdir -p $HOME/.kube
+        printf '%s' "$KUBECONFIG_B64" | base64 -d > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
     - name: Render values
+      if: steps.gate.outputs.run == 'true'
       run: |
         cat > deploy/helm/values/preview-tag.yaml <<YAML
         images:
@@ -55,6 +79,7 @@ jobs:
           medical: ghcr.io/${{ github.repository_owner }}/av90-medical:${{ github.sha }}
         YAML
     - name: Deploy Helm preview
+      if: steps.gate.outputs.run == 'true'
       run: |
         ns=av-prev-${{ github.run_id }}
         kubectl create ns $ns || true
