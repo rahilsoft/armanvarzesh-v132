@@ -67,7 +67,7 @@
     "ci:lh-coach:main": "lhci collect --config=lighthouserc.main.json --collect.staticDistDir=app/coach-pwa/dist && lhci assert --config=lighthouserc.main.json",
     "ci:lh-user:pr": "lhci collect --config=lighthouserc.pr.json --collect.staticDistDir=app/user-pwa/dist && lhci assert --config=lighthouserc.pr.json",
     "ci:lh-coach:pr": "lhci collect --config=lighthouserc.pr.json --collect.staticDistDir=app/coach-pwa/dist && lhci assert --config=lighthouserc.pr.json",
-    "db:generate:all": "bash -lc 'for d in services/* app/* packages/*; do if [ -f \"$d/prisma/schema.prisma\" ]; then (cd \"$d\" && npx prisma generate); fi; done'",
+    "db:generate:all": "bash -lc 'for d in services/* app/* packages/*; do if [ -f \"$d/prisma/schema.prisma\" ]; then (cd \"$d\" && npx prisma generate); elif [ -f \"$d/src/database/prisma/schema.prisma\" ]; then (cd \"$d\" && npx prisma generate --schema src/database/prisma/schema.prisma); fi; done'",
     "db:migrate:all": "bash -lc 'for d in services/* app/* packages/*; do if [ -f \"$d/prisma/schema.prisma\" ]; then (cd \"$d\" && (npx prisma migrate deploy || npx prisma db push --skip-generate)); fi; done'",
     "db:seed:all": "bash scripts/seed_all.sh",
     "ci:queue:test": "node scripts/redis_queue_test.js",
