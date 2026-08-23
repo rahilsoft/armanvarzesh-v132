@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 const API = process.env.API || 'http://localhost:4061';
 (async ()=>{
   const res = await fetch(`${API}/physio/seed`, {

@@ -3310,9 +3310,6 @@ importers:
       compression:
         specifier: ^1.7.4
         version: 1.8.1
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2

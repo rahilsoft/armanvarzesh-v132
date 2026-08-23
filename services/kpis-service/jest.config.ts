@@ -1,7 +1,7 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
+  moduleNameMapper:{ "^@arman/(.*)$":"<rootDir>/../../packages/$1/src", "^@contracts/(.*)$":"<rootDir>/../../contracts/$1/src" },moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
   transform: {
