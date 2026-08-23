@@ -2,7 +2,8 @@ import '@arman/observability-sdk/register';
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware, applyBasicHardening } from '@arman/security-middleware';
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4';
-import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { ApolloGateway, IntrospectAndCompose } from '@apollo/gateway';
+import { JwtDataSource } from './jwt-datasource';
 
 // Federation v2 subgraphs configuration
 // Each subgraph must expose @apollo/subgraph directives (@key, @shareable, etc.)
@@ -20,15 +21,24 @@ const SUBGRAPHS = JSON.parse(process.env.SUBGRAPHS_JSON || JSON.stringify([
   { name:'content',   url: process.env.CONTENT_URL   || 'http://content-service:4014/graphql' },
 ]));
 
-class JwtDataSource extends RemoteGraphQLDataSource {
-  willSendRequest({ request, context }: any) {
-    if (context?.authHeader) request.http?.headers.set('authorization', context.authHeader);
-  }
-}
+// JwtDataSource lives in its own module so it can be imported without running
+// bootstrap() (this file starts a server on import).
 
 async function bootstrap(){
   const app = express();
-  app.use(cors());
+  // Bare cors() allows any origin. Restrict to the configured allowlist;
+  // same-origin requests send no Origin header and still pass.
+  const corsOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  app.use(cors({
+    origin: (origin, cb) => {
+      if (!origin || corsOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+  }));
   app.use(bodyParser.json());
   app.use(buildJwtVerifier() as any);
   app.use(buildUserAwareRateLimit() as any);
