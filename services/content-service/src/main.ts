@@ -59,7 +59,12 @@ app && applyBasicHardening(app);
   await bootstrapSecurityAndObservability(app, 'content-service')
   app.useLogger(new Logger()); // AUTO (Stage13)
 
-  app.enableCors({ origin: true, credentials: true }); // AUTO (Stage09)
+  // NOTE: a second enableCors({ origin: true, credentials: true }) used to sit
+  // here (AUTO, Stage09). enableCors overwrites the previous config, so it
+  // silently replaced the ALLOWED_ORIGINS allowlist above with one that
+  // reflects any Origin while allowing credentials — letting any site on the
+  // internet make authenticated cross-origin calls. The allowlist is the
+  // intended policy; do not re-add a second call here.
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   

@@ -24,7 +24,20 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { buildJwtVerifier } from './jwt-verifier.js';
 
 const app = Fastify({ logger: false });
-await app.register(cors, { origin: true, credentials: true });
+// An explicit allowlist: `origin: true` reflects any Origin, and with
+// credentials:true that lets any site make authenticated calls through the
+// gateway. Same-origin requests carry no Origin header and still pass.
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+await app.register(cors, {
+  origin: (origin, cb) => {
+    if (!origin || CORS_ORIGINS.includes(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'), false);
+  },
+  credentials: true,
+});
 
 const CONTENT_URL = process.env.CONTENT_SERVICE_URL || 'http://content-service:3000/graphql';
 const JWKS_URL = process.env.JWKS_URL || '';

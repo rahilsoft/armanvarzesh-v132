@@ -630,8 +630,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.5
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -1910,8 +1910,8 @@ importers:
         specifier: ^1.7.4
         version: 1.8.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -2331,8 +2331,8 @@ importers:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -2491,8 +2491,8 @@ importers:
         specifier: ^7.1.0
         version: 7.2.0
       ioredis:
-        specifier: ^1.0.0
-        version: 1.15.1
+        specifier: ^5.4.1
+        version: 5.8.1
       joi:
         specifier: ^17.10.1
         version: 17.13.3
@@ -2502,15 +2502,12 @@ importers:
       nestjs-pino:
         specifier: ^4.0.0
         version: 4.4.1(@nestjs/common@11.1.4(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.1.14)(rxjs@7.8.2))(pino-http@10.5.0)(pino@9.13.1)(rxjs@7.8.2)
-      node-fetch:
-        specifier: ^1.0.0
-        version: 1.7.3
       pino:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -2966,8 +2963,8 @@ importers:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -3178,8 +3175,8 @@ importers:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -3427,8 +3424,8 @@ importers:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -3639,8 +3636,8 @@ importers:
         specifier: ^9.3.2
         version: 9.13.1
       prom-client:
-        specifier: ^14.2.0
-        version: 14.2.0
+        specifier: ^15.1.3
+        version: 15.1.3
       reflect-metadata:
         specifier: ^0.1.13
         version: 0.1.14
@@ -10695,9 +10692,6 @@ packages:
   block-stream2@2.1.0:
     resolution: {integrity: sha512-suhjmLI57Ewpmq00qaygS8UgEq2ly2PCItenIyhMqVjo4t4pGzqMvfgJuX8iWTeSDdfSSqS6j38fL4ToNL7Pfg==}
 
-  bluebird@2.11.0:
-    resolution: {integrity: sha512-UfFSr22dmHPQqPP9XWHRhq+gWnHCYguQGkXQlbyPtW5qTnhFWA8/iXg765tH0cAjy7l/zPJ1aBTO0g5XgA7kvQ==}
-
   bn.js@4.12.4:
     resolution: {integrity: sha512-njR1b+ixG2ufvL9Zn9JGneW+b5GV6jqpYyPPpg4QVt723b5kJPGUczkUyWEH9BwEA74UakJZ43I4FDLBF7ci0g==}
 
@@ -11756,9 +11750,6 @@ packages:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
     engines: {node: '>=10'}
 
-  double-ended-queue@2.1.0-0:
-    resolution: {integrity: sha512-+BNfZ+deCo8hMNpDqDnvT+c0XpJ5cUa6mqYq89bho2Ifze4URTqRkcwR399hWoTrTkbZ/XJYDgP6rc7pRgffEQ==}
-
   draco3d@1.5.7:
     resolution: {integrity: sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ==}
 
@@ -12385,9 +12376,6 @@ packages:
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
-
-  flexbuffer@0.0.6:
-    resolution: {integrity: sha512-OapHwT5Ug1c3iiv8JNrwh/3XGjP45l/2iwfl25chePrvCgl0786ZvsJK+hxCCaUZjPm1lHdh5LHZhmKRxunziA==}
 
   flow-enums-runtime@0.0.6:
     resolution: {integrity: sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==}
@@ -13030,10 +13018,6 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
-
-  ioredis@1.15.1:
-    resolution: {integrity: sha512-uP4u1chrqPNgrxVHI5SFAZNXCYrB7HjSgsrVWKjusTXmXsuQE5QFeG/dSehkld329Yr5QGsFOGBfBcRE/ySBCg==}
-    engines: {iojs: '>= 1.0.0', node: '>= 0.10.16'}
 
   ioredis@5.8.1:
     resolution: {integrity: sha512-Qho8TgIamqEPdgiMadJwzRMW3TudIg6vpg4YONokGDudy4eqRIJtDbVX72pfLBcWxvbn3qm/40TyGUObdW4tLQ==}
@@ -13903,9 +13887,6 @@ packages:
   lodash.topath@4.5.2:
     resolution: {integrity: sha512-1/W4dM+35DwvE/iEd1M9ekewOSTlpFekhw9mhAtrwjVqUr83/ilQiyAvmg4tVX7Unkcfl1KC+i9WdaT4B6aQcg==}
 
-  lodash@3.10.1:
-    resolution: {integrity: sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==}
-
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
@@ -14503,9 +14484,6 @@ packages:
 
   node-emoji@1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
-
-  node-fetch@1.7.3:
-    resolution: {integrity: sha512-NhZ4CsKx7cYm2vSrBAr2PvFOe6sWDf0UYLRqA6svUYg7+/TSfVAu49jYC4BvQ4Sms9SZgdqGBgroqfDhJdTyKQ==}
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -15237,10 +15215,6 @@ packages:
   progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
-
-  prom-client@14.2.0:
-    resolution: {integrity: sha512-sF308EhTenb/pDRPakm+WgiN+VdM/T1RaHj1x+MvAuT8UiQP8JmOEbxVqtkbfR4LrvOg5n7ic01kRBDGXjYikA==}
-    engines: {node: '>=10'}
 
   prom-client@15.1.3:
     resolution: {integrity: sha512-6ZiOBfCywsD4k1BN9IX0uZhF+tJkV8q8llP64G5Hajs4JOeVLPCwpPVcpXy3BwYiUGgyJzsJJQeOIv7+hDSq8g==}
@@ -27999,8 +27973,6 @@ snapshots:
     dependencies:
       readable-stream: 3.6.2
 
-  bluebird@2.11.0: {}
-
   bn.js@4.12.4: {}
 
   bn.js@5.2.4: {}
@@ -29160,8 +29132,6 @@ snapshots:
 
   dotenv@8.6.0: {}
 
-  double-ended-queue@2.1.0-0: {}
-
   draco3d@1.5.7: {}
 
   dset@3.1.4: {}
@@ -29213,6 +29183,7 @@ snapshots:
   encoding@0.1.13:
     dependencies:
       iconv-lite: 0.6.3
+    optional: true
 
   end-of-stream@1.4.5:
     dependencies:
@@ -30252,8 +30223,6 @@ snapshots:
 
   flatted@3.3.3: {}
 
-  flexbuffer@0.0.6: {}
-
   flow-enums-runtime@0.0.6: {}
 
   flow-estree@0.321.0: {}
@@ -31012,16 +30981,6 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
-
-  ioredis@1.15.1:
-    dependencies:
-      bluebird: 2.11.0
-      debug: 2.6.9
-      double-ended-queue: 2.1.0-0
-      flexbuffer: 0.0.6
-      lodash: 3.10.1
-    transitivePeerDependencies:
-      - supports-color
 
   ioredis@5.8.1:
     dependencies:
@@ -32074,8 +32033,6 @@ snapshots:
 
   lodash.topath@4.5.2: {}
 
-  lodash@3.10.1: {}
-
   lodash@4.17.21: {}
 
   log-symbols@2.2.0:
@@ -32927,11 +32884,6 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  node-fetch@1.7.3:
-    dependencies:
-      encoding: 0.1.13
-      is-stream: 1.1.0
-
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
@@ -33688,10 +33640,6 @@ snapshots:
   process@0.11.10: {}
 
   progress@2.0.3: {}
-
-  prom-client@14.2.0:
-    dependencies:
-      tdigest: 0.1.2
 
   prom-client@15.1.3:
     dependencies:
