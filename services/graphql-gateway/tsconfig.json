@@ -7,7 +7,8 @@
     "skipLibCheck": true,
     "strict": false,
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "noImplicitAny": false,
     "strictNullChecks": false,

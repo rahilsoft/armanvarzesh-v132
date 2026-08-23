@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { getPrisma } from './prisma';
 
 function uid(): string { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -22,13 +22,40 @@ export class ChatService {
     return t;
   }
 
+  /**
+   * Authorization gate for everything scoped to a thread. Membership is the
+   * Participant rows written by ensureThread — a thread id alone is not a
+   * capability, so callers must prove they are in the thread.
+   */
+  async assertParticipant(threadId: string, userId: string){
+    if (!threadId || !userId) throw new ForbiddenException('NOT_A_PARTICIPANT');
+    const p = await this.prisma.participant.findUnique({
+      where: { threadId_userId: { threadId, userId } },
+    });
+    if (!p) throw new ForbiddenException('NOT_A_PARTICIPANT');
+    return p;
+  }
+
   async history(threadId: string, limit=50, cursor?: string){
     const where:any = { threadId };
     const orderBy:any = { createdAt: 'desc' };
     const take = limit;
     const cursorObj = cursor ? { id: cursor } : undefined;
-    const rows = await this.prisma.message.findMany({ where, orderBy, take, cursor: cursorObj, include: { attachments: true } });
-    return { items: rows.reverse(), nextCursor: rows.length? rows[0].id : null };
+    const rows = await this.prisma.message.findMany({
+      where,
+      orderBy,
+      take,
+      cursor: cursorObj,
+      // Prisma cursors are inclusive: without this each page repeats the last
+      // message of the previous one.
+      skip: cursorObj ? 1 : 0,
+      include: { attachments: true },
+    });
+    // rows arrive newest-first; hand them back oldest-first and page further
+    // back in time from the oldest id we just read. A short page is the last
+    // page, so it reports no cursor.
+    const items = rows.reverse();
+    return { items, nextCursor: rows.length === take ? items[0].id : null };
   }
 
   async newMessage(threadId: string, authorId: string, role: 'user'|'coach', body: string|undefined, clientMsgId: string, attachmentIds: string[]){
@@ -43,10 +70,18 @@ export class ChatService {
     return msg;
   }
 
-  async markRead(messageId: string, userId: string){
+  async markRead(messageId: string, userId: string, threadId?: string){
+    // Scope the receipt to the caller's own thread so a message id from another
+    // conversation cannot be marked read (and thereby probed for existence).
+    const msg = await this.prisma.message.findUnique({ where: { id: messageId } });
+    if (!msg) throw new BadRequestException('MESSAGE_NOT_FOUND');
+    if (threadId && msg.threadId !== threadId) throw new ForbiddenException('NOT_A_PARTICIPANT');
+    await this.assertParticipant(msg.threadId, userId);
     try {
       await this.prisma.readReceipt.create({ data: { id: uid(), messageId, userId } });
-    } catch {}
+    } catch {
+      // unique([messageId, userId]) — already recorded, which is a no-op.
+    }
     return { ok: true };
   }
 
@@ -57,7 +92,7 @@ export class ChatService {
     const id = uid();
     const uploadKey = `chat/${id}`;
     // Create pending attachment
-    await this.prisma.attachment.create({ data: { id, messageId: null as any, kind, url: '', uploadKey, status: 'pending', sizeBytes, mime } as any });
+    await this.prisma.attachment.create({ data: { id, messageId: null, kind, url: '', uploadKey, status: 'pending', sizeBytes, mime } });
     const url = `https://upload.example/${uploadKey}`; // client should PUT file here in real impl
     const fields = { 'x-amz-meta-scan': 'required' };
     return { attachmentId: id, upload: { url, method: 'PUT', fields }, maxSize: MAX_SIZE };
