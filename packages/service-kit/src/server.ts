@@ -18,6 +18,17 @@ async function maybeSetupObservability() {
   } catch {}
 }
 
+/**
+ * Turn a service name into a valid Prometheus metric-name prefix.
+ * Names must match [a-zA-Z_:][a-zA-Z0-9_:]*, so anything else (notably the
+ * hyphen in every "*-service" name) becomes an underscore, and a leading digit
+ * gets one prepended.
+ */
+export function metricPrefix(serviceName: string): string {
+  const cleaned = String(serviceName || 'service').replace(/[^a-zA-Z0-9_:]/g, '_');
+  return `${/^[0-9]/.test(cleaned) ? `_${cleaned}` : cleaned}_`;
+}
+
 export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
   await maybeSetupObservability();
   const env = loadEnv({
@@ -70,7 +81,11 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
 
   // Prometheus registry + HTTP metrics
   const registry = new Registry();
-  client.collectDefaultMetrics({ register: registry, prefix: `${env.SERVICE_NAME}_` });
+  // Prometheus metric names must match [a-zA-Z_:][a-zA-Z0-9_:]*, so the raw
+  // SERVICE_NAME cannot be used as a prefix: every service here is named with a
+  // hyphen ("chat-service"), which made collectDefaultMetrics throw "Invalid
+  // metric name" and took down createApp at startup.
+  client.collectDefaultMetrics({ register: registry, prefix: metricPrefix(env.SERVICE_NAME) });
 
   const httpDuration = new Histogram({
     name: 'http_request_duration_seconds',

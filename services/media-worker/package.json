@@ -16,7 +16,7 @@
     "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist --clean",
     "start": "node dist/main.js",
     "start:dev": "tsx src/main.ts",
-    "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
+    "test": "jest --passWithNoTests",
     "test:cov": "vitest run --coverage",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
@@ -47,8 +47,7 @@
     "ts-node": "^10.9.2",
     "tsup": "^8.0.1",
     "tsx": "^4.16.0",
-    "typescript": "^5.6.2",
-    "vitest": "^3.2.4"
+    "typescript": "^5.6.2"
   },
   "engines": {
     "node": ">=20.0.0 <21",

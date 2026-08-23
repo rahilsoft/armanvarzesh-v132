@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import request from 'supertest';
 import { createApp } from '@arman/service-kit';

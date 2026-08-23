@@ -7,7 +7,9 @@ const config: Config = {
   // The Prisma client is generated to a custom output dir and mapped via
   // tsconfig paths; jest does not read those, so mirror the mapping here.
   moduleNameMapper: {
-    '^@prisma/client$': '<rootDir>/prisma/generated/client',
+    "^@prisma/client$": "<rootDir>/prisma/generated/client",
+    "^@arman/(.*)$": "<rootDir>/../../packages/$1/src",
+    "^@contracts/(.*)$": "<rootDir>/../../contracts/$1/src",
   },
   collectCoverageFrom: [
     'src/**/*.ts',

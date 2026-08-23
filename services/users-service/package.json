@@ -9,7 +9,7 @@
     "lint": "pnpm -w exec eslint . --ext .ts,.tsx || echo \"no eslint\"",
     "format": "prettier --write .",
     "test:cov": "jest --coverage --runInBand",
-    "test": "jest --passWithNoTests || vitest run || echo \"no tests\"",
+    "test": "jest --passWithNoTests",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "dev": "ts-node src/main.ts",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
@@ -80,7 +80,6 @@
     "@nestjs/cli": "^11.0.0",
     "prisma": "^5.15.0",
     "@types/express": "^5.0.3",
-    "vitest": "^3.2.4",
     "rimraf": "^5.0.0",
     "nodemon": "^3.0.0"
   },
