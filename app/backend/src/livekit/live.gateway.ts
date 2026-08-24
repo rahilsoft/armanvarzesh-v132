@@ -8,7 +8,17 @@ type JoinPayload = { room: string; token: string };
 type ChatPayload = { room: string; message: string };
 type ReactionPayload = { room: string; type: string };
 
-@WebSocketGateway({ namespace: '/live', cors: { origin: true, credentials: true } })
+// `origin: true` reflects any Origin; with credentials that lets any page open
+// an authenticated socket. Restrict to the configured allowlist.
+const liveAllowedOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+@WebSocketGateway({
+  namespace: '/live',
+  cors: { origin: liveAllowedOrigins.length ? liveAllowedOrigins : false, credentials: true },
+})
 export class LiveGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private logger = new Logger('LiveGateway');

@@ -2,6 +2,7 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { KpisService } from './kpis.service';
+import { coachIdFromReq } from './auth/req-user';
 
 @ApiTags('kpis')
 @ApiBearerAuth()
@@ -11,7 +12,7 @@ export class KpisController {
 
   @Get('coach/kpis')
   async kpis(@Req() req: any) {
-    const coachId = Number(req.user?.id || req.headers['x-coach-id'] || 1);
+    const coachId = coachIdFromReq(req);
     return this.svc.coachKpis(coachId);
   }
 }

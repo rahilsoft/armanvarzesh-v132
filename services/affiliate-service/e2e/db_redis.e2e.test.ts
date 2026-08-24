@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import request from 'supertest';
 import { createApp } from '@arman/service-kit';
@@ -8,10 +7,13 @@ let pg: StartedTestContainer;
 let redis: StartedTestContainer;
 
 beforeAll(async () => {
+  // testcontainers v10 replaced the per-variable withEnv() with withEnvironment().
   pg = await new GenericContainer('postgres:16-alpine')
-    .withEnv('POSTGRES_PASSWORD','test')
-    .withEnv('POSTGRES_USER','test')
-    .withEnv('POSTGRES_DB','test')
+    .withEnvironment({
+      POSTGRES_PASSWORD: 'test',
+      POSTGRES_USER: 'test',
+      POSTGRES_DB: 'test',
+    })
     .withExposedPorts(5432).start();
   redis = await new GenericContainer('redis:7-alpine').withExposedPorts(6379).start();
 }, 120_000);

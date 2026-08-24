@@ -1,4 +1,3 @@
-import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import request from 'supertest';
 import { NestFactory } from '@nestjs/core';

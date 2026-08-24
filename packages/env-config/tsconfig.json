@@ -11,7 +11,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": [],
+    "types": [
+      "node",
+      "jest"
+    ],
     "baseUrl": ".",
     "paths": {
       "coach-pwa/*": [
