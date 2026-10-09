@@ -3,7 +3,7 @@ import React from 'react';
 import useSWR from 'swr';
 import Image from 'next/image';
 
-const fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then(r => r.json());
+const _fetcher = (url: string) => fetch(url, { cache: 'no-store' }).then(r => r.json());
 
 export default function SignedImage({ fileKey, alt, width, height }:{
   fileKey: string; alt: string; width: number; height: number;

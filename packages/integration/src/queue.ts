@@ -45,7 +45,7 @@ const jobFailed = new client.Counter({ name: 'queue_job_failed_total', help: 'Fa
 export function attachWorkerMetrics(ctx: QueueContext, handler?: (job: Job) => Promise<any>) {
   if (!ctx.queue || ctx.worker) return;
   ctx.worker = new Worker(ctx.queue.name, async (job) => {
-    const start = Date.now();
+    const _start = Date.now();
     try {
       const res = handler ? await handler(job) : null;
       jobCompleted.labels(ctx.queue!.name).inc();

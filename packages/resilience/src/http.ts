@@ -1,4 +1,4 @@
-import { context, trace } from '@opentelemetry/api';
+import { trace } from '@opentelemetry/api';
 
 export type RetryPolicy = { retries: number; baseDelayMs: number; maxDelayMs: number; };
 export type HttpOpts = { timeoutMs?: number; headers?: Record<string,string>; retry?: RetryPolicy };

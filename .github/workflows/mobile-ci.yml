@@ -1,5 +1,9 @@
 name: mobile-ci
-on: [push, pull_request]
+# Manual only: this lane drives Detox against a native iOS project at
+# app/user-app, which does not exist in the repository (the only mobile app
+# is the managed-workflow Expo project at apps/mobile-user, which has no ios/
+# directory). Running it on every push produced a guaranteed failure.
+on: [workflow_dispatch]
 jobs:
   detox-ios:
     runs-on: macos-14

@@ -1,4 +1,3 @@
-ENV NODE_ENV=production
 # AUTO (Stage43 TEMPLATE): Dockerfile for @arman/assessments-service
 # Base chosen from manifest target: UNKNOWN (fallback to node:20.19.0-alpine)
 FROM node:20.19.0-alpine

@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_USERS, GET_USER } from "@graphql/queries/user.queries";
+import { GET_USERS} from "@graphql/queries/user.queries";
 import { CREATE_USER, UPDATE_USER, DELETE_USER } from "@graphql/mutations/user.mutations";
 
 export function useUser() {

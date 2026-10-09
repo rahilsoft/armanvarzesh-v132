@@ -10,7 +10,6 @@ import type { ServiceKit, ServiceKitOptions } from './types';
 
 async function maybeSetupObservability() {
   try {
-    // @ts-ignore
     const mod = await import('@arman/observability');
     if (mod && typeof mod.setupObservability === 'function') {
       await mod.setupObservability();

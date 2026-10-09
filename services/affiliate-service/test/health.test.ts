@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { createApp } from '@arman/service-kit';
+
 describe('affiliate-service service', () => {
   it('health should be ok', async () => {
     const ctx = await createApp({ serviceName: 'affiliate-service' });

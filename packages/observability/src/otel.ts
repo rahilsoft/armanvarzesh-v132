@@ -5,12 +5,16 @@ export async function initTelemetry(serviceName: string) {
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { getNodeAutoInstrumentations } = await import('@opentelemetry/auto-instrumentations-node');
     const { OTLPTraceExporter } = await import('@opentelemetry/exporter-trace-otlp-http');
-    const { Resource } = await import('@opentelemetry/resources');
+    const resourcesMod: any = await import('@opentelemetry/resources');
     const { SemanticResourceAttributes } = await import('@opentelemetry/semantic-conventions');
 
+    // resources 2.x replaced the Resource class with resourceFromAttributes;
+    // support whichever line is installed.
+    const resourceFromAttributes: (attrs: Record<string, unknown>) => any =
+      resourcesMod.resourceFromAttributes ?? ((attrs: Record<string, unknown>) => new resourcesMod.Resource(attrs));
     const exporter = new OTLPTraceExporter(); // uses OTEL_EXPORTER_OTLP_ENDPOINT if set
     const sdk = new NodeSDK({
-      resource: new Resource({
+      resource: resourceFromAttributes({
         [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       }),
       traceExporter: exporter,

@@ -1,5 +1,5 @@
 
-import rateLimit from 'express-rate-limit';
+import _rateLimit from 'express-rate-limit';
 import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
 import { applyBasicHardening } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';

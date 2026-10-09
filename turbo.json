@@ -13,7 +13,7 @@
     "test": {
       "cache": true,
       "dependsOn": [
-        "^test"
+        "^build"
       ]
     },
     "build": {

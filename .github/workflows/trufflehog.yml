@@ -5,7 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # trufflehog diffs commit ranges; a shallow single-commit checkout
+          # makes BASE/HEAD resolution fail on push events.
+          fetch-depth: 0
       - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3
+        # The repo has no 'v3' tag — only full releases; an unresolvable ref
+        # failed every run at action-download time.
+        uses: trufflesecurity/trufflehog@v3.82.13
         with:
           extra_args: --only-verified

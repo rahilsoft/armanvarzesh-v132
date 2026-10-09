@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 async function gql(query:string, variables:any={}){
@@ -7,12 +7,13 @@ async function gql(query:string, variables:any={}){
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
 
-export default function TodayPage({ searchParams }:{ searchParams:any }){
+export default function TodayPage(props:{ searchParams: Promise<any> }) {
+  const searchParams = use(props.searchParams);
   const clientId = searchParams?.clientId || 'demo-client';
   const [sessions, setSessions] = useState<any[]>([]);
 
-  const start = new Date(); start.setHours(0,0,0,0);
-  const end = new Date(); end.setHours(23,59,59,999);
+  const start = new Date();start.setHours(0,0,0,0);
+  const end = new Date();end.setHours(23,59,59,999);
 
   const load = async ()=>{
     const d = await gql(`query($c:String!,$f:String!,$t:String!){ sessionsByClient(clientId:$c, from:$f, to:$t){ id date status dayIndex } }`, { c: clientId, f: start.toISOString(), t: end.toISOString() });

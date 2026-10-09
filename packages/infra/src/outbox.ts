@@ -11,7 +11,7 @@ export type OutboxRepo = {
 };
 
 export class OutboxService {
-  async emit(evt: OutboxEvent): Promise<void> {
+  async emit(_evt: OutboxEvent): Promise<void> {
     // no-op implementation for build/run
     return;
   }

@@ -4,6 +4,7 @@ import { initMetrics, metricsMiddleware, metricsHandler } from './observability/
 import { buildUserAwareRateLimit, cspMiddleware } from '@arman/security-middleware';
 import '@arman/observability-sdk/register';
 import { NestFactory } from '@nestjs/core';
+import { Logger as PinoLogger } from 'nestjs-pino';
 import { validateEnv } from '@arman/env-config';
 import helmet from 'helmet';
 import { initTelemetry } from '@arman/observability';
@@ -21,7 +22,7 @@ async function bootstrap() {
 
   // Create Nest app and use pino logger
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  app.useLogger(app.get(Logger));
+  app.useLogger(app.get(PinoLogger));
 
   // Initialize custom telemetry (backwards compatibility)
   await initTelemetry('backend');
@@ -96,6 +97,6 @@ if (http && typeof http.get === 'function') {
   app.use(buildUserAwareRateLimit());
 
   await app.listen(port, '0.0.0.0');
-  app.get(Logger).log(`Backend up on :${port}`);
+  new Logger('Bootstrap').log(`Backend up on :${port}`);
 }
 bootstrap();

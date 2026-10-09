@@ -6,7 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Anchore Grype vulnerability scan (FS)
-        uses: anchore/scan-action@v3
+        # v3 bundles grype 0.74, which can no longer load the current
+        # vulnerability DB ("db could not be loaded: built 17 weeks ago"),
+        # so every run failed before scanning anything.
+        uses: anchore/scan-action@v6
         with:
           path: .
           fail-build: true

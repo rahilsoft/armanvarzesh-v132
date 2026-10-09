@@ -4,7 +4,6 @@ import '@arman/observability-sdk/register';
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4'; import { buildSubgraphSchema } from '@apollo/subgraph';
 import { typeDefs, resolvers } from './schema';
-import helmet from "helmet";
 async function bootstrap(){ const app = express(); app.use(cors()); app.use(bodyParser.json());
 app && app.use(buildJwtVerifier() as any);
 app && app.use(buildUserAwareRateLimit() as any);

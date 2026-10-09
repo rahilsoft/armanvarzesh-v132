@@ -6,10 +6,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": false,
-    "types": [
-      "node",
-      "jest"
-    ],
+    "types": ["node", "jest"],
     "noImplicitAny": false,
     "strictNullChecks": false,
     "noPropertyAccessFromIndexSignature": false,

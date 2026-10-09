@@ -9,7 +9,7 @@ export default function Page(){
   const [role, setRole] = useState<'COACH'|'NUTRITION'|'CORRECTIVE'>('COACH');
   const [weights, setWeights] = useState<any>({});
   const load = async ()=>{
-    const res = await gql(`query($r:ServiceType!){ topSpecialists(role:$r) }`, { r: role }); // just ping
+    const _res = await gql(`query($r:ServiceType!){ topSpecialists(role:$r) }`, { r: role }); // just ping
     // We don't have a query to fetch weights; allow editing ad-hoc and save.
   };
   useEffect(()=>{ load(); }, [role]);

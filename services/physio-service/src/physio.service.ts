@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { uid } from './types';
 
-const ISO = () => new Date().toISOString();
+const _ISO = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0,10);
 
 @Injectable()

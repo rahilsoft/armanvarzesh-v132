@@ -1,29 +1,19 @@
 # syntax=docker/dockerfile:1
-FROM node:20.19.0-alpine AS deps
-WORKDIR /app
+# Built from the REPO ROOT (docker-bake.hcl / preview-real set context=".").
+# The service depends on workspace packages, so a standalone npm install in
+# this directory can never resolve "workspace:*" — the whole pnpm workspace
+# is the build context instead.
+FROM node:20.19.0-alpine
 RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY services/nutrition-service/package.json services/nutrition-service/
-RUN pnpm -w install --frozen-lockfile
-
-FROM node:20.19.0-alpine AS build
-WORKDIR /app
-COPY --from=deps /app /app
-COPY services/nutrition-service services/nutrition-service
-RUN pnpm -w -C services/nutrition-service build || pnpm -w -C services/nutrition-service run build || true
-
-FROM node:20.19.0-alpine AS runtime
-WORKDIR /app
+WORKDIR /repo
+COPY . .
+RUN pnpm install --frozen-lockfile --filter "nutrition-service..."
+RUN if [ -f services/nutrition-service/prisma/schema.prisma ]; then cd services/nutrition-service && npx prisma generate --schema prisma/schema.prisma; fi
+RUN pnpm --filter "nutrition-service" run build
+RUN pnpm prune --prod || true
 ENV NODE_ENV=production
-RUN addgroup -S app && adduser -S app -G app
-COPY --from=deps /app/pnpm-lock.yaml /app/package.json ./
-COPY --from=deps /app/services/nutrition-service/package.json services/nutrition-service/
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate \
-  && pnpm -w install --frozen-lockfile --prod --filter ./services/nutrition-service \
-  && pnpm -w prune --prod --filter ./services/nutrition-service || true
-COPY --from=build /app/services/nutrition-service/dist services/nutrition-service/dist
-USER app
-ENV PORT=${PORT:-4000}
-EXPOSE $PORT
+ENV PORT=4000
+EXPOSE 4000
+USER node
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:$PORT/health || exit 1
-CMD ["node", "services/nutrition-service/dist/main.js"]
+CMD ["node","services/nutrition-service/dist/services/nutrition-service/src/main.js"]

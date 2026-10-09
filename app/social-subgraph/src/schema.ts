@@ -16,7 +16,7 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     friends: (_:any, { userId }: any) => prisma.friendship.findMany({ where: { OR: [{ aId: userId }, { bId: userId }], status: { in: ['PENDING','ACCEPTED'] } }, orderBy: { createdAt: 'desc' } }),
-    competitions: async (_:any, { userId }: any) => prisma.competition.findMany({ orderBy: { startDate: 'desc' } }),
+    competitions: async (_:any, _args: any) => prisma.competition.findMany({ orderBy: { startDate: 'desc' } }),
     leaderboard: async (_:any, { competitionId }: any) => {
       const rows = await prisma.competitionDayPoints.groupBy({ by: ['userId'], where: { competitionId }, _sum: { points: true } });
       return rows.map(r => ({ userId: r.userId, points: r._sum.points || 0 })).sort((a,b)=>b.points-a.points);

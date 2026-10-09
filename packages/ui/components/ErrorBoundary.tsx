@@ -1,7 +1,7 @@
 import React from 'react';
 
 type State = { hasError: boolean; error?: any };
-export class ErrorBoundary extends React.Component<React.PropsWithChildren<{}>, State>{
+export class ErrorBoundary extends React.Component<React.PropsWithChildren<Record<string, never>>, State>{
   state: State = { hasError: false };
   static getDerivedStateFromError(error: any){ return { hasError: true, error }; }
   componentDidCatch(error:any, info:any){ try{ console.warn('[ErrorBoundary]', error, info); }catch{} }

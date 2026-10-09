@@ -77,8 +77,8 @@
         "../../contracts/*/src"
       ],
       "*": [
-        "../../node_modules/*",
-        "./node_modules/*"
+        "./node_modules/*",
+        "../../node_modules/*"
       ]
     },
     "strict": false,
