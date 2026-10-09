@@ -4,8 +4,8 @@ import { PrismaClient, BlockType } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import { enqueueMediaProcessing } from '../jobs/media.worker';
-import { execSync } from 'child_process';
-import fetch from 'node-fetch';
+import { execFileSync } from 'child_process';
+
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -319,18 +319,25 @@ export class PlanResolver {
     const tmpVideo = path.join(uploads, `tmp_${id}.mp4`);
     try{
       // download video
-      const r = await fetch(ex.videoUrl); const buf = await r.buffer(); fs.writeFileSync(tmpVideo, buf);
+      const r = await fetch(ex.videoUrl);
+      if (!r.ok) throw new Error(`failed to download video: ${r.status}`);
+      fs.writeFileSync(tmpVideo, Buffer.from(await r.arrayBuffer()));
       // probe duration
       let duration = 0;
       try{
-        const out = execSync(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ${tmpVideo}`).toString().trim();
+        const out = execFileSync('ffprobe', [
+          '-v', 'error',
+          '-show_entries', 'format=duration',
+          '-of', 'default=noprint_wrappers=1:nokey=1',
+          tmpVideo,
+        ]).toString().trim();
         duration = Math.floor(parseFloat(out)||0);
       }catch(e){}
       // thumbnail at 2s or 30%
       const sec = Math.max(2, Math.floor(duration * 0.3));
       const thumb = path.join(uploads, `thumb_${id}.jpg`);
       try{
-        execSync(`ffmpeg -y -ss ${sec} -i ${tmpVideo} -frames:v 1 -q:v 3 ${thumb}`);
+        execFileSync('ffmpeg', ['-y', '-ss', String(sec), '-i', tmpVideo, '-frames:v', '1', '-q:v', '3', thumb]);
       }catch(e){}
       let thumbnailUrl: string | null = null;
       if (fs.existsSync(thumb)){

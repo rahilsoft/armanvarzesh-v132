@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { PingService } from './ping.service';
+import { PingService } from '../src/ping.service';
 
 describe('PingService', () => {
   it('should return pong', async () => {
