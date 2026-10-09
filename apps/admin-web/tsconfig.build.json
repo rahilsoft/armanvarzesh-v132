@@ -1,91 +1,19 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "module": "CommonJS",
-    "target": "ES2020",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "sourceMap": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "coach-pwa/*": [
-        "app/coach-pwa/*"
-      ],
-      "@coach-pwa/*": [
-        "app/coach-pwa/*"
-      ],
-      "activity-subgraph/*": [
-        "app/activity-subgraph/*"
-      ],
-      "@activity-subgraph/*": [
-        "app/activity-subgraph/*"
-      ],
-      "user-app/*": [
-        "app/user-app/*"
-      ],
-      "@user-app/*": [
-        "app/user-app/*"
-      ],
-      "coach-app/*": [
-        "app/coach-app/*"
-      ],
-      "@coach-app/*": [
-        "app/coach-app/*"
-      ],
-      "media-worker/*": [
-        "app/media-worker/*"
-      ],
-      "@media-worker/*": [
-        "app/media-worker/*"
-      ],
-      "social-subgraph/*": [
-        "app/social-subgraph/*"
-      ],
-      "@social-subgraph/*": [
-        "app/social-subgraph/*"
-      ],
-      "backend/*": [
-        "app/backend/*"
-      ],
-      "@backend/*": [
-        "app/backend/*"
-      ],
-      "live-subgraph/*": [
-        "app/live-subgraph/*"
-      ],
-      "@live-subgraph/*": [
-        "app/live-subgraph/*"
-      ],
-      "admin/*": [
-        "app/admin/*"
-      ],
-      "@admin/*": [
-        "app/admin/*"
-      ],
-      "site/*": [
-        "app/site/*"
-      ],
-      "@site/*": [
-        "app/site/*"
-      ],
-      "user-pwa/*": [
-        "app/user-pwa/*"
-      ],
-      "@user-pwa/*": [
-        "app/user-pwa/*"
-      ]
-    }
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "node_modules",
-    "dist"
-  ]
+    // This package is a Vite/React SPA: index.html + vite.config.ts + src/index.tsx,
+    // with vite and react as dependencies and no @nestjs/core. Vite produces the
+    // bundle, so tsc's job here is purely to typecheck.
+    //
+    // Everything else is inherited. This file used to re-declare module,
+    // moduleResolution, baseUrl, target, paths, include and exclude, and each
+    // override broke the app it was meant to build:
+    //   module: CommonJS          -> TS1343 on every import.meta.env
+    //   baseUrl: "." + own paths  -> dropped "@graphql/*", so 24 imports went unresolved
+    //   own exclude list          -> re-included src/main.ts, a NestJS entrypoint the
+    //                                parent deliberately excludes (it imports
+    //                                ./app.module, which does not exist, and
+    //                                @arman/nest-bootstrap, which is not a dependency)
+    "noEmit": true
+  }
 }
