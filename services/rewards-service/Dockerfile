@@ -1,9 +1,19 @@
-
+# syntax=docker/dockerfile:1
+# Built from the REPO ROOT (docker-bake.hcl / preview-real set context=".").
+# The service depends on workspace packages, so a standalone npm install in
+# this directory can never resolve "workspace:*" — the whole pnpm workspace
+# is the build context instead.
 FROM node:20.19.0-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm i -g pnpm@10 && pnpm install --prod=false
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+WORKDIR /repo
 COPY . .
-RUN pnpm run build || true
-EXPOSE 3000
-CMD ["pnpm","start"]
+RUN pnpm install --frozen-lockfile --filter "@arman/rewards-service..."
+RUN if [ -f services/rewards-service/prisma/schema.prisma ]; then cd services/rewards-service && npx prisma generate --schema prisma/schema.prisma; fi
+RUN pnpm --filter "@arman/rewards-service" run build
+RUN pnpm prune --prod || true
+ENV NODE_ENV=production
+ENV PORT=4000
+EXPOSE 4000
+USER node
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD wget -qO- http://localhost:$PORT/health || exit 1
+CMD ["node","services/rewards-service/dist/services/rewards-service/src/main.js"]

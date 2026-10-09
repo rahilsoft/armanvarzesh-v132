@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 export default function LiveKitHost(){
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const _videoRef = useRef<HTMLVideoElement>(null);
   const [status, setStatus] = useState<'idle'|'publishing'|'live'|'error'>('idle');
   useEffect(() => {
     async function start(){

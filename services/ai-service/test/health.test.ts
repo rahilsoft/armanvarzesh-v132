@@ -1,6 +1,5 @@
 import request from 'supertest';
 import { createApp } from '@arman/service-kit';
-import { describe, it, expect } from 'vitest';
 
 describe('ai-service service', () => {
   it('health should be ok', async () => {

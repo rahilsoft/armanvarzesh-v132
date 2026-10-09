@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect} from 'react';
 
 const ThreeScene = dynamic(async ()=>{
   const THREE = await import('three');
@@ -49,7 +49,6 @@ export default function Page(){
   return <div style={{ padding:24 }}>
     <h1>Three.js Anatomy (Beta)</h1>
     <p style={{ opacity:.7 }}>اگر URL مدل تنظیم نشود، نمونهٔ هندسی جایگزین نمایش داده می‌شود.</p>
-    {/* @ts-ignore */}
     <ThreeScene url={url||undefined} />
   </div>;
 }

@@ -5,7 +5,9 @@ type Auth = { role: Role; token?: string };
 const Ctx = createContext<Auth>({ role:'guest' });
 
 export function AuthProvider({children}:{children:React.ReactNode}){
-  const [state,setState] = useState<Auth>({role:'guest'});
+  // setState is unused until the TODO below lands; keep the underscore-named
+  // slot so hydration can use it without an API change.
+  const [state, _setState] = useState<Auth>({role:'guest'});
   useEffect(()=>{
     // TODO: hydrate from cookie/JWT
   },[]);

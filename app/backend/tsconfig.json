@@ -19,8 +19,41 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@prisma/client": [
-        "src/database/prisma/generated/client"
+      "@arman/auth-kit": [
+        "../../packages/auth-kit/src/index.ts"
+      ],
+      "@arman/env-config": [
+        "../../packages/env-config/src/index.ts"
+      ],
+      "@arman/graphql-dataloader": [
+        "../../packages/graphql-dataloader/src/index.ts"
+      ],
+      "@arman/graphql-utils": [
+        "../../packages/graphql-utils/src/index.ts"
+      ],
+      "@arman/http-client": [
+        "../../packages/http-client/src/index.ts"
+      ],
+      "@arman/infra": [
+        "../../packages/infra/src/index.ts"
+      ],
+      "@arman/integration": [
+        "../../packages/integration/src/index.ts"
+      ],
+      "@arman/observability": [
+        "../../packages/observability/src/index.ts"
+      ],
+      "@arman/security-middleware": [
+        "../../packages/security-middleware/src/index.ts"
+      ],
+      "@contracts/notifications": [
+        "../../contracts/notifications/src/index.ts"
+      ],
+      "@contracts/nutrition": [
+        "../../contracts/nutrition/src/index.ts"
+      ],
+      "@arman/observability-sdk/register": [
+        "../../packages/observability-sdk/src/register.ts"
       ],
       "@arman/*": [
         "../../packages/*/src"

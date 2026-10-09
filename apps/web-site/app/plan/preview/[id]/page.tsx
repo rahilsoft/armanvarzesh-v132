@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 
 const URL = process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL || '';
 async function gql(query:string, variables:any={}){
@@ -7,7 +7,8 @@ async function gql(query:string, variables:any={}){
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
 
-export default function PlanPreview({ params }:{ params:{ id:string } }){
+export default function PlanPreview(props:{ params: Promise<{ id:string }> }) {
+  const params = use(props.params);
   const id = params.id;
   const [data, setData] = useState<any>(null);
   useEffect(()=>{

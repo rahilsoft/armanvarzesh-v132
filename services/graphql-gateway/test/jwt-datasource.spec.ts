@@ -22,7 +22,7 @@ describe('GraphQL Gateway - JWT DataSource', () => {
     });
 
     it('should not set authorization header when context is empty', () => {
-      const mockContext = {};
+      const mockContext: { authHeader?: string } = {};
       const mockRequest = {
         http: {
           headers: new Map(),
@@ -70,7 +70,7 @@ describe('GraphQL Gateway - JWT DataSource', () => {
     });
 
     it('should provide empty string when no authorization header', () => {
-      const mockReq = {
+      const mockReq: { headers: { authorization?: string } } = {
         headers: {},
       };
 

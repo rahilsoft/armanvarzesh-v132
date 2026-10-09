@@ -6,7 +6,7 @@ async function gql(query:string, variables:any={}){
   const r = await fetch(URL, { method:'POST', headers:{'Content-Type':'application/json','x-role':'user','x-user-id':'user-demo'}, body: JSON.stringify({ query, variables }) });
   const j = await r.json(); if (j.errors) throw new Error(j.errors[0]?.message||'error'); return j.data;
 }
-export default function Page(){
+function PageInner(){
   const params = useSearchParams();
   const template = params?.get('template')||'BIWEEKLY';
   const sid = params?.get('sid')||'specialist-1';
@@ -24,4 +24,8 @@ export default function Page(){
     <textarea value={comment} onChange={e=> setComment(e.target.value)} />
     <div style={{ marginTop:8 }}><button onClick={submit}>ثبت</button></div>
   </div>;
+}
+
+export default function Page(){
+  return <React.Suspense fallback={null}><PageInner /></React.Suspense>;
 }

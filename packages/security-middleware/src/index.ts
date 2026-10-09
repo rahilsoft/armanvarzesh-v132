@@ -31,7 +31,6 @@ export function applyBasicHardening(app: any, opts: SecurityOptions = {}) {
       }
     };
     app.use(helmet());
-    // @ts-ignore - module shape differences are okay at runtime
     if (helmet.contentSecurityPolicy) app.use(helmet.contentSecurityPolicy(csp as any));
 
     // CORS (env override)

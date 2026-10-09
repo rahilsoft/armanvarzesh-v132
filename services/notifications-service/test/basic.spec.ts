@@ -1,8 +1,8 @@
-import { NotificationsServiceService } from '../src/notifications-service.service';
+import { PingService } from '../src/ping.service';
 
 describe('notifications-service service', () => {
   it('alive', () => {
-    const s = new NotificationsServiceService();
-    expect(typeof s.health).toBe('function');
+    const s = new PingService();
+    expect(s.ping()).toBe('pong');
   });
 });

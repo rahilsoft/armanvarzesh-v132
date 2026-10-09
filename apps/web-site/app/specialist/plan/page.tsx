@@ -32,7 +32,7 @@ function download(name: string, data: any) {
 const AnatomyBoard = dynamic(() => import('../_components/AnatomyBoard'), { ssr: false });
 
 export default function Page() {
-  const [sex, setSex] = useState<'male' | 'female'>('male');
+  const [sex, _setSex] = useState<'male' | 'female'>('male');
   const [conds, setConds] = useState<any[]>([]);
   const [sel, setSel] = useState<string[]>([]);
   const [videos, setVideos] = useState<any[]>([]);

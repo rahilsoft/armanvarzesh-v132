@@ -124,14 +124,18 @@ export function domainLabels(extra?: Record<string,string|number|boolean>) {
 // -------- Tracing (dynamic) --------
 async function startNodeSdkTracing(args: { serviceName:string; serviceVersion:string; environment:string; endpoint:string; headers:Record<string,string>; }) {
   // Dynamic imports so package remains light if opentelemetry sdk not installed
-  const [{ NodeSDK }, { getNodeAutoInstrumentations }, { OTLPTraceExporter }, { Resource }] = await Promise.all([
+  const [{ NodeSDK }, { getNodeAutoInstrumentations }, { OTLPTraceExporter }, resourcesMod] = await Promise.all([
     import('@opentelemetry/sdk-node'),
     import('@opentelemetry/auto-instrumentations-node'),
     import('@opentelemetry/exporter-trace-otlp-http'),
-    import('@opentelemetry/resources')
+    import('@opentelemetry/resources') as Promise<any>
   ]);
 
-  const resource = new Resource({
+  // @opentelemetry/resources 2.x replaced the Resource class with the
+  // resourceFromAttributes factory; support whichever line is installed.
+  const resourceFromAttributes: (attrs: Record<string, unknown>) => unknown =
+    resourcesMod.resourceFromAttributes ?? ((attrs: Record<string, unknown>) => new resourcesMod.Resource(attrs));
+  const resource: any = resourceFromAttributes({
     [SEMRESATTRS_SERVICE_NAME]: args.serviceName,
     [SEMRESATTRS_SERVICE_VERSION]: args.serviceVersion,
     [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: args.environment
@@ -151,7 +155,7 @@ async function startNodeSdkTracing(args: { serviceName:string; serviceVersion:st
       '@opentelemetry/instrumentation-express': {},
       '@opentelemetry/instrumentation-graphql': {},
       '@opentelemetry/instrumentation-pg': {},
-      '@opentelemetry/instrumentation-redis-4': {},
+      '@opentelemetry/instrumentation-redis': {},
     }) ]
   });
 

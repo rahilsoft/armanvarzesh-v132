@@ -7,7 +7,7 @@
     "dev": "tsx src/worker.ts",
     "start": "node --enable-source-maps dist/worker.js",
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint . --ext .ts || echo 'no eslint'",
+    "lint": "eslint . || echo 'no eslint'",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rimraf dist || true",
     "format": "prettier --write .",

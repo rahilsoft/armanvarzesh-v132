@@ -29,8 +29,8 @@ services:
       - REDIS_URL=redis://redis:6379
       # JWT_SECRET should be supplied via your shell environment or a local .env file alongside this compose file.
       - JWT_SECRET=${JWT_SECRET}
-      - KAVENEGAR_API_KEY= "__CHANGE_ME__"
-      - ZARINPAL_MERCHANT_ID= "__CHANGE_ME__"
+      - KAVENEGAR_API_KEY=${KAVENEGAR_API_KEY:-}
+      - ZARINPAL_MERCHANT_ID=${ZARINPAL_MERCHANT_ID:-}
     depends_on:
       - db
       - redis

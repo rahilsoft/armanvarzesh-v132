@@ -32,7 +32,10 @@ describe('smoothing drops big jumps', ()=>{
   }
   it('removes a 500m teleport', ()=>{
     const t=Date.now();
-    const pts=[{lat:0,lng:0,ts:t},{lat:0.001,lng:0.001,ts:t+1000},{lat:0.01,lng:0.01,ts:t+2000}];
+    // The middle point must be plausible movement (~15m in 1s); the old
+    // fixture's 0.001-degree step was itself a 157m/1s jump, so the very
+    // filter under test dropped it and the expected length never matched.
+    const pts=[{lat:0,lng:0,ts:t},{lat:0.0001,lng:0.0001,ts:t+1000},{lat:0.01,lng:0.01,ts:t+2000}];
     const s = smooth(pts);
     expect(s.length).toBe(2);
   });

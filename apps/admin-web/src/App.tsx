@@ -1,5 +1,5 @@
-import UIDemo from './pages/UIDemo'
-import ThemeToggle from './components/ThemeToggle'
+import _UIDemo from './pages/UIDemo'
+import _ThemeToggle from './components/ThemeToggle'
 
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";

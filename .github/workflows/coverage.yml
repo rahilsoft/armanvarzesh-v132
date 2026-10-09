@@ -1,4 +1,3 @@
-
 name: Coverage Gate
 on: [push, pull_request]
 jobs:
@@ -7,9 +6,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: pnpm/action-setup@v4
-      with: { version: 10.0.0 }
     - uses: actions/setup-node@v4
-      with: { node-version: 20 }
-    - run: pnpm install --frozen-lockfile=false
-    - run: pnpm -w run test -- --coverage || true
-    - run: node scripts/coverage-gate.js coverage/coverage-summary.json
+      with: { node-version: 20, cache: 'pnpm' }
+    - run: pnpm install --frozen-lockfile
+    - name: Generate Prisma client (backend)
+      run: pnpm --filter @arman/backend run prisma:generate
+    - name: Backend tests with coverage
+      working-directory: app/backend
+      run: npx jest src test/unit --coverage --coverageReporters=json-summary --silent
+    - name: Enforce coverage ratchet
+      # Ratchet baseline measured on 2026-07-11 (lines 16.97 / stmts 16.46 /
+      # funcs 14.3 / branches 23.52). Raise these as coverage grows; never
+      # lower them. The previous gate demanded 80% against a suite that was
+      # never even executed (test step was '|| true' with no summary file).
+      env:
+        MIN_LINES: '15'
+        MIN_STATEMENTS: '15'
+        MIN_FUNCTIONS: '12'
+        MIN_BRANCHES: '20'
+      run: node scripts/check-coverage.js

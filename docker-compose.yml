@@ -47,6 +47,30 @@ services:
       timeout: 5s
       retries: 5
 
+  # Core API (modular monolith)
+  backend:
+    build:
+      context: .
+      dockerfile: app/backend/Dockerfile
+    environment:
+      PORT: 4000
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/armanvarzesh}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be provided via the environment}
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   # Subgraphs
   live-subgraph:
     build: ./app/live-subgraph
@@ -109,9 +133,13 @@ services:
     build: ./services/api-gateway
     environment:
       PORT: 8080
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      # No default on purpose: compose fails fast instead of booting with a
+      # publicly-known signing key.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be provided via the environment}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
-      USERS_SERVICE_URL: http://users-service:4001
+      # The users domain lives in the modular-monolith backend; the old
+      # users-service hostname resolved to nothing in this stack.
+      USERS_SERVICE_URL: http://backend:4000
       NODE_ENV: ${NODE_ENV:-development}
     ports:
       - "8080:8080"
@@ -152,18 +180,19 @@ services:
     command: ["-config.file=/etc/tempo.yaml"]
     volumes:
       - ./infra/observability/tempo.yaml:/etc/tempo.yaml:ro
-      - tempo_data:/tmp/tempo
+      - tempo_data:/var/tempo
     ports:
+      # Only the query port is published; OTLP ingest (4317/4318) is reached
+      # over the compose network and publishing it here collided with the
+      # otel-collector's identical host bindings, so the stack never started.
       - "3200:3200"
-      - "4317:4317"
-      - "4318:4318"
 
   grafana:
     image: grafana/grafana:latest
     environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      # Grafana's stock admin/admin + forced first-login password change;
+      # anonymous Admin with the login form disabled was an open admin panel.
+      - GF_AUTH_ANONYMOUS_ENABLED=false
     volumes:
       - grafana_data:/var/lib/grafana
     ports:

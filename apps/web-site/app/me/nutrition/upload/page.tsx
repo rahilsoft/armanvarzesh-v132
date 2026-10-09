@@ -10,7 +10,7 @@ export default function Page(){
   const [day, setDay] = useState(0);
   const [meal, setMeal] = useState('breakfast');
   const send = async ()=>{
-    const d = await gql(`mutation($u:String!,$p:String!,$d:Int!,$m:String!,$url:String!){ analyzeMealPhoto(userId:$u, planId:$p, dayIndex:$d, mealKey:$m, photoUrl:$url) }`, { u:'user-1', p:'', d: day, m: meal, url: photo });
+    const _d = await gql(`mutation($u:String!,$p:String!,$d:Int!,$m:String!,$url:String!){ analyzeMealPhoto(userId:$u, planId:$p, dayIndex:$d, mealKey:$m, photoUrl:$url) }`, { u:'user-1', p:'', d: day, m: meal, url: photo });
     alert('Sent photo (demo).');
   };
   return <div style={{ padding:24 }}>

@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
-# Husky pre-commit hook (safe default)
-if [ -f "$(dirname "$0")/_/husky.sh" ]; then
-  . "$(dirname "$0")/_/husky.sh"
-fi
+# Pre-commit: fast repo-hygiene check only (large files, secret-like content).
+# Lint, typecheck, and tests are enforced per-package in CI (Unified CI);
+# running the whole workspace suite on every commit took minutes, and the
+# old `pnpm -w lint --if-present` form forwarded --if-present into eslint
+# itself (which rejects it), so no commit could ever pass.
 pnpm -w check:repo || exit 1
-pnpm -w lint --if-present
-pnpm -w test --if-present
-pnpm -w typecheck --if-present
