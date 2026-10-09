@@ -29,10 +29,10 @@ app && applyBasicHardening(app);
   // credentials:true that let any site on the internet make authenticated
   // cross-origin calls against the admin API. Restrict to an explicit
   // allowlist. Same-origin requests send no Origin header and still pass, so
-  // an unset CORS_ORIGINS denies cross-origin traffic rather than allowing it.
+  // an unset allowlist denies cross-origin traffic rather than allowing it.
   app.enableCors({
     origin: (origin: string | undefined, cb: (err: Error | null, allow?: boolean) => void) => {
-      const list = (process.env.CORS_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+      const list = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '').split(',').map((s) => s.trim()).filter(Boolean);
       if (!origin || list.includes(origin)) return cb(null, true);
       return cb(new Error('Not allowed by CORS'));
     },

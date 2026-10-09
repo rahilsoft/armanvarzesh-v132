@@ -10,7 +10,7 @@ type ReactionPayload = { room: string; type: string };
 
 // `origin: true` reflects any Origin; with credentials that lets any page open
 // an authenticated socket. Restrict to the configured allowlist.
-const liveAllowedOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+const liveAllowedOrigins = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);

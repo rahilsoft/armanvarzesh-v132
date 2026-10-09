@@ -34,7 +34,7 @@ export async function createApp(opts: ServiceKitOptions): Promise<ServiceKit> {
     SERVICE_NAME: opts.serviceName,
     PORT: String(opts.port ?? process.env.PORT ?? 4000),
     LOG_LEVEL: opts.logLevel ?? process.env.LOG_LEVEL ?? 'info',
-    CORS_ORIGINS: (opts.corsOrigins ?? []).join(',') || (process.env.CORS_ORIGINS ?? ''),
+    CORS_ORIGINS: (opts.corsOrigins ?? []).join(',') || (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN ?? ''),
   });
 
   const app = express();

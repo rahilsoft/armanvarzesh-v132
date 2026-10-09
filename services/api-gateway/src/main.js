@@ -27,7 +27,7 @@ const app = Fastify({ logger: false });
 // An explicit allowlist: `origin: true` reflects any Origin, and with
 // credentials:true that lets any site make authenticated calls through the
 // gateway. Same-origin requests carry no Origin header and still pass.
-const CORS_ORIGINS = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);

@@ -28,7 +28,7 @@ async function bootstrap(){
   const app = express();
   // Bare cors() allows any origin. Restrict to the configured allowlist;
   // same-origin requests send no Origin header and still pass.
-  const corsOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+  const corsOrigins = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean);

@@ -6,7 +6,7 @@ import { Server, Socket } from 'socket.io';
 // It also has no authentication and rebroadcasts whatever any client emits, so
 // it must not be wired up as-is. CORS is restricted rather than left at `true`
 // (which reflects any Origin) so enabling it cannot silently open the socket.
-const appGatewayOrigins = (process.env.CORS_ORIGINS || process.env.ALLOWED_ORIGINS || '')
+const appGatewayOrigins = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);

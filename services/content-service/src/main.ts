@@ -46,7 +46,7 @@ async function bootstrap() {
   });
 
   // Phase1 Security: Helmet & CORS & RateLimit
-  const allowed = (process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean);
+  const allowed = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean);
   try { const helmet = (await import('helmet')).default; app.use(helmet()); } catch(e) {}
   app.enableCors({ origin: (origin, cb)=> { if(!origin || allowed.includes(origin)) return cb(null, true); return cb(new Error('CORS'), false); }, credentials:true });
   try { const rateLimit = (await import('express-rate-limit')).default; app.use(rateLimit({ windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS||'60000'), max: parseInt(process.env.RATE_LIMIT_MAX||'100') })); } catch(e) {}
@@ -61,7 +61,7 @@ app && applyBasicHardening(app);
 
   // NOTE: a second enableCors({ origin: true, credentials: true }) used to sit
   // here (AUTO, Stage09). enableCors overwrites the previous config, so it
-  // silently replaced the ALLOWED_ORIGINS allowlist above with one that
+  // silently replaced the allowlist above with one that
   // reflects any Origin while allowing credentials — letting any site on the
   // internet make authenticated cross-origin calls. The allowlist is the
   // intended policy; do not re-add a second call here.
