@@ -17,7 +17,7 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
 - `apps/mobile-user` — user app, Expo 51 / React Native 0.74, React Navigation 6, Apollo, Zustand.
 - `mobile/coach` — coach app (Expo), `app/ios` + `app/android` — fastlane lanes.
 - `packages/*` — shared libs (auth, ui-tokens, ui-components, contracts, observability, …).
-- `services/*` — legacy microservices. 21 carry `DEPRECATED.md`. Do **not** add features there.
+- `services/*` — 11 remaining legacy services (ai, analytics, chat, notifications, …). Do **not** add features there.
   Port anything still needed into `app/backend`. (14 deprecated services were removed on 2026-10-19.)
 - Known audit: `FINAL-CERTIFICATION.md` + `MASTER-REMEDIATION-PLAN.md` (P0 security items).
 
