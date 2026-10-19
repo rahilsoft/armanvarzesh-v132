@@ -10,7 +10,7 @@ report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop
    Follow the «Token budget rules» in `CLAUDE.md` for the whole session.
 1. `git fetch origin && git checkout develop && git pull --ff-only` (create `develop` from `main` only if it does not exist).
 2. Read `CLAUDE.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
-3. `pnpm install --frozen-lockfile` (fall back to `pnpm install` and note it).
+3. `pnpm install --frozen-lockfile --ignore-scripts` (fall back to `pnpm install --ignore-scripts` and note it), then `sh scripts/agents/prisma-generate-offline.sh` (Prisma engine downloads are blocked in the sandbox; this is enough for typecheck and unit tests).
 
 ## 2. Plan (≤ 5 min) — coordinator-architect
 - Pick the highest-priority unblocked ROADMAP items that fit about 30 minutes of parallel work.

@@ -9,7 +9,7 @@ Maintained by `coordinator-architect`. Only verified facts. Newest session on to
 | Deploy path targets `app/backend` only | ❌ | baseline: FINAL-CERTIFICATION.md §Deploy |
 | All P0 security items closed | ❌ | 6 open (MASTER-REMEDIATION-PLAN.md) |
 | No mocks / stubs in production paths | ❌ | sweep not done yet (ROADMAP 0.8) |
-| Backend typecheck + lint + unit tests green | ✅ baseline | certification 2026-07-10: 115 passed |
+| Backend typecheck + lint + unit tests green | ✅ | 2026-10-19 after services removal: typecheck 0 errors, lint exit 0, 35 suites / 115 tests passed (69 skipped) |
 | Backend e2e against real Postgres + Redis green | ❌ | not yet run |
 | Real Prisma migrations, no `db push` | ❌ | ROADMAP 0.5 |
 | Web site + admin production builds green | ⚠️ | reported green 2026-06-29, re-verify |
@@ -45,10 +45,13 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - Pending: iOS distribution path for Iran (TestFlight / Sibche / PWA).
 
 ## Known blockers
-- Sandbox cannot download Prisma engines (`binaries.prisma.sh` → 403), so `prisma generate` fails and backend typecheck shows ~479 errors that are all caused by the missing generated client (0 missing-module errors). Fix: provide an engines mirror (`PRISMA_ENGINES_MIRROR`) reachable from the sandbox, or vendor the engine binaries, or verify on GitHub Actions. Until then agents must verify Prisma-dependent code on CI.
+- Sandbox cannot download Prisma engines (`binaries.prisma.sh` → 403). **Solved for types:** `scripts/agents/prisma-generate-offline.sh` generates the client with placeholder engines, enough for typecheck + unit tests. Still open: runtime / e2e against a real DB need real engines → run those on GitHub Actions CI.
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-19 — backend gate re-verified
+- `scripts/agents/prisma-generate-offline.sh` → client generated. `pnpm --filter ./app/backend typecheck` 0 errors, `lint` exit 0, `test` 35 passed / 2 skipped suites, 115 passed / 69 skipped tests.
+
 ### 2026-10-19 — token-saving setup
 - Vendored `caveman` skill (JuliusBrussee/caveman @ bad48a0, Apache-2.0) in `.claude/skills/caveman`.
 - rtk (rtk-ai/rtk, Apache-2.0 edition) built from source in the sandbox in 4 m 43 s (`cargo build --release --no-default-features` OK, `rtk 0.49.0`). Release downloads are blocked here, so the runbook builds it in the background at session start.
