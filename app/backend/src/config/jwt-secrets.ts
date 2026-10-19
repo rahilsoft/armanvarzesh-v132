@@ -3,6 +3,10 @@ export const MIN_JWT_SECRET_LENGTH = 32;
 /** Only HS256 is accepted for symmetric JWTs; every verify call must pin this. */
 export const HS_ALGORITHMS: ['HS256'] = ['HS256'];
 
+/** Dev/test-only fallbacks are allowed ONLY when NODE_ENV is explicitly 'development' or 'test'. */
+export const allowDevFallback = () =>
+  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+
 const isProd = () => process.env.NODE_ENV === 'production';
 
 /**
