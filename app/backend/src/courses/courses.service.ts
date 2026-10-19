@@ -2,6 +2,7 @@ import { randomBytes } from 'crypto';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import QRCode from 'qrcode';
+import { allowDevFallback, HS_ALGORITHMS } from '../config/jwt-secrets';
 import { PrismaService } from '../database/prisma.service';
 import { Course, CourseAsset, CourseEnrollment, Certificate, Prisma } from '@prisma/client';
 
@@ -16,8 +17,8 @@ import { Course, CourseAsset, CourseEnrollment, Certificate, Prisma } from '@pri
 function certSecret(): string {
   const s = process.env.CERT_SECRET;
   if (s && s.length >= 16) return s;
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('CERT_SECRET must be set to a strong value (>=16 chars) in production');
+  if (!allowDevFallback()) {
+    throw new Error('CERT_SECRET must be set to a strong value (>=16 chars) unless NODE_ENV is development or test');
   }
   return 'dev-only-cert-secret-change-me';
 }
@@ -95,7 +96,7 @@ export class CoursesService {
       if (!enrolled) throw new BadRequestException('NOT_ENROLLED');
     }
     const code = 'C' + randomBytes(6).toString('hex').toUpperCase();
-    const token = jwt.sign({ sub: String(userId), courseId, kind, code, ...(<object>payload) }, certSecret(), { expiresIn: '365d' });
+    const token = jwt.sign({ sub: String(userId), courseId, kind, code, ...(<object>payload) }, certSecret(), { expiresIn: '365d', algorithm: 'HS256' });
     const url = `${process.env.CERT_VERIFY_URL || 'https://example.com/verify'}?t=${token}`;
     const qrDataUrl = await QRCode.toDataURL(url);
     const certificate = await this.prisma.certificate.create({
@@ -108,7 +109,7 @@ export class CoursesService {
   async verifyCertificate(token: string): Promise<{ valid: boolean; claims?: jwt.JwtPayload; revoked?: boolean }> {
     let claims: jwt.JwtPayload;
     try {
-      claims = jwt.verify(token, certSecret()) as jwt.JwtPayload;
+      claims = jwt.verify(token, certSecret(), { algorithms: HS_ALGORITHMS }) as jwt.JwtPayload;
     } catch {
       return { valid: false };
     }

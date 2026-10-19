@@ -9,6 +9,7 @@ import { validateEnv } from '@arman/env-config';
 import helmet from 'helmet';
 import { initTelemetry } from '@arman/observability';
 import { AppModule } from './app.module';
+import { envValidationSchema } from './config/env.validation';
 // removed duplicate helmet import
 import compression from 'compression';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
@@ -16,6 +17,11 @@ import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 // import { GlobalExceptionFilter } from './common/filters/global-exception.filter'; // optional
 
 async function bootstrap() {
+  // Fail fast on invalid env outside dev/test (schema is not wired into ConfigModule to keep test bootstrap working).
+  if (process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test') {
+    const { error } = envValidationSchema.validate(process.env, { allowUnknown: true, abortEarly: false });
+    if (error) throw new Error(`Invalid environment: ${error.message}`);
+  }
   // Initialize tracing and metrics
   await initTracing();
   initMetrics();
