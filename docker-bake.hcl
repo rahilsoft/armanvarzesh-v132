@@ -19,18 +19,10 @@ target "api-gateway" {
   tags = ["${REGISTRY}/${OWNER}/av90-gateway:${TAG}"]
 }
 
-
 target "activities-service" {
   inherits = ["base"]
   context = "."
   dockerfile = "services/activities-service/Dockerfile"
   tags = ["${REGISTRY}/${OWNER}/av90-activities:${TAG}"]
 }
-
-
-
-
-
-
-
 
