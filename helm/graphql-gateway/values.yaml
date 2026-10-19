@@ -102,14 +102,9 @@ env:
     value: "http://physio-subgraph:4016/graphql"
   - name: LIVE_URL
     value: "http://live-subgraph:4017/graphql"
-  - name: USERS_URL
-    value: "http://users-service:4001/graphql"
-  - name: COACHES_URL
-    value: "http://coaches-service:4008/graphql"
-  - name: NUTRITION_URL
-    value: "http://nutrition-service:4013/graphql"
-  - name: CONTENT_URL
-    value: "http://content-service:4014/graphql"
+  # users/coaches/nutrition/content now live in the NestJS monolith (app/backend).
+  - name: BACKEND_URL
+    value: "http://armanfit-backend:80/graphql"
 
   # Security
   - name: CSP_NONCE_MODE

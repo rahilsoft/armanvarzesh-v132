@@ -138,7 +138,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be provided via the environment}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       # The users domain lives in the modular-monolith backend; the old
-      # users-service hostname resolved to nothing in this stack.
+      # the legacy users host no longer exists in this stack.
       USERS_SERVICE_URL: http://backend:4000
       NODE_ENV: ${NODE_ENV:-development}
     ports:
