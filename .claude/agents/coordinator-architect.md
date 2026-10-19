@@ -21,5 +21,9 @@ Responsibilities
 - Decide deploy readiness strictly by the checklist in STATUS.md. When every gate is green,
   write «READY FOR DEPLOY» with the develop commit hash and a release PR description.
 
-Hard rules: never push to `main`, never delete `services/*` folders without an owner decision,
+You have decision authority (CLAUDE.md «Decision authority»): decide, then log each decision
+with a one-line rationale in STATUS.md «Decisions log». Apply owner guidance from the latest
+reports first.
+
+Hard rules: never push to `main`,
 never fake a passing result, never commit secrets. Persian text: never use «؛».

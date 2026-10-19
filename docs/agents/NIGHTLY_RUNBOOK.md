@@ -33,6 +33,7 @@ report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop
 ## 5. Report (≤ 5 min)
 - Update `docs/agents/STATUS.md`: new session entry (done / in progress / blocked, commands and
   results), gates table, «Secrets needed». Tick verified ROADMAP items. Commit + push `develop`.
+- Write the owner report `docs/agents/reports/<YYYY-MM-DD>.md` in Persian (no «؛»): done tonight (verified), decisions taken + why, problems, next night's plan, deploy readiness, anything that needs the owner (secrets, money, legal). Max one screen.
 - Send the owner a short Persian notification (≤ 200 chars, no «؛»): what was finished tonight,
   what is next, and whether the project is READY FOR DEPLOY.
 - When all gates are green: open a release PR `develop → main` (or write its description in

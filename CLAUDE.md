@@ -18,8 +18,7 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
 - `mobile/coach` — coach app (Expo), `app/ios` + `app/android` — fastlane lanes.
 - `packages/*` — shared libs (auth, ui-tokens, ui-components, contracts, observability, …).
 - `services/*` — legacy microservices. 21 carry `DEPRECATED.md`. Do **not** add features there.
-  Port anything still needed into `app/backend`. Never delete a `services/*` folder without the
-  owner's written approval in `docs/agents/STATUS.md` (section «Owner decisions»).
+  Port anything still needed into `app/backend`. (14 deprecated services were removed on 2026-10-19.)
 - Known audit: `FINAL-CERTIFICATION.md` + `MASTER-REMEDIATION-PLAN.md` (P0 security items).
 
 ## Non-negotiable rules
@@ -40,6 +39,15 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
    package(s). Do not merge red work into `develop`; leave it on its own branch and report it.
 6. Small, reviewable commits with Conventional Commit messages.
 7. Keep `docs/agents/STATUS.md` truthful: only claim what was verified by running it.
+
+## Decision authority (owner delegated 2026-10-19)
+The owner delegated technical and product-implementation decisions to the team. The
+`coordinator-architect` decides on its own — architecture, priorities, libraries, UX choices,
+distribution paths, refactors, removals of dead code — and records every decision with a one-line
+rationale in `docs/agents/STATUS.md` → «Decisions log». The owner reviews the nightly report and
+sends guidance, which overrides earlier decisions.
+Still require the owner: merging to `main` / production deploy, spending money or creating paid
+accounts, entering or changing secrets, anything legal (store policies acceptance, contracts).
 
 ## Commands
 - Install: `pnpm install` (pnpm 10, Node from `.nvmrc`).
