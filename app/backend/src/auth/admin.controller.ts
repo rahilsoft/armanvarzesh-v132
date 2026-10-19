@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { IsString, MinLength } from 'class-validator';
+import { optionalJwtSecret } from '../config/jwt-secrets';
 
 type AdminRole = 'owner' | 'coach' | 'support';
 type AdminUser = { u: string; p?: string; h?: string; r: AdminRole };
@@ -25,7 +26,7 @@ export class AdminController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(@Body() body: AdminLoginDto) {
-    const secret = process.env.ADMIN_JWT_SECRET;
+    const secret = optionalJwtSecret('ADMIN_JWT_SECRET');
     const usersRaw = process.env.ADMIN_USERS_JSON || '[]';
     if (!secret) throw new UnauthorizedException('admin jwt not configured');
 
@@ -41,7 +42,7 @@ export class AdminController {
 
     if (!ok) throw new UnauthorizedException('invalid credentials');
 
-    const token = jwt.sign({ sub: user.u, role: user.r }, secret, { expiresIn: process.env.ADMIN_JWT_TTL || '12h' });
+    const token = jwt.sign({ sub: user.u, role: user.r }, secret, { algorithm: 'HS256', expiresIn: process.env.ADMIN_JWT_TTL || '12h' });
     return { token, role: user.r };
   }
 }

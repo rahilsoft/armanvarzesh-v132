@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const token = req.headers['authorization']?.replace('Bearer ', '');
     try {
-      this.jwtService.verify(token);
+      this.jwtService.verify(token, { algorithms: ['HS256'] });
       return true;
     } catch {
       return false;
