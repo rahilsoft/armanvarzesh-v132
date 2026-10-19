@@ -41,10 +41,17 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 
 ## Owner decisions
 - 2026-10-19: Team of 9 agents created. Nightly window 22:00–23:00 Tehran. Work lands on `develop`.
-- Pending: approve deletion of the 21 deprecated `services/*` folders (they will be removed from deploy paths regardless).
+- 2026-10-19: Owner approved deleting the deprecated `services/*`. Done: 14 folders with `DEPRECATED.md` removed (affiliate, assessments, challenges, coaches, content, courses, inbox, kpis, medical, nutrition, payments, physio, rewards, users), plus their k8s manifests/secrets, `helm/users-service`, and entries in docker-bake, CI matrix, Prometheus, deploy/helm values, compose.elite. 11 active services remain.
 - Pending: iOS distribution path for Iran (TestFlight / Sibche / PWA).
 
+## Known blockers
+- Sandbox cannot download Prisma engines (`binaries.prisma.sh` → 403), so `prisma generate` fails and backend typecheck shows ~479 errors that are all caused by the missing generated client (0 missing-module errors). Fix: provide an engines mirror (`PRISMA_ENGINES_MIRROR`) reachable from the sandbox, or vendor the engine binaries, or verify on GitHub Actions. Until then agents must verify Prisma-dependent code on CI.
+- `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
+
 ## Session log
+### 2026-10-19 — deprecated services removed
+- `git rm` of 14 deprecated services + their deploy manifests. Check: no source imports into removed paths, `pnpm install` OK (45 s), typecheck shows 0 TS2307 missing-module errors (Prisma-client errors are the known blocker above).
+
 ### 2026-10-19 — setup
 - Created `CLAUDE.md`, `.claude/agents/*` (9 agents), ROADMAP, STATUS, NIGHTLY_RUNBOOK on `develop`.
 - Baseline taken from FINAL-CERTIFICATION.md (2026-07-10) and GUZARESH-NAHAEI.md (2026-06-29). Not re-verified tonight.
