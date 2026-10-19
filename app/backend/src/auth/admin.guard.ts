@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
+import { optionalJwtSecret, HS_ALGORITHMS } from '../config/jwt-secrets';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -9,8 +10,9 @@ export class AdminGuard implements CanActivate {
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
     const expected = process.env.ADMIN_API_TOKEN;
     if (expected && token === expected) return true;
-    const secret = process.env.ADMIN_JWT_SECRET;
-    if (secret && token){ try { const claims:any = jwt.verify(token, secret); (req as any).user = claims; return true; } catch {}
+    let secret: string | undefined;
+    try { secret = optionalJwtSecret('ADMIN_JWT_SECRET'); } catch { secret = undefined; }
+    if (secret && token){ try { const claims:any = jwt.verify(token, secret, { algorithms: HS_ALGORITHMS }); (req as any).user = claims; return true; } catch {}
     }
     throw new UnauthorizedException('admin auth required');
   }

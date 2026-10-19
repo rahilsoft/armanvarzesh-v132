@@ -12,7 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import type { JwtPayload, Tokens } from './auth.types';
-import { requireEnv } from '../common/utils/nulls';
+import { requireJwtSecret, HS_ALGORITHMS } from '../config/jwt-secrets';
 
 type AdminRole = 'owner' | 'coach' | 'support';
 type AdminUser = { u: string; p?: string; h?: string; r: AdminRole };
@@ -21,15 +21,15 @@ type AdminUser = { u: string; p?: string; h?: string; r: AdminRole };
 @Injectable()
 export class AuthService {
   private signAccess(payload: JwtPayload): string {
-    const secret = requireEnv('JWT_SECRET');
+    const secret = requireJwtSecret('JWT_SECRET');
     const ttl = process.env.JWT_TTL || '7d';
-    return jwt.sign(payload, secret, { expiresIn: ttl });
+    return jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: ttl });
   }
 
   private signRefresh(payload: JwtPayload): string {
-    const secret = process.env.REFRESH_JWT_SECRET || requireEnv('JWT_SECRET');
+    const secret = requireJwtSecret('REFRESH_JWT_SECRET', 'JWT_SECRET');
     const ttl = process.env.REFRESH_JWT_TTL || '30d';
-    return jwt.sign(payload, secret, { expiresIn: ttl });
+    return jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: ttl });
   }
 
   async login(body: LoginDto): Promise<Tokens> {
@@ -59,8 +59,8 @@ export class AuthService {
 
   async refresh(refreshToken: string): Promise<Tokens> {
     try {
-      const secret = process.env.REFRESH_JWT_SECRET || requireEnv('JWT_SECRET');
-      const decoded = jwt.verify(refreshToken, secret) as JwtPayload;
+      const secret = requireJwtSecret('REFRESH_JWT_SECRET', 'JWT_SECRET');
+      const decoded = jwt.verify(refreshToken, secret, { algorithms: HS_ALGORITHMS }) as JwtPayload;
       const jti = crypto.randomUUID();
       const accessToken = this.signAccess({ sub: decoded.sub, role: decoded.role, jti });
       const newRefresh = this.signRefresh({ sub: decoded.sub, role: decoded.role, jti });
