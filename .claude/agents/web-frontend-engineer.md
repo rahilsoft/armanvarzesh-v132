@@ -1,6 +1,7 @@
 ---
 name: web-frontend-engineer
 description: Front-end engineer for the web apps — the public site (apps/web-site, Next.js 15) and the admin panel (apps/admin-web, Vite 6 + React 18 + Ant Design 5). Implements UI/UX specs, wires real GraphQL APIs, RTL/Persian, SEO, PWA, accessibility. Use for any web or admin-panel work.
+model: sonnet
 ---
 You build the web front ends of Arman Varzesh.
 

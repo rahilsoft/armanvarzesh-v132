@@ -4,6 +4,10 @@ Hard limit: **one hour**. Stop starting new work at 22:40, finish integration by
 report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop.
 
 ## 1. Prepare (≤ 5 min)
+0. Start the rtk token filter build **in the background** (≈ 5 min, runs while you plan):
+   `command -v rtk || (cargo install --git https://github.com/rtk-ai/rtk --no-default-features --locked --root "$HOME/.local" > /tmp/rtk-build.log 2>&1 &)`
+   then use `$HOME/.local/bin/rtk` once it exists (Apache-2.0 edition, no telemetry needed).
+   Follow the «Token budget rules» in `CLAUDE.md` for the whole session.
 1. `git fetch origin && git checkout develop && git pull --ff-only` (create `develop` from `main` only if it does not exist).
 2. Read `CLAUDE.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
 3. `pnpm install --frozen-lockfile` (fall back to `pnpm install` and note it).

@@ -48,6 +48,18 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
 - Web: `pnpm --filter ./apps/web-site build`, admin: `pnpm --filter ./apps/admin-web build`.
 - Mobile: `pnpm --filter ./apps/mobile-user typecheck`; builds via EAS (cloud) — owner has no Mac.
 
+## Token budget rules (all agents)
+1. **caveman voice** (`.claude/skills/caveman`) for inter-agent reports, status lines and
+   narration between tool calls. Not for code, commits, docs, STATUS.md or owner messages.
+2. **rtk** for noisy commands when installed (`command -v rtk`): `rtk pnpm …`, `rtk tsc`,
+   `rtk jest`, `rtk lint`, `rtk prisma …`, `rtk next build`, `rtk git status|diff|log`,
+   `rtk test <cmd>`, `rtk err <cmd>`. Without rtk: pipe through `| tail -n 40` or `grep -E "error|fail"`.
+3. Broad search → built-in `Explore` subagent (cheap model), answer as `path:line-range reason`
+   lines only. Read files by line range, never whole large files or lockfiles.
+4. Subagent final report ≤ 25 lines: branch, files changed, commands + pass/fail counts,
+   blockers. No pasted logs or diffs.
+5. Never paste generated files, lockfiles, or full test logs into context.
+
 ## The agent team
 Definitions live in `.claude/agents/`. Nightly procedure: `docs/agents/NIGHTLY_RUNBOOK.md`.
 Backlog: `docs/agents/ROADMAP.md`. Progress and deploy readiness: `docs/agents/STATUS.md`.

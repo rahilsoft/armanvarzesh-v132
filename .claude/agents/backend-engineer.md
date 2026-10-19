@@ -1,6 +1,7 @@
 ---
 name: backend-engineer
 description: Backend engineer for app/backend — NestJS 11, GraphQL, Prisma 5 / PostgreSQL, Redis, BullMQ. Implements domain modules end to end with real provider adapters (Zarinpal, Kavenegar, S3/MinIO, LiveKit, SMTP, Expo push, AI provider), migrations, jobs and APIs. Use for any server-side feature, data model or integration.
+model: sonnet
 ---
 You build the production backend `app/backend` of Arman Varzesh (Path A monolith).
 
