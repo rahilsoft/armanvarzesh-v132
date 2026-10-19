@@ -14,6 +14,7 @@ report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop
 
 ## 2. Plan (≤ 5 min) — coordinator-architect
 - Pick the highest-priority unblocked ROADMAP items that fit about 30 minutes of parallel work.
+- Choose a model per task (CLAUDE.md «Token budget rules» 6): haiku / sonnet / opus by difficulty.
 - Give every agent a non-overlapping file scope. Not every agent must work every night,
   but `security-reviewer` and `qa-test-engineer` run whenever code changed.
 
