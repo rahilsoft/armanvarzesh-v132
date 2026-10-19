@@ -1,4 +1,5 @@
 import { withBackoff, CircuitBreaker } from '../../common/retry/circuitBreaker';
+import { ZarinpalService, requireMerchantId } from '../../service/zarinpal.service';
 
 export interface PaymentCreateInput {
   amount: number;
@@ -24,10 +25,25 @@ export interface PaymentProvider {
 }
 
 export function makePaymentProvider(): PaymentProvider {
-  const provider = (process.env.PAYMENT_PROVIDER || 'mock').toLowerCase();
-  switch (provider) {
-    case 'zarinpal': return new ZarinpalPaymentProvider(process.env.ZARINPAL_MERCHANT_ID || '');
-    default: return new MockPaymentProvider();
+  const env = process.env.NODE_ENV;
+  const raw = (process.env.PAYMENT_PROVIDER || '').trim().toLowerCase();
+  const mockAllowed = env === 'test' || env === 'development';
+  if (!raw) {
+    if (!mockAllowed) {
+      throw new Error('PAYMENT_PROVIDER is not set. Set PAYMENT_PROVIDER=zarinpal and ZARINPAL_MERCHANT_ID (the mock provider is only allowed when NODE_ENV is test or development).');
+    }
+    return new MockPaymentProvider();
+  }
+  switch (raw) {
+    case 'zarinpal':
+      return new ZarinpalPaymentProvider(requireMerchantId());
+    case 'mock':
+      if (!mockAllowed) {
+        throw new Error('PAYMENT_PROVIDER=mock is forbidden unless NODE_ENV is test or development. Use PAYMENT_PROVIDER=zarinpal with ZARINPAL_MERCHANT_ID.');
+      }
+      return new MockPaymentProvider();
+    default:
+      throw new Error(`Unknown PAYMENT_PROVIDER "${raw}". Supported: zarinpal (and mock in test/development). ZARINPAL_MERCHANT_ID is required for zarinpal.`);
   }
 }
 
@@ -36,59 +52,39 @@ class MockPaymentProvider implements PaymentProvider {
     return { redirectUrl: input.callbackUrl + '?status=OK&mock=1', authority: 'MOCK-' + Date.now().toString(36), gatewayRef: 'MOCKREF-' + Math.random().toString(36).slice(2) };
   }
   async verifyCallback(payload: any): Promise<PaymentVerification> {
-    const status = (payload?.status || payload?.Status || 'OK').toUpperCase();
-    return { ok: status === 'OK', reference: payload?.authority || payload?.Authority || 'MOCK', raw: payload };
+    const status = String(payload?.status || payload?.Status || '').toUpperCase();
+    return { ok: status === 'OK', reference: payload?.authority || payload?.Authority, raw: payload };
   }
 }
 
 class ZarinpalPaymentProvider implements PaymentProvider {
   private breaker = new CircuitBreaker(5, 5000);
+  private client = new ZarinpalService();
   constructor(private merchantId: string) {}
   async createPayment(input: PaymentCreateInput): Promise<PaymentCreateResult> {
     if (!this.merchantId) throw new Error('ZARINPAL_MERCHANT_ID missing');
     return this.breaker.exec(() => withBackoff(async () => {
-      // Dynamic import; if not installed, fall back to mock flow
-      try {
-        const mod: any = await import('zarinpal-checkout'); // optional dep
-        const zarinpal = mod.create(this.merchantId, true);
-        const res = await zarinpal.PaymentRequest({
-          Amount: input.amount,
-          CallbackURL: input.callbackUrl,
-          Description: input.meta?.description || 'ArmanVarzesh Payment',
-        });
-        if (res.status === 100) {
-          return { redirectUrl: res.url, authority: res.authority, gatewayRef: res.authority };
-        }
-        throw new Error('Zarinpal error status ' + res.status);
-      } catch (e) {
-        // Fallback: degrade to mock-like for non-prod or missing dep
-        if (process.env.APP_ENV !== 'production') {
-          return { redirectUrl: input.callbackUrl + '?status=OK&fallback=1', authority: 'ZP-FALLBACK-' + Date.now().toString(36) };
-        }
-        throw e;
-      }
+      const res = await this.client.requestPayment(
+        input.amount,
+        input.meta?.description || 'ArmanVarzesh Payment',
+        input.callbackUrl,
+      );
+      return { redirectUrl: res.paymentUrl, authority: res.Authority, gatewayRef: res.Authority };
     }));
   }
   async verifyCallback(payload: any): Promise<PaymentVerification> {
-    // Dynamic import w/ backoff
-    return this.breaker.exec(() => withBackoff(async () => {
-      try {
-        const mod: any = await import('zarinpal-checkout');
-        const _zarinpal = mod.create(this.merchantId, true);
-        const status = (payload?.status || payload?.Status || '').toString();
-        const authority = payload?.Authority || payload?.authority;
-        if (status.toUpperCase() === 'OK' && authority) {
-          return { ok: true, reference: authority, raw: payload };
-        }
-        return { ok: false, reference: authority, raw: payload };
-      } catch {
-        // Fallback in non-prod
-        if (process.env.APP_ENV !== 'production') {
-          const authority = payload?.Authority || payload?.authority || 'ZP';
-          return { ok: true, reference: authority, raw: payload };
-        }
-        return { ok: false, raw: payload };
-      }
-    }));
+    const status = String(payload?.status || payload?.Status || '').toUpperCase();
+    const authority = payload?.Authority || payload?.authority;
+    const amount = Number(payload?.amount ?? payload?.Amount);
+    // Never report success for missing/unknown status, missing authority or unknown amount.
+    if (status !== 'OK' || !authority || !Number.isFinite(amount) || amount <= 0) {
+      return { ok: false, reference: authority, raw: payload };
+    }
+    try {
+      const res = await this.breaker.exec(() => withBackoff(() => this.client.verifyPayment(String(authority), amount)));
+      return { ok: true, reference: res.RefID !== undefined ? String(res.RefID) : String(authority), raw: res.raw };
+    } catch (e) {
+      return { ok: false, reference: authority, raw: { payload, error: (e as Error).message } };
+    }
   }
 }
