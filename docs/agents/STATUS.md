@@ -7,9 +7,9 @@ Maintained by `coordinator-architect`. Only verified facts. Newest session on to
 | Gate | Status | Evidence (command / result) |
 |---|---|---|
 | Deploy path targets `app/backend` only | ⚠️ | 2026-10-19 night: helm/deploy/k8s/CI/compose/bake no longer reference removed services (grep empty). Open: `services/graphql-gateway/src/main.ts` still defaults to dead subgraphs, `helm template` not run (no helm in sandbox) |
-| All P0 security items closed | ❌ | 2026-10-19 night: P0-2/P0-3 (JWT) closed and approved. Open: payment amount verify (branch `agent/backend-engineer/payments-real-provider`, CHANGES REQUIRED), webhook HMAC bypass outside production, P0-1 sweep |
+| All P0 security items closed | ❌ | 2026-10-20 night: Zarinpal verify uses stored amount by authority, idempotent, webhook HMAC fail-closed outside dev/test, strict hex signature (all APPROVED, merged). Open: Zarinpal request/callback routes not registered in PaymentsModule, P0-1 `x-user-id` sweep, replay protection |
 | No mocks / stubs in production paths | ❌ | inventory done: `docs/agents/MOCK_INVENTORY.md` 68 sites (9 P0, 18 P1, 41 P2), burn-down not started |
-| Backend typecheck + lint + unit tests green | ✅ | 2026-10-19 night on develop 05b78d2: typecheck exit 0, lint exit 0, 37 suites / 136 tests passed (2 suites, 69 tests skipped), 0 failed |
+| Backend typecheck + lint + unit tests green | ✅ | 2026-10-20 night on develop 9210d73: typecheck exit 0, lint exit 0, 43 suites / 207 tests passed (2 suites, 69 tests skipped), 0 failed |
 | Backend e2e against real Postgres + Redis green | ❌ | not yet run |
 | Real Prisma migrations, no `db push` | ❌ | ROADMAP 0.5 |
 | Web site + admin production builds green | ⚠️ | reported green 2026-06-29, re-verify |
@@ -29,7 +29,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | `REDIS_URL` | cache, BullMQ | missing |
 | `JWT_SECRET`, `REFRESH_JWT_SECRET`, `ADMIN_JWT_SECRET`, `JWT_ACCESS_SECRET` (each ≥ 32 chars, fail-fast outside dev/test) | auth | missing |
 | `JWT_KID` | JWKS key id, required outside dev/test | missing |
-| `CERT_SECRET` | course certificates signing | missing |
+| `CERT_SECRET` (≥ 32 chars, required outside dev/test) | course certificates signing | missing |
+| `PAYMENTS_WEBHOOK_SECRET`, `MEDICAL_WEBHOOK_SECRET` | HMAC of payment/booking and medical webhooks (now required in staging + production) | missing |
 | `ZARINPAL_MERCHANT_ID`, `PAYMENT_PROVIDER=zarinpal`, `ZARINPAL_CALLBACK_URL` (opt. `ZARINPAL_SANDBOX`) | payments | missing |
 | `KAVENEGAR_API_KEY` + sender line | OTP / SMS | missing |
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | media storage | missing |
@@ -53,6 +54,9 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | 2026-10-19 | Work lands on `develop`, `main` only via owner-approved release | Keeps production stable |
 | 2026-10-19 | Merge only security-approved branches, payments branch held back | Reviewer found callback amount taken from client payload (underpay risk) |
 | 2026-10-19 | Removed stale graphql-gateway subgraph env (users/coaches/nutrition/content) instead of pointing all four at the monolith | Four subgraphs on one schema would conflict, gateway gets `BACKEND_URL` |
+| 2026-10-20 | Payment verify reads expected amount from `"Payment"` row by authority, conditional UPDATE for idempotency | Client callback amount cannot be trusted, race-safe single credit |
+| 2026-10-20 | Webhook HMAC skip and secret fallbacks allowed only for NODE_ENV exactly development/test, `staging` is strict | Unset or unknown env must never disable verification |
+| 2026-10-20 | Gateway business rejections (e.g. -51) not retried and not counted by circuit breaker | User cancels must not trip the breaker |
 | 2026-10-19 | Open: iOS distribution path for Iran — coordinator decides in a later session | Needs research on Sibche / TestFlight / PWA |
 
 ## Known blockers
@@ -60,6 +64,16 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-20 night (22:02–22:30 Tehran) — nightly session 2
+Done (merged into `develop`, security-reviewer APPROVED each branch, gates green):
+- ROADMAP 0.4 (partial): `agent/backend-engineer/payments-real-provider` (a9c9ec6). `PaymentStore` + `PrismaPaymentStore` (parameterized `Prisma.sql`), verify uses stored amount by authority, unknown authority rejected, already-paid idempotent, conditional UPDATE race-safe, paid only after Zarinpal 100/101. `PaymentsService.verify` routed through the provider.
+- ROADMAP 0.4 (partial): `agent/backend-engineer/payments-wiring` (5a02763). Callback `Amount` optional (no NaN), real `Status` forwarded (missing → rejected), `requestPayment` persists authority + amount + pending into `"Payment"`, Zarinpal `post()` timeout (`ZARINPAL_TIMEOUT_MS`, default 10000) + `res.ok`, business rejections not retried.
+- ROADMAP 0.6: `agent/backend-engineer/webhook-env-hardening` (c01dcdc). HMAC fail-closed unless NODE_ENV development/test, NODE_ENV `staging` valid + strict, `CERT_SECRET` min 32 required, `domain.module` JwtModule registerAsync with validated secret, HS256 pinned.
+- ROADMAP 0.6: `agent/backend-engineer/sig-cert-hardening` (cf18489). Signature must match `/^[0-9a-f]{64}$/` (closed trailing-garbage acceptance), `certSecret()` min 32.
+Gate after merge on develop 9210d73: `pnpm --filter ./app/backend typecheck` exit 0, `lint` exit 0, `npx jest src test/unit --forceExit` 43 passed / 2 skipped suites, 207 passed / 69 skipped tests, 0 failed.
+Follow-ups from review (next night): register Zarinpal request + callback routes in `PaymentsModule` with userId from verified JWT only, make `status` required in `PaymentsService.verify` (resolver path defaults to 'OK'), legacy `service/payment.service.ts` verifyPayment sends client amount (delete or route via provider), legacy `payments` table vs `"Payment"`, webhook replay protection, `booking.controller.ts:83` uses `PAYMENTS_WEBHOOK_SECRET`, e2e suites miss `body-parser`/`supertest` deps, env schema not wired into ConfigModule.
+Not done tonight: frontend/mobile agents idle (backend P0 first).
+
 ### 2026-10-19 night (22:03–22:45 Tehran) — nightly session 1
 Done (merged into `develop`, security-reviewer APPROVED, gates green):
 - ROADMAP 0.3: `agent/backend-engineer/jwt-hardening` + `agent/backend-engineer/jwt-gaps`. JWT secrets ≥ 32 chars, fail-fast unless NODE_ENV is exactly development/test, HS256/RS256 pinned on every touched sign/verify, `alg:none`/HS512 rejected (tests), env schema validated in `main.ts` outside dev/test.
