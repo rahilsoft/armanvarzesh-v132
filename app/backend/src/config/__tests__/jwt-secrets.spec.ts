@@ -40,7 +40,7 @@ describe('production JWT secret strength', () => {
 });
 
 describe('env validation schema', () => {
-  const base = { DATABASE_URL: 'postgres://u:p@localhost:5432/db' };
+  const base = { NODE_ENV: 'test', DATABASE_URL: 'postgres://u:p@localhost:5432/db' };
   it('rejects JWT_SECRET shorter than 32', () => {
     expect(envValidationSchema.validate({ ...base, JWT_SECRET: 'a'.repeat(31) }).error).toBeDefined();
   });
