@@ -3,15 +3,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserAuthController } from './user-auth.controller';
 import { UserAuthService } from './user-auth.service';
+import { requireJwtSecret, HS_ALGORITHMS, allowDevFallback } from '../config/jwt-secrets';
 import { PrismaService } from '../database/prisma.service';
 
 /** Require a real signing secret in production; allow a marked dev fallback otherwise. */
-function jwtSecret(): string {
+export function jwtSecret(): string {
   const secret = process.env.JWT_SECRET;
+  if (!allowDevFallback()) return requireJwtSecret('JWT_SECRET');
   if (secret && secret.length >= 16) return secret;
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('JWT_SECRET must be set to a strong value (>=16 chars) in production');
-  }
   return 'dev-only-insecure-secret-change-me';
 }
 
@@ -24,7 +23,8 @@ function jwtSecret(): string {
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtSecret(),
-      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '15m' },
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '15m', algorithm: 'HS256' },
+      verifyOptions: { algorithms: HS_ALGORITHMS },
     }),
   ],
   controllers: [UserAuthController],

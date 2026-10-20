@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PaymentInput } from '../dto/payment.input';
-import { ZarinpalService } from './zarinpal.service';
+import { ZarinpalService, zarinpalStartPayUrl } from './zarinpal.service';
 
 @Injectable()
 export class PaymentService {
@@ -25,7 +25,7 @@ export class PaymentService {
     // await this.paymentRepository.save({ ... });
 
     this.logger.log(`Payment request successful: Authority ${res.Authority}`);
-    return { authority: res.Authority, paymentUrl: `https://sandbox.zarinpal.com/pg/StartPay/${res.Authority}` };
+    return { authority: res.Authority, paymentUrl: zarinpalStartPayUrl(res.Authority) };
   }
 
   async verifyPayment(authority: string, amount: number) {

@@ -1,4 +1,7 @@
 import * as jwt from 'jsonwebtoken';
+import { requireJwtSecret } from '../config/jwt-secrets';
+
+const ALLOWED_ALGS: jwt.Algorithm[] = ['HS256', 'RS256', 'ES256'];
 
 export class JwtKidService {
   private keys: Record<string, string>;
@@ -17,9 +20,12 @@ export class JwtKidService {
     this.active = process.env.JWT_ACTIVE_KID || 'k1';
     // Default to RS256 for stronger security when not explicitly set
     this.alg = (process.env.JWT_ALG as jwt.Algorithm) || 'RS256';
+    if (!ALLOWED_ALGS.includes(this.alg)) {
+      throw new Error(`Unsupported JWT_ALG: ${String(this.alg)}`);
+    }
     // Backwards compatibility: allow JWT_SECRET to populate keys for symmetric algorithms
     if (!this.keys[this.active] && process.env.JWT_SECRET) {
-      this.keys[this.active] = process.env.JWT_SECRET;
+      this.keys[this.active] = requireJwtSecret('JWT_SECRET');
     }
   }
 

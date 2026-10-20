@@ -24,8 +24,15 @@ export class PaymentsController {
 /** @deprecated AUTO-MARKED (Stage19): GQL op 'Amount' is unused per Stage 07 census. */
 
   @Get('verify/callback')
-  async verifyCallback(@Query('Authority') authority: string, @Query('Amount') amount: string): Promise<{ success: boolean }> {
-    const ok = await this.paymentsService.verify(authority, Number(amount));
+  async verifyCallback(
+    @Query('Authority') authority: string,
+    @Query('Status') status: string,
+    @Query('Amount') amount?: string,
+  ): Promise<{ success: boolean }> {
+    // Real Zarinpal callbacks carry only Authority + Status; Amount is optional.
+    const claimed = amount === undefined || amount === '' ? undefined : Number(amount);
+    // A missing Status is forwarded as '' so it is rejected, never defaulted to OK.
+    const ok = await this.paymentsService.verify(authority, claimed, status ?? '');
     return { success: ok };
   }
 }

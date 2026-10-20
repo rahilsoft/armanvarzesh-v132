@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, Optional, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
-import { requireEnv } from '../common/utils/nulls';
+import { requireJwtSecret, HS_ALGORITHMS } from '../config/jwt-secrets';
 import { IS_PUBLIC_KEY } from '../common/auth/public.decorator';
 
 /**
@@ -28,8 +28,8 @@ export class JwtAuthGuard implements CanActivate {
     const [type, token] = header.split(' ');
     if (!token || type?.toLowerCase() !== 'bearer') throw new UnauthorizedException('invalid authorization header');
     try {
-      const secret = requireEnv('JWT_SECRET');
-      const payload = jwt.verify(token, secret);
+      const secret = requireJwtSecret('JWT_SECRET');
+      const payload = jwt.verify(token, secret, { algorithms: HS_ALGORITHMS });
       (req as any).user = payload;
       return true;
     } catch (e) {

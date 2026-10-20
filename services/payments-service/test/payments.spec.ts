@@ -1,1 +1,0 @@
-describe('payments', ()=> it('ok', ()=> expect(true).toBe(true)));

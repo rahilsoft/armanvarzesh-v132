@@ -5,18 +5,10 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - affiliate-service:4100
           - ai-service:4101
           - assessment-service:4102
-          - challenges-service:4104
           - chat-service:4105
-          - coaches-service:4106
-          - content-service:4107
-          - courses-service:4108
           - monitoring-service:41010
           - notifications-service:41011
-          - nutrition-service:41012
-          - payments-service:41013
           - predictive-service:41014
           - reward-service:41015
-          - users-service:41016

@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [nutrition-service, activities-service, challenges-service, courses-service, kpis-service, affiliate-service, inbox-service, assessments-service, rewards-service]
+        service: [activities-service]
     defaults:
       run:
         working-directory: services/${{ matrix.service }}

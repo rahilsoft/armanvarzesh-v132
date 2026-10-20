@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { UserRepository } from '../data/repositories/user.repository';
+import { HS_ALGORITHMS } from '../../config/jwt-secrets';
 import { AuthFailedError } from './errors';
 import type { AuthResult } from './types';
 
@@ -49,8 +50,8 @@ export class AuthUseCase {
     if (!ok) throw new AuthFailedError();
 
     const payload = { sub: user.id, u: user.username, r: user.roles };
-    const accessToken = await this.jwt.signAsync(payload, { expiresIn: this.accessTtl.raw });
-    const refreshToken = await this.jwt.signAsync({ ...payload, typ: 'refresh' }, { expiresIn: this.refreshTtl.raw });
+    const accessToken = await this.jwt.signAsync(payload, { expiresIn: this.accessTtl.raw, algorithm: 'HS256' });
+    const refreshToken = await this.jwt.signAsync({ ...payload, typ: 'refresh' }, { expiresIn: this.refreshTtl.raw, algorithm: 'HS256' });
 
     const now = Math.floor(Date.now() / 1000);
     return {
@@ -61,14 +62,14 @@ export class AuthUseCase {
   }
 
   async refresh(oldRefreshToken: string): Promise<AuthResult> {
-    const decoded: any = await this.jwt.verifyAsync(oldRefreshToken).catch(() => null);
+    const decoded: any = await this.jwt.verifyAsync(oldRefreshToken, { algorithms: HS_ALGORITHMS }).catch(() => null);
     if (!decoded || decoded.typ !== 'refresh' || !decoded.sub) throw new AuthFailedError();
     const user = await this.users.findById(decoded.sub);
     if (!user) throw new AuthFailedError();
 
     const payload = { sub: user.id, u: user.username, r: user.roles };
-    const accessToken = await this.jwt.signAsync(payload, { expiresIn: this.accessTtl.raw });
-    const refreshToken = await this.jwt.signAsync({ ...payload, typ: 'refresh' }, { expiresIn: this.refreshTtl.raw });
+    const accessToken = await this.jwt.signAsync(payload, { expiresIn: this.accessTtl.raw, algorithm: 'HS256' });
+    const refreshToken = await this.jwt.signAsync({ ...payload, typ: 'refresh' }, { expiresIn: this.refreshTtl.raw, algorithm: 'HS256' });
     const now = Math.floor(Date.now() / 1000);
     return {
       user: { id: user.id, username: user.username, roles: user.roles },
