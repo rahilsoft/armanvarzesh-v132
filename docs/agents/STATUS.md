@@ -66,6 +66,14 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | PR | Target | State | Blocker / action |
 |---|---|---|---|
 | #53 develop → main | main | merged 828077f | — |
+| #52 claude/project-review-improvement → main | main | open, blocked | 41 conflicts vs develop (modify/delete in removed `services/*` + lockfile), re-adds removed services, CI stale (2026-10-09, Workers Builds failed). Action: next session merge develop into it, drop removed paths, regen lockfile, gate + security review, merge via develop |
+| #3 p-limit 7 (media-worker) | main | applied on develop 249ab35, closed | reaches main with next release |
+| #4 uuid 13 (media-worker, live-subgraph) | main | applied on develop 249ab35, closed | reaches main with next release |
+| #46 jose 6 | main | closed | backend Jest is CJS, jose 6 ESM-only → 1 suite fails (`Unexpected token 'export'`). Action: add Jest ESM transform, then upgrade |
+| #47 @nestjs/websockets 11.1.28 | main | closed | root `pnpm.overrides` pins 11.1.6, bump has no effect. Action: raise @nestjs/* overrides as a group |
+| #45 expo-constants 57 | main | closed | incompatible with Expo SDK 51 (needs ~16) |
+| #2 @nestjs/platform-socket.io 11 (chat-service) | main | closed | legacy service on Nest 10 core, unmet peer |
+| #1, #8, #9, #11 | main | closed obsolete | target services removed 2026-10-19, conflicts |
 
 ## Known blockers
 - Sandbox cannot download Prisma engines (`binaries.prisma.sh` → 403). **Solved for types:** `scripts/agents/prisma-generate-offline.sh` generates the client with placeholder engines, enough for typecheck + unit tests. Still open: runtime / e2e against a real DB need real engines → run those on GitHub Actions CI.

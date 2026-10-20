@@ -12,6 +12,7 @@ Owner of each item in brackets.
 - [ ] 0.5 Close P0-5: real Prisma migrations for the monolith DB, remove `db push` fallback. [backend-engineer]
 - [ ] 0.6 Remaining P0/P1 items in `MASTER-REMEDIATION-PLAN.md`. [security-reviewer]
 - [ ] 0.7 Test harness with real PostgreSQL + Redis in CI and in the agent sandbox. [qa-test-engineer]
+- [ ] 0.9 Dependency upgrades as tested groups: jose 6 (needs Jest ESM transform in app/backend), @nestjs/* overrides, Expo SDK upgrade. [qa-test-engineer]
 - [ ] 0.8 Mock / stub / placeholder sweep: inventory every fake path in production code into STATUS.md, then burn it down. [qa-test-engineer]
 
 ## Phase 1 — Design system
