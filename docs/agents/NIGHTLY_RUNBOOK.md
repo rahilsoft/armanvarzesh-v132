@@ -1,7 +1,9 @@
-# Nightly runbook — 22:00 to 23:00 (Asia/Tehran)
+# Nightly runbook — 21:00 to 24:00 (Asia/Tehran)
 
-Hard limit: **one hour**. Stop starting new work at 22:40, finish integration by 22:50,
-report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop.
+Hard limit: **three hours** (owner instruction 2026-10-20). Work in rounds of plan → build →
+review → merge (about 45–60 min each, 2–3 rounds per night). Stop starting new build work at
+23:15, finish review + integration sweep by 23:45, report by 23:55. If the clock says it is past
+24:00 Tehran time, report and stop.
 
 ## 1. Prepare (≤ 5 min)
 0. Start the rtk token filter build **in the background** (≈ 5 min, runs while you plan):
@@ -13,12 +15,12 @@ report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop
 3. `pnpm install --frozen-lockfile --ignore-scripts` (fall back to `pnpm install --ignore-scripts` and note it), then `sh scripts/agents/prisma-generate-offline.sh` (Prisma engine downloads are blocked in the sandbox; this is enough for typecheck and unit tests).
 
 ## 2. Plan (≤ 5 min) — coordinator-architect
-- Pick the highest-priority unblocked ROADMAP items that fit about 30 minutes of parallel work.
+- Pick the highest-priority unblocked ROADMAP items that fit one round (about 45 minutes of parallel work), then plan the next round after merging.
 - Choose a model per task (CLAUDE.md «Token budget rules» 6): haiku / sonnet / opus by difficulty.
 - Give every agent a non-overlapping file scope. Not every agent must work every night,
   but `security-reviewer` and `qa-test-engineer` run whenever code changed.
 
-## 3. Build (≈ 30 min) — agents in parallel
+## 3. Build (≈ 45 min per round) — agents in parallel
 - Each agent works in its own git worktree on branch `agent/<agent-name>/<short-slug>`
   created from `develop`. If the agent tool does not know the agent type by name, start a
   general-purpose agent and paste the full content of `.claude/agents/<agent-name>.md`
