@@ -95,3 +95,6 @@ apps/web-site/public/fallback-*.js
 # Prisma generated clients (regenerated via prisma generate)
 **/prisma/generated/
 src/database/prisma/generated/
+
+# agent worktrees (local only)
+.claude/worktrees/
