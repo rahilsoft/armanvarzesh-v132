@@ -2,6 +2,7 @@ import { makePaymentProvider } from '../../src/payments/providers/payment.provid
 import { ZarinpalService } from '../../src/service/zarinpal.service';
 
 const ENV = { ...process.env };
+const emptyStore = { findByAuthority: async () => null, markPaid: async () => false };
 const mockFetch = (json: any, ok = true) =>
   ((global as any).fetch = jest.fn().mockResolvedValue({ ok, json: async () => json }));
 
@@ -50,7 +51,7 @@ describe('makePaymentProvider', () => {
     (process.env as any).NODE_ENV = 'development';
     process.env.PAYMENT_PROVIDER = 'zarinpal';
     process.env.ZARINPAL_MERCHANT_ID = 'm-1';
-    const p = makePaymentProvider();
+    const p = makePaymentProvider(emptyStore);
     (global as any).fetch = jest.fn().mockRejectedValue(new Error('boom'));
     await expect(p.createPayment({ amount: 1000, callbackUrl: 'https://x/cb' })).rejects.toThrow(/Zarinpal request failed/);
   });
@@ -58,12 +59,23 @@ describe('makePaymentProvider', () => {
     (process.env as any).NODE_ENV = 'development';
     process.env.PAYMENT_PROVIDER = 'zarinpal';
     process.env.ZARINPAL_MERCHANT_ID = 'm-1';
-    const p = makePaymentProvider();
+    const store = {
+      findByAuthority: jest.fn().mockResolvedValue({ authority: 'A', amount: 1000, status: 'pending' }),
+      markPaid: jest.fn().mockResolvedValue(true),
+    };
+    const p = makePaymentProvider(store);
     (global as any).fetch = jest.fn();
     expect((await p.verifyCallback({ authority: 'A', amount: 1000 })).ok).toBe(false);
     expect((global as any).fetch).not.toHaveBeenCalled();
     mockFetch({ data: [], errors: { code: -51 } });
     expect((await p.verifyCallback({ status: 'OK', authority: 'A', amount: 1000 })).ok).toBe(false);
+    expect(store.markPaid).not.toHaveBeenCalled();
+  }, 15000);
+  it('zarinpal without a payment store throws', () => {
+    (process.env as any).NODE_ENV = 'production';
+    process.env.PAYMENT_PROVIDER = 'zarinpal';
+    process.env.ZARINPAL_MERCHANT_ID = 'm-1';
+    expect(() => makePaymentProvider()).toThrow(/PaymentStore/);
   });
 });
 
