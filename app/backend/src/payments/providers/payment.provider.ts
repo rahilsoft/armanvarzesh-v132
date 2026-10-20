@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { withBackoff, CircuitBreaker } from '../../common/retry/circuitBreaker';
-import { ZarinpalService, requireMerchantId } from '../../service/zarinpal.service';
+import { ZarinpalService, requireMerchantId, isRetryableGatewayError } from '../../service/zarinpal.service';
 
 export interface PaymentCreateInput {
   amount: number;
@@ -50,6 +50,32 @@ export interface PaymentStore {
 }
 
 export const PAID_STATUS = 'paid';
+export const PENDING_STATUS = 'pending';
+
+/** Write side used when a payment is requested: persists the row verify later reads. */
+export interface PendingPaymentWriter {
+  createPending(input: { authority: string; amount: number; userId?: number | null }): Promise<void>;
+}
+
+/**
+ * Runs a gateway call through backoff + breaker. Only transport failures (network,
+ * timeout, 5xx) are retried and counted by the breaker. Business rejections are
+ * passed through without retry and without tripping the breaker.
+ */
+export async function guardedGatewayCall<T>(breaker: CircuitBreaker, fn: () => Promise<T>): Promise<T> {
+  const out = await breaker.exec(() =>
+    withBackoff(async () => {
+      try {
+        return { value: await fn() } as { value?: T; rejected?: unknown };
+      } catch (e) {
+        if (!isRetryableGatewayError(e)) return { rejected: e } as { value?: T; rejected?: unknown };
+        throw e;
+      }
+    }),
+  );
+  if ('rejected' in out) throw out.rejected;
+  return out.value as T;
+}
 
 interface RawSqlClient {
   query<T = unknown>(sql: Prisma.Sql): Promise<T>;
@@ -57,8 +83,15 @@ interface RawSqlClient {
 }
 
 /** Prisma-backed store over the `Payment` model (parameterized raw SQL via SafePrismaService). */
-export class PrismaPaymentStore implements PaymentStore {
+export class PrismaPaymentStore implements PaymentStore, PendingPaymentWriter {
   constructor(private readonly db: RawSqlClient) {}
+
+  async createPending(input: { authority: string; amount: number; userId?: number | null }): Promise<void> {
+    const userId = input.userId ?? null;
+    await this.db.exec(
+      Prisma.sql`INSERT INTO "Payment" (authority, amount, status, "userId") VALUES (${input.authority}, ${input.amount}, ${PENDING_STATUS}, ${userId}) ON CONFLICT (authority) DO NOTHING`,
+    );
+  }
 
   async findByAuthority(authority: string): Promise<StoredPayment | null> {
     const rows = await this.db.query<any[]>(
@@ -122,7 +155,10 @@ class MockPaymentProvider implements PaymentProvider {
 }
 
 export class ZarinpalPaymentProvider implements PaymentProvider {
-  private breaker = new CircuitBreaker(5, 5000);
+  private readonly breaker = new CircuitBreaker(5, 5000);
+  getBreakerState() {
+    return this.breaker.getState();
+  }
   constructor(
     private readonly merchantId: string,
     private readonly store: PaymentStore,
@@ -133,14 +169,10 @@ export class ZarinpalPaymentProvider implements PaymentProvider {
   }
 
   async createPayment(input: PaymentCreateInput): Promise<PaymentCreateResult> {
-    return this.breaker.exec(() => withBackoff(async () => {
-      const res = await this.client.requestPayment(
-        input.amount,
-        input.meta?.description || 'ArmanVarzesh Payment',
-        input.callbackUrl,
-      );
-      return { redirectUrl: res.paymentUrl, authority: res.Authority, gatewayRef: res.Authority };
-    }));
+    const res = await guardedGatewayCall(this.breaker, () =>
+      this.client.requestPayment(input.amount, input.meta?.description || 'ArmanVarzesh Payment', input.callbackUrl),
+    );
+    return { redirectUrl: res.paymentUrl, authority: res.Authority, gatewayRef: res.Authority };
   }
 
   /**
@@ -178,7 +210,7 @@ export class ZarinpalPaymentProvider implements PaymentProvider {
 
     let res: { Status: number; RefID: string | number | undefined; raw?: any };
     try {
-      res = await this.breaker.exec(() => withBackoff(() => this.client.verifyPayment(authority, expected)));
+      res = await guardedGatewayCall(this.breaker, () => this.client.verifyPayment(authority, expected));
     } catch (e) {
       return { ok: false, reference: authority, amount: expected, reason: 'gateway_rejected', raw: { error: (e as Error).message } };
     }
