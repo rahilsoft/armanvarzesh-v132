@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { allowDevFallback } from '../../config/jwt-secrets';
 
 /**
  * Verify an inbound webhook is authentic before any state change (P0-2).
@@ -9,9 +10,10 @@ import { BadRequestException, UnauthorizedException } from '@nestjs/common';
  * canonical JSON body using a shared secret. The signature is expected in the
  * payload as `signature` (hex). Comparison is constant-time.
  *
- * In production the secret is REQUIRED — a missing secret is a hard failure
- * (fail-closed), never an implicit "skip verification". Outside production a
- * missing secret disables verification so local/test flows work.
+ * Fail-closed: the secret is REQUIRED unless NODE_ENV is exactly 'development'
+ * or 'test' (same rule as JWT hardening). Production, staging, unset or any
+ * other NODE_ENV with a missing secret is a hard failure, never an implicit
+ * "skip verification".
  */
 export function computeWebhookSignature(secret: string, body: unknown): string {
   const canonical = stableStringify(stripSignature(body));
@@ -24,10 +26,10 @@ export function verifyWebhookSignature(
   secret: string | undefined,
 ): void {
   if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
+    if (!allowDevFallback()) {
       throw new UnauthorizedException(`${channel} webhook secret is not configured`);
     }
-    return; // dev/test: verification disabled
+    return; // NODE_ENV development/test only: verification disabled
   }
   const provided = (body as { signature?: unknown } | null)?.signature;
   if (typeof provided !== 'string' || provided.length === 0) {
