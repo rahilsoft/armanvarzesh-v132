@@ -49,6 +49,16 @@ sends guidance, which overrides earlier decisions.
 Still require the owner: production deploy, spending money or creating paid
 accounts, entering or changing secrets, anything legal (store policies acceptance, contracts).
 
+## Autonomy and GPT review (owner instruction 2026-10-20)
+- Do not ask the owner questions unless he asks first. Keep developing on your own, even if he is
+  offline for a month. No owner approval is needed for development work. Owner-only items
+  (secrets, paid accounts, legal, production deploy) go into the report and STATUS.md, never as a
+  blocking question, and work continues on everything else.
+- GPT reviews every shift at 00:05 Tehran and posts findings `REV-YYYYMMDD-NN` in the GitHub issue
+  `Independent technical review — GPT / Claude handoff`. Protocol and Claude duties:
+  `docs/agents/COLLABORATION_GPT.md` (binding). Start of shift: answer every open finding first.
+  End of shift: the handoff report with SHAs, PRs, tests, skipped tests, CI link, DB/config changes.
+
 ## Integration (owner instruction 2026-10-20, every shift)
 Responsibility does not end at «PR created». It ends when the change is merged into its target
 branch and the target branch CI was checked. Owner: `qa-test-engineer` (integration owner).

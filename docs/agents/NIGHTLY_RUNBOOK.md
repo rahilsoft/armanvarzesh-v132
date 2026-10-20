@@ -11,7 +11,11 @@ review → merge (about 45–60 min each, 2–3 rounds per night). Stop starting
    then use `$HOME/.local/bin/rtk` once it exists (Apache-2.0 edition, no telemetry needed).
    Follow the «Token budget rules» in `CLAUDE.md` for the whole session.
 1. `git fetch origin && git checkout develop && git pull --ff-only` (create `develop` from `main` only if it does not exist).
-2. Read `CLAUDE.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
+2. Read `CLAUDE.md`, `docs/agents/COLLABORATION_GPT.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
+2b. **GPT findings first:** read the latest comment and all open `REV-…` findings in the issue
+   `Independent technical review — GPT / Claude handoff`. Reply on the issue to each one: accepted + plan,
+   fixed + commit + test result, rejected + evidence, or blocked + blocker + action. Confirmed P0/P1
+   findings are this shift's first tasks.
 3. `pnpm install --frozen-lockfile --ignore-scripts` (fall back to `pnpm install --ignore-scripts` and note it), then `sh scripts/agents/prisma-generate-offline.sh` (Prisma engine downloads are blocked in the sandbox; this is enough for typecheck and unit tests).
 
 ## 2. Plan (≤ 5 min) — coordinator-architect
@@ -44,7 +48,7 @@ branch protection, then check CI on the target branch. Record each PR as merged 
 ## 5. Report (≤ 5 min)
 - Update `docs/agents/STATUS.md`: new session entry (done / in progress / blocked, commands and
   results), gates table, «Secrets needed». Tick verified ROADMAP items. Commit + push `develop`.
-- Write the owner report `docs/agents/reports/<YYYY-MM-DD>.md` in Persian (no «؛»): done tonight (verified), decisions taken + why, problems, next night's plan, deploy readiness, anything that needs the owner (secrets, money, legal). Max one screen.
+- Write the handoff report `docs/agents/reports/<YYYY-MM-DD>.md` (date = shift START date) in Persian (no «؛»), pushed before 23:55 for the 00:05 GPT review. It must contain: final SHAs of `develop` and `main`, merged / open / blocked PRs with reasons, features completed and still incomplete, test commands with real results, skipped / not-run tests and why, link to the CI run of the delivered SHA, known issues, DB changes (migrations), configuration needs, replies given to GPT findings, decisions + why, next shift plan, deploy readiness, owner-only items (secrets, money, legal). Do not ask the owner questions.
 - Send the owner a short Persian notification (≤ 200 chars, no «؛»): what was finished tonight,
   what is next, and whether the project is READY FOR DEPLOY.
 - Integration result: list merged PRs and blocked PRs with blocker + action in the owner report.
