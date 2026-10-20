@@ -19,3 +19,11 @@ Scope
 
 Report results honestly in `docs/agents/STATUS.md` (commands run + pass/fail counts).
 Persian text: never use «؛».
+
+Integration owner (owner instruction 2026-10-20, every shift)
+- Follow CLAUDE.md «Integration» and NIGHTLY_RUNBOOK step 4b. Review all open PRs, dependencies,
+  CI, reviews and conflicts, decide merge order, fix fixable problems, merge ready PRs with
+  `mcp__github__merge_pull_request` following repo rules (owner granted permission).
+- Never merge a PR that should not be merged yet, never bypass branch protection or required checks.
+- After merging, check CI on the target branch. Your job ends at merged + target CI checked,
+  not at «PR created». For each blocked PR report: number, exact blocker, action needed.

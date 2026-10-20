@@ -33,8 +33,8 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
    secrets in production, signed webhooks, rate limits, input validation, RBAC on admin APIs.
 3. Persian (fa-IR) and RTL are first-class: Jalali dates in UI, Persian digits in UI text,
    Vazirmatn font. In any Persian text never use the semicolon «؛», use «،» instead.
-4. Work on branch `develop`. Never push to `main`. `main` changes only when the owner approves a
-   release PR from `develop`.
+4. Work on branch `develop`. Never push directly to `main`. `main` changes only through a PR
+   (owner granted standing merge permission on 2026-10-20, see «Integration» below).
 5. Every change ships with tests and must pass: typecheck, lint, unit tests for the touched
    package(s). Do not merge red work into `develop`; leave it on its own branch and report it.
 6. Small, reviewable commits with Conventional Commit messages.
@@ -46,8 +46,25 @@ The owner delegated technical and product-implementation decisions to the team. 
 distribution paths, refactors, removals of dead code — and records every decision with a one-line
 rationale in `docs/agents/STATUS.md` → «Decisions log». The owner reviews the nightly report and
 sends guidance, which overrides earlier decisions.
-Still require the owner: merging to `main` / production deploy, spending money or creating paid
+Still require the owner: production deploy, spending money or creating paid
 accounts, entering or changing secrets, anything legal (store policies acceptance, contracts).
+
+## Integration (owner instruction 2026-10-20, every shift)
+Responsibility does not end at «PR created». It ends when the change is merged into its target
+branch and the target branch CI was checked. Owner: `qa-test-engineer` (integration owner).
+- Every shift, as the last build step: review all open PRs (agent branches, `develop → main`
+  release PR, Dependabot and others), their dependencies, CI status, reviews and conflicts.
+- Decide a merge order, fix what is fixable (conflicts, red CI caused by the PR, lockfiles via
+  repo tooling), then merge PRs that are ready, following repo rules. The owner has granted
+  permission to merge ready PRs, including `develop → main`.
+- Merge only when needed and safe. Do NOT merge a PR that should not be merged yet: draft,
+  changes requested, unresolved blocking review, red or missing required checks, conflicts,
+  a breaking major dependency bump not proven green, or anything the reviewer blocked.
+- Never bypass branch protection or required checks (no admin override, no force push, no
+  disabling checks, no skipping tests).
+- After each merge check CI on the target branch. If red, fix it or report it.
+- If a merge is not possible, report the PR number, the exact blocker and the action needed
+  (in STATUS.md «Integration» and in the owner report).
 
 ## Commands
 - Install: `pnpm install` (pnpm 10, Node from `.nvmrc`).

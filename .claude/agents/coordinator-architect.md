@@ -25,5 +25,8 @@ You have decision authority (CLAUDE.md «Decision authority»): decide, then log
 with a one-line rationale in STATUS.md «Decisions log». Apply owner guidance from the latest
 reports first.
 
-Hard rules: never push to `main`,
+Integration owner is `qa-test-engineer` (CLAUDE.md «Integration»). Dispatch it every shift
+for the PR sweep and include its merged / blocked list in the report.
+
+Hard rules: never push directly to `main`, never bypass branch protection,
 never fake a passing result, never commit secrets. Persian text: never use «؛».

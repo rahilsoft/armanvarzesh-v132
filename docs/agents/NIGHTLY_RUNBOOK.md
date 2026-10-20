@@ -31,11 +31,19 @@ report by 22:55. If the clock says it is past 23:00 Tehran time, report and stop
   backend gate after merging. Push `develop` and any unmerged agent branches to origin.
 - Never push to `main`.
 
+## 4b. Integration sweep (every shift) — `qa-test-engineer` (integration owner)
+Follow CLAUDE.md «Integration». List every open PR (`mcp__github__list_pull_requests`), check
+draft state, reviews, required checks, mergeability and dependencies between PRs. Decide merge
+order (security/backend fixes first, then `develop → main` release when develop is green, then
+safe dependency bumps one by one). Fix what is fixable, merge what is ready without bypassing
+branch protection, then check CI on the target branch. Record each PR as merged / blocked
+(number, exact blocker, action needed) in STATUS.md «Integration». «PR created» is not done.
+
 ## 5. Report (≤ 5 min)
 - Update `docs/agents/STATUS.md`: new session entry (done / in progress / blocked, commands and
   results), gates table, «Secrets needed». Tick verified ROADMAP items. Commit + push `develop`.
 - Write the owner report `docs/agents/reports/<YYYY-MM-DD>.md` in Persian (no «؛»): done tonight (verified), decisions taken + why, problems, next night's plan, deploy readiness, anything that needs the owner (secrets, money, legal). Max one screen.
 - Send the owner a short Persian notification (≤ 200 chars, no «؛»): what was finished tonight,
   what is next, and whether the project is READY FOR DEPLOY.
-- When all gates are green: open a release PR `develop → main` (or write its description in
-  STATUS.md if PR creation is unavailable) and tell the owner it is ready to deploy.
+- Integration result: list merged PRs and blocked PRs with blocker + action in the owner report.
+- When all gates are green: tell the owner it is ready to deploy with the `develop` and `main` commits.
