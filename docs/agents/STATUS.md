@@ -60,6 +60,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | 2026-10-20 | Payment verify reads expected amount from `"Payment"` row by authority, conditional UPDATE for idempotency | Client callback amount cannot be trusted, race-safe single credit |
 | 2026-10-20 | Webhook HMAC skip and secret fallbacks allowed only for NODE_ENV exactly development/test, `staging` is strict | Unset or unknown env must never disable verification |
 | 2026-10-20 | Gateway business rejections (e.g. -51) not retried and not counted by circuit breaker | User cancels must not trip the breaker |
+| 2026-10-20 | From the next shift `ui-ux-designer` (+ `web-frontend-engineer` / `mobile-engineer`) runs ROADMAP 1.2 and 1.3 every night in parallel with Phase 0 | Three-hour window allows it, design files do not overlap backend scope, and UI is the longest path to deploy |
 | 2026-10-20 | `qa-test-engineer` is the integration owner | Already owns CI and test suites, keeps coordinator free for planning |
 | 2026-10-19 | Open: iOS distribution path for Iran — coordinator decides in a later session | Needs research on Sibche / TestFlight / PWA |
 
