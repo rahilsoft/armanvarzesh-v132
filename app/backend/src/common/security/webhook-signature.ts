@@ -35,6 +35,9 @@ export function verifyWebhookSignature(
   if (typeof provided !== 'string' || provided.length === 0) {
     throw new BadRequestException(`${channel} webhook signature missing`);
   }
+  if (!/^[0-9a-f]{64}$/.test(provided)) {
+    throw new UnauthorizedException(`${channel} webhook signature invalid`);
+  }
   const expected = computeWebhookSignature(secret, body);
   const a = Buffer.from(provided, 'hex');
   const b = Buffer.from(expected, 'hex');
