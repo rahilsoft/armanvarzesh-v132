@@ -14,11 +14,11 @@ import { Course, CourseAsset, CourseEnrollment, Certificate, Prisma } from '@pri
  * requires CERT_SECRET in production (the originals fell back to 'change_me').
  */
 
-function certSecret(): string {
+export function certSecret(): string {
   const s = process.env.CERT_SECRET;
-  if (s && s.length >= 16) return s;
+  if (s && s.length >= 32) return s;
   if (!allowDevFallback()) {
-    throw new Error('CERT_SECRET must be set to a strong value (>=16 chars) unless NODE_ENV is development or test');
+    throw new Error('CERT_SECRET must be set to a strong value (>=32 chars) unless NODE_ENV is development or test');
   }
   return 'dev-only-cert-secret-change-me';
 }
