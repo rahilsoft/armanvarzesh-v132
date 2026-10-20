@@ -9,6 +9,8 @@ Encapsulates payment creation with idempotency and listing via keyset pagination
 import { Injectable, BadRequestException, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { SafePrismaService } from '../common/database/prisma.safe';
+import { requireMerchantId } from '../service/zarinpal.service';
+import { PrismaPaymentStore, ZarinpalPaymentProvider } from './providers/payment.provider';
 
 export interface CreatePaymentInput {
   userId: string;
@@ -75,13 +77,15 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
     return Array.isArray(rows) && rows.length ? rows[0] : null;
   }
 
+  /**
+   * Verifies through the real Zarinpal verify path: the stored amount is sent to the
+   * gateway, unknown authorities are rejected and the row is marked paid only after
+   * Zarinpal confirms (idempotent on repeated calls).
+   */
   async verify(authority: string, amount: number): Promise<boolean> {
-    const rows = await this.prisma.query<any>(
-      Prisma.sql`SELECT amount FROM "Payment" WHERE authority = ${authority} LIMIT 1`,
-    );
-    if (!Array.isArray(rows) || !rows.length) return false;
-    await this.prisma.exec(Prisma.sql`UPDATE "Payment" SET status='paid' WHERE authority = ${authority}`);
-    return Number(rows[0].amount) === Number(amount);
+    const provider = new ZarinpalPaymentProvider(requireMerchantId(), new PrismaPaymentStore(this.prisma));
+    const res = await provider.verifyCallback({ Status: 'OK', Authority: authority, Amount: amount });
+    return res.ok;
   }
 
   async verifyPayment(authority: string, amount: number) {
