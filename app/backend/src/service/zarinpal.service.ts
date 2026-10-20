@@ -30,17 +30,55 @@ export function requireMerchantId(): string {
   return id.trim();
 }
 
+/**
+ * Error raised for Zarinpal calls. `retryable` is true only for transport failures
+ * (network error, timeout, HTTP 5xx). Gateway business rejections (e.g. code -51)
+ * are not retryable and must not trip the circuit breaker.
+ */
+export class ZarinpalGatewayError extends Error {
+  constructor(message: string, readonly retryable: boolean, readonly code?: string) {
+    super(message);
+    this.name = 'ZarinpalGatewayError';
+  }
+}
+
+export function isRetryableGatewayError(e: unknown): boolean {
+  if (e instanceof ZarinpalGatewayError) return e.retryable;
+  // Unknown errors (programming/transport) keep the conservative retry behaviour.
+  return true;
+}
+
+export function zarinpalTimeoutMs(): number {
+  const n = Number(process.env.ZARINPAL_TIMEOUT_MS);
+  return Number.isFinite(n) && n > 0 ? n : 10000;
+}
+
 async function post(path: string, body: Record<string, any>): Promise<any> {
-  const res = await fetch(`https://${zarinpalHost()}/pg/v4/payment/${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), zarinpalTimeoutMs());
+  let res: Response;
+  try {
+    res = await fetch(`https://${zarinpalHost()}/pg/v4/payment/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    const aborted = (error as any)?.name === 'AbortError' || controller.signal.aborted;
+    throw new ZarinpalGatewayError(aborted ? 'timeout after ' + zarinpalTimeoutMs() + 'ms' : (error as any)?.message || 'network error', true);
+  } finally {
+    clearTimeout(timer);
+  }
   let json: any = null;
   try {
     json = await res.json();
   } catch {
     json = null;
+  }
+  if (!res.ok) {
+    if (res.status >= 500) throw new ZarinpalGatewayError('HTTP ' + res.status, true);
+    throw new ZarinpalGatewayError('HTTP ' + res.status + ' code ' + errorCode(json), false, errorCode(json));
   }
   return json;
 }
@@ -69,13 +107,14 @@ export class ZarinpalService {
         callback_url: callbackUrl,
       });
     } catch (error) {
-      throw new Error('Zarinpal request failed: ' + ((error as any)?.message || 'unknown error'));
+      const retryable = isRetryableGatewayError(error);
+      throw new ZarinpalGatewayError('Zarinpal request failed: ' + ((error as any)?.message || 'unknown error'), retryable, (error as any)?.code);
     }
     const data = json?.data;
     if (data && Number(data.code) === 100 && data.authority) {
       return { Status: 100, Authority: String(data.authority), paymentUrl: zarinpalStartPayUrl(String(data.authority)) };
     }
-    throw new Error('Zarinpal request failed: code ' + errorCode(json));
+    throw new ZarinpalGatewayError('Zarinpal request failed: code ' + errorCode(json), false, errorCode(json));
   }
 
   async verifyPayment(authority: string, amount: number): Promise<ZarinpalVerifyResult> {
@@ -84,13 +123,14 @@ export class ZarinpalService {
     try {
       json = await post('verify.json', { merchant_id: merchantId, amount, authority });
     } catch (error) {
-      throw new Error('Zarinpal verification failed: ' + ((error as any)?.message || 'unknown error'));
+      const retryable = isRetryableGatewayError(error);
+      throw new ZarinpalGatewayError('Zarinpal verification failed: ' + ((error as any)?.message || 'unknown error'), retryable, (error as any)?.code);
     }
     const data = json?.data;
     const code = Number(data?.code);
     if (data && (code === 100 || code === 101)) {
       return { Status: 100, RefID: data.ref_id, raw: data };
     }
-    throw new Error('Zarinpal verification failed: code ' + errorCode(json));
+    throw new ZarinpalGatewayError('Zarinpal verification failed: code ' + errorCode(json), false, errorCode(json));
   }
 }

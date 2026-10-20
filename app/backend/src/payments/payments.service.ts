@@ -82,15 +82,30 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
    * gateway, unknown authorities are rejected and the row is marked paid only after
    * Zarinpal confirms (idempotent on repeated calls).
    */
-  async verify(authority: string, amount: number): Promise<boolean> {
+  async verify(authority: string, amount?: number, status: string = 'OK'): Promise<boolean> {
     const provider = new ZarinpalPaymentProvider(requireMerchantId(), new PrismaPaymentStore(this.prisma));
-    const res = await provider.verifyCallback({ Status: 'OK', Authority: authority, Amount: amount });
+    const res = await provider.verifyCallback({ Status: status, Authority: authority, Amount: amount });
     return res.ok;
   }
 
-  async verifyPayment(authority: string, amount: number) {
-    const ok = await this.verify(authority, amount);
+  async verifyPayment(authority: string, amount?: number, status: string = 'OK') {
+    const ok = await this.verify(authority, amount, status);
     return { authority, amount, status: ok ? 'paid' : 'failed', ok };
+  }
+
+  /**
+   * Requests a Zarinpal payment and persists authority + amount + status 'pending'
+   * into the same "Payment" table the verify path reads, so create -> verify works.
+   */
+  async requestPayment(input: { amount: number; callbackUrl: string; userId?: number | null; description?: string }): Promise<{ authority: string; redirectUrl: string }> {
+    if (!Number.isInteger(input?.amount) || input.amount <= 0) throw new BadRequestException('amount must be a positive integer');
+    if (!input?.callbackUrl) throw new BadRequestException('callbackUrl required');
+    const store = new PrismaPaymentStore(this.prisma);
+    const provider = new ZarinpalPaymentProvider(requireMerchantId(), store);
+    const res = await provider.createPayment({ amount: input.amount, callbackUrl: input.callbackUrl, meta: { description: input.description } });
+    if (!res.authority || !res.redirectUrl) throw new InternalServerErrorException('payment.request failed');
+    await store.createPending({ authority: res.authority, amount: input.amount, userId: input.userId ?? null });
+    return { authority: res.authority, redirectUrl: res.redirectUrl };
   }
 
   async listByUser(input: { userId: string | number; limit?: number; cursor?: string }): Promise<{ items: any[]; nextCursor: string | null }> {

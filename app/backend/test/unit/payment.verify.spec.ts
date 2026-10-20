@@ -159,7 +159,7 @@ describe('PaymentsService.verify (routed through Zarinpal verify)', () => {
 
   it('marks paid only after the gateway confirms, using the stored amount', async () => {
     process.env.ZARINPAL_MERCHANT_ID = 'm-1';
-    const fetchMock = jest.fn().mockResolvedValue({ json: async () => ({ data: { code: 100, ref_id: 5 }, errors: [] }) });
+    const fetchMock = jest.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ data: { code: 100, ref_id: 5 }, errors: [] }) });
     (global as any).fetch = fetchMock;
     const db = {
       query: jest.fn().mockResolvedValue([{ authority: 'A1', amount: 70000, status: 'pending' }]),
