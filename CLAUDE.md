@@ -67,6 +67,12 @@ accounts, entering or changing secrets, anything legal (store policies acceptanc
 4. Subagent final report ≤ 25 lines: branch, files changed, commands + pass/fail counts,
    blockers. No pasted logs or diffs.
 5. Never paste generated files, lockfiles, or full test logs into context.
+6. **Model per task (owner instruction 2026-10-19):** the coordinator picks the cheapest model that
+   fits each agent task and passes it with the Agent tool `model` parameter, overriding the agent
+   file default when useful. Guide: `haiku` for docs, inventories, greps, status/report edits and
+   mechanical config changes, `sonnet` for normal feature code and tests, `opus` only for security
+   review, payments/auth logic, architecture decisions and hard debugging. Escalate one tier only
+   when a cheaper run fails or the reviewer blocks it.
 
 ## The agent team
 Definitions live in `.claude/agents/`. Nightly procedure: `docs/agents/NIGHTLY_RUNBOOK.md`.
