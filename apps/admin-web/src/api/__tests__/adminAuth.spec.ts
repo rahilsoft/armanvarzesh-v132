@@ -85,6 +85,9 @@ describe('resolveApiBase / safeRedirect', () => {
     expect(safeRedirect('//evil.com')).toBe('/dashboard');
     expect(safeRedirect('https://evil.com')).toBe('/dashboard');
     expect(safeRedirect('/login')).toBe('/dashboard');
+    expect(safeRedirect('/\\evil.com')).toBe('/dashboard');
+    expect(safeRedirect('/\t/evil.com')).toBe('/dashboard');
+    expect(safeRedirect('/\n/evil.com')).toBe('/dashboard');
     expect(safeRedirect(undefined)).toBe('/dashboard');
   });
 });

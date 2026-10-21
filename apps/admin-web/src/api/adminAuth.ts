@@ -86,6 +86,8 @@ export function logout(storage: Pick<Storage, 'removeItem'> = window.localStorag
 /** Only same-app absolute paths are valid redirect targets (no open redirect). */
 export function safeRedirect(from: unknown, fallback = '/dashboard'): string {
   if (typeof from !== 'string') return fallback;
-  if (!from.startsWith('/') || from.startsWith('//') || from.startsWith('/login')) return fallback;
+  // Backslash and control chars are normalised by URL parsers ("/\\evil", "/\t/evil" -> "//evil").
+  if (!from.startsWith('/') || from.startsWith('//') || /[\\\u0000-\u001f\u007f]/.test(from)) return fallback;
+  if (from === '/login' || from.startsWith('/login/') || from.startsWith('/login?')) return fallback;
   return from;
 }
