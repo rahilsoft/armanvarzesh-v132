@@ -16,6 +16,11 @@ export class NotificationsService {
     await this.provider.send(to, body);
   }
 
+  async sendOtp(to: string, code: string) {
+    if (this.provider.sendOtp) await this.provider.sendOtp(to, code);
+    else await this.provider.send(to, code);
+  }
+
   /**
    * Create and persist a notification for a user. The `isCritical` flag is
    * accepted for API compatibility but is not currently persisted.
