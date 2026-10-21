@@ -116,32 +116,48 @@ export interface ZarinpalClient {
   verifyPayment(authority: string, amount: number): Promise<{ Status: number; RefID: string | number | undefined; raw?: any }>;
 }
 
-export function makePaymentProvider(store?: PaymentStore): PaymentProvider {
-  const env = process.env.NODE_ENV;
+/** True only when NODE_ENV is exactly 'development' or 'test'. */
+export function isMockPaymentAllowed(env: string | undefined = process.env.NODE_ENV): boolean {
+  return env === 'test' || env === 'development';
+}
+
+/**
+ * Validates the payment provider configuration and returns the normalized provider name.
+ * Outside NODE_ENV development/test, PAYMENT_PROVIDER must be set to a real provider
+ * (zarinpal) and ZARINPAL_MERCHANT_ID must be present: an unset or 'mock' provider is a
+ * hard failure, never an implicit fallback. Called at module init (fail fast at startup)
+ * and before every gateway call.
+ */
+export function assertPaymentProviderConfigured(): 'zarinpal' | 'mock' {
   const raw = (process.env.PAYMENT_PROVIDER || '').trim().toLowerCase();
-  const mockAllowed = env === 'test' || env === 'development';
+  const mockAllowed = isMockPaymentAllowed();
   if (!raw) {
     if (!mockAllowed) {
       throw new Error('PAYMENT_PROVIDER is not set. Set PAYMENT_PROVIDER=zarinpal and ZARINPAL_MERCHANT_ID (the mock provider is only allowed when NODE_ENV is test or development).');
     }
-    return new MockPaymentProvider();
+    return 'mock';
   }
   switch (raw) {
-    case 'zarinpal': {
-      const merchantId = requireMerchantId();
-      if (!store) {
-        throw new Error('Zarinpal provider requires a PaymentStore (database) to verify callbacks against the stored amount.');
-      }
-      return new ZarinpalPaymentProvider(merchantId, store);
-    }
+    case 'zarinpal':
+      requireMerchantId();
+      return 'zarinpal';
     case 'mock':
       if (!mockAllowed) {
         throw new Error('PAYMENT_PROVIDER=mock is forbidden unless NODE_ENV is test or development. Use PAYMENT_PROVIDER=zarinpal with ZARINPAL_MERCHANT_ID.');
       }
-      return new MockPaymentProvider();
+      return 'mock';
     default:
       throw new Error(`Unknown PAYMENT_PROVIDER "${raw}". Supported: zarinpal (and mock in test/development). ZARINPAL_MERCHANT_ID is required for zarinpal.`);
   }
+}
+
+export function makePaymentProvider(store?: PaymentStore): PaymentProvider {
+  const kind = assertPaymentProviderConfigured();
+  if (kind === 'mock') return new MockPaymentProvider();
+  if (!store) {
+    throw new Error('Zarinpal provider requires a PaymentStore (database) to verify callbacks against the stored amount.');
+  }
+  return new ZarinpalPaymentProvider(requireMerchantId(), store);
 }
 
 class MockPaymentProvider implements PaymentProvider {
