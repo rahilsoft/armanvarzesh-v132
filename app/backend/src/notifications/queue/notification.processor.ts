@@ -23,6 +23,17 @@ export type SendJob = {
 /** DeviceToken.provider value used for each token-based channel. */
 const TOKEN_PROVIDER: Record<'push' | 'web', string> = { push: 'expo', web: 'webpush' };
 
+/**
+ * Transient failure reasons worth a BullMQ retry: network errors, timeouts, HTTP 5xx and 429.
+ * Permanent ones (validation, DeviceNotRegistered, not configured, no token) never match.
+ */
+const RETRYABLE_RE =
+  /ExpoRequestFailed|ExpoHttp(5\d\d|429)|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|ENOTFOUND|EPIPE|socket hang up|network|timed? ?out|timeout|\b(5\d\d|429)\b|Too Many Requests|MessageRateExceeded|Expo:(SERVICE_UNAVAILABLE|INTERNAL_SERVER_ERROR|TOO_MANY_REQUESTS)/i;
+
+export function isRetryableFailure(reason: string): boolean {
+  return RETRYABLE_RE.test(reason) && !/not configured/i.test(reason);
+}
+
 @Processor(NOTIFICATIONS_QUEUE)
 @Injectable()
 export class NotificationProcessor extends WorkerHost {
@@ -92,6 +103,17 @@ export class NotificationProcessor extends WorkerHost {
     const ok = delivered > 0;
     const reason = [...new Set(failures)].join(', ');
     if (!ok) this.logger.error(`notification job=${job.id} failed: ${reason}`);
+    const retryable = !ok && failures.some(isRetryableFailure);
+    const maxAttempts = job.opts?.attempts ?? 1;
+    const finalAttempt = (job.attemptsMade ?? 0) + 1 >= maxAttempts;
+    if (retryable && !finalAttempt) {
+      // Record why, keep status as-is, and let BullMQ attempts + backoff retry.
+      await this.prisma.notificationLog.update({
+        where: { id },
+        data: { failureReason: reason.slice(0, 500) },
+      });
+      throw new Error(`retryable notification failure: ${reason}`);
+    }
     await this.prisma.notificationLog.update({
       where: { id },
       data: {

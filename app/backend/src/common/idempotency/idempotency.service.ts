@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
 
 /**
@@ -7,7 +7,7 @@ import Redis from 'ioredis';
  *  - In-memory (when REDIS_URL=memory): for tests without Redis.
  */
 @Injectable()
-export class IdempotencyService {
+export class IdempotencyService implements OnModuleDestroy {
   private redis?: Redis;
   private memory = new Map<string, { exp: number, value: any }>();
   private ttlSeconds = Number(process.env.IDEMPOTENCY_TTL || 600);
@@ -18,6 +18,16 @@ export class IdempotencyService {
     this.useMemory = url.startsWith('memory');
     if (!this.useMemory) {
       this.redis = new Redis(url);
+    }
+  }
+
+  async onModuleDestroy(): Promise<void> {
+    const client = this.redis;
+    if (!client) return;
+    try {
+      await client.quit();
+    } catch {
+      client.disconnect();
     }
   }
 

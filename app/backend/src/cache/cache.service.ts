@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
 
 type Entry = { v: any; e: number };
 
 @Injectable()
-export class CacheService {
+export class CacheService implements OnModuleDestroy {
   private mem = new Map<string, Entry>();
   private redis?: Redis;
   private log = new Logger('CacheService');
@@ -16,6 +16,17 @@ export class CacheService {
         this.redis = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
         this.redis.on('error', (e)=> this.log.warn('Redis error: '+e.message));
       } catch (e) { this.log.warn('Redis disabled: '+(e as any)?.message); }
+    }
+  }
+
+  async onModuleDestroy(): Promise<void> {
+    const client = this.redis;
+    if (!client) return;
+    this.redis = undefined;
+    try {
+      await client.quit();
+    } catch {
+      client.disconnect();
     }
   }
 
