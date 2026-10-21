@@ -15,7 +15,8 @@ export class MatchingResolver {
   async recommendedCoaches(
     @Args('expertise', { type: () => String, nullable: true }) expertise?: string,
     @Args('limit', { type: () => Int, nullable: true, defaultValue: 3 }) limit?: number,
+    @Args('goals', { type: () => [String], nullable: true }) goals?: string[],
   ): Promise<Coach[]> {
-    return this.matchingService.recommend(expertise, limit);
+    return this.matchingService.recommend(expertise, limit, goals ?? []);
   }
 }
