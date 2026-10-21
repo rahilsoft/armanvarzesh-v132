@@ -23,7 +23,15 @@ describe('WebhookSignatureGuard', () => {
     expect(() => guard.canActivate(ctx({}))).toThrow(UnauthorizedException);
   });
 
-  it('is permissive without secret outside production', () => {
+  it('fails closed when secret is unset and NODE_ENV is staging or missing', () => {
+    delete process.env.PAYMENT_WEBHOOK_SECRET;
+    (process.env as any).NODE_ENV = 'staging';
+    expect(() => guard.canActivate(ctx({}))).toThrow(UnauthorizedException);
+    delete (process.env as any).NODE_ENV;
+    expect(() => guard.canActivate(ctx({}))).toThrow(UnauthorizedException);
+  });
+
+  it('is permissive without secret only in development/test', () => {
     delete process.env.PAYMENT_WEBHOOK_SECRET;
     (process.env as any).NODE_ENV = 'test';
     expect(guard.canActivate(ctx({}))).toBe(true);

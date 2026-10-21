@@ -8,9 +8,10 @@ export class WebhookSignatureGuard implements CanActivate {
     const secret = process.env.PAYMENT_WEBHOOK_SECRET || '';
     const sigHeader = req.headers['x-signature'] || req.headers['x-hub-signature-256'] || '';
     if (!secret) {
-      // Fail closed in production: an unset secret must never wave forged
-      // callbacks through. Outside production it stays permissive for local runs.
-      if (process.env.NODE_ENV === 'production') {
+      // Fail closed everywhere except explicit local dev/test: an unset secret must
+      // never wave forged callbacks through (staging or a missing NODE_ENV included).
+      const env = process.env.NODE_ENV;
+      if (env !== 'development' && env !== 'test') {
         throw new UnauthorizedException('Webhook secret is not configured');
       }
       return true;
