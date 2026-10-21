@@ -1,12 +1,14 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { IsString, MinLength } from 'class-validator';
+import { AdminGuard } from './admin.guard';
 import { optionalJwtSecret } from '../config/jwt-secrets';
 
 type AdminRole = 'owner' | 'coach' | 'support';
+const ADMIN_ROLES: AdminRole[] = ['owner', 'coach', 'support'];
 type AdminUser = { u: string; p?: string; h?: string; r: AdminRole };
 
 class AdminLoginDto {
@@ -22,6 +24,23 @@ function safeFindUser(users: AdminUser[], username: string): AdminUser | undefin
 @Controller('admin')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class AdminController {
+  /**
+   * Identity of the calling admin, from the verified admin JWT only. There is
+   * no role column on the Admin table (admins are defined by ADMIN_USERS_JSON),
+   * so the role comes from the verified token claims. The static
+   * ADMIN_API_TOKEN carries no identity and is rejected here.
+   */
+  @UseGuards(AdminGuard)
+  @Get('me')
+  me(@Req() req: { user?: { sub?: unknown; role?: unknown } }) {
+    const sub = req.user?.sub;
+    const role = req.user?.role;
+    if (typeof sub !== 'string' || !sub || typeof role !== 'string' || !ADMIN_ROLES.includes(role as AdminRole)) {
+      throw new UnauthorizedException('admin identity required');
+    }
+    return { id: sub, role: role as AdminRole, ...(sub.includes('@') ? { email: sub } : {}) };
+  }
+
   @Throttle({ default: { limit: 5, ttl: 60 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)

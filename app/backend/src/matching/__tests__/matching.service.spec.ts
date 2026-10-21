@@ -12,14 +12,14 @@ function coach(id: number, o: Partial<any> = {}) {
     speciality: null,
     certifications: null,
     bio: null,
-    verified: false,
+    verified: true,
     createdAt: new Date(NOW - 100 * DAY),
     ...o,
   };
 }
 
 function make(coaches: any[], reviews: Record<number, number[]> = {}) {
-  const coachesService: any = { findAll: async () => coaches };
+  const coachesService: any = { findAll: async (verifiedOnly = false) => (verifiedOnly ? coaches.filter((c) => c.verified) : coaches) };
   const reviewsService: any = {
     findByExpert: (id: number) => (reviews[id] ?? []).map((rating) => ({ expertId: id, rating })),
   };
@@ -47,7 +47,7 @@ describe('MatchingService', () => {
     expect(ids).toEqual([4, 7, 9]);
   });
 
-  it('ranks goal match above a verified coach with no match', async () => {
+  it('ranks goal match above a coach with no match', async () => {
     const svc = make([
       coach(1, { verified: true }),
       coach(2, { speciality: 'weight loss and strength', bio: 'helps with fat loss' }),

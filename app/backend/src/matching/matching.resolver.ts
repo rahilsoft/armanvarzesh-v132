@@ -1,22 +1,25 @@
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { MatchingService } from './matching.service';
-import { Coach } from '../coaches/entities/coach.entity';
+import { PublicCoach, toPublicCoach } from '../coaches/entities/coach.entity';
+import { GqlJwtAuthGuard } from './gql-jwt-auth.guard';
 
 /**
- * GraphQL resolver exposing smart expert recommendations to clients.
- * Delegates to MatchingService and simply converts arguments to
- * service calls.
+ * GraphQL resolver exposing smart expert recommendations to authenticated
+ * clients. Returns the public coach projection (no email/contact fields).
  */
-@Resolver(() => Coach)
+@Resolver(() => PublicCoach)
 export class MatchingResolver {
   constructor(private readonly matchingService: MatchingService) {}
 
-  @Query(() => [Coach], { name: 'recommendedCoaches' })
+  @UseGuards(GqlJwtAuthGuard)
+  @Query(() => [PublicCoach], { name: 'recommendedCoaches' })
   async recommendedCoaches(
     @Args('expertise', { type: () => String, nullable: true }) expertise?: string,
     @Args('limit', { type: () => Int, nullable: true, defaultValue: 3 }) limit?: number,
     @Args('goals', { type: () => [String], nullable: true }) goals?: string[],
-  ): Promise<Coach[]> {
-    return this.matchingService.recommend(expertise, limit, goals ?? []);
+  ): Promise<PublicCoach[]> {
+    const coaches = await this.matchingService.recommend(expertise, limit, goals ?? []);
+    return coaches.map(toPublicCoach);
   }
 }
