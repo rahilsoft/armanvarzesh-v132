@@ -1,15 +1,30 @@
 import { makeSmsProvider } from '../notifications/providers/sms.provider';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import type { Queue } from 'bullmq';
 import { PrismaService } from '../database/prisma.service';
-import { KavenegarSmsService } from '../common/services/kavenegar-sms.service';
+import { isExpoPushToken } from './providers/expo-push.provider';
+import { NOTIFICATIONS_QUEUE, NotificationChannel, SendJob } from './queue/notification.processor';
+
+export type DevicePlatform = 'ios' | 'android' | 'web';
+export const DEVICE_PLATFORMS: readonly DevicePlatform[] = ['ios', 'android', 'web'];
+
+export interface SendNotificationInput {
+  userId: number;
+  channel: NotificationChannel;
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+}
 
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
   private provider = makeSmsProvider();
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly sms: KavenegarSmsService,
+    @InjectQueue(NOTIFICATIONS_QUEUE) private readonly queue: Queue<SendJob>,
   ) {}
 
   async sendSms(to: string, body: string) {
@@ -62,37 +77,62 @@ export class NotificationsService {
    * PubSub publishing hook — call after creating a notification to push it to
    * any subscribed clients in real time.
    */
-  async publishRealtime(notification: any, pubSub: any) {
+  async publishRealtime(notification: unknown, pubSub: { publish(t: string, p: unknown): Promise<void> }) {
     await pubSub.publish('notificationReceived', { notificationReceived: notification });
   }
 
-  /** Register a device push token for a user. */
-  async registerToken(token: any) {
-    try {
-      await (this.prisma as any).deviceToken?.create?.({ data: token });
-    } catch {
-      // device-token table is optional; ignore until modelled
+  /**
+   * Register (or refresh) an Expo push token for the authenticated user.
+   * `userId` must come from the verified JWT. A token re-registered by another
+   * user moves to that user (device changed hands). Errors propagate.
+   */
+  async registerToken(userId: number, token: string, platform: DevicePlatform) {
+    if (!Number.isInteger(userId) || userId <= 0) throw new BadRequestException('invalid user');
+    if (typeof token !== 'string' || !isExpoPushToken(token)) {
+      throw new BadRequestException('invalid Expo push token');
     }
-    return { status: 'ok' };
+    if (!DEVICE_PLATFORMS.includes(platform)) throw new BadRequestException('invalid platform');
+    const now = new Date();
+    const row = await this.prisma.deviceToken.upsert({
+      where: { token },
+      create: { userId, token, platform, provider: 'expo' },
+      update: { userId, platform, provider: 'expo', lastSeenAt: now },
+      select: { id: true, platform: true, createdAt: true, lastSeenAt: true },
+    });
+    return row;
   }
 
-  /** Enqueue an outbound notification (push/web/email) for delivery. */
-  async send(payload: any) {
-    return { status: 'queued', payload };
+  /** Remove a push token, only when it belongs to the authenticated user. */
+  async unregisterToken(userId: number, token: string) {
+    const res = await this.prisma.deviceToken.deleteMany({ where: { userId, token } });
+    return { removed: res.count };
   }
 
-  /** Fetch a user's notification channel preferences (defaults when unset). */
-  async getPreferences(userId: string | number) {
-    return {
-      userId: String(userId),
-      marketingOptIn: false,
-      channels: ['push', 'email'] as Array<'push' | 'web' | 'email'>,
-      updatedAt: new Date().toISOString(),
-    };
-  }
-
-  /** Persist a user's notification channel preferences. */
-  async setPreferences(userId: string | number, pref: any) {
-    return { userId: String(userId), ...(pref ?? {}) };
+  /**
+   * Enqueue an outbound notification. Writes a NotificationLog row (queued)
+   * and adds a BullMQ job keyed by the log id; NotificationProcessor delivers
+   * it and records delivered/failed on the same row.
+   */
+  async send(input: SendNotificationInput): Promise<{ id: string; status: 'queued' }> {
+    const log = await this.prisma.notificationLog.create({
+      data: { userId: input.userId, channel: input.channel, title: input.title.slice(0, 200), status: 'queued' },
+      select: { id: true },
+    });
+    const job: SendJob = { id: log.id, ...input };
+    try {
+      await this.queue.add('send', job, {
+        jobId: log.id,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5000 },
+        removeOnComplete: 1000,
+        removeOnFail: 5000,
+      });
+    } catch (e) {
+      const reason = `EnqueueFailed: ${(e as Error).message}`.slice(0, 500);
+      this.logger.error(`notification enqueue failed log=${log.id}: ${(e as Error).message}`);
+      await this.prisma.notificationLog.update({ where: { id: log.id }, data: { status: 'failed', failureReason: reason } });
+      throw e;
+    }
+    return { id: log.id, status: 'queued' };
   }
 }
