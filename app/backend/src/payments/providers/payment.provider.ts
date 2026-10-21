@@ -22,7 +22,7 @@ export interface PaymentVerification {
   /** True when the payment was already settled and this call did not re-credit it. */
   alreadyPaid?: boolean;
   /** Machine-readable reason when ok is false. */
-  reason?: 'invalid_callback' | 'unknown_authority' | 'amount_mismatch' | 'gateway_rejected' | 'not_settled';
+  reason?: 'invalid_callback' | 'cancelled' | 'unknown_authority' | 'amount_mismatch' | 'gateway_rejected' | 'not_settled';
   raw?: any;
 }
 
@@ -47,10 +47,17 @@ export interface PaymentStore {
    * this call performed the transition.
    */
   markPaid(authority: string, expectedAmount: number): Promise<boolean>;
+  /**
+   * Atomically transitions a pending payment to failed. Must only update a row that is
+   * still pending (never a paid one). Returns true only when this call performed the
+   * transition. Optional so read-only stores keep working: without it rows stay pending.
+   */
+  markFailed?(authority: string): Promise<boolean>;
 }
 
 export const PAID_STATUS = 'paid';
 export const PENDING_STATUS = 'pending';
+export const FAILED_STATUS = 'failed';
 
 /** Write side used when a payment is requested: persists the row verify later reads. */
 export interface PendingPaymentWriter {
@@ -105,6 +112,13 @@ export class PrismaPaymentStore implements PaymentStore, PendingPaymentWriter {
   async markPaid(authority: string, expectedAmount: number): Promise<boolean> {
     const n = await this.db.exec(
       Prisma.sql`UPDATE "Payment" SET status = ${PAID_STATUS} WHERE authority = ${authority} AND amount = ${expectedAmount} AND status <> ${PAID_STATUS}`,
+    );
+    return Number(n) === 1;
+  }
+
+  async markFailed(authority: string): Promise<boolean> {
+    const n = await this.db.exec(
+      Prisma.sql`UPDATE "Payment" SET status = ${FAILED_STATUS} WHERE authority = ${authority} AND status = ${PENDING_STATUS}`,
     );
     return Number(n) === 1;
   }
@@ -201,6 +215,19 @@ export class ZarinpalPaymentProvider implements PaymentProvider {
     const status = String(payload?.status || payload?.Status || '').toUpperCase();
     const rawAuthority = payload?.Authority ?? payload?.authority;
     const authority = typeof rawAuthority === 'string' ? rawAuthority.trim() : '';
+    if (status === 'NOK' && authority && authority.length <= 128) {
+      // The payer cancelled or the gateway rejected the payment. The row leaves
+      // 'pending' for 'failed' (conditional: only from pending, never from paid). The
+      // gateway is not called. A forged NOK cannot block a real payment: a later
+      // verified OK callback still settles the row (markPaid only refuses paid rows).
+      const stored = await this.store.findByAuthority(authority);
+      if (!stored) return { ok: false, reference: authority, reason: 'unknown_authority' };
+      if (stored.status === PAID_STATUS) {
+        return { ok: true, reference: authority, amount: Number(stored.amount), alreadyPaid: true };
+      }
+      await this.markFailed(authority);
+      return { ok: false, reference: authority, amount: Number(stored.amount), reason: 'cancelled' };
+    }
     if (status !== 'OK' || !authority || authority.length > 128) {
       return { ok: false, reference: authority || undefined, reason: 'invalid_callback' };
     }
@@ -228,10 +255,14 @@ export class ZarinpalPaymentProvider implements PaymentProvider {
     try {
       res = await guardedGatewayCall(this.breaker, () => this.client.verifyPayment(authority, expected));
     } catch (e) {
+      // A business rejection (non-retryable, e.g. code -51) is final: mark failed. A
+      // transport failure leaves the row pending so a retry or reconciliation can settle it.
+      if (!isRetryableGatewayError(e)) await this.markFailed(authority);
       return { ok: false, reference: authority, amount: expected, reason: 'gateway_rejected', raw: { error: (e as Error).message } };
     }
     const code = Number(res?.Status);
     if (code !== 100 && code !== 101) {
+      await this.markFailed(authority);
       return { ok: false, reference: authority, amount: expected, reason: 'gateway_rejected', raw: res?.raw };
     }
     const reference = res.RefID !== undefined ? String(res.RefID) : authority;
@@ -246,5 +277,10 @@ export class ZarinpalPaymentProvider implements PaymentProvider {
       return { ok: true, reference, amount: expected, alreadyPaid: true, raw: res.raw };
     }
     return { ok: false, reference: authority, amount: expected, reason: 'not_settled', raw: res.raw };
+  }
+
+  /** Idempotent pending -> failed transition. Never touches a paid row. */
+  private async markFailed(authority: string): Promise<void> {
+    if (typeof this.store.markFailed === 'function') await this.store.markFailed(authority);
   }
 }

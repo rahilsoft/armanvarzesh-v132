@@ -39,9 +39,11 @@ describe('payments wiring', () => {
   it('callback controller never forwards a client amount and forwards a missing Status as empty', async () => {
     const svc = { verifyDetailed: jest.fn().mockResolvedValue({ ok: false, reason: 'invalid_callback' }) } as any;
     const ctrl = new ZarinpalPaymentsController(svc);
-    await ctrl.callback('A1', 'NOK');
+    const req = { headers: { accept: 'application/json' } } as any;
+    const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), redirect: jest.fn() } as any;
+    await ctrl.callback('A1', 'NOK', req, res);
     expect(svc.verifyDetailed).toHaveBeenLastCalledWith('A1', undefined, 'NOK');
-    await ctrl.callback('A1', undefined);
+    await ctrl.callback('A1', undefined, req, res);
     expect(svc.verifyDetailed).toHaveBeenLastCalledWith('A1', undefined, '');
   });
 
@@ -50,11 +52,11 @@ describe('payments wiring', () => {
     jest.spyOn(ZarinpalService.prototype, 'requestPayment').mockResolvedValue({ Status: 100, Authority: 'AUTH1', paymentUrl: 'https://x/AUTH1' });
     const verifySpy = jest.spyOn(ZarinpalService.prototype, 'verifyPayment').mockResolvedValue({ Status: 100, RefID: 9 });
     const svc = new PaymentsService(db as any);
-    const out = await svc.requestPayment({ amount: 1000, callbackUrl: 'https://cb', userId: 7 });
+    const out = await svc.requestPayment({ amount: 10000, callbackUrl: 'https://cb', userId: 7 });
     expect(out).toEqual({ authority: 'AUTH1', redirectUrl: 'https://x/AUTH1' });
-    expect(db.rows.get('AUTH1')).toEqual({ authority: 'AUTH1', amount: 1000, status: 'pending' });
+    expect(db.rows.get('AUTH1')).toEqual({ authority: 'AUTH1', amount: 10000, status: 'pending' });
     expect(await svc.verify('AUTH1', undefined, 'OK')).toBe(true);
-    expect(verifySpy).toHaveBeenCalledWith('AUTH1', 1000);
+    expect(verifySpy).toHaveBeenCalledWith('AUTH1', 10000);
     expect(db.rows.get('AUTH1')?.status).toBe('paid');
   });
 

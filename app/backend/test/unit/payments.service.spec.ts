@@ -18,8 +18,8 @@ describe('PaymentsService', () => {
   it('creates a payment successfully', async () => {
     const prisma = new MockPrisma() as any;
     const svc = new (PaymentsService as any)(prisma);
-    const res = await svc.create({ userId: 'u1', amountCents: 5000, currency: 'IRR' });
-    expect(res).toMatchObject({ userId: 'u1', amountCents: 5000, currency: 'IRR', status: 'CREATED' });
+    const res = await svc.create({ userId: 'u1', amountCents: 50000, currency: 'IRR' });
+    expect(res).toMatchObject({ userId: 'u1', amountCents: 50000, currency: 'IRR', status: 'CREATED' });
     expect(prisma.execs.length).toBe(1);
   });
 
@@ -34,6 +34,6 @@ describe('PaymentsService', () => {
       async query<T>(_sql: any): Promise<T[]> { return [{}] as any; }
     })() as any;
     const svc = new (PaymentsService as any)(prisma);
-    await expect(svc.create({ userId: 'u1', amountCents: 100, currency: 'IRR', idempotencyKey: 'dup' })).rejects.toBeTruthy();
+    await expect(svc.create({ userId: 'u1', amountCents: 50000, currency: 'IRR', idempotencyKey: 'dup' })).rejects.toBeTruthy();
   });
 });

@@ -6,13 +6,22 @@ import {
   ZarinpalPaymentProvider,
 } from '../../src/payments/providers/payment.provider';
 import { PaymentsService } from '../../src/payments/payments.service';
+import { ZarinpalGatewayError } from '../../src/service/zarinpal.service';
 
 /** In-memory test double for the Payment table with conditional markPaid semantics. */
-function memoryStore(rows: StoredPayment[]): PaymentStore & { rows: Map<string, StoredPayment>; credits: number } {
+function memoryStore(rows: StoredPayment[]): PaymentStore & { rows: Map<string, StoredPayment>; credits: number; failures: number } {
   const map = new Map(rows.map((r) => [r.authority, { ...r }]));
   const store = {
     rows: map,
     credits: 0,
+    failures: 0,
+    async markFailed(a: string) {
+      const r = map.get(a);
+      if (!r || r.status !== 'pending') return false;
+      r.status = 'failed';
+      store.failures++;
+      return true;
+    },
     async findByAuthority(a: string) {
       const r = map.get(a);
       return r ? { ...r } : null;
@@ -116,10 +125,54 @@ describe('ZarinpalPaymentProvider.verifyCallback (stored-amount verification)', 
     const store = memoryStore([{ authority: 'A1', amount: 50000, status: 'pending' }]);
     const gw = gateway(100);
     const p = new ZarinpalPaymentProvider('m-1', store, gw);
-    expect((await p.verifyCallback({ Status: 'NOK', Authority: 'A1' })).reason).toBe('invalid_callback');
+    expect((await p.verifyCallback({ Status: 'NOK', Authority: 'A1' })).reason).toBe('cancelled');
+    expect((await p.verifyCallback({ Status: 'NOK', Authority: 'GHOST' })).reason).toBe('unknown_authority');
     expect((await p.verifyCallback({ Status: 'OK' })).reason).toBe('invalid_callback');
+    expect((await p.verifyCallback({ Status: 'MAYBE', Authority: 'A1' })).reason).toBe('invalid_callback');
     expect(gw.verifyPayment).not.toHaveBeenCalled();
   });
+
+  it('NOK moves pending to failed once, never touches paid, and a later verified OK still settles', async () => {
+    const store = memoryStore([
+      { authority: 'A1', amount: 50000, status: 'pending' },
+      { authority: 'P1', amount: 50000, status: 'paid' },
+    ]);
+    const gw = gateway(100);
+    const p = new ZarinpalPaymentProvider('m-1', store, gw);
+    await p.verifyCallback({ Status: 'NOK', Authority: 'A1' });
+    await p.verifyCallback({ Status: 'NOK', Authority: 'A1' });
+    expect(store.rows.get('A1')?.status).toBe('failed');
+    expect(store.failures).toBe(1);
+
+    const paid = await p.verifyCallback({ Status: 'NOK', Authority: 'P1' });
+    expect(paid).toMatchObject({ ok: true, alreadyPaid: true });
+    expect(store.rows.get('P1')?.status).toBe('paid');
+
+    // A forged NOK cannot block a real payment: the verified OK callback settles it.
+    const ok = await p.verifyCallback({ Status: 'OK', Authority: 'A1' });
+    expect(ok.ok).toBe(true);
+    expect(store.rows.get('A1')?.status).toBe('paid');
+    expect(store.credits).toBe(1);
+  });
+
+  it('transport failure keeps the row pending, business rejection marks it failed', async () => {
+    const store = memoryStore([
+      { authority: 'T1', amount: 50000, status: 'pending' },
+      { authority: 'B1', amount: 50000, status: 'pending' },
+    ]);
+    const gw = {
+      requestPayment: jest.fn(),
+      verifyPayment: jest.fn().mockImplementation(async (a: string) => {
+        if (a === 'T1') throw new ZarinpalGatewayError('down', true);
+        throw new ZarinpalGatewayError('code -51', false, '-51');
+      }),
+    };
+    const p = new ZarinpalPaymentProvider('m-1', store, gw as any);
+    expect((await p.verifyCallback({ Status: 'OK', Authority: 'B1' })).reason).toBe('gateway_rejected');
+    expect(store.rows.get('B1')?.status).toBe('failed');
+    expect((await p.verifyCallback({ Status: 'OK', Authority: 'T1' })).reason).toBe('gateway_rejected');
+    expect(store.rows.get('T1')?.status).toBe('pending');
+  }, 30_000);
 });
 
 describe('PrismaPaymentStore', () => {
@@ -135,6 +188,16 @@ describe('PrismaPaymentStore', () => {
     const sql = db.exec.mock.calls[0][0];
     expect(sql.sql).toMatch(/WHERE authority = \? AND amount = \? AND status <> \?/);
     expect(sql.values).toEqual(['paid', 'A1', 50000, 'paid']);
+  });
+
+  it('markFailed updates only a pending row (never a paid one) with parameterized SQL', async () => {
+    const db = { query: jest.fn(), exec: jest.fn().mockResolvedValueOnce(1).mockResolvedValueOnce(0) };
+    const s = new PrismaPaymentStore(db);
+    expect(await s.markFailed('A1')).toBe(true);
+    expect(await s.markFailed('A1')).toBe(false);
+    const sql = db.exec.mock.calls[0][0];
+    expect(sql.sql).toMatch(/SET status = \? WHERE authority = \? AND status = \?$/);
+    expect(sql.values).toEqual(['failed', 'A1', 'pending']);
   });
 
   it('returns null for an unknown authority', async () => {
