@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { AuthPrincipal, CurrentUser } from '../common/auth/current-user.decorator';
@@ -59,6 +60,7 @@ export class ZarinpalPaymentsController {
 
   @Post('request')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @HttpCode(HttpStatus.CREATED)
   async request(@CurrentUser() user: AuthPrincipal, @Body() dto: ZarinpalRequestDto) {
     const callbackUrl = requireZarinpalCallbackUrl();
@@ -72,6 +74,7 @@ export class ZarinpalPaymentsController {
   }
 
   @Get('callback')
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   async callback(@Query('Authority') authority?: string, @Query('Status') status?: string) {
     const auth = typeof authority === 'string' ? authority : '';

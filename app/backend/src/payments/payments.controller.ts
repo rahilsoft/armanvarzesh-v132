@@ -26,7 +26,7 @@ export class PaymentsController {
 /** @deprecated AUTO-MARKED (Stage19): GQL op 'cursor' is unused per Stage 07 census. */
   @HttpCode(HttpStatus.OK)
   async listMine(@Query() q: ListPaymentsDto, @Req() req: any) {
-    // شناسه کاربر از JwtAuthGuard استخراج می‌شود؛ fallback وجود ندارد
+    // شناسه کاربر از JwtAuthGuard استخراج می‌شود، fallback وجود ندارد
     const userId: string | undefined = req.user?.sub;
     if (!userId) {
       throw new UnauthorizedException('unauthenticated');
