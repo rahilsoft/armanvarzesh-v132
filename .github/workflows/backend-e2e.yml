@@ -1,0 +1,94 @@
+name: backend-e2e
+
+# Backend unit + e2e tests against a real PostgreSQL 16 and Redis 7.
+# No test double replaces the database or the cache here.
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: arman
+          POSTGRES_PASSWORD: arman_ci_only
+          POSTGRES_DB: arman_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U arman -d arman_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://arman:arman_ci_only@localhost:5432/arman_test?schema=public
+      REDIS_URL: redis://localhost:6379
+      # e2e specs that are opt-in by flag: turn them on so they are not silently skipped.
+      E2E_AUTH_ENABLED: 'true'
+      E2E_PAY_ENABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version comes from the "packageManager" field of the root package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate test-only secrets
+        run: |
+          # Random per run, at least 32 chars, never committed.
+          for name in JWT_SECRET REFRESH_JWT_SECRET PAYMENT_WEBHOOK_SECRET; do
+            value="$(openssl rand -hex 32)"
+            echo "::add-mask::$value"
+            echo "$name=$value" >> "$GITHUB_ENV"
+          done
+
+      - name: Prisma generate
+        run: pnpm --filter ./app/backend exec prisma generate --schema src/database/prisma/schema.prisma
+
+      - name: Apply schema to the test database
+        run: pnpm --filter ./app/backend exec prisma migrate deploy --schema src/database/prisma/schema.prisma
+        # Note: if migrate deploy ever stops being viable, `prisma db push --skip-generate`
+        # may be used ONLY against this throwaway CI database. ROADMAP 0.5 owns the
+        # migration baseline and will replace any such fallback.
+
+      - name: Typecheck
+        run: pnpm --filter ./app/backend typecheck
+
+      - name: Typecheck e2e specs
+        run: pnpm --filter ./app/backend exec tsc -p test/tsconfig.e2e.json
+
+      - name: Unit tests
+        run: pnpm --filter ./app/backend test -- --forceExit
+
+      - name: E2E tests (real PostgreSQL + Redis)
+        run: pnpm --filter ./app/backend test:e2e -- --forceExit --testTimeout=60000

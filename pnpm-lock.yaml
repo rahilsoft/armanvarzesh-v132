@@ -660,6 +660,9 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
     devDependencies:
+      '@types/body-parser':
+        specifier: 1.19.6
+        version: 1.19.6
       '@types/compression':
         specifier: ^1.7.5
         version: 1.8.1

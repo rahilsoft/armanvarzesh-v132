@@ -26,7 +26,7 @@ describe('Payments Webhook (E2E)', () => {
 
   it('rejects invalid signature (401)', async () => {
     const payload = { event: 'test', ts: Date.now() };
-    const { _raw } = sign(payload);
+    sign(payload);
     await request(server)
       .post('/payments/webhook')
       .set('x-signature', 'deadbeef') // invalid
@@ -36,7 +36,7 @@ describe('Payments Webhook (E2E)', () => {
 
   it('accepts valid signature (200)', async () => {
     const payload = { event: 'test', ts: Date.now() };
-    const { _raw, sig } = sign(payload);
+    const { sig } = sign(payload);
     await request(server)
       .post('/payments/webhook')
       .set('x-signature', sig)
