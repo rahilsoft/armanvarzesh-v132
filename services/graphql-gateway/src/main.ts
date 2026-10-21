@@ -3,6 +3,7 @@ import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware, applyBasicHar
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4';
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { corsOriginCheck } from './cors';
 import { resolveSubgraphs } from './subgraphs.js';
 
 // Federation v2 subgraphs configuration
@@ -19,7 +20,8 @@ class JwtDataSource extends RemoteGraphQLDataSource {
 
 async function bootstrap(){
   const app = express();
-  app.use(cors());
+  // Bare cors() allows any origin. Restrict to the CORS_ORIGINS allowlist.
+  app.use(cors({ origin: corsOriginCheck(), credentials: true }));
   app.use(bodyParser.json());
   app.use(buildJwtVerifier() as any);
   app.use(buildUserAwareRateLimit() as any);
