@@ -3,22 +3,13 @@ import { buildJwtVerifier, buildUserAwareRateLimit, cspMiddleware, applyBasicHar
 import http from 'http'; import express from 'express'; import cors from 'cors'; import bodyParser from 'body-parser';
 import { ApolloServer } from '@apollo/server'; import { expressMiddleware } from '@as-integrations/express4';
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { resolveSubgraphs } from './subgraphs.js';
 
 // Federation v2 subgraphs configuration
 // Each subgraph must expose @apollo/subgraph directives (@key, @shareable, etc.)
-const SUBGRAPHS = JSON.parse(process.env.SUBGRAPHS_JSON || JSON.stringify([
-  // Core subgraphs (app/)
-  { name:'activity',  url: process.env.ACTIVITY_URL  || 'http://activity-subgraph:4005/graphql' },
-  { name:'social',    url: process.env.SOCIAL_URL    || 'http://social-subgraph:4006/graphql' },
-  { name:'physio',    url: process.env.PHYSIO_URL    || 'http://physio-subgraph:4016/graphql' },
-  { name:'live',      url: process.env.LIVE_URL      || 'http://live-subgraph:4017/graphql' },
-
-  // Service subgraphs (services/)
-  { name:'users',     url: process.env.USERS_URL     || 'http://users-service:4001/graphql' },
-  { name:'coaches',   url: process.env.COACHES_URL   || 'http://coaches-service:4008/graphql' },
-  { name:'nutrition', url: process.env.NUTRITION_URL || 'http://nutrition-service:4013/graphql' },
-  { name:'content',   url: process.env.CONTENT_URL   || 'http://content-service:4014/graphql' },
-]));
+// Default: the monolith (BACKEND_URL) plus activity/social/live. Throws at startup if
+// BACKEND_URL is missing outside development/test.
+const SUBGRAPHS = resolveSubgraphs(process.env);
 
 class JwtDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }: any) {

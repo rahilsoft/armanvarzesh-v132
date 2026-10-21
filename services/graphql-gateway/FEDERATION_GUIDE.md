@@ -4,19 +4,14 @@ Apollo Federation v2 gateway for the Arman platform microservices.
 
 ## Architecture
 
-This gateway composes 8 subgraphs into a unified GraphQL API:
+This gateway composes the following subgraphs into a unified GraphQL API:
 
-### Core Subgraphs (app/)
-- `activity-subgraph` - Activity rings, training load, awards
-- `social-subgraph` - Social features, feeds, interactions
-- `physio-subgraph` - Physiotherapy sessions and assessments
-- `live-subgraph` - Live streaming and virtual classes
+- `backend` - Monolith `app/backend` (users, coaches, nutrition, content, payments, ...). Configured by `BACKEND_URL`.
+- `activity-subgraph` - Activity rings, training load, awards (`app/activity-subgraph`)
+- `social-subgraph` - Social features, feeds, interactions (`app/social-subgraph`)
+- `live-subgraph` - Live streaming and virtual classes (`app/live-subgraph`)
 
-### Service Subgraphs (services/)
-- `users-service` - User management and profiles
-- `coaches-service` - Coach management and matching
-- `nutrition-service` - Nutrition plans and meal tracking
-- `content-service` - Content management, exercises, tiles
+The legacy `services/*` subgraphs (users, coaches, nutrition, content, ...) were removed.
 
 ## Features
 
@@ -104,7 +99,7 @@ The gateway supports Federation entity resolution. Example:
 # Query User with fields from multiple subgraphs
 query GetUserActivity {
   user(id: "123") {
-    # From users-service
+    # From backend (monolith)
     id
     email
     name
