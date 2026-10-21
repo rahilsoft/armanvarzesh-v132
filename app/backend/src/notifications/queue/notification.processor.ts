@@ -6,9 +6,24 @@ import { WebPushProvider } from '../providers/webpush.provider';
 import { ExpoPushProvider } from '../providers/expo-push.provider';
 import { EmailProvider } from '../providers/email.provider';
 
-type SendJob = { id: string; userId: string; channel: 'push' | 'web' | 'email'; title: string; body: string; data?: Record<string, string> };
+export const NOTIFICATIONS_QUEUE = 'notifications';
 
-@Processor('notifications')
+export type NotificationChannel = 'push' | 'web' | 'email';
+
+/** Job payload. `id` is the NotificationLog row created when the job was enqueued. */
+export type SendJob = {
+  id: string;
+  userId: number;
+  channel: NotificationChannel;
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+};
+
+/** DeviceToken.provider value used for each token-based channel. */
+const TOKEN_PROVIDER: Record<'push' | 'web', string> = { push: 'expo', web: 'webpush' };
+
+@Processor(NOTIFICATIONS_QUEUE)
 @Injectable()
 export class NotificationProcessor extends WorkerHost {
   private readonly logger = new Logger(NotificationProcessor.name);
@@ -22,10 +37,9 @@ export class NotificationProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<SendJob, any, string>): Promise<void> {
+  async process(job: Job<SendJob, unknown, string>): Promise<void> {
     const { id, userId, channel, title, body, data } = job.data;
     this.logger.log(`processing notification job=${job.id} channel=${channel}`);
-    const db = this.prisma as any;
 
     let delivered = 0;
     const failures: string[] = [];
@@ -33,13 +47,18 @@ export class NotificationProcessor extends WorkerHost {
     if (channel === 'email') {
       // Email has no device tokens: a provider must accept it for delivery.
       try {
-        await this.email.send(userId, title, body);
+        const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+        if (!user?.email) throw new Error('NoEmailAddress');
+        await this.email.send(user.email, title, body);
         delivered++;
       } catch (e) {
         failures.push((e as Error).message);
       }
     } else {
-      const tokens: Array<{ token: string }> = await db.deviceToken.findMany({ where: { userId, channel: channel as any } });
+      const tokens = await this.prisma.deviceToken.findMany({
+        where: { userId, provider: TOKEN_PROVIDER[channel] },
+        select: { token: true },
+      });
       if (tokens.length === 0) failures.push('NoDeviceTokens');
       else if (channel === 'push') {
         const results = await this.expo.sendMany({ title, body, data }, tokens.map((t) => t.token));
@@ -53,7 +72,7 @@ export class NotificationProcessor extends WorkerHost {
         }
         if (dead.length) {
           try {
-            await db.deviceToken.deleteMany({ where: { userId, token: { in: dead } } });
+            await this.prisma.deviceToken.deleteMany({ where: { userId, token: { in: dead } } });
           } catch (e) {
             this.logger.warn(`could not prune invalid device tokens: ${(e as Error).message}`);
           }
@@ -71,19 +90,20 @@ export class NotificationProcessor extends WorkerHost {
     }
 
     const ok = delivered > 0;
-    if (!ok) this.logger.error(`notification job=${job.id} failed: ${[...new Set(failures)].join(', ')}`);
-    await db.notificationLog.update({
+    const reason = [...new Set(failures)].join(', ');
+    if (!ok) this.logger.error(`notification job=${job.id} failed: ${reason}`);
+    await this.prisma.notificationLog.update({
       where: { id },
       data: {
         status: ok ? 'delivered' : 'failed',
         deliveredAt: ok ? new Date() : null,
-        failureReason: ok ? null : [...new Set(failures)].join(', ').slice(0, 500),
+        failureReason: ok ? null : reason.slice(0, 500),
       },
     });
   }
 
   @OnWorkerEvent('failed')
-  onFailed(job: Job<any>, err: Error) {
+  onFailed(job: Job<unknown>, err: Error) {
     this.logger.error(`job failed id=${job.id}: ${err.message}`);
   }
 }

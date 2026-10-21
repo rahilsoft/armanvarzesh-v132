@@ -33,6 +33,8 @@ model User {
   sessions            Session[]
   refreshTokens       RefreshToken[]
   devices             Device[]
+  deviceTokens        DeviceToken[]
+  notificationLogs    NotificationLog[]
   passwordResetTokens PasswordResetToken[]
   nutritionGoal       NutritionGoal?
   hydrationLogs       HydrationLog[]
@@ -613,6 +615,37 @@ model Device {
   createdAt DateTime @default(now())
   lastSeen  DateTime @default(now())
   @@index([userId], map: "idx_Device_userId")
+}
+
+/// Push device token (Expo) registered by an authenticated user.
+model DeviceToken {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  token      String   @unique
+  /// ios | android | web
+  platform   String
+  /// expo
+  provider   String   @default("expo")
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  @@index([userId], map: "idx_DeviceToken_userId")
+}
+
+/// Delivery log for outbound notifications (push, sms, email).
+model NotificationLog {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+  /// push | sms | email
+  channel       String
+  title         String
+  /// queued | delivered | failed
+  status        String    @default("queued")
+  failureReason String?
+  deliveredAt   DateTime?
+  createdAt     DateTime  @default(now())
+  @@index([userId, createdAt], map: "idx_NotificationLog_userId_createdAt")
 }
 
 model PasswordResetToken {

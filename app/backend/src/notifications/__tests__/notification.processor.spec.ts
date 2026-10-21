@@ -1,6 +1,6 @@
 import { NotificationProcessor } from '../queue/notification.processor';
 
-const job = (channel: string) => ({ id: 'j1', data: { id: 'log1', userId: 'u1', channel, title: 't', body: 'b' } }) as any;
+const job = (channel: string) => ({ id: 'j1', data: { id: 'log1', userId: 1, channel, title: 't', body: 'b' } }) as any;
 
 function build(tokens: string[], expoResults: any[] | Error) {
   const prisma: any = {
@@ -9,6 +9,7 @@ function build(tokens: string[], expoResults: any[] | Error) {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
     notificationLog: { update: jest.fn().mockResolvedValue({}) },
+    user: { findUnique: jest.fn().mockResolvedValue({ email: 'a@b.c' }) },
   };
   const expo: any = {
     sendMany: jest.fn().mockImplementation(async () => {
@@ -36,7 +37,7 @@ describe('NotificationProcessor', () => {
     expect(d.status).toBe('failed');
     expect(d.failureReason).toContain('DeviceNotRegistered');
     expect(d.deliveredAt).toBeNull();
-    expect(prisma.deviceToken.deleteMany).toHaveBeenCalledWith({ where: { userId: expect.any(String), token: { in: ['a'] } } });
+    expect(prisma.deviceToken.deleteMany).toHaveBeenCalledWith({ where: { userId: 1, token: { in: ['a'] } } });
   });
 
   it('failed when user has no device tokens', async () => {
