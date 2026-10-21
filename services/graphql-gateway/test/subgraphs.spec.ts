@@ -89,3 +89,23 @@ describe('resolveSubgraphs', () => {
     expect(resolveSubgraphs({ NODE_ENV: 'development' })[0].url).toBe(DEV_BACKEND_URL);
   });
 });
+
+describe('SUBGRAPHS_JSON validation', () => {
+  const run = (json: string) => resolveSubgraphs({ SUBGRAPHS_JSON: json, NODE_ENV: 'production' });
+  it('rejects malformed JSON, empty or non-array values', () => {
+    expect(() => run('{')).toThrow(/not valid JSON/);
+    expect(() => run('[]')).toThrow(/non-empty array/);
+    expect(() => run('{"name":"x"}')).toThrow(/non-empty array/);
+  });
+  it('rejects non-http(s) urls, bad names and duplicates', () => {
+    expect(() => run(JSON.stringify([{ name: 'x', url: 'file:///etc/passwd' }]))).toThrow(/http or https/);
+    expect(() => run(JSON.stringify([{ name: 'x', url: 'not a url' }]))).toThrow(/valid URL/);
+    expect(() => run(JSON.stringify([{ name: '', url: 'http://x/graphql' }]))).toThrow(/invalid name/);
+    expect(() =>
+      run(JSON.stringify([{ name: 'x', url: 'http://a/graphql' }, { name: 'x', url: 'http://b/graphql' }])),
+    ).toThrow(/duplicate/);
+  });
+  it('rejects a non-http ACTIVITY_URL', () => {
+    expect(() => resolveSubgraphs({ NODE_ENV: 'test', ACTIVITY_URL: 'gopher://x' })).toThrow(/ACTIVITY_URL/);
+  });
+});
