@@ -25,6 +25,19 @@ const PRIOR_RATING = 0.7; // 3.5 of 5
 const PRIOR_WEIGHT = 3; // virtual reviews at the prior mean
 const FULL_EXPERIENCE_DAYS = 730;
 const DAY_MS = 24 * 60 * 60 * 1000;
+export const MAX_GOALS = 10;
+export const MAX_GOAL_LENGTH = 64;
+export const MAX_LIMIT = 20;
+
+/** Caps untrusted goal input: at most MAX_GOALS strings of MAX_GOAL_LENGTH chars. */
+export function sanitizeGoals(goals: unknown): string[] {
+  if (!Array.isArray(goals)) return [];
+  return goals
+    .filter((g): g is string => typeof g === 'string')
+    .map((g) => g.trim().slice(0, MAX_GOAL_LENGTH))
+    .filter(Boolean)
+    .slice(0, MAX_GOALS);
+}
 
 function tokenize(text: string): string[] {
   return text
@@ -52,7 +65,7 @@ export class MatchingService {
 
   /** Deterministic 0..1 score for one coach. */
   scoreCoach(coach: Coach, goals: string[], now: number): number {
-    const goalTokens = Array.from(new Set(goals.flatMap(tokenize)));
+    const goalTokens = Array.from(new Set(sanitizeGoals(goals).flatMap(tokenize)));
     let goalMatch = 0;
     if (goalTokens.length > 0) {
       const haystack = new Set(
@@ -86,6 +99,7 @@ export class MatchingService {
     goals: string[] = [],
     now: number = Date.now(),
   ): Promise<Coach[]> {
+    goals = sanitizeGoals(goals);
     const all = await this.coachesService.findAll();
     const expertiseFilter = expertise?.toLowerCase();
     if (expertiseFilter && ['package', 'full', 'complete', 'all'].includes(expertiseFilter)) {
@@ -99,7 +113,7 @@ export class MatchingService {
       score: this.scoreCoach(coach as Coach, goals, now),
     }));
     scored.sort((a, b) => b.score - a.score || Number(a.coach.id) - Number(b.coach.id));
-    const n = Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 3;
+    const n = Number.isFinite(limit) && limit > 0 ? Math.min(Math.floor(limit), MAX_LIMIT) : 3;
     return scored.slice(0, n).map((entry) => entry.coach as Coach);
   }
 

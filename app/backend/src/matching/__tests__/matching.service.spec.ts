@@ -1,4 +1,4 @@
-import { MatchingService, MATCHING_WEIGHTS } from '../matching.service';
+import { MatchingService, MATCHING_WEIGHTS, MAX_GOALS, MAX_GOAL_LENGTH, MAX_LIMIT, sanitizeGoals } from '../matching.service';
 
 const NOW = Date.UTC(2026, 9, 21);
 const DAY = 86400000;
@@ -109,5 +109,15 @@ describe('MatchingService', () => {
     ]);
     const ids = (await svc.recommend('package', 3, [], NOW)).map((c) => c.id);
     expect(ids).toEqual([1, 2, 3]);
+  });
+
+  it('caps untrusted goals and limit', async () => {
+    const many = Array.from({ length: 500 }, (_, i) => `g${i}`);
+    expect(sanitizeGoals(many)).toHaveLength(MAX_GOALS);
+    expect(sanitizeGoals(['x'.repeat(10000)])[0]).toHaveLength(MAX_GOAL_LENGTH);
+    expect(sanitizeGoals([1, null, ' ', 'ok'] as any)).toEqual(['ok']);
+    expect(sanitizeGoals('weight' as any)).toEqual([]);
+    const svc = make(Array.from({ length: 50 }, (_, i) => coach(i + 1)));
+    expect(await svc.recommend(undefined, 10000, many, NOW)).toHaveLength(MAX_LIMIT);
   });
 });
