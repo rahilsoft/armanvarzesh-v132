@@ -153,7 +153,7 @@ describe('PaymentsService.verify (routed through Zarinpal verify)', () => {
     delete process.env.ZARINPAL_MERCHANT_ID;
     const db = { query: jest.fn().mockResolvedValue([{ authority: 'A1', amount: 100, status: 'pending' }]), exec: jest.fn() };
     const svc = new PaymentsService(db as any);
-    await expect(svc.verify('A1', 100)).rejects.toThrow(/ZARINPAL_MERCHANT_ID/);
+    await expect(svc.verify('A1', 100, 'OK')).rejects.toThrow(/ZARINPAL_MERCHANT_ID/);
     expect(db.exec).not.toHaveBeenCalled();
   });
 
@@ -166,7 +166,7 @@ describe('PaymentsService.verify (routed through Zarinpal verify)', () => {
       exec: jest.fn().mockResolvedValue(1),
     };
     const svc = new PaymentsService(db as any);
-    expect(await svc.verify('A1', 70000)).toBe(true);
+    expect(await svc.verify('A1', 70000, 'OK')).toBe(true);
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({ amount: 70000, authority: 'A1' });
     expect(db.exec).toHaveBeenCalledTimes(1);
   });
@@ -179,7 +179,7 @@ describe('PaymentsService.verify (routed through Zarinpal verify)', () => {
       exec: jest.fn(),
     };
     const svc = new PaymentsService(db as any);
-    expect(await svc.verify('A1', 100)).toBe(false);
+    expect(await svc.verify('A1', 100, 'OK')).toBe(false);
     expect((global as any).fetch).not.toHaveBeenCalled();
     expect(db.exec).not.toHaveBeenCalled();
   });

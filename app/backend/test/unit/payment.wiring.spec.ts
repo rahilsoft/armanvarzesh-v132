@@ -1,6 +1,6 @@
 import { CircuitBreaker } from '../../src/common/retry/circuitBreaker';
 import { guardedGatewayCall, PrismaPaymentStore, StoredPayment, ZarinpalPaymentProvider } from '../../src/payments/providers/payment.provider';
-import { PaymentsController } from '../../src/payments/controllers/payments.controller';
+import { ZarinpalPaymentsController } from '../../src/payments/zarinpal.controller';
 import { PaymentsService } from '../../src/payments/payments.service';
 import { ZarinpalGatewayError, ZarinpalService } from '../../src/service/zarinpal.service';
 
@@ -36,16 +36,13 @@ describe('payments wiring', () => {
     jest.restoreAllMocks();
   });
 
-  it('controller passes undefined amount and real Status when Amount is absent', async () => {
-    const svc = { verify: jest.fn().mockResolvedValue(true) } as any;
-    const ctrl = new PaymentsController(svc);
-    await ctrl.verifyCallback('A1', 'NOK');
-    expect(svc.verify).toHaveBeenCalledWith('A1', undefined, 'NOK');
-    await ctrl.verifyCallback('A1', undefined as any);
-    expect(svc.verify).toHaveBeenLastCalledWith('A1', undefined, '');
-    expect(svc.verify).toHaveBeenCalledWith('A1', undefined, 'NOK');
-    await ctrl.verifyCallback('A1', 'OK', '500');
-    expect(svc.verify).toHaveBeenLastCalledWith('A1', 500, 'OK');
+  it('callback controller never forwards a client amount and forwards a missing Status as empty', async () => {
+    const svc = { verifyDetailed: jest.fn().mockResolvedValue({ ok: false, reason: 'invalid_callback' }) } as any;
+    const ctrl = new ZarinpalPaymentsController(svc);
+    await ctrl.callback('A1', 'NOK');
+    expect(svc.verifyDetailed).toHaveBeenLastCalledWith('A1', undefined, 'NOK');
+    await ctrl.callback('A1', undefined);
+    expect(svc.verifyDetailed).toHaveBeenLastCalledWith('A1', undefined, '');
   });
 
   it('requestPayment persists pending row into "Payment" and verify settles it end to end', async () => {

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Query, Req, UseGuards, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
 import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { JwtAuthGuard } from '../auth/jwt.guard';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreatePaymentBodyDto } from './dto/create-payment.dto';
 import { ListPaymentsDto } from './dto/list-payments.dto';
 import { PaymentsService } from './payments.service';
 
@@ -14,8 +14,11 @@ export class PaymentsController {
 /** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: CreatePaymentDto, @Headers('Idempotency-Key') idem?: string) {
-    const res = await (this.payments as any).create({ ...body, idempotencyKey: body.idempotencyKey || idem || undefined });
+  async create(@Body() body: CreatePaymentBodyDto, @Req() req: any, @Headers('Idempotency-Key') idem?: string) {
+    // Payer id comes only from the verified JWT, never from the body.
+    const userId: string | undefined = req.user?.sub != null ? String(req.user.sub) : undefined;
+    if (!userId) throw new UnauthorizedException('unauthenticated');
+    const res = await this.payments.create({ ...body, userId, idempotencyKey: body.idempotencyKey || idem || undefined });
     return { ok: true, data: res };
   }
 
@@ -23,7 +26,7 @@ export class PaymentsController {
 /** @deprecated AUTO-MARKED (Stage19): GQL op 'cursor' is unused per Stage 07 census. */
   @HttpCode(HttpStatus.OK)
   async listMine(@Query() q: ListPaymentsDto, @Req() req: any) {
-    // شناسه کاربر از JwtAuthGuard استخراج می‌شود؛ fallback وجود ندارد
+    // شناسه کاربر از JwtAuthGuard استخراج می‌شود، fallback وجود ندارد
     const userId: string | undefined = req.user?.sub;
     if (!userId) {
       throw new UnauthorizedException('unauthenticated');

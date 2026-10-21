@@ -26,4 +26,11 @@ export const envValidationSchema = Joi.object({
   GRAPHQL_DEPTH_LIMIT: Joi.number().integer().min(1).max(20).default(8),
   RATE_LIMIT_TTL: Joi.number().integer().min(1).default(60),
   RATE_LIMIT_MAX: Joi.number().integer().min(1).default(100),
+  // Payments: PAYMENT_PROVIDER/ZARINPAL_* are enforced at PaymentsModule init
+  // (assertPaymentProviderConfigured), BOOKING_WEBHOOK_SECRET fail-closed per request.
+  PAYMENT_PROVIDER: Joi.string().valid('zarinpal', 'mock').allow(''),
+  ZARINPAL_MERCHANT_ID: Joi.string().allow(''),
+  ZARINPAL_CALLBACK_URL: Joi.string().uri().allow(''),
+  ZARINPAL_SANDBOX: Joi.string().valid('true', 'false').allow(''),
+  BOOKING_WEBHOOK_SECRET: Joi.string().min(32).allow(''),
 }).unknown(false);

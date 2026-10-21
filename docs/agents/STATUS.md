@@ -30,7 +30,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | `JWT_SECRET`, `REFRESH_JWT_SECRET`, `ADMIN_JWT_SECRET`, `JWT_ACCESS_SECRET` (each ≥ 32 chars, fail-fast outside dev/test) | auth | missing |
 | `JWT_KID` | JWKS key id, required outside dev/test | missing |
 | `CERT_SECRET` (≥ 32 chars, required outside dev/test) | course certificates signing | missing |
-| `PAYMENTS_WEBHOOK_SECRET`, `MEDICAL_WEBHOOK_SECRET` | HMAC of payment/booking and medical webhooks (now required in staging + production) | missing |
+| `PAYMENTS_WEBHOOK_SECRET`, `MEDICAL_WEBHOOK_SECRET` | HMAC of PSP payment and medical webhooks (now required in staging + production) | missing |
+| `BOOKING_WEBHOOK_SECRET` (≥ 32 chars) | HMAC of outbox relay -> `POST /booking/payments/success`, fail-closed outside dev/test | missing |
 | `ZARINPAL_MERCHANT_ID`, `PAYMENT_PROVIDER=zarinpal`, `ZARINPAL_CALLBACK_URL` (opt. `ZARINPAL_SANDBOX`) | payments | missing |
 | `KAVENEGAR_API_KEY` + sender line | OTP / SMS | missing |
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | media storage | missing |

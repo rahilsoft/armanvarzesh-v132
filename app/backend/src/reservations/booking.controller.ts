@@ -77,10 +77,14 @@ export class BookingController {
 
   // Public: receiving end of the Payments-domain BOOKING_PAYMENT_SUCCEEDED
   // event (delivered by the outbox relay). Authenticated by HMAC signature.
+  // The sender is our own outbox relay, not the payment provider (PSP webhooks hit
+  // /checkout/webhook with PAYMENTS_WEBHOOK_SECRET), so it uses its own
+  // BOOKING_WEBHOOK_SECRET: a leaked PSP secret must not allow confirming bookings.
+  // Fail-closed outside NODE_ENV development/test (verifyWebhookSignature).
   @Public()
   @Post('payments/success')
   paymentSuccess(@Body() dto: PaymentSuccessDto) {
-    verifyWebhookSignature('booking', dto, process.env.PAYMENTS_WEBHOOK_SECRET);
+    verifyWebhookSignature('booking', dto, process.env.BOOKING_WEBHOOK_SECRET);
     return this.booking.confirmPayment(dto.bookingId, dto.paymentRef);
   }
 

@@ -6,11 +6,11 @@ Encapsulates payment creation with idempotency and listing via keyset pagination
 - Validates currency (ISO-4217 like) and idempotency key format/length.
 @public
 */
-import { Injectable, BadRequestException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, ConflictException, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { SafePrismaService } from '../common/database/prisma.safe';
 import { requireMerchantId } from '../service/zarinpal.service';
-import { PrismaPaymentStore, ZarinpalPaymentProvider } from './providers/payment.provider';
+import { PaymentVerification, PrismaPaymentStore, ZarinpalPaymentProvider, assertPaymentProviderConfigured } from './providers/payment.provider';
 
 export interface CreatePaymentInput {
   userId: string;
@@ -20,8 +20,19 @@ export interface CreatePaymentInput {
 }
 
 @Injectable()
-export class PaymentsService {
+export class PaymentsService implements OnModuleInit {
   constructor(private readonly prisma: SafePrismaService) {}
+
+  /** Fail fast at startup: outside development/test an unset or mock provider aborts boot. */
+  onModuleInit(): void {
+    assertPaymentProviderConfigured();
+  }
+
+  /** Real Zarinpal provider over the persisted "Payment" table. Re-checks config on every use. */
+  private zarinpal(): ZarinpalPaymentProvider {
+    assertPaymentProviderConfigured();
+    return new ZarinpalPaymentProvider(requireMerchantId(), new PrismaPaymentStore(this.prisma));
+  }
 
   async create(dto: CreatePaymentInput) {
     if (!dto?.userId) throw new BadRequestException('userId required');
@@ -80,15 +91,23 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
   /**
    * Verifies through the real Zarinpal verify path: the stored amount is sent to the
    * gateway, unknown authorities are rejected and the row is marked paid only after
-   * Zarinpal confirms (idempotent on repeated calls).
+   * Zarinpal confirms (idempotent on repeated calls). `status` is the gateway callback
+   * Status and is required: a missing or non-OK status is rejected without calling the
+   * gateway. There is no default.
    */
-  async verify(authority: string, amount?: number, status: string = 'OK'): Promise<boolean> {
-    const provider = new ZarinpalPaymentProvider(requireMerchantId(), new PrismaPaymentStore(this.prisma));
-    const res = await provider.verifyCallback({ Status: status, Authority: authority, Amount: amount });
+  async verify(authority: string, amount: number | undefined, status: string): Promise<boolean> {
+    const res = await this.verifyDetailed(authority, amount, status);
     return res.ok;
   }
 
-  async verifyPayment(authority: string, amount?: number, status: string = 'OK') {
+  async verifyDetailed(authority: string, amount: number | undefined, status: string): Promise<PaymentVerification> {
+    if (typeof status !== 'string' || status.trim() === '') {
+      return { ok: false, reference: authority || undefined, reason: 'invalid_callback' };
+    }
+    return this.zarinpal().verifyCallback({ Status: status, Authority: authority, Amount: amount });
+  }
+
+  async verifyPayment(authority: string, amount: number | undefined, status: string) {
     const ok = await this.verify(authority, amount, status);
     return { authority, amount, status: ok ? 'paid' : 'failed', ok };
   }
@@ -100,6 +119,7 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
   async requestPayment(input: { amount: number; callbackUrl: string; userId?: number | null; description?: string }): Promise<{ authority: string; redirectUrl: string }> {
     if (!Number.isInteger(input?.amount) || input.amount <= 0) throw new BadRequestException('amount must be a positive integer');
     if (!input?.callbackUrl) throw new BadRequestException('callbackUrl required');
+    assertPaymentProviderConfigured();
     const store = new PrismaPaymentStore(this.prisma);
     const provider = new ZarinpalPaymentProvider(requireMerchantId(), store);
     const res = await provider.createPayment({ amount: input.amount, callbackUrl: input.callbackUrl, meta: { description: input.description } });
