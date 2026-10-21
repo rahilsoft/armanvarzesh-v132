@@ -241,30 +241,6 @@
         "3000:3000"
       ]
     },
-    "rewards-service": {
-      "build": {
-        "context": "services/rewards-service"
-      },
-      "ports": [
-        "3000:3000"
-      ]
-    },
-    "physio-service": {
-      "build": {
-        "context": "services/physio-service"
-      },
-      "ports": [
-        "3000:3000"
-      ]
-    },
-    "assessments-service": {
-      "build": {
-        "context": "services/assessments-service"
-      },
-      "ports": [
-        "3000:3000"
-      ]
-    },
     "analytics-service": {
       "build": {
         "context": "services/analytics-service"

@@ -93,16 +93,14 @@ env:
   - name: VERSION
     value: "v133-rc1"
 
-  # Subgraph URLs (update these to match your cluster)
+  # Subgraphs. The monolith (app/backend) is the only default service subgraph;
+  # users/coaches/nutrition/content/... now live in it. Self-contained app subgraphs:
   - name: ACTIVITY_URL
     value: "http://activity-subgraph:4005/graphql"
   - name: SOCIAL_URL
     value: "http://social-subgraph:4006/graphql"
-  - name: PHYSIO_URL
-    value: "http://physio-subgraph:4016/graphql"
   - name: LIVE_URL
     value: "http://live-subgraph:4017/graphql"
-  # users/coaches/nutrition/content now live in the NestJS monolith (app/backend).
   - name: BACKEND_URL
     value: "http://armanfit-backend:80/graphql"
 
