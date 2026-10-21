@@ -36,7 +36,7 @@ describe('NotificationProcessor', () => {
     expect(d.status).toBe('failed');
     expect(d.failureReason).toContain('DeviceNotRegistered');
     expect(d.deliveredAt).toBeNull();
-    expect(prisma.deviceToken.deleteMany).toHaveBeenCalledWith({ where: { token: { in: ['a'] } } });
+    expect(prisma.deviceToken.deleteMany).toHaveBeenCalledWith({ where: { userId: expect.any(String), token: { in: ['a'] } } });
   });
 
   it('failed when user has no device tokens', async () => {

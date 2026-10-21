@@ -53,7 +53,7 @@ export class NotificationProcessor extends WorkerHost {
         }
         if (dead.length) {
           try {
-            await db.deviceToken.deleteMany({ where: { token: { in: dead } } });
+            await db.deviceToken.deleteMany({ where: { userId, token: { in: dead } } });
           } catch (e) {
             this.logger.warn(`could not prune invalid device tokens: ${(e as Error).message}`);
           }
