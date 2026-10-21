@@ -2,7 +2,13 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ cors: true })
+// Unused, unauthenticated gateway: never reflect any Origin (`cors: true`).
+const appGatewayOrigins = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+@WebSocketGateway({ cors: { origin: appGatewayOrigins.length ? appGatewayOrigins : false } })
 export class AppGateway {
   @WebSocketServer()
   server: Server;

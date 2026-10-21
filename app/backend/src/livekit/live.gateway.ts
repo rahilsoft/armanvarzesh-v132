@@ -8,7 +8,16 @@ type JoinPayload = { room: string; token: string };
 type ChatPayload = { room: string; message: string };
 type ReactionPayload = { room: string; type: string };
 
-@WebSocketGateway({ namespace: '/live', cors: { origin: true, credentials: true } })
+/** Allowed socket origins from env. Empty list means no cross-origin access (`false`), never "reflect any". */
+export function liveCorsOrigins(env: NodeJS.ProcessEnv = process.env): string[] | false {
+  const list = (env.CORS_ORIGINS || env.CORS_ORIGIN || env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  return list.length ? list : false;
+}
+
+@WebSocketGateway({ namespace: '/live', cors: { origin: liveCorsOrigins(), credentials: true } })
 export class LiveGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private logger = new Logger('LiveGateway');
