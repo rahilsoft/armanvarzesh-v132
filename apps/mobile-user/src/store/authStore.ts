@@ -32,6 +32,16 @@ type AuthState = {
   refreshSession: () => Promise<boolean>;
 };
 
+// Single-flight: the backend treats reuse of a rotated refresh token as theft and
+// revokes every session, so concurrent 401s must share one refresh call.
+let inflightRefresh: Promise<boolean> | null = null;
+
+function isExpired(iso: string | null | undefined): boolean {
+  if (!iso) return false;
+  const t = Date.parse(iso);
+  return Number.isFinite(t) && t <= Date.now();
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
   refreshToken: null,
@@ -58,7 +68,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const raw = await AsyncStorage.getItem(SESSION_KEY);
       const s = raw ? (JSON.parse(raw) as StoredSession) : null;
-      if (s && s.accessToken && s.refreshToken) {
+      if (s && s.accessToken && s.refreshToken && !isExpired(s.refreshExpiresAt)) {
         set({ token: s.accessToken, refreshToken: s.refreshToken, user: s.user, hydrated: true });
         return;
       }
@@ -68,18 +78,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ token: null, refreshToken: null, user: null, hydrated: true });
   },
 
-  refreshSession: async () => {
-    const { refreshToken, user } = get();
-    if (!refreshToken) return false;
-    try {
-      const session = await authApi.refresh(refreshToken, user?.name);
-      await get().signIn(session);
-      return true;
-    } catch (e) {
-      if (e instanceof authApi.AuthApiError && (e.status === 401 || e.status === 400)) {
-        await get().signOut();
+  refreshSession: () => {
+    if (inflightRefresh) return inflightRefresh;
+    inflightRefresh = (async () => {
+      const { refreshToken, user } = get();
+      if (!refreshToken) return false;
+      try {
+        const session = await authApi.refresh(refreshToken, user?.name);
+        await get().signIn(session);
+        return true;
+      } catch (e) {
+        if (e instanceof authApi.AuthApiError && (e.status === 401 || e.status === 400)) {
+          await get().signOut();
+        }
+        return false;
       }
-      return false;
-    }
+    })().finally(() => {
+      inflightRefresh = null;
+    });
+    return inflightRefresh;
   },
 }));

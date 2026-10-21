@@ -162,3 +162,28 @@ describe('no demo auth path', () => {
     }
   });
 });
+
+describe('review hardening', () => {
+  it('refreshSession is single-flight (no refresh-token reuse)', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: { id: '7', name: 'n', email: 'a@b.com' } });
+    const f = mockFetch(200, backendBody);
+    const [a, b] = await Promise.all([
+      useAuthStore.getState().refreshSession(),
+      useAuthStore.getState().refreshSession(),
+    ]);
+    expect(a).toBe(true);
+    expect(b).toBe(true);
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+
+  it('hydrate drops a session whose refresh token expired', async () => {
+    mem[SESSION_KEY] = JSON.stringify({ ...backendBody, refreshExpiresAt: '2000-01-01T00:00:00.000Z', user: { id: '7', name: 'n', email: 'a@b.com' } });
+    await useAuthStore.getState().hydrate();
+    expect(useAuthStore.getState().token).toBeNull();
+  });
+
+  it('rejects plain http base URL unless dev build', () => {
+    expect(() => normalizeBaseUrl('http://api.example.com/graphql')).toThrow();
+    expect(normalizeBaseUrl('http://10.0.2.2:3000', true)).toBe('http://10.0.2.2:3000');
+  });
+});
