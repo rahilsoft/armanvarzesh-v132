@@ -10,6 +10,7 @@ import { Injectable, BadRequestException, ConflictException, InternalServerError
 import { Prisma } from '@prisma/client';
 import { SafePrismaService } from '../common/database/prisma.safe';
 import { requireMerchantId } from '../service/zarinpal.service';
+import { MAX_PAYMENT_AMOUNT_RIAL, MIN_PAYMENT_AMOUNT_RIAL, isValidPaymentAmount } from './dto/amount-bounds';
 import { PaymentVerification, PrismaPaymentStore, ZarinpalPaymentProvider, assertPaymentProviderConfigured } from './providers/payment.provider';
 
 export interface CreatePaymentInput {
@@ -37,7 +38,9 @@ export class PaymentsService implements OnModuleInit {
   async create(dto: CreatePaymentInput) {
     if (!dto?.userId) throw new BadRequestException('userId required');
     if (!dto?.currency || dto.currency.length !== 3) throw new BadRequestException('currency must be 3 letters');
-    if (!Number.isFinite(dto.amountCents) || dto.amountCents <= 0) throw new BadRequestException('amountCents must be > 0');
+    if (!isValidPaymentAmount(dto.amountCents)) {
+      throw new BadRequestException(`amountCents must be an integer between ${MIN_PAYMENT_AMOUNT_RIAL} and ${MAX_PAYMENT_AMOUNT_RIAL} Rial`);
+    }
 
     
     // Hard validation to mitigate injection and oversized input
@@ -117,7 +120,9 @@ const idem = idemKey || `${dto.userId}-${dto.amountCents}-${dto.currency}`;
    * into the same "Payment" table the verify path reads, so create -> verify works.
    */
   async requestPayment(input: { amount: number; callbackUrl: string; userId?: number | null; description?: string }): Promise<{ authority: string; redirectUrl: string }> {
-    if (!Number.isInteger(input?.amount) || input.amount <= 0) throw new BadRequestException('amount must be a positive integer');
+    if (!isValidPaymentAmount(input?.amount)) {
+      throw new BadRequestException(`amount must be an integer between ${MIN_PAYMENT_AMOUNT_RIAL} and ${MAX_PAYMENT_AMOUNT_RIAL} Rial`);
+    }
     if (!input?.callbackUrl) throw new BadRequestException('callbackUrl required');
     assertPaymentProviderConfigured();
     const store = new PrismaPaymentStore(this.prisma);

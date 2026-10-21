@@ -15,7 +15,7 @@ describe('PaymentsService (legacy raw-SQL create path)', () => {
   it('creates a payment with the provided idempotency key', async () => {
     const prisma = makeSafePrismaMock();
     const svc = new PaymentsService(prisma as any);
-    const p = await svc.create({ userId: 'u1', amountCents: 1000, currency: 'EUR', idempotencyKey: 'idem-1' });
+    const p = await svc.create({ userId: 'u1', amountCents: 10000, currency: 'EUR', idempotencyKey: 'idem-1' });
     expect(p).toMatchObject({ idempotencyKey: 'idem-1', status: 'CREATED', currency: 'EUR' });
     expect(prisma.exec).toHaveBeenCalledTimes(1);
   });
@@ -25,7 +25,7 @@ describe('PaymentsService (legacy raw-SQL create path)', () => {
     prisma.query.mockResolvedValueOnce([{ id: 1 }]); // existing row found
     const svc = new PaymentsService(prisma as any);
     await expect(
-      svc.create({ userId: 'u1', amountCents: 1000, currency: 'EUR', idempotencyKey: 'idem-1' }),
+      svc.create({ userId: 'u1', amountCents: 10000, currency: 'EUR', idempotencyKey: 'idem-1' }),
     ).rejects.toBeInstanceOf(ConflictException);
     expect(prisma.exec).not.toHaveBeenCalled();
   });
