@@ -11,6 +11,10 @@ import { WebhookSignatureGuard } from '../../src/common/webhook/webhook-signatur
 describe('Payments Webhook E2E', () => {
   let app: INestApplication;
   const secret = process.env.SECRET || "changeme";
+  // process.env is shared by every spec file under --runInBand: restore it so
+  // 'memory://local' never reaches specs that boot AppModule (BullMQ/ioredis).
+  const saved = { REDIS_URL: process.env.REDIS_URL, PAYMENT_WEBHOOK_SECRET: process.env.PAYMENT_WEBHOOK_SECRET };
+  const restore = (k: keyof typeof saved) => { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; };
   beforeAll(async () => {
     process.env.REDIS_URL = 'memory://local';
     process.env.PAYMENT_WEBHOOK_SECRET = secret;
@@ -25,7 +29,11 @@ describe('Payments Webhook E2E', () => {
     await app.init();
   });
 
-  afterAll(async () => { await app.close(); });
+  afterAll(async () => {
+    await app.close();
+    restore('REDIS_URL');
+    restore('PAYMENT_WEBHOOK_SECRET');
+  });
 
   it('accepts signed webhook and replays on same Idempotency-Key', async () => {
     const body = JSON.stringify({ status: 'OK', Authority: 'A-1' });
