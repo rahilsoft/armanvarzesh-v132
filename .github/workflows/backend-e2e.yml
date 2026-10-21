@@ -18,7 +18,7 @@ concurrency:
 jobs:
   backend-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16
@@ -88,7 +88,11 @@ jobs:
         run: pnpm --filter ./app/backend exec tsc -p test/tsconfig.e2e.json
 
       - name: Unit tests
+        timeout-minutes: 8
         run: pnpm --filter ./app/backend test -- --forceExit
 
       - name: E2E tests (real PostgreSQL + Redis)
-        run: pnpm --filter ./app/backend test:e2e -- --forceExit --testTimeout=60000
+        # Hard cap so a hang fails fast instead of burning the runner. --forceExit ends
+        # jest if an open handle outlives the suite, --detectOpenHandles names the culprit.
+        timeout-minutes: 12
+        run: pnpm --filter ./app/backend test:e2e -- --runInBand --forceExit --detectOpenHandles --testTimeout=60000

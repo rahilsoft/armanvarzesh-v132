@@ -6,6 +6,7 @@ import { ReservationService } from '../../src/reservations/reservation.service';
 
 describe('Reservations E2E (memory optimistic)', () => {
   let app: INestApplication;
+  const savedMemoryDb = process.env.MEMORY_DB;
   beforeAll(async () => {
     process.env.MEMORY_DB = 'true';
     const moduleRef = await Test.createTestingModule({
@@ -19,7 +20,10 @@ describe('Reservations E2E (memory optimistic)', () => {
     await svc.seedMemory();
   });
 
-  afterAll(async () => { await app.close(); });
+  afterAll(async () => {
+    await app.close();
+    if (savedMemoryDb === undefined) delete process.env.MEMORY_DB; else process.env.MEMORY_DB = savedMemoryDb;
+  });
 
   it('reserves a slot and prevents double-booking', async () => {
     const r1 = await request(app.getHttpServer()).post('/reservations/reserve').send({ userId: 'u1', slotId: 'slot-1' });
