@@ -22,9 +22,11 @@ export class MatchingController {
   async recommend(
     @Query('expertise') expertise?: string,
     @Query('limit') limit?: string,
+    @Query('goals') goals?: string,
   ): Promise<Coach[]> {
     const parsedLimit = limit ? parseInt(limit, 10) : undefined;
-    return this.matchingService.recommend(expertise, parsedLimit);
+    const goalList = goals ? goals.split(',').map((g) => g.trim()).filter(Boolean) : [];
+    return this.matchingService.recommend(expertise, parsedLimit, goalList);
   }
 
   /**
