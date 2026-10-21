@@ -48,7 +48,7 @@ describe.each(['dark', 'light'] as const)('contrast (%s)', (name) => {
   it('on-colors >= 4.5 over fills; strong border >= 3', () => {
     expect(contrastRatio(t.onPrimary, t.primary)).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(t.onAccent, t.accent)).toBeGreaterThanOrEqual(4.5);
-    expect(contrastRatio(t.borderStrong, t.bg)).toBeGreaterThanOrEqual(3);
+    for (const bg of bgs) expect(contrastRatio(t.borderStrong, bg)).toBeGreaterThanOrEqual(3);
   });
 });
 

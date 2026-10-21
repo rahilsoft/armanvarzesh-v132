@@ -33,9 +33,26 @@ Specs for the core flows of the Persian (RTL) fitness platform. Engineers: web-f
 - Motion: `fast` 120 ms for press, `slow` 320 ms for progress, easing `standard`. Disabled when reduced motion is on.
 - Elevation: cards use border plus elevation 0, modals and sheets use elevation 3.
 
-## Components (atoms in `packages/ui-components`)
+## Components (`packages/ui-components`, web React, styles in `styles/components.css` + `styles/molecules.css`)
 
-Button (primary, secondary, accent, ghost, danger, link, sizes sm md lg, loading), Input/TextField (label, hint, error), Badge (6 tones), Avatar (3 sizes), Card (3 variants), ProgressBar, XPBar, Spinner, plus helpers `toPersianDigits`, `formatNumber`, `formatToman`, `formatJalali`. Molecules and organisms named in specs (OtpInput, ListRow, TabBar, StatTile, Skeleton, EmptyState, ErrorState, Sheet, DataTable) are **to be built in the next round** and are described in each spec so engineers can compose them from atoms in the meantime.
+**Atoms (9):** Button (primary, secondary, accent, ghost, danger, link, sizes sm md lg, loading), Input/TextField (label, hint, error), Badge (6 tones), Avatar (3 sizes), Card (3 variants), ProgressBar, XPBar, Spinner, Table. Helpers: `toPersianDigits`, `toLatinDigits`, `formatNumber`, `formatToman`, `formatJalali`.
+
+**Molecules (8):**
+
+| Component | Purpose | Key props and a11y |
+|-----------|---------|--------------------|
+| OtpInput | Segmented one-time code | `length` 3, 6 (default) or 9, `value`, `onChange`, `onComplete`, `error`. Cells are LTR, `inputMode="numeric"`, first cell `autoComplete="one-time-code"`, each cell `aria-label` «رقم ۱ از ۶». Persian, Arabic-Indic and Latin digits are normalised to Latin in `value` (`normalizeOtp`), shown in Persian. Paste fills forward, Backspace on an empty cell moves back. |
+| ListRow | List item (settings, workouts, leaderboard) | `title`, `subtitle`, `leading`, `trailing`, `href` or `onClick`. Renders `a`, `button` or `div`, min height 56, chevron flips in LTR. |
+| TabBar | Bottom or top tabs | `tabs` (3, 6 or 9, warns otherwise via `isOwnerCount`), `activeId`, `onChange`. `role="tablist"`, roving tabindex, arrow keys follow RTL (`nextTabIndex`), Home and End. |
+| StatTile | KPI tile | `label`, `value` (numbers get Persian digits), `unit`, `delta` with sign and arrow, never color alone. |
+| Sheet | Modal bottom sheet | `open`, `onClose`, `title`, `footer`. `role="dialog"`, `aria-modal`, `aria-labelledby`, Escape, backdrop and close button close it, focus moves in and is restored. Elevation 3. |
+| Skeleton | Loading placeholder | `variant` text (3 lines default), rect, circle. `role="status"`, hidden label, shimmer 1.2 s, off for reduced motion. |
+| EmptyState | Empty and error body | `title`, `description`, `icon`, one `action`, `tone="error"` adds `role="alert"`. This also serves as ErrorState. |
+| LevelBadge | Gamification level chip | `level`, `rank`, size sm md lg. Tier by level: 1-9 bronze (warning), 10-24 silver (accent), 25+ gold (primary with double ring). `role="img"` label «سطح ۱۲، پیشرفته، نقره‌ای», text contrast at least 4.5. |
+
+Still **to be built** (organisms): DataTable (use `Table` for now), Toast, ConfirmDialog, LeaderboardList. Specs describe them so engineers can compose from the molecules above.
+
+**Token note:** `borderStrong` is now the border for Input, secondary Button and OtpInput cells. Dark value `#55796E` gives at least 3.3:1 on bg, surface and surfaceRaised (was `#4B6B61`, 2.99:1 on surface). Tests cover all three surfaces in both themes.
 
 ## Shared state patterns
 

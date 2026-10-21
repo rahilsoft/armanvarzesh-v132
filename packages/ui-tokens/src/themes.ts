@@ -29,7 +29,7 @@ export const darkTheme: Theme = {
   text: '#E8F1EE',
   textMuted: '#A3B5AF',
   border: '#2A3D37',
-  borderStrong: '#4B6B61',
+  borderStrong: '#55796E',
   primary: '#34D399',
   onPrimary: '#04130D',
   accent: '#22D3EE',

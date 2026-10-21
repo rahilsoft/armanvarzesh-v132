@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@arman/observability-sdk": "workspace:*",
+    "@arman/ui-tokens": "workspace:*",
     "@arman/security-middleware": "workspace:*"
   },
   "optionalDependencies": {},

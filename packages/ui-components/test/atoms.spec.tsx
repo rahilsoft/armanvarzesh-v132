@@ -162,7 +162,9 @@ describe('WCAG AA with tokens (CSS pairs)', () => {
     ['solid badge success', t.onPrimary, t.success],
     ['solid badge neutral', t.onPrimary, t.textMuted],
     ['focus ring vs bg (3:1)', t.accent, t.bg, 3],
-    ['input border vs surface (3:1)', t.textMuted, t.surface, 3],
+    ['input border vs surface (3:1)', t.borderStrong, t.surface, 3],
+    ['secondary button border vs raised (3:1)', t.borderStrong, t.surfaceRaised, 3],
+    ['otp cell border vs surface (3:1)', t.borderStrong, t.surface, 3],
   ] as Array<[string, string, string, number?]>;
   for (const name of ['dark', 'light'] as const) {
     it.each(pairs(themes[name]))(`${name}: %s`, (_n, fg, bg, min = 4.5) => {

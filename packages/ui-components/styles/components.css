@@ -2,6 +2,7 @@
  * @arman/ui-components atoms. Requires the token stylesheet from @arman/ui-tokens
  * (--av-* custom properties, dark first, RTL). Uses logical properties only.
  */
+@import './molecules.css';
 .av-visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -31,7 +32,7 @@
 .av-btn--primary { background: var(--av-color-primary); color: var(--av-color-on-primary); }
 .av-btn--accent { background: var(--av-color-accent); color: var(--av-color-on-accent); }
 .av-btn--danger { background: var(--av-color-error); color: var(--av-color-on-primary); }
-.av-btn--secondary { background: var(--av-color-surface-raised); color: var(--av-color-text); border-color: var(--av-color-text-muted); }
+.av-btn--secondary { background: var(--av-color-surface-raised); color: var(--av-color-text); border-color: var(--av-color-border-strong); }
 .av-btn--ghost { background: transparent; color: var(--av-color-primary); border-color: var(--av-color-primary); }
 .av-btn--link { background: transparent; color: var(--av-color-primary); text-decoration: underline; padding-inline: var(--av-space-1); }
 .av-btn--primary:hover:not(:disabled), .av-btn--accent:hover:not(:disabled), .av-btn--danger:hover:not(:disabled) { filter: brightness(1.08); }
@@ -63,7 +64,7 @@
   inline-size: 100%; min-block-size: 44px; padding-inline: var(--av-space-3);
   font-family: inherit; font-size: var(--av-font-size-md);
   color: var(--av-color-text); background: var(--av-color-surface);
-  border: 1px solid var(--av-color-text-muted); border-radius: var(--av-radius-md);
+  border: 1px solid var(--av-color-border-strong); border-radius: var(--av-radius-md);
   text-align: start;
 }
 .av-input::placeholder { color: var(--av-color-text-muted); }
