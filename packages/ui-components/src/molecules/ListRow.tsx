@@ -22,10 +22,20 @@ const Chevron = () => (
   </svg>
 );
 
+/** Allow only relative paths, fragments and http(s)/mailto/tel. Anything else (javascript:, data:, ...) is dropped. */
+export function isSafeHref(href: string | undefined): href is string {
+  if (!href) return false;
+  const h = href.trim();
+  if (h.startsWith('#')) return true;
+  if (h.startsWith('/')) return !h.startsWith('//') && !h.startsWith('/\\');
+  return /^(https?:|mailto:|tel:)/i.test(h);
+}
+
 /** Single list item. Renders a link, a button or a plain row depending on props. */
 export const ListRow: React.FC<ListRowProps> = ({
-  title, subtitle, leading, trailing, onClick, href, chevron, disabled, className,
+  title, subtitle, leading, trailing, onClick, href: rawHref, chevron, disabled, className,
 }) => {
+  const href = isSafeHref(rawHref) ? rawHref.trim() : undefined;
   const interactive = Boolean(href || onClick);
   const showChevron = chevron ?? interactive;
   const body = (

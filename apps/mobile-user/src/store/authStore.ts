@@ -87,15 +87,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // One-time migration: tokens used to be stored in AsyncStorage.
       const legacyRaw = await AsyncStorage.getItem(SESSION_KEY);
       if (legacyRaw) {
-        const legacy = JSON.parse(legacyRaw) as LegacySession;
-        if (legacy.accessToken && legacy.refreshToken) {
-          await SecureStore.setItemAsync(ACCESS_KEY, legacy.accessToken);
-          await SecureStore.setItemAsync(REFRESH_KEY, legacy.refreshToken);
-          const profile: StoredProfile = { refreshExpiresAt: legacy.refreshExpiresAt, user: legacy.user };
-          await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        let legacy: LegacySession | null = null;
+        try {
+          legacy = JSON.parse(legacyRaw) as LegacySession;
+        } catch {
+          // Corrupt blob: never leave a token-bearing leftover behind.
+          await AsyncStorage.removeItem(SESSION_KEY);
         }
-        // Only reached after the SecureStore writes succeeded (they throw otherwise).
-        await AsyncStorage.removeItem(SESSION_KEY);
+        if (legacy) {
+          if (legacy.accessToken && legacy.refreshToken) {
+            await SecureStore.setItemAsync(ACCESS_KEY, legacy.accessToken);
+            await SecureStore.setItemAsync(REFRESH_KEY, legacy.refreshToken);
+            const profile: StoredProfile = { refreshExpiresAt: legacy.refreshExpiresAt, user: legacy.user };
+            await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+          }
+          // Only reached after the SecureStore writes succeeded (they throw otherwise).
+          await AsyncStorage.removeItem(SESSION_KEY);
+        }
       }
 
       const [accessToken, refreshToken, rawProfile] = await Promise.all([
