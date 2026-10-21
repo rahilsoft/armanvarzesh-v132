@@ -5,19 +5,25 @@ import {
   ADMIN_TOKEN_KEY,
   readToken,
   sessionFromToken,
+  tokenExpiryMs,
   type AdminRole,
   type AdminSession,
 } from './session';
 
 let cachedToken: string | null | undefined;
 let cachedSession: AdminSession = ANONYMOUS_SESSION;
+let cachedExpiryMs: number | null = null;
 
-// Snapshot must be referentially stable between calls while the token is unchanged.
+// Snapshot must be referentially stable between calls while the token is unchanged,
+// but an authenticated snapshot is dropped once the token's exp has passed.
 function getSnapshot(): AdminSession {
   const token = readToken();
-  if (token !== cachedToken) {
+  const expired =
+    cachedSession.status === 'authenticated' && cachedExpiryMs !== null && cachedExpiryMs <= Date.now();
+  if (token !== cachedToken || expired) {
     cachedToken = token;
     cachedSession = sessionFromToken(token);
+    cachedExpiryMs = tokenExpiryMs(token);
   }
   return cachedSession;
 }
@@ -31,7 +37,14 @@ function subscribe(onChange: () => void): () => void {
     if (e.key === null || e.key === ADMIN_TOKEN_KEY) onChange();
   };
   window.addEventListener('storage', handler);
-  return () => window.removeEventListener('storage', handler);
+  // Re-render when the current token expires so gated UI disappears without a reload.
+  const expMs = tokenExpiryMs(readToken());
+  const delay = expMs === null ? -1 : expMs - Date.now() + 50;
+  const timer = delay > 0 && delay < 2_147_483_647 ? window.setTimeout(onChange, delay) : undefined;
+  return () => {
+    window.removeEventListener('storage', handler);
+    if (timer !== undefined) window.clearTimeout(timer);
+  };
 }
 
 export type UseRoles = {

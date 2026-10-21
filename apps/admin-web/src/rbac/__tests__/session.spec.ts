@@ -1,4 +1,4 @@
-import { sessionFromToken, decodeClaims } from '../session';
+import { sessionFromToken, decodeClaims, tokenExpiryMs } from '../session';
 
 function makeToken(claims: object): string {
   const enc = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');
@@ -29,5 +29,12 @@ describe('sessionFromToken', () => {
   });
   it('decodeClaims handles UTF-8 payloads', () => {
     expect(decodeClaims(makeToken({ sub: 'علی' }))?.sub).toBe('علی');
+  });
+  it('token without exp => unauthenticated', () => {
+    expect(sessionFromToken(makeToken({ sub: 'u', role: 'owner' }), NOW).status).toBe('unauthenticated');
+  });
+  it('tokenExpiryMs reads exp in ms', () => {
+    expect(tokenExpiryMs(makeToken({ exp: future }))).toBe(future * 1000);
+    expect(tokenExpiryMs(null)).toBeNull();
   });
 });

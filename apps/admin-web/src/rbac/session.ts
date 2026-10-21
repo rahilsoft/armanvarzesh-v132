@@ -44,11 +44,19 @@ export function sessionFromToken(token: string | null, nowMs: number = Date.now(
   const claims = decodeClaims(token);
   if (!claims) return ANONYMOUS_SESSION;
   const exp = claims.exp;
-  if (typeof exp === 'number' && exp * 1000 <= nowMs) return ANONYMOUS_SESSION;
+  // Backend always signs with expiresIn: a token without exp is not a valid admin session.
+  if (typeof exp !== 'number' || exp * 1000 <= nowMs) return ANONYMOUS_SESSION;
   const rawRoles = Array.isArray(claims.roles) ? claims.roles : [claims.role];
   const roles = rawRoles.filter((r): r is AdminRole => typeof r === 'string' && KNOWN_ROLES.includes(r));
   const subject = typeof claims.sub === 'string' ? claims.sub : '';
   return { status: 'authenticated', roles, subject };
+}
+
+/** Expiry in ms of a token's `exp` claim, or null when absent/malformed. */
+export function tokenExpiryMs(token: string | null): number | null {
+  if (!token) return null;
+  const exp = decodeClaims(token)?.exp;
+  return typeof exp === 'number' ? exp * 1000 : null;
 }
 
 export function readToken(): string | null {
