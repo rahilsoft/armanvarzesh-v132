@@ -1,10 +1,17 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import * as authApi from '../api/authApi';
 import type { AuthSession } from '../api/authApi';
 
-// expo-secure-store is not a dependency of this app yet, so AsyncStorage is used.
+// Tokens live in the OS keystore (SecureStore). AsyncStorage keeps only non-secret profile data.
+export const ACCESS_KEY = 'arman.auth.access';
+export const REFRESH_KEY = 'arman.auth.refresh';
+export const PROFILE_KEY = 'arman.auth.profile';
+/** Pre-SecureStore blob that held tokens + profile together. Migrated and deleted on hydrate. */
 export const SESSION_KEY = 'arman.auth.session';
+/** Oldest legacy single-token key. Always deleted. */
+export const LEGACY_TOKEN_KEY = 'arman.auth.token';
 
 export type AuthUser = {
   id: string;
@@ -12,11 +19,14 @@ export type AuthUser = {
   email: string;
 };
 
-type StoredSession = {
-  accessToken: string;
-  refreshToken: string;
+type StoredProfile = {
   refreshExpiresAt: string | null;
   user: AuthUser;
+};
+
+type LegacySession = StoredProfile & {
+  accessToken?: string;
+  refreshToken?: string;
 };
 
 type AuthState = {
@@ -49,31 +59,57 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   hydrated: false,
 
   signIn: async (session) => {
-    const stored: StoredSession = {
-      accessToken: session.accessToken,
-      refreshToken: session.refreshToken,
-      refreshExpiresAt: session.refreshExpiresAt,
-      user: session.user,
-    };
-    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(stored));
+    const profile: StoredProfile = { refreshExpiresAt: session.refreshExpiresAt, user: session.user };
+    await SecureStore.setItemAsync(ACCESS_KEY, session.accessToken);
+    await SecureStore.setItemAsync(REFRESH_KEY, session.refreshToken);
+    await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    // Drop any leftovers from older builds.
+    await AsyncStorage.removeItem(SESSION_KEY);
+    await AsyncStorage.removeItem(LEGACY_TOKEN_KEY);
     set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
   },
 
   signOut: async () => {
-    await AsyncStorage.removeItem(SESSION_KEY);
+    await Promise.all([
+      SecureStore.deleteItemAsync(ACCESS_KEY),
+      SecureStore.deleteItemAsync(REFRESH_KEY),
+      AsyncStorage.removeItem(PROFILE_KEY),
+      AsyncStorage.removeItem(SESSION_KEY),
+      AsyncStorage.removeItem(LEGACY_TOKEN_KEY),
+    ]);
     set({ token: null, refreshToken: null, user: null });
   },
 
   hydrate: async () => {
     try {
-      const raw = await AsyncStorage.getItem(SESSION_KEY);
-      const s = raw ? (JSON.parse(raw) as StoredSession) : null;
-      if (s && s.accessToken && s.refreshToken && !isExpired(s.refreshExpiresAt)) {
-        set({ token: s.accessToken, refreshToken: s.refreshToken, user: s.user, hydrated: true });
+      await AsyncStorage.removeItem(LEGACY_TOKEN_KEY);
+
+      // One-time migration: tokens used to be stored in AsyncStorage.
+      const legacyRaw = await AsyncStorage.getItem(SESSION_KEY);
+      if (legacyRaw) {
+        const legacy = JSON.parse(legacyRaw) as LegacySession;
+        if (legacy.accessToken && legacy.refreshToken) {
+          await SecureStore.setItemAsync(ACCESS_KEY, legacy.accessToken);
+          await SecureStore.setItemAsync(REFRESH_KEY, legacy.refreshToken);
+          const profile: StoredProfile = { refreshExpiresAt: legacy.refreshExpiresAt, user: legacy.user };
+          await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+        }
+        // Only reached after the SecureStore writes succeeded (they throw otherwise).
+        await AsyncStorage.removeItem(SESSION_KEY);
+      }
+
+      const [accessToken, refreshToken, rawProfile] = await Promise.all([
+        SecureStore.getItemAsync(ACCESS_KEY),
+        SecureStore.getItemAsync(REFRESH_KEY),
+        AsyncStorage.getItem(PROFILE_KEY),
+      ]);
+      const profile = rawProfile ? (JSON.parse(rawProfile) as StoredProfile) : null;
+      if (accessToken && refreshToken && profile && !isExpired(profile.refreshExpiresAt)) {
+        set({ token: accessToken, refreshToken, user: profile.user, hydrated: true });
         return;
       }
     } catch {
-      // corrupt storage: treat as signed out
+      // corrupt or unreadable storage: treat as signed out
     }
     set({ token: null, refreshToken: null, user: null, hydrated: true });
   },

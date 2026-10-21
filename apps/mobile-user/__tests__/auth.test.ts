@@ -14,11 +14,21 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     }),
   },
 }));
+const secure: Record<string, string> = {};
+jest.mock('expo-secure-store', () => ({
+  setItemAsync: jest.fn(async (k: string, v: string) => {
+    secure[k] = v;
+  }),
+  getItemAsync: jest.fn(async (k: string) => (k in secure ? secure[k] : null)),
+  deleteItemAsync: jest.fn(async (k: string) => {
+    delete secure[k];
+  }),
+}));
 jest.mock('expo-constants', () => ({ __esModule: true, default: { expoConfig: { extra: {} } } }));
 
 import * as authApi from '../src/api/authApi';
 import { normalizeBaseUrl } from '../src/config/env';
-import { useAuthStore, SESSION_KEY } from '../src/store/authStore';
+import { useAuthStore, SESSION_KEY, ACCESS_KEY, REFRESH_KEY, PROFILE_KEY, LEGACY_TOKEN_KEY } from '../src/store/authStore';
 
 const backendBody = {
   user: { id: 7, email: 'a@b.com' },
@@ -40,6 +50,7 @@ function mockFetch(status: number, body: unknown) {
 beforeEach(() => {
   process.env.EXPO_PUBLIC_API_URL = 'https://api.test/graphql';
   for (const k of Object.keys(mem)) delete mem[k];
+  for (const k of Object.keys(secure)) delete secure[k];
   useAuthStore.setState({ token: null, refreshToken: null, user: null, hydrated: false });
 });
 
@@ -116,7 +127,11 @@ describe('authStore', () => {
     })();
     await useAuthStore.getState().signIn(s);
     expect(useAuthStore.getState().token).toBe('acc.jwt.value');
-    expect(JSON.parse(mem[SESSION_KEY]).refreshToken).toBe('selector.verifier-token');
+    expect(secure[ACCESS_KEY]).toBe('acc.jwt.value');
+    expect(secure[REFRESH_KEY]).toBe('selector.verifier-token');
+    // no secrets in AsyncStorage
+    expect(JSON.stringify(mem)).not.toContain('selector.verifier-token');
+    expect(JSON.stringify(mem)).not.toContain('acc.jwt.value');
 
     useAuthStore.setState({ token: null, refreshToken: null, user: null, hydrated: false });
     await useAuthStore.getState().hydrate();
@@ -142,7 +157,7 @@ describe('authStore', () => {
     mockFetch(401, {});
     expect(await useAuthStore.getState().refreshSession()).toBe(false);
     expect(useAuthStore.getState().token).toBeNull();
-    expect(mem[SESSION_KEY]).toBeUndefined();
+    expect(secure[REFRESH_KEY]).toBeUndefined();
   });
 });
 
@@ -177,7 +192,9 @@ describe('review hardening', () => {
   });
 
   it('hydrate drops a session whose refresh token expired', async () => {
-    mem[SESSION_KEY] = JSON.stringify({ ...backendBody, refreshExpiresAt: '2000-01-01T00:00:00.000Z', user: { id: '7', name: 'n', email: 'a@b.com' } });
+    secure[ACCESS_KEY] = 'a';
+    secure[REFRESH_KEY] = 'r';
+    mem[PROFILE_KEY] = JSON.stringify({ refreshExpiresAt: '2000-01-01T00:00:00.000Z', user: { id: '7', name: 'n', email: 'a@b.com' } });
     await useAuthStore.getState().hydrate();
     expect(useAuthStore.getState().token).toBeNull();
   });
@@ -185,5 +202,58 @@ describe('review hardening', () => {
   it('rejects plain http base URL unless dev build', () => {
     expect(() => normalizeBaseUrl('http://api.example.com/graphql')).toThrow();
     expect(normalizeBaseUrl('http://10.0.2.2:3000', true)).toBe('http://10.0.2.2:3000');
+  });
+});
+
+describe('secure token storage', () => {
+  const user = { id: '7', name: 'n', email: 'a@b.com' };
+
+  it('migrates legacy AsyncStorage tokens to SecureStore and deletes them', async () => {
+    mem[SESSION_KEY] = JSON.stringify({
+      accessToken: 'legacy.acc',
+      refreshToken: 'legacy.refresh',
+      refreshExpiresAt: '2099-01-01T00:00:00.000Z',
+      user,
+    });
+    await useAuthStore.getState().hydrate();
+    expect(secure[ACCESS_KEY]).toBe('legacy.acc');
+    expect(secure[REFRESH_KEY]).toBe('legacy.refresh');
+    expect(mem[SESSION_KEY]).toBeUndefined();
+    expect(JSON.stringify(mem)).not.toContain('legacy.');
+    expect(useAuthStore.getState().token).toBe('legacy.acc');
+    expect(useAuthStore.getState().user).toEqual(user);
+
+    // second hydrate reads from SecureStore only
+    useAuthStore.setState({ token: null, refreshToken: null, user: null, hydrated: false });
+    await useAuthStore.getState().hydrate();
+    expect(useAuthStore.getState().refreshToken).toBe('legacy.refresh');
+  });
+
+  it('keeps legacy data if SecureStore write fails (no token loss)', async () => {
+    const ss = jest.requireMock('expo-secure-store');
+    ss.setItemAsync.mockRejectedValueOnce(new Error('keystore unavailable'));
+    mem[SESSION_KEY] = JSON.stringify({ accessToken: 'a', refreshToken: 'r', refreshExpiresAt: null, user });
+    await useAuthStore.getState().hydrate();
+    expect(mem[SESSION_KEY]).toBeDefined();
+    expect(useAuthStore.getState().hydrated).toBe(true);
+    expect(useAuthStore.getState().token).toBeNull();
+  });
+
+  it('always clears the legacy arman.auth.token key on hydrate', async () => {
+    mem[LEGACY_TOKEN_KEY] = 'old-single-token';
+    await useAuthStore.getState().hydrate();
+    expect(mem[LEGACY_TOKEN_KEY]).toBeUndefined();
+  });
+
+  it('signOut clears SecureStore and AsyncStorage', async () => {
+    mockFetch(200, backendBody);
+    await useAuthStore.getState().signIn(await authApi.login('a@b.com', 'pw'));
+    mem[LEGACY_TOKEN_KEY] = 'x';
+    mem[SESSION_KEY] = 'y';
+    await useAuthStore.getState().signOut();
+    expect(secure[ACCESS_KEY]).toBeUndefined();
+    expect(secure[REFRESH_KEY]).toBeUndefined();
+    expect(Object.keys(mem)).toEqual([]);
+    expect(useAuthStore.getState().token).toBeNull();
   });
 });
