@@ -5,6 +5,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/types';
 import { Button } from '../../components/Button';
 import { useAuthStore } from '../../store/authStore';
+import * as authApi from '../../api/authApi';
 import { colors, radius, spacing, typography } from '../../theme';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
@@ -15,14 +16,22 @@ export function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const onSubmit = async () => {
-    if (!email.trim() || !password) return;
+    if (loading) return;
+    const invalid = authApi.validateLogin(email, password);
+    if (invalid) {
+      setError(invalid);
+      return;
+    }
+    setError(null);
     setLoading(true);
     try {
-      // TODO: replace with a real login mutation against the GraphQL gateway.
-      await new Promise((r) => setTimeout(r, 600));
-      await signIn('demo-token', { id: 'me', name: email.split('@')[0] || 'کاربر', email });
-    } finally {
+      const session = await authApi.login(email, password);
+      await signIn(session);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'خطای نامشخص، دوباره تلاش کنید');
       setLoading(false);
     }
   };
@@ -50,6 +59,8 @@ export function LoginScreen({ navigation }: Props) {
           value={password}
           onChangeText={setPassword}
         />
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <Button title="ورود" onPress={onSubmit} loading={loading} style={styles.cta} />
         <Button
@@ -82,5 +93,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     textAlign: 'right',
   },
+  error: { ...typography.body, color: colors.error, textAlign: 'right' },
   cta: { marginTop: spacing.sm },
 });
