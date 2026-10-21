@@ -229,6 +229,15 @@ describe('secure token storage', () => {
     expect(useAuthStore.getState().refreshToken).toBe('legacy.refresh');
   });
 
+  it('deletes a corrupt legacy session blob and stays signed out', async () => {
+    mem[SESSION_KEY] = '{"accessToken":"leak.acc","refreshTok';
+    await useAuthStore.getState().hydrate();
+    expect(mem[SESSION_KEY]).toBeUndefined();
+    expect(JSON.stringify(mem)).not.toContain('leak.');
+    expect(useAuthStore.getState().hydrated).toBe(true);
+    expect(useAuthStore.getState().token).toBeNull();
+  });
+
   it('keeps legacy data if SecureStore write fails (no token loss)', async () => {
     const ss = jest.requireMock('expo-secure-store');
     ss.setItemAsync.mockRejectedValueOnce(new Error('keystore unavailable'));

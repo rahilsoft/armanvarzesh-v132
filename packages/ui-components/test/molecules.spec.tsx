@@ -49,6 +49,16 @@ describe('OtpInput', () => {
 });
 
 describe('ListRow', () => {
+  it('drops unsafe href schemes and keeps safe ones', () => {
+    for (const bad of ['javascript:alert(1)', ' JavaScript:alert(1)', 'data:text/html,x', '//evil.com', '/\\evil.com', 'vbscript:x']) {
+      const out = html(<ListRow title="x" href={bad} />);
+      expect(out).not.toContain('href=');
+      expect(out).not.toContain('<a ');
+    }
+    for (const ok of ['/wallet', '#top', 'https://a.com', 'http://a.com', 'mailto:a@b.com', 'tel:+98912']) {
+      expect(html(<ListRow title="x" href={ok} />)).toContain('href="' + ok + '"');
+    }
+  });
   it('plain row has no chevron', () => {
     const out = html(<ListRow title="پروفایل" subtitle="ویرایش" trailing="۳" />);
     expect(out).toContain('<div');
