@@ -23,6 +23,50 @@ function build(tokens: string[], expoResults: any[] | Error) {
 }
 const lastUpdate = (p: any) => p.notificationLog.update.mock.calls[0][0].data;
 
+describe('NotificationProcessor retry semantics', () => {
+  const jobAt = (attemptsMade: number, attempts = 3) =>
+    ({ id: 'j1', attemptsMade, opts: { attempts }, data: { id: 'log1', userId: 1, channel: 'push', title: 't', body: 'b' } }) as any;
+  const net = [{ token: 'a', ok: false, error: 'ExpoRequestFailed:TimeoutError' }];
+
+  it('retryable failure before last attempt records reason and rethrows, status untouched', async () => {
+    const { proc, prisma } = build(['a'], net);
+    await expect(proc.process(jobAt(0))).rejects.toThrow(/retryable/);
+    const d = lastUpdate(prisma);
+    expect(d.failureReason).toContain('ExpoRequestFailed');
+    expect(d.status).toBeUndefined();
+  });
+
+  it('retryable 5xx on final attempt marks failed and does not rethrow', async () => {
+    const { proc, prisma } = build(['a'], [{ token: 'a', ok: false, error: 'ExpoHttp503' }]);
+    await expect(proc.process(jobAt(2))).resolves.toBeUndefined();
+    expect(lastUpdate(prisma).status).toBe('failed');
+  });
+
+  it('429 is retryable', async () => {
+    const { proc } = build(['a'], [{ token: 'a', ok: false, error: 'ExpoHttp429' }]);
+    await expect(proc.process(jobAt(1))).rejects.toThrow();
+  });
+
+  it('permanent errors are never rethrown', async () => {
+    for (const [tokens, res] of [
+      [['a'], [{ token: 'a', ok: false, error: 'DeviceNotRegistered', invalidToken: true }]],
+      [['a'], [{ token: 'a', ok: false, error: 'InvalidExpoPushToken', invalidToken: true }]],
+      [[], []],
+    ] as any[]) {
+      const { proc, prisma } = build(tokens, res);
+      await expect(proc.process(jobAt(0))).resolves.toBeUndefined();
+      expect(lastUpdate(prisma).status).toBe('failed');
+    }
+  });
+
+  it('not-configured provider is permanent', async () => {
+    const { proc, prisma } = build([], []);
+    const j = { ...jobAt(0), data: { id: 'log1', userId: 1, channel: 'email', title: 't', body: 'b' } };
+    await expect(proc.process(j)).resolves.toBeUndefined();
+    expect(lastUpdate(prisma).status).toBe('failed');
+  });
+});
+
 describe('NotificationProcessor', () => {
   it('delivered only when Expo accepted at least one token', async () => {
     const { proc, prisma } = build(['a', 'b'], [{ token: 'a', ok: true }, { token: 'b', ok: false, error: 'MessageTooBig' }]);
