@@ -1,7 +1,36 @@
 import React from 'react';
-type Props={ role: string; children: React.ReactNode };
-export function Guarded({role: _role, children}: Props){
-  // TODO: wire to real auth/roles
-  const allowed = true; // replace with selector
-  return allowed ? <>{children}</> : null;
+import { Navigate } from 'react-router-dom';
+import { Result, Spin } from 'antd';
+import { useRoles } from './useRoles';
+import type { AdminRole } from './session';
+
+type Props = {
+  /** One or more roles; the admin needs at least one. Omit to require only a signed-in admin. */
+  role?: AdminRole | AdminRole[];
+  children: React.ReactNode;
+};
+
+/**
+ * UI gate only. The backend enforces roles on every request.
+ * loading => spinner, no session => redirect to /login, missing role => Persian 403.
+ */
+export function Guarded({ role, children }: Props) {
+  const { status, hasRole } = useRoles();
+
+  if (status === 'loading') {
+    return (
+      <div role="status" style={{ display: 'flex', justifyContent: 'center', padding: 48 }}>
+        <Spin tip="در حال بررسی دسترسی" size="large">
+          <div style={{ padding: 32 }} />
+        </Spin>
+      </div>
+    );
+  }
+  if (status === 'unauthenticated') return <Navigate to="/login" replace />;
+  if (role !== undefined && !hasRole(role)) {
+    return <Result status="403" title="۴۰۳" subTitle="شما اجازه دسترسی به این بخش را ندارید." />;
+  }
+  return <>{children}</>;
 }
+
+export default Guarded;
