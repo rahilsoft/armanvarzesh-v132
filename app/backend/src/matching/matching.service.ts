@@ -100,7 +100,8 @@ export class MatchingService {
     now: number = Date.now(),
   ): Promise<Coach[]> {
     goals = sanitizeGoals(goals);
-    const all = await this.coachesService.findAll();
+    // Only admin-verified coaches are ever recommended.
+    const all = (await this.coachesService.findAll(true)).filter((c) => c.verified);
     const expertiseFilter = expertise?.toLowerCase();
     if (expertiseFilter && ['package', 'full', 'complete', 'all'].includes(expertiseFilter)) {
       return this.recommendPackage(goals, now);
