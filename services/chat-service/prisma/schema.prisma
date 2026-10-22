@@ -50,7 +50,9 @@ model ReadReceipt {
 
 model Attachment {
   id         String   @id
-  messageId  String
+  // Optional: presignUpload creates the attachment row before any message
+  // exists, and links it when the message is finally sent.
+  messageId  String?
   kind       String   // image|voice|file
   url        String   // stored URL (after scan OK)
   uploadKey  String?  // storage key
@@ -58,7 +60,7 @@ model Attachment {
   sizeBytes  Int
   mime       String
   createdAt  DateTime @default(now())
-  message    Message  @relation(fields:[messageId], references:[id], onDelete: Cascade)
+  message    Message? @relation(fields:[messageId], references:[id], onDelete: Cascade)
 }
 
 model ChatMessage {
