@@ -88,7 +88,10 @@ branch and the target branch CI was checked. Owner: `qa-test-engineer` (integrat
    narration between tool calls. Not for code, commits, docs, STATUS.md or owner messages.
 2. **rtk** for noisy commands when installed (`command -v rtk`): `rtk pnpm …`, `rtk tsc`,
    `rtk jest`, `rtk lint`, `rtk prisma …`, `rtk next build`, `rtk git status|diff|log`,
-   `rtk test <cmd>`, `rtk err <cmd>`. Without rtk: pipe through `| tail -n 40` or `grep -E "error|fail"`.
+   `rtk test <cmd>`, `rtk err <cmd>`. Without rtk: run the command with its raw output saved to a file
+   (`cmd > log.txt 2>&1; code=$?`), read the tail and `grep -E "error|fail"` from the file, and
+   keep the real exit code (`set -o pipefail` or `PIPESTATUS`). Never let `| tail` or `| grep`
+   decide pass/fail: a pipe hides the failing command's exit code.
 3. Broad search → built-in `Explore` subagent (cheap model), answer as `path:line-range reason`
    lines only. Read files by line range, never whole large files or lockfiles.
 4. Subagent final report ≤ 25 lines: branch, files changed, commands + pass/fail counts,
@@ -100,6 +103,15 @@ branch and the target branch CI was checked. Owner: `qa-test-engineer` (integrat
    mechanical config changes, `sonnet` for normal feature code and tests, `opus` only for security
    review, payments/auth logic, architecture decisions and hard debugging. Escalate one tier only
    when a cheaper run fails or the reviewer blocks it.
+
+## Quota budget (owner plan 2026-10-22, binding)
+- Project share: at most 80% of the weekly quota; 20% is reserved for the owner's personal use.
+- Two work packages per day: 10:02 and 22:02 Tehran, each at most 60 minutes. Fallback slots 04:02 and 16:02 only replace a lost package; they are not scheduled by default.
+- Before and after every package, record the quota (5-hour, weekly, reset time) from an official in-app source. Local JSONL or ccusage is analysis, not the balance.
+- If the balance cannot be read from an official source, do not start new development. Only answer review findings and write the handoff.
+- No paid overage, no credit purchase, no automatic switch to API billing.
+- Subagents get a task, scope, acceptance criteria and only the references they need. Use the cheapest model that fits (see rule 6).
+- Full plan text: GitHub issue #54, comment «QUOTA-PLAN-20261022-v1».
 
 ## The agent team
 Definitions live in `.claude/agents/`. Nightly procedure: `docs/agents/NIGHTLY_RUNBOOK.md`.

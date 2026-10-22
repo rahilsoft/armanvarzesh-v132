@@ -1,5 +1,7 @@
 # Nightly runbook — 22:00 to 00:00 (Asia/Tehran)
 
+**Owner plan 2026-10-22 (supersedes the cadence below):** two work packages per day, at 10:02 and 22:02 Tehran, each at most 60 minutes. Check the quota before and after each package and apply the rules in CLAUDE.md «Quota budget». The rest of this runbook describes the content of a package.
+
 Hard limit: **two hours** (owner instruction 2026-10-21, replaces the 21:00–24:00 window of 2026-10-20).
 Work in rounds of plan → build → review → merge (about 30–45 min each, 2 rounds per night). Stop
 starting new build work at 23:15, finish review + integration sweep by 23:45, report by 23:55. If

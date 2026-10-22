@@ -61,6 +61,9 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-22 | Owner quota plan: two packages per day (10:02, 22:02 Tehran, ≤60 min each), 80% project cap, 20% owner reserve, quota-stop rule when balance is unreadable | Team cost per full shift is too high for the five-hour reset; full text in GitHub issue #54 |
+| 2026-10-22 | `docs/agents/reports/` was git-ignored (`.gitignore` rule `reports/`), so the 2026-10-21 report never reached develop; exception added | Handoff report must be in git to be reviewed |
+| 2026-10-22 | Fallback slots 04:02 and 16:02 documented but not scheduled | Spend less until three days of measured data exist |
 | 2026-10-21 | Owner: nightly window moves to 22:00–00:00 Tehran and is reduced to two hours (was 21:00–24:00) | Owner instruction; runbook updated, scheduled task moved to 22:02 |
 | 2026-10-19 | Path A: `app/backend` monolith is production | Hardened, all gates green; services carried P0 defects |
 | 2026-10-19 | Work lands on `develop`, `main` only via owner-approved release | Keeps production stable |
