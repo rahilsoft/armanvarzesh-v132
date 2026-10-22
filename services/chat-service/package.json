@@ -27,7 +27,8 @@
     "@prisma/client": "^5.18.0",
     "compression": "^1.7.4",
     "@arman/security-middleware": "workspace:*",
-    "@arman/observability-sdk": "workspace:*"
+    "@arman/observability-sdk": "workspace:*",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@arman/service-kit": "workspace:*",
@@ -37,7 +38,8 @@
     "prisma": "^5.18.0",
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "@types/jsonwebtoken": "^9.0.6"
   },
   "engines": {
     "node": ">=20.0.0 <21",
