@@ -6,7 +6,7 @@ Owner of each item in brackets.
 
 ## Phase 0 — Foundation (security & topology)  — must finish first
 - [ ] 0.1 Repoint docker-compose, Helm, k8s and CI at `app/backend`; remove deprecated `services/*` from every deploy path (folders stay until owner approves deletion). [coordinator-architect]
-- [ ] 0.2 Close P0-1 trusted `x-user-id` / `x-role` header auth everywhere still deployable. [security-reviewer + backend-engineer]
+- [x] 0.2 Close P0-1 trusted `x-user-id` / `x-role` header auth everywhere still deployable. [security-reviewer + backend-engineer]
 - [x] 0.3 Close P0-2 / P0-3: required `JWT_SECRET` (min 32) in production, remove all `|| 'dev'` / `'change_me'` fallbacks, pin JWT algorithms. [security-reviewer]
 - [ ] 0.4 Close P0-4: payment webhooks / callbacks verified and idempotent (Zarinpal verify, Stripe signature). [backend-engineer]
 - [ ] 0.5 Close P0-5: real Prisma migrations for the monolith DB, remove `db push` fallback. [backend-engineer]

@@ -6,14 +6,14 @@ Maintained by `coordinator-architect`. Only verified facts. Newest session on to
 
 | Gate | Status | Evidence (command / result) |
 |---|---|---|
-| Deploy path targets `app/backend` only | ⚠️ | 2026-10-19 night: helm/deploy/k8s/CI/compose/bake no longer reference removed services (grep empty). Open: `services/graphql-gateway/src/main.ts` still defaults to dead subgraphs, `helm template` not run (no helm in sandbox) |
-| All P0 security items closed | ❌ | 2026-10-20 night: Zarinpal verify uses stored amount by authority, idempotent, webhook HMAC fail-closed outside dev/test, strict hex signature (all APPROVED, merged). Open: Zarinpal request/callback routes not registered in PaymentsModule, P0-1 `x-user-id` sweep, replay protection |
-| No mocks / stubs in production paths | ❌ | inventory done: `docs/agents/MOCK_INVENTORY.md` 68 sites (9 P0, 18 P1, 41 P2), burn-down not started |
-| Backend typecheck + lint + unit tests green | ✅ | 2026-10-20 night on develop 9210d73: typecheck exit 0, lint exit 0, 43 suites / 207 tests passed (2 suites, 69 tests skipped), 0 failed |
-| Backend e2e against real Postgres + Redis green | ❌ | not yet run |
-| Real Prisma migrations, no `db push` | ❌ | ROADMAP 0.5 |
-| Web site + admin production builds green | ⚠️ | reported green 2026-06-29, re-verify |
-| Mobile user + coach typecheck + EAS preview build | ❌ | eas.json not configured |
+| Deploy path targets `app/backend` only | ⚠️ | 2026-10-21: graphql-gateway default subgraph = monolith `BACKEND_URL` (required outside dev/test), dead subgraph defaults + deploy templates removed, gateway tsc 0 / jest 39 passed. Open: `services/api-gateway/src/main.js` legacy proxy to removed services, `app/physio-subgraph` proxies removed physio-service, `helm template` not run |
+| All P0 security items closed | ⚠️ | 2026-10-21: Zarinpal request (JWT userId only) + callback (stored amount, idempotent, status required, 302 to `PAYMENT_RESULT_URL`) registered, mock provider fails outside dev/test, legacy client-amount payment path deleted, P0-1 header trust: 0 sites in app/backend + services (grep) with regression tests, matching endpoints JWT + no coach PII. Open: Stripe webhook signature not re-verified, webhook replay protection, `main.ts` CORS allows all when `CORS_ORIGINS` empty, paid payment does not credit wallet yet |
+| No mocks / stubs in production paths | ❌ | 2026-10-21 burn-down: P0 #1 #2 #3 #8 #9 #12 #13 fixed, P1 #4 #10 #14 #15 #16 #17 fixed (merged). Open P0: none of the 9 left as fake, but email (nodemailer missing) and web push fail explicitly. Open P1: #5 #11 #20 #22 #23 #25 #26 #30 #31, admin DashboardPage hard-coded stats, ReviewsService in-memory |
+| Backend typecheck + lint + unit tests green | ✅ | 2026-10-21 night on develop 74818f9: typecheck exit 0, lint exit 0, `jest src test/unit --maxWorkers=2` 54 suites / 312 tests passed (2 suites, 69 tests skipped), 0 failed. Also green in CI backend-e2e run 39653155423 unit step |
+| Backend e2e against real Postgres + Redis green | ❌ | 2026-10-21: new workflow `backend-e2e.yml` (postgres:16 + redis:7). Run 39653155423: `prisma migrate deploy` of all migrations OK on real Postgres, typecheck + unit OK, e2e step hung 27 min → cancelled. Hang fix merged (7b961ec), result pending in next run |
+| Real Prisma migrations, no `db push` | ⚠️ | 2026-10-21: 21 migrations apply cleanly with `migrate deploy` in CI and on a scratch Postgres 16 (reviewer). New additive migration `20261021000000_notifications_device_tokens`. Open: `migrate diff` schema-vs-migrations drift check not run (engine blocked in sandbox), remove remaining `db push` fallbacks (ROADMAP 0.5) |
+| Web site + admin production builds green | ✅ | 2026-10-21: `pnpm --filter ./apps/admin-web build` exit 0 (jest 34 passed, typecheck 0) on develop 0e43b57, web-site build "Compiled successfully" (security-reviewer run on atoms branch) |
+| Mobile user + coach typecheck + EAS preview build | ❌ | 2026-10-21: mobile-user typecheck 0 errors, jest 19 passed. eas.json not configured, coach app has no source |
 | All core modules work end to end (ROADMAP phases 2–5) | ❌ | not started |
 | All required secrets provided by owner | ❌ | see «Secrets needed» |
 | Security reviewer final approval | ❌ | — |
@@ -33,10 +33,16 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | `PAYMENTS_WEBHOOK_SECRET`, `MEDICAL_WEBHOOK_SECRET` | HMAC of PSP payment and medical webhooks (now required in staging + production) | missing |
 | `BOOKING_WEBHOOK_SECRET` (≥ 32 chars) | HMAC of outbox relay -> `POST /booking/payments/success`, fail-closed outside dev/test | missing |
 | `ZARINPAL_MERCHANT_ID`, `PAYMENT_PROVIDER=zarinpal`, `ZARINPAL_CALLBACK_URL` (opt. `ZARINPAL_SANDBOX`) | payments | missing |
-| `KAVENEGAR_API_KEY` + sender line | OTP / SMS | missing |
+| `SMS_PROVIDER=kavenegar`, `KAVENEGAR_API_KEY`, `KAVENEGAR_SENDER`, `KAVENEGAR_OTP_TEMPLATE` (opt.) | OTP / SMS, prod boot fails without them | missing |
+| `PAYMENT_RESULT_URL` (https) | page the Zarinpal callback redirects to, prod boot fails without it | missing |
+| `EXPO_ACCESS_TOKEN` (optional) | Expo push API | missing |
+| `ADMIN_USERS_JSON` | admin accounts for `POST /admin/login` | missing |
+| `CORS_ORIGINS` | allowed web origins for backend, live socket and graphql-gateway | missing |
+| `BACKEND_URL` | graphql-gateway → monolith, required outside dev/test | missing |
+| `EXPO_PUBLIC_API_URL` / `VITE_API_BASE_URL` | mobile + admin-web backend base URL (build-time, not secret) | missing |
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | media storage | missing |
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | live sessions | missing |
-| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` | email | missing |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | email (also needs `nodemailer` dependency, team task) | missing |
 | AI provider API key | AI module | missing |
 | Expo / EAS account + `EXPO_TOKEN` | mobile builds, push | missing |
 | Apple Developer account (APNs key) | iOS push, TestFlight | missing |
@@ -55,6 +61,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-21 | Owner: nightly window moves to 22:00–00:00 Tehran and is reduced to two hours (was 21:00–24:00) | Owner instruction; runbook updated, scheduled task moved to 22:02 |
 | 2026-10-19 | Path A: `app/backend` monolith is production | Hardened, all gates green; services carried P0 defects |
 | 2026-10-19 | Work lands on `develop`, `main` only via owner-approved release | Keeps production stable |
 | 2026-10-19 | Merge only security-approved branches, payments branch held back | Reviewer found callback amount taken from client payload (underpay risk) |
@@ -64,13 +71,21 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | 2026-10-20 | Gateway business rejections (e.g. -51) not retried and not counted by circuit breaker | User cancels must not trip the breaker |
 | 2026-10-20 | From the next shift `ui-ux-designer` (+ `web-frontend-engineer` / `mobile-engineer`) runs ROADMAP 1.2 and 1.3 every night in parallel with Phase 0 | Three-hour window allows it, design files do not overlap backend scope, and UI is the longest path to deploy |
 | 2026-10-20 | `qa-test-engineer` is the integration owner | Already owns CI and test suites, keeps coordinator free for planning |
+| 2026-10-21 | Push goes only through Expo push API, FCM/APNs no-op providers deleted | App is Expo, one real path beats three empty ones |
+| 2026-10-21 | Zarinpal callback 302-redirects to `PAYMENT_RESULT_URL`, JSON only for `Accept: application/json` | Browser redirect from the gateway needs a page, target only from env (no open redirect) |
+| 2026-10-21 | A forged `Status=NOK` may flip pending→failed, a later verified OK still settles | Reviewer judged low impact, gateway verify with stored amount stays the authority |
+| 2026-10-21 | Admin roles in admin-web decoded from JWT for UI only, backend guards enforce, `GET /admin/me` added | Admin table has no role column, admins come from `ADMIN_USERS_JSON` |
+| 2026-10-21 | Mobile tokens in expo-secure-store, auth is email + password (REST /auth/*) | Backend has no OTP endpoints yet, GraphQL login returns no refresh token |
+| 2026-10-21 | PR #52 closed as superseded, its live security fixes ported in a99b68d/91a5266 | 145 of 163 files target removed services, 41 conflicts |
+| 2026-10-21 | physio dropped from gateway default subgraphs | `app/physio-subgraph` only proxies the removed physio-service |
 | 2026-10-19 | Open: iOS distribution path for Iran — coordinator decides in a later session | Needs research on Sibche / TestFlight / PWA |
 
 ## Integration (PR sweep, updated every shift)
 | PR | Target | State | Blocker / action |
 |---|---|---|---|
+| #52 claude/project-review-improvement → main | main | closed 2026-10-21 (superseded) | Still-relevant fixes ported to develop (webhook guard fail-closed, live socket + gateway CORS allowlists). Follow-up: api-gateway CORS allowlist or retire api-gateway |
+| develop → main release | main | not opened tonight | develop 74818f9 green locally, but backend-e2e not yet green in CI and deploy gates red. Action: open release PR when backend-e2e passes |
 | #53 develop → main | main | merged 828077f | — |
-| #52 claude/project-review-improvement → main | main | open, blocked | 41 conflicts vs develop (modify/delete in removed `services/*` + lockfile), re-adds removed services, CI stale (2026-10-09, Workers Builds failed). Action: next session merge develop into it, drop removed paths, regen lockfile, gate + security review, merge via develop |
 | #3 p-limit 7 (media-worker) | main | applied on develop 249ab35, closed | reaches main with next release |
 | #4 uuid 13 (media-worker, live-subgraph) | main | applied on develop 249ab35, closed | reaches main with next release |
 | #46 jose 6 | main | closed | backend Jest is CJS, jose 6 ESM-only → 1 suite fails (`Unexpected token 'export'`). Action: add Jest ESM transform, then upgrade |
@@ -84,6 +99,21 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-21 night (21:02–04:25 Tehran, report pushed late) — nightly session 3
+Report pushed at 04:25 Tehran, after the 23:55 deadline. Owner then changed the window to 22:00–00:00 and two hours.
+GPT review issue «Independent technical review — GPT / Claude handoff» does not exist yet (searched open + closed issues), no REV findings to answer.
+Round 1 (merged 76178ca), round 2 (merged 0e43b57), round 3 (merged 74818f9). Every branch security-reviewer APPROVED before merge, reviewer fixes pushed on the branches:
+- ROADMAP 0.4 / MOCK #1–#4: `payments-routes` (2b9206e) Zarinpal request (JWT userId, whitelisted body, throttle 10/min) + public callback (stored amount, idempotent, status required), mock provider fails outside dev/test, legacy client-amount path deleted, booking webhook own `BOOKING_WEBHOOK_SECRET`. `payments-followups` (2c793c1) callback 302 to `PAYMENT_RESULT_URL`, NOK → failed (paid never downgraded), amount 10,000–500,000,000 Rial integer, dead resolver/webhook controller deleted.
+- MOCK #8–#10: `notifications-real` (6020141) Expo push provider, Kavenegar over HTTPS, no fake success, no body logging. `notifications-wiring` (b671dc6) DeviceToken + NotificationLog models + migration `20261021000000_notifications_device_tokens` (applied on scratch Postgres 16 by reviewer), BullMQ queue + processor registered, NotificationsModule in AppModule, JWT device-token endpoints, unauthenticated /send + /preferences removed. `redis-lifecycle` (9e1562c) retryable failures retried by BullMQ, Redis clients closed on shutdown.
+- ROADMAP 0.2 + MOCK #12: `matching-p0-1` (474e2d6) deterministic scoring, header-trust regression tests (0 sites left). `matching-pii-admin-me` (b8596fb) matching needs JWT, PublicCoach without email, verified only, `GET /admin/me`.
+- ROADMAP 0.7: `ci-db-harness` (518492a) `backend-e2e.yml`, `e2e-ci-fix` (e70bf1a) hang fix + timeouts, ci-integration-services MinIO start fixed.
+- ROADMAP 0.1: `gateway-repoint` (0f90c59). PR #52 port: `pr52-port` (91a5266).
+- MOCK #13 #17: `real-auth` (0c713bc) mobile login/register real REST, single-flight refresh, Apollo 401 refresh. `secure-store` (286008b) tokens in expo-secure-store. `review-nits` (5ac536d).
+- MOCK #14–#16: `admin-rbac` (5eba81c), `admin-login` (e5ab4e3) real `POST /admin/login`, deny-by-default route guard, safe redirect.
+- ROADMAP 1.2 / 1.3 (partial): `atoms-and-specs` (a7e1070) 8 atoms + Persian/Jalali format utils + 9 screen specs in `docs/design/`, `molecules` (d84ed95) 8 molecules, dark `borderStrong` ≥ 3:1.
+Gate on develop 74818f9 (local): backend typecheck 0, lint 0, `jest src test/unit --maxWorkers=2` 54 passed / 2 skipped suites, 312 passed / 69 skipped tests. admin-web typecheck 0, jest 34 passed, build 0 (at 0e43b57). mobile-user typecheck 0, jest 19 passed. ui-components jest 90 passed. graphql-gateway tsc 0, jest 39 passed.
+CI: backend-e2e run 39653155423 (76178ca) migrate deploy + unit green, e2e step hung → cancelled. Fix merged, verification pending on the next run.
+Not done / follow-ups: wallet credit on paid (needs `Payment.purpose` column + migration), Stripe signature re-check, CORS fail-open when `CORS_ORIGINS` empty, email needs `nodemailer`, NotificationsService.send has no callers yet, NotificationsResolver unregistered (client userId), admin DashboardPage fake stats, admin pages not routed, api-gateway legacy proxy, ReviewsService in-memory, RN component equivalents, Figma frames, eas.json.
 ### 2026-10-20 night (22:02–22:30 Tehran) — nightly session 2
 Done (merged into `develop`, security-reviewer APPROVED each branch, gates green):
 - ROADMAP 0.4 (partial): `agent/backend-engineer/payments-real-provider` (a9c9ec6). `PaymentStore` + `PrismaPaymentStore` (parameterized `Prisma.sql`), verify uses stored amount by authority, unknown authority rejected, already-paid idempotent, conditional UPDATE race-safe, paid only after Zarinpal 100/101. `PaymentsService.verify` routed through the provider.

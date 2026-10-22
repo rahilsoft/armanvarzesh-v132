@@ -1,9 +1,9 @@
-# Nightly runbook — 21:00 to 24:00 (Asia/Tehran)
+# Nightly runbook — 22:00 to 00:00 (Asia/Tehran)
 
-Hard limit: **three hours** (owner instruction 2026-10-20). Work in rounds of plan → build →
-review → merge (about 45–60 min each, 2–3 rounds per night). Stop starting new build work at
-23:15, finish review + integration sweep by 23:45, report by 23:55. If the clock says it is past
-24:00 Tehran time, report and stop.
+Hard limit: **two hours** (owner instruction 2026-10-21, replaces the 21:00–24:00 window of 2026-10-20).
+Work in rounds of plan → build → review → merge (about 30–45 min each, 2 rounds per night). Stop
+starting new build work at 23:15, finish review + integration sweep by 23:45, report by 23:55. If
+the clock says it is past 00:00 Tehran time when the shift starts, report and stop.
 
 ## 1. Prepare (≤ 5 min)
 0. Start the rtk token filter build **in the background** (≈ 5 min, runs while you plan):
