@@ -2,10 +2,11 @@
 
 **Owner plan 2026-10-22 (supersedes the cadence below):** two work packages per day, at 10:02 and 22:02 Tehran, each at most 60 minutes. Check the quota before and after each package and apply the rules in CLAUDE.md «Quota budget». The rest of this runbook describes the content of a package.
 
-Hard limit: **two hours** (owner instruction 2026-10-21, replaces the 21:00–24:00 window of 2026-10-20).
-Work in rounds of plan → build → review → merge (about 30–45 min each, 2 rounds per night). Stop
-starting new build work at 23:15, finish review + integration sweep by 23:45, report by 23:55. If
-the clock says it is past 00:00 Tehran time when the shift starts, report and stop.
+Per package (owner plan 2026-10-22): at most **60 minutes**, starting at 10:02 or 22:02 Tehran.
+Stop starting new build work 15 minutes before the package ends. Push the handoff report before the
+package ends. Plan → build → review → merge fit into one package; a larger change is split into
+branches with a checkpoint and continues in the next package, never rushed to fit the window.
+Quota rules (CLAUDE.md «Quota budget») apply before the package starts and before it ends.
 
 ## 1. Prepare (≤ 5 min)
 0. Start the rtk token filter build **in the background** (≈ 5 min, runs while you plan):
@@ -50,7 +51,7 @@ branch protection, then check CI on the target branch. Record each PR as merged 
 ## 5. Report (≤ 5 min)
 - Update `docs/agents/STATUS.md`: new session entry (done / in progress / blocked, commands and
   results), gates table, «Secrets needed». Tick verified ROADMAP items. Commit + push `develop`.
-- Write the handoff report `docs/agents/reports/<YYYY-MM-DD>.md` (date = shift START date) in Persian (no «؛»), pushed before 23:55 for the 00:05 GPT review. It must contain: final SHAs of `develop` and `main`, merged / open / blocked PRs with reasons, features completed and still incomplete, test commands with real results, skipped / not-run tests and why, link to the CI run of the delivered SHA, known issues, DB changes (migrations), configuration needs, replies given to GPT findings, decisions + why, next shift plan, deploy readiness, owner-only items (secrets, money, legal). Do not ask the owner questions.
+- Write the handoff report `docs/agents/reports/<YYYY-MM-DD>.md` (date = shift START date) in Persian (no «؛»), pushed before the package ends, so GPT can review it at its next scheduled slot (00:05, 06:05, 12:05, 18:05 Tehran). It must contain: final SHAs of `develop` and `main`, merged / open / blocked PRs with reasons, features completed and still incomplete, test commands with real results, skipped / not-run tests and why, link to the CI run of the delivered SHA, known issues, DB changes (migrations), configuration needs, replies given to GPT findings, decisions + why, next shift plan, deploy readiness, owner-only items (secrets, money, legal). Do not ask the owner questions.
 - Send the owner a short Persian notification (≤ 200 chars, no «؛»): what was finished tonight,
   what is next, and whether the project is READY FOR DEPLOY.
 - Integration result: list merged PRs and blocked PRs with blocker + action in the owner report.

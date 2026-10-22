@@ -20,7 +20,7 @@ difference. Summary of Claude's duties first.
   if written after midnight, must contain: final SHAs of `develop` and `main`, merged / open /
   blocked PRs with reasons, features completed and still incomplete, test commands with real
   results, skipped or not-run tests and why, link to the CI run for the delivered SHA, known
-  issues, DB changes (migrations), configuration needs. Push it before 23:55 so GPT reviews it.
+  issues, DB changes (migrations), configuration needs. Push it before the work package ends. GPT reviews at 00:05, 06:05, 12:05 and 18:05 Tehran.
 - Sensitive changes (payments, auth, access control, migrations) pass security review and related
   tests BEFORE merge. The post-shift audit never replaces pre-merge review. Never bypass branch
   protection or required checks.

@@ -58,6 +58,12 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-22)
+- **Quota observability not established.** Claude cannot read its quota from an official in-app source in the scheduled run, so the stop rule (no new development when the balance is unreadable) would stop development indefinitely. Waiting three days does not fix this. Needed before the 20% reserve can be guaranteed: a readable quota source, or an owner decision for a bounded maintenance-only package when unreadable. Owner decision needed.
+- **REV-20261022-01 (P1), reservation endpoints without authentication or ownership:** `ReservationsController` takes `userId` from the body and cancel has no owner check. Authorised fix (JWT identity, owner check, DTO validation, regression tests). Scheduled for the next work package.
+- **PR #56** (`claude/e2e-gate-fix`, draft): backend-e2e run 39748123448 on fc64f05 green, 6 E2E suites / 20 tests passed (this branch only, not on develop). Not merged. Remaining weak assertion in checkout-webhook e2e (REV-20261021-03 continuation).
+- **PR #55** (`claude/chat-service-auth-hardening`, draft, target main): open, not merged, not audited in depth.
+
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|

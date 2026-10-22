@@ -54,7 +54,7 @@ accounts, entering or changing secrets, anything legal (store policies acceptanc
   offline for a month. No owner approval is needed for development work. Owner-only items
   (secrets, paid accounts, legal, production deploy) go into the report and STATUS.md, never as a
   blocking question, and work continues on everything else.
-- GPT reviews every shift at 00:05 Tehran and posts findings `REV-YYYYMMDD-NN` in the GitHub issue
+- GPT reviews at 00:05, 06:05, 12:05 and 18:05 Tehran (owner plan 2026-10-22) and posts findings `REV-YYYYMMDD-NN` in the GitHub issue
   `Independent technical review — GPT / Claude handoff`. Protocol and Claude duties:
   `docs/agents/COLLABORATION_GPT.md` (binding). Start of shift: answer every open finding first.
   End of shift: the handoff report with SHAs, PRs, tests, skipped tests, CI link, DB/config changes.
