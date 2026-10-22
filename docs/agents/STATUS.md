@@ -59,9 +59,9 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
 ## Open items (2026-10-22)
-- **Quota observability not established.** Claude cannot read its quota from an official in-app source in the scheduled run, so the stop rule (no new development when the balance is unreadable) would stop development indefinitely. Waiting three days does not fix this. Needed before the 20% reserve can be guaranteed: a readable quota source, or an owner decision for a bounded maintenance-only package when unreadable. Owner decision needed.
-- **REV-20261022-01 (P1), reservation endpoints without authentication or ownership:** `ReservationsController` takes `userId` from the body and cancel has no owner check. Authorised fix (JWT identity, owner check, DTO validation, regression tests). Scheduled for the next work package.
-- **PR #56** (`claude/e2e-gate-fix`, draft): backend-e2e run 39748123448 on fc64f05 green, 6 E2E suites / 20 tests passed (this branch only, not on develop). Not merged. Remaining weak assertion in checkout-webhook e2e (REV-20261021-03 continuation).
+- **Quota observability not established (checked 2026-10-22 22:05 Tehran).** Method tried in the scheduled cloud run: `claude -p "/usage"` (Claude Code 2.1.308). It returns only the local process cost ($0, 0 tokens), no 5-hour or weekly percentage and no reset time. No in-app usage tool is exposed to the run. No credential extraction or private endpoint was tried. Result: balance unreadable, so packages start no new development (CLAUDE.md «Quota budget»). Owner-only unblock: post the 5-hour and weekly figures from the Claude app in issue #54 before a package, or approve a bounded rule for unreadable balance.
+- **REV-20261022-01 (P1), reservation endpoints without authentication or ownership:** `ReservationsController` takes `userId` from the body and cancel has no owner check. Authorised fix (JWT identity, owner check, DTO validation, regression tests). **Ready to run, blocked by quota observability** (not started).
+- **PR #56** (`claude/e2e-gate-fix`, draft): backend-e2e run 39748123448 on fc64f05 green, 6 E2E suites / 20 tests passed (this branch only, not on develop). Head now 03da135 (STATUS line only). Not merged. backend-e2e on develop d085ca6 still fails (run 39749493192). Remaining weak assertion in checkout-webhook e2e (REV-20261021-03 continuation).
 - **PR #55** (`claude/chat-service-auth-hardening`, draft, target main): open, not merged, not audited in depth.
 
 ## Decisions log
@@ -108,6 +108,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-22 22:02 package (22:02–22:20 Tehran) — quota-blocked, review answers + handoff only
+- Quota before and after: unreadable from an official source (method above). No new development.
+- Issue #54: replied to REV-20261021-01…07 and REV-20261022-01 ([comment](https://github.com/rahilsoft/armanvarzesh-v132/issues/54#issuecomment-6348313301)). All accepted, P1/P2 blocked by quota observability, REV-03 fixed on PR #56 (not merged).
+- Docs: runbook title and COLLABORATION_GPT GPT slots corrected (GPT-DOC-CHECK leftovers).
+- No code changed, no tests run (nothing to test), no merge, no deploy.
 ### 2026-10-21 night (21:02–04:25 Tehran, report pushed late) — nightly session 3
 Report pushed at 04:25 Tehran, after the 23:55 deadline. Owner then changed the window to 22:00–00:00 and two hours.
 GPT review issue «Independent technical review — GPT / Claude handoff» does not exist yet (searched open + closed issues), no REV findings to answer.

@@ -1,4 +1,4 @@
-# Nightly runbook — 22:00 to 00:00 (Asia/Tehran)
+# Work package runbook — 10:02 and 22:02, 60 minutes each (Asia/Tehran)
 
 **Owner plan 2026-10-22 (supersedes the cadence below):** two work packages per day, at 10:02 and 22:02 Tehran, each at most 60 minutes. Check the quota before and after each package and apply the rules in CLAUDE.md «Quota budget». The rest of this runbook describes the content of a package.
 
