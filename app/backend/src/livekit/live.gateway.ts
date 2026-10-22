@@ -1,4 +1,4 @@
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Logger, OnModuleDestroy, UnauthorizedException } from '@nestjs/common';
 import { WebSocketGateway, WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
@@ -18,28 +18,36 @@ export function liveCorsOrigins(env: NodeJS.ProcessEnv = process.env): string[] 
 }
 
 @WebSocketGateway({ namespace: '/live', cors: { origin: liveCorsOrigins(), credentials: true } })
-export class LiveGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class LiveGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, OnModuleDestroy {
   @WebSocketServer() server: Server;
   private logger = new Logger('LiveGateway');
   private kicked = new Map<string, Set<string>>(); // room -> identities kicked
+  private adapterClients: Redis[] = [];
 
   afterInit(..._args:any[]){
     try{
       const url = process.env.REDIS_TLS_URL || process.env.REDIS_URL;
       if (url){
-        const pub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
-        const sub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
         // Optional dependency: only present when the Redis-backed socket.io
         // adapter is deployed; the surrounding try/catch keeps single-node
-        // setups working without it. (The old code referenced createAdapter
-        // without any import — it could never have worked; @ts-ignore hid it.)
+        // setups working without it. It is loaded BEFORE any connection is
+        // opened so a missing package cannot leave two orphaned Redis sockets.
+        // (The old code referenced createAdapter without any import — it could
+        // never have worked; @ts-ignore hid it.)
         // eslint-disable-next-line @typescript-eslint/no-var-requires -- optional runtime dependency, loaded lazily
         const { createAdapter } = require('@socket.io/redis-adapter');
+        const pub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
+        const sub = new Redis(url, { tls: url.startsWith('rediss://') ? {} as any : undefined });
+        this.adapterClients = [pub, sub];
         this.server.adapter(createAdapter(pub, sub, { key: process.env.LIVE_WS_REDIS_PREFIX || 'socketio' }));
       }
     }catch(e){ /* ignore */ }
 
     this.logger.log('Live WS namespace ready');
+  }
+  async onModuleDestroy() {
+    await Promise.all(this.adapterClients.map((c) => c.quit().catch(() => c.disconnect())));
+    this.adapterClients = [];
   }
   handleConnection(client: Socket) { this.logger.log(`client connected ${client.id}`); }
   handleDisconnect(client: Socket) { this.logger.log(`client disconnected ${client.id}`); }
