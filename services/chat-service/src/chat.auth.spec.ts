@@ -2,6 +2,11 @@ import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { identityFromHandshake, identityFromReq, identityFromToken } from './auth/req-user';
 
+// ChatService pulls in ./prisma, which imports @prisma/client at module load and
+// throws unless `prisma generate` has run. These tests stub the client by hand,
+// so keep the real one out of the picture; CI's unit job does not generate it.
+jest.mock('./prisma', () => ({ getPrisma: () => ({}) }));
+
 const SECRET = 'test-secret-at-least-16-chars';
 const sign = (payload: object, secret = SECRET) =>
   jwt.sign(payload, secret, { algorithm: 'HS256' });
