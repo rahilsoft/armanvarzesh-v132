@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Queue, Worker, JobsOptions } from 'bullmq';
 import IORedis from 'ioredis';
 import { PrismaService } from '../database/prisma.service';
@@ -6,7 +6,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { PUB_SUB } from '../notifications/notifications.module';
 
 @Injectable()
-export class RemindersService {
+export class RemindersService implements OnModuleDestroy {
   private conn = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379/1', { maxRetriesPerRequest: null });
   private q = new Queue('reservations:reminder', {
     connection: this.conn,
@@ -17,13 +17,14 @@ export class RemindersService {
       removeOnFail: parseInt(process.env.BULLMQ_REMOVE_ON_FAIL || '5000'),
     },
   });
+  private worker?: Worker;
   private logger = new Logger(RemindersService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     @Inject(PUB_SUB) private pubSub: PubSub,
   ) {
-    new Worker(
+    this.worker = new Worker(
       'reservations:reminder',
       async (job) => {
         const { userId, text } = job.data;
@@ -37,6 +38,13 @@ export class RemindersService {
       },
       { connection: this.conn, concurrency: parseInt(process.env.WORKER_CONCURRENCY || '4') },
     );
+  }
+
+  /** Close the worker and queue before the shared connection so shutdown leaves no open sockets. */
+  async onModuleDestroy() {
+    await this.worker?.close();
+    await this.q.close();
+    await this.conn.quit().catch(() => this.conn.disconnect());
   }
 
   async schedule(userId: number, text: string, runAt: Date) {

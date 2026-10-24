@@ -48,17 +48,24 @@ export class ReservationService {
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
     const slot = await this.prisma.slot.findUnique({ where: { id: Number(slotId) } });
     if (!slot) throw new ConflictException('Slot not found');
-    const created = await this.prisma.reservation.create({
-      data: {
-        userId: Number(userId),
-        resourceId: slot.id,
-        startsAt: slot.startUTC,
-        endsAt: slot.endUTC,
-        status: 'ACTIVE',
-        version: 1,
-      },
-    });
-    return toLegacyReservation(created);
+    try {
+      const created = await this.prisma.reservation.create({
+        data: {
+          userId: Number(userId),
+          resourceId: slot.id,
+          startsAt: slot.startUTC,
+          endsAt: slot.endUTC,
+          status: 'ACTIVE',
+          version: 1,
+        },
+      });
+      return toLegacyReservation(created);
+    } catch (e) {
+      // The unique (resourceId, startsAt, endsAt) key is the double-booking guard;
+      // losing that race is a conflict, not a server error.
+      if ((e as { code?: string })?.code === 'P2002') throw new ConflictException('Slot already reserved');
+      throw e;
+    }
   }
 
   async cancel(reservationId: string): Promise<Reservation> {
@@ -76,11 +83,18 @@ export class ReservationService {
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
     const found = await this.prisma.reservation.findUnique({ where: { id: Number(reservationId) } });
     if (!found) throw new ConflictException('Not found');
-    const updated = await this.prisma.reservation.update({
-      where: { id_version: { id: found.id, version: found.version } },
-      data: { status: 'CANCELED', version: { increment: 1 } },
-    });
-    return toLegacyReservation(updated);
+    if (found.status === 'CANCELED') throw new ConflictException('Already canceled');
+    try {
+      const updated = await this.prisma.reservation.update({
+        where: { id_version: { id: found.id, version: found.version } },
+        data: { status: 'CANCELED', version: { increment: 1 } },
+      });
+      return toLegacyReservation(updated);
+    } catch (e) {
+      // P2025: a concurrent writer bumped the version first (optimistic lock lost).
+      if ((e as { code?: string })?.code === 'P2025') throw new ConflictException('Reservation changed concurrently');
+      throw e;
+    }
   }
 
   async listByUser(userId: number) {

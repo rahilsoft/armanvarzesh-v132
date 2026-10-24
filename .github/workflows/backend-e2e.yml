@@ -46,9 +46,6 @@ jobs:
       NODE_ENV: test
       DATABASE_URL: postgresql://arman:arman_ci_only@localhost:5432/arman_test?schema=public
       REDIS_URL: redis://localhost:6379
-      # e2e specs that are opt-in by flag: turn them on so they are not silently skipped.
-      E2E_AUTH_ENABLED: 'true'
-      E2E_PAY_ENABLED: 'true'
     steps:
       - uses: actions/checkout@v4
 
@@ -89,10 +86,12 @@ jobs:
 
       - name: Unit tests
         timeout-minutes: 8
-        run: pnpm --filter ./app/backend test -- --forceExit
+        run: pnpm --filter ./app/backend exec jest src test/unit --forceExit
 
       - name: E2E tests (real PostgreSQL + Redis)
-        # Hard cap so a hang fails fast instead of burning the runner. --forceExit ends
-        # jest if an open handle outlives the suite, --detectOpenHandles names the culprit.
+        # Hard cap so a hang fails fast instead of burning the runner. Jest must exit on its
+        # own: services close their Redis/BullMQ connections on shutdown, so --forceExit is
+        # deliberately not used here (it would hide a leaked handle). Arguments go to jest
+        # directly via `exec`: after `pnpm run x -- args` they reached jest as path patterns.
         timeout-minutes: 12
-        run: pnpm --filter ./app/backend test:e2e -- --runInBand --forceExit --detectOpenHandles --testTimeout=60000
+        run: pnpm --filter ./app/backend exec jest test/e2e --runInBand --testTimeout=60000
