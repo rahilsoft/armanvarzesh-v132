@@ -98,4 +98,33 @@ describe('Zarinpal payment routes (e2e, real PostgreSQL)', () => {
       .expect(200);
     expect(res.body.success).toBe(false);
   });
+
+  it('the retired legacy POST /payments is gone (404) and writes nothing (REV-20261021-07)', async () => {
+    const before = await prisma.payment.count();
+    await request(app.getHttpServer())
+      .post('/payments')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ amountCents: 100000, currency: 'IRR' })
+      .expect(404);
+    expect(await prisma.payment.count()).toBe(before);
+  });
+
+  it('GET /payments lists only the caller payments from the migrated "Payment" table', async () => {
+    const mine = `A-mine-${Date.now()}`;
+    const other = await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({ email: `pay-other-${Date.now()}@example.com`, password: 'P@ssw0rd-e2e!' })
+      .expect(201);
+    const theirs = `A-theirs-${Date.now()}`;
+    await prisma.payment.create({ data: { authority: mine, amount: 120000, status: 'pending', userId } });
+    await prisma.payment.create({ data: { authority: theirs, amount: 130000, status: 'pending', userId: Number(other.body.user.id) } });
+
+    await request(app.getHttpServer()).get('/payments').expect(401);
+    const res = await request(app.getHttpServer()).get('/payments').set('Authorization', `Bearer ${token}`).expect(200);
+    expect(res.body.ok).toBe(true);
+    const authorities = res.body.data.map((p: { authority: string }) => p.authority);
+    expect(authorities).toContain(mine);
+    expect(authorities).not.toContain(theirs);
+    expect(res.body.data.every((p: { userId: number }) => Number(p.userId) === Number(userId))).toBe(true);
+  });
 });
