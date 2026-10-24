@@ -1,30 +1,49 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { IsInt, Max, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ReservationService } from './reservation.service';
 import { withSpan } from '../observability/tracing';
 import { reservationsCreated } from '../observability/metrics';
-import { JwtKidService } from '../security/jwt-rotator.service';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
+
+/**
+ * REST reservations surface. Identity comes only from the verified JWT
+ * (JwtAuthGuard + CurrentUser), never from the request body: a `userId` in the
+ * body is rejected by the whitelist pipe. Cancel is restricted to the owner of
+ * the reservation (or an admin principal), enforced inside the DB update.
+ * (REV-20261022-01)
+ */
+class ReserveDto {
+  @Type(() => Number) @IsInt() @Min(1) @Max(2147483647) slotId!: number;
+}
+
+class CancelDto {
+  @Type(() => Number) @IsInt() @Min(1) @Max(2147483647) reservationId!: number;
+}
 
 @Controller('reservations')
+@UseGuards(JwtAuthGuard)
+@UsePipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
 export class ReservationsController {
-  private jwt = new JwtKidService();
   constructor(private readonly reservations: ReservationService) {}
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post('reserve')
-  async reserve(@Body() body: any) {
-    // Optional auth via JWT (if Authorization header provided)
-    return await withSpan('reservations.reserve', { 'user.id': body.userId, 'slot.id': body.slotId }, async () => {
-      const r = await this.reservations.reserve(body.userId, body.slotId);
+  async reserve(@CurrentUser() user: AuthPrincipal, @Body() dto: ReserveDto) {
+    return await withSpan('reservations.reserve', { 'user.id': user.userId, 'slot.id': dto.slotId }, async () => {
+      const r = await this.reservations.reserve(String(user.userId), String(dto.slotId));
       reservationsCreated.inc({ status: 'ok' });
       return { ok: true, reservation: { id: r.id, slotId: r.slotId } };
     });
   }
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
   @Post('cancel')
-  async cancel(@Body() body: any) {
-    return await withSpan('reservations.cancel', { 'reservation.id': body.reservationId }, async () => {
-      const r = await this.reservations.cancel(body.reservationId);
+  async cancel(@CurrentUser() user: AuthPrincipal, @Body() dto: CancelDto) {
+    return await withSpan('reservations.cancel', { 'reservation.id': dto.reservationId, 'user.id': user.userId }, async () => {
+      const r = await this.reservations.cancel(String(dto.reservationId), {
+        userId: String(user.userId),
+        isAdmin: user.role === 'admin',
+      });
       reservationsCreated.inc({ status: 'cancel' });
       return { ok: true, reservation: { id: r.id } };
     });

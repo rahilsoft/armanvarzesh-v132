@@ -1,19 +1,23 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
-type Reservation = { id: string; userId: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date };
+type Reservation = { id: string; userId: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
+
+export type CancelActor = { userId: string; isAdmin?: boolean };
 
 const mem = { reservations: new Map<string, Reservation>(), slots: new Set<string>() };
 
 /** Map a canonical (Int-keyed) reservation row to this service's legacy
  *  string-id shape. The canonical Reservation has no createdAt column. */
-function toLegacyReservation(row: { id: number; userId: number; resourceId: number; status: string; version: number }): Reservation {
+function toLegacyReservation(row: { id: number; userId: number; resourceId: number; status: string; version: number; startsAt?: Date; endsAt?: Date }): Reservation {
   return {
     id: String(row.id),
     userId: String(row.userId),
     slotId: String(row.resourceId),
     status: row.status === 'CANCELED' ? 'CANCELED' : 'ACTIVE',
     version: row.version,
+    startsAt: row.startsAt,
+    endsAt: row.endsAt,
   };
 }
 
@@ -68,33 +72,41 @@ export class ReservationService {
     }
   }
 
-  async cancel(reservationId: string): Promise<Reservation> {
+  /**
+   * Cancel a reservation on behalf of `actor`. Only the owner (or an admin
+   * principal) may cancel. Ownership is part of the write condition itself, so
+   * a check-then-write race cannot cancel someone else's row. A reservation the
+   * actor does not own is reported as not found, without revealing that it
+   * exists. (REV-20261022-01)
+   */
+  async cancel(reservationId: string, actor: CancelActor): Promise<Reservation> {
+    if (!actor || !actor.userId) throw new ForbiddenException('Actor required');
     if (this.isMemory()) {
       const r = mem.reservations.get(reservationId);
-      if (!r) throw new ConflictException('Not found');
+      if (!r || (!actor.isAdmin && String(r.userId) !== String(actor.userId))) throw new NotFoundException('Reservation not found');
       if (r.status !== 'ACTIVE') throw new ConflictException('Already canceled');
       r.status = 'CANCELED';
       r.version += 1;
       mem.reservations.set(r.id, r);
       return r;
     }
-    // Prisma optimistic update (version bump). The Booking fold added the
-    // (id, version) compound unique, so a stale writer misses the row.
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
-    const found = await this.prisma.reservation.findUnique({ where: { id: Number(reservationId) } });
-    if (!found) throw new ConflictException('Not found');
+    const id = Number(reservationId);
+    const ownerId = Number(actor.userId);
+    if (!Number.isInteger(id) || id <= 0) throw new NotFoundException('Reservation not found');
+    const ownerFilter = actor.isAdmin ? {} : { userId: ownerId };
+    const found = await this.prisma.reservation.findFirst({ where: { id, ...ownerFilter } });
+    if (!found) throw new NotFoundException('Reservation not found');
     if (found.status === 'CANCELED') throw new ConflictException('Already canceled');
-    try {
-      const updated = await this.prisma.reservation.update({
-        where: { id_version: { id: found.id, version: found.version } },
-        data: { status: 'CANCELED', version: { increment: 1 } },
-      });
-      return toLegacyReservation(updated);
-    } catch (e) {
-      // P2025: a concurrent writer bumped the version first (optimistic lock lost).
-      if ((e as { code?: string })?.code === 'P2025') throw new ConflictException('Reservation changed concurrently');
-      throw e;
-    }
+    // Optimistic lock (id, version) plus the ownership filter in the same
+    // statement: a stale or foreign writer updates zero rows.
+    const res = await this.prisma.reservation.updateMany({
+      where: { id: found.id, version: found.version, status: { not: 'CANCELED' }, ...ownerFilter },
+      data: { status: 'CANCELED', version: { increment: 1 } },
+    });
+    if (res.count !== 1) throw new ConflictException('Reservation changed concurrently');
+    const updated = await this.prisma.reservation.findUniqueOrThrow({ where: { id: found.id } });
+    return toLegacyReservation(updated);
   }
 
   async listByUser(userId: number) {
