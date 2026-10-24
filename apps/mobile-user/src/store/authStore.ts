@@ -46,10 +46,24 @@ type AuthState = {
 // revokes every session, so concurrent 401s must share one refresh call.
 let inflightRefresh: Promise<boolean> | null = null;
 
+// Session generation: bumped by every signIn/signOut. A refresh captures it at start and
+// discards its result if it changed (sign-out or account switch while the call was in flight).
+let sessionGeneration = 0;
+
 function isExpired(iso: string | null | undefined): boolean {
   if (!iso) return false;
   const t = Date.parse(iso);
   return Number.isFinite(t) && t <= Date.now();
+}
+
+async function persistSession(session: AuthSession): Promise<void> {
+  const profile: StoredProfile = { refreshExpiresAt: session.refreshExpiresAt, user: session.user };
+  await SecureStore.setItemAsync(ACCESS_KEY, session.accessToken);
+  await SecureStore.setItemAsync(REFRESH_KEY, session.refreshToken);
+  await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  // Drop any leftovers from older builds.
+  await AsyncStorage.removeItem(SESSION_KEY);
+  await AsyncStorage.removeItem(LEGACY_TOKEN_KEY);
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -59,17 +73,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   hydrated: false,
 
   signIn: async (session) => {
-    const profile: StoredProfile = { refreshExpiresAt: session.refreshExpiresAt, user: session.user };
-    await SecureStore.setItemAsync(ACCESS_KEY, session.accessToken);
-    await SecureStore.setItemAsync(REFRESH_KEY, session.refreshToken);
-    await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    // Drop any leftovers from older builds.
-    await AsyncStorage.removeItem(SESSION_KEY);
-    await AsyncStorage.removeItem(LEGACY_TOKEN_KEY);
+    sessionGeneration += 1;
+    await persistSession(session);
     set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
   },
 
   signOut: async () => {
+    sessionGeneration += 1;
     await Promise.all([
       SecureStore.deleteItemAsync(ACCESS_KEY),
       SecureStore.deleteItemAsync(REFRESH_KEY),
@@ -127,11 +137,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     inflightRefresh = (async () => {
       const { refreshToken, user } = get();
       if (!refreshToken) return false;
+      const generation = sessionGeneration;
       try {
         const session = await authApi.refresh(refreshToken, user?.name);
-        await get().signIn(session);
+        if (generation !== sessionGeneration) return false;
+        await persistSession(session);
+        if (generation !== sessionGeneration) return false;
+        set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
         return true;
       } catch (e) {
+        if (generation !== sessionGeneration) return false;
         if (e instanceof authApi.AuthApiError && (e.status === 401 || e.status === 400)) {
           await get().signOut();
         }

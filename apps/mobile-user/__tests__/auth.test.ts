@@ -191,6 +191,54 @@ describe('review hardening', () => {
     expect(f).toHaveBeenCalledTimes(1);
   });
 
+  function deferredFetch() {
+    let resolve!: (r: unknown) => void;
+    const p = new Promise((r) => {
+      resolve = r;
+    });
+    (global as any).fetch = jest.fn(() => p);
+    return () =>
+      resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({ ...backendBody, accessToken: 'renewed-access', refreshToken: 'renewed-refresh' }),
+      });
+  }
+  const userA = { id: '7', name: 'n', email: 'a@b.com' };
+
+  it('stale refresh resolving after signOut does not restore the session', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: userA });
+    const finish = deferredFetch();
+    const pending = useAuthStore.getState().refreshSession();
+    await useAuthStore.getState().signOut();
+    const ss = jest.requireMock('expo-secure-store');
+    ss.setItemAsync.mockClear();
+    finish();
+    expect(await pending).toBe(false);
+    expect(useAuthStore.getState().token).toBeNull();
+    expect(useAuthStore.getState().refreshToken).toBeNull();
+    expect(ss.setItemAsync).not.toHaveBeenCalled();
+    expect(secure[ACCESS_KEY]).toBeUndefined();
+  });
+
+  it('stale refresh resolving after account switch keeps the new account', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: userA });
+    const finish = deferredFetch();
+    const pending = useAuthStore.getState().refreshSession();
+    await useAuthStore.getState().signIn({
+      accessToken: 'b-access',
+      refreshToken: 'b-refresh',
+      refreshExpiresAt: null,
+      user: { id: '9', name: 'b', email: 'b@b.com' },
+    });
+    finish();
+    expect(await pending).toBe(false);
+    expect(useAuthStore.getState().token).toBe('b-access');
+    expect(useAuthStore.getState().user?.id).toBe('9');
+    expect(secure[ACCESS_KEY]).toBe('b-access');
+    expect(secure[REFRESH_KEY]).toBe('b-refresh');
+  });
+
   it('hydrate drops a session whose refresh token expired', async () => {
     secure[ACCESS_KEY] = 'a';
     secure[REFRESH_KEY] = 'r';
