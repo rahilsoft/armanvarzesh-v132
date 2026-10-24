@@ -54,33 +54,48 @@ export function zarinpalTimeoutMs(): number {
 }
 
 async function post(path: string, body: Record<string, any>): Promise<any> {
+  const timeoutMs = zarinpalTimeoutMs();
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), zarinpalTimeoutMs());
-  let res: Response;
+  // One deadline covers connect, headers and the full body. A provider that sends
+  // headers and then stalls the body must not hold the request past the deadline.
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    res = await fetch(`https://${zarinpalHost()}/pg/v4/payment/${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-  } catch (error) {
-    const aborted = (error as any)?.name === 'AbortError' || controller.signal.aborted;
-    throw new ZarinpalGatewayError(aborted ? 'timeout after ' + zarinpalTimeoutMs() + 'ms' : (error as any)?.message || 'network error', true);
+    let res: Response;
+    try {
+      res = await fetch(`https://${zarinpalHost()}/pg/v4/payment/${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+    } catch (error) {
+      throw transportError(error, controller, timeoutMs);
+    }
+    let json: any = null;
+    try {
+      json = await res.json();
+    } catch (error) {
+      // Abort during the body read is a timeout. Any other parse failure leaves json null.
+      if (controller.signal.aborted) throw transportError(error, controller, timeoutMs);
+      json = null;
+    }
+    if (!res.ok) {
+      if (res.status >= 500) throw new ZarinpalGatewayError('HTTP ' + res.status, true);
+      throw new ZarinpalGatewayError('HTTP ' + res.status + ' code ' + errorCode(json), false, errorCode(json));
+    }
+    if (json === null || typeof json !== 'object') {
+      // A 2xx with an unreadable body is a transport fault, never a settled payment.
+      throw new ZarinpalGatewayError('malformed response body', true);
+    }
+    return json;
   } finally {
     clearTimeout(timer);
   }
-  let json: any = null;
-  try {
-    json = await res.json();
-  } catch {
-    json = null;
-  }
-  if (!res.ok) {
-    if (res.status >= 500) throw new ZarinpalGatewayError('HTTP ' + res.status, true);
-    throw new ZarinpalGatewayError('HTTP ' + res.status + ' code ' + errorCode(json), false, errorCode(json));
-  }
-  return json;
+}
+
+function transportError(error: unknown, controller: AbortController, timeoutMs: number): ZarinpalGatewayError {
+  const aborted = (error as any)?.name === 'AbortError' || controller.signal.aborted;
+  return new ZarinpalGatewayError(aborted ? 'timeout after ' + timeoutMs + 'ms' : (error as any)?.message || 'network error', true);
 }
 
 function errorCode(json: any): string {
