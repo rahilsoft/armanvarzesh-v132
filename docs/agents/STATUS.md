@@ -109,6 +109,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-24 13:53 package (13:53–14:53 Tehran, owner directive) — REV fixes merged
+- Owner directive replaced the quota stop rule (CLAUDE.md «Quota budget»). Quota still unreadable, 20% reserve not claimed.
+- Merged into develop: #56 (REV-20261021-03), #59 (REV-20261024-01), #58 (REV-20261021-04, proven red on deliberate build and test failures), #57 (REV-20261022-01). develop 76cedd9. backend-e2e on #57 head 0f97a0a: unit 312 pass / 69 skipped / 0 fail, e2e 25 pass / 0 fail.
+- New findings for GPT: GraphQL fails closed in ThrottlerGuard (opening it needs a default-deny GraphQL JWT guard first), undecorated GraphQL inputs rejected by the global pipe, reservation list queries use non-existent columns.
+- Open: REV-20261021-01, 02, 05, 06, 07, PR #55. Handoff: `docs/agents/reports/2026-10-24.md`.
 ### 2026-10-24 10:02 package (10:02–10:20 Tehran) — quota-blocked, review answer + handoff only
 - Quota before and after: unreadable from an official in-app source. Speko usage tools show another vendor's account, not Claude quota. No new development.
 - Issue #54: new finding REV-20261024-01 (P2, Playwright runner `ubuntu-latest` fails browser install on Ubuntu 26.04). Accepted, fix planned (pin runner, prove browser install + real test run), blocked by quota. All REV-20261021-01…07 and REV-20261022-01 still open.

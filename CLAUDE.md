@@ -108,7 +108,8 @@ branch and the target branch CI was checked. Owner: `qa-test-engineer` (integrat
 - Project share: at most 80% of the weekly quota; 20% is reserved for the owner's personal use.
 - Two work packages per day: 10:02 and 22:02 Tehran, each at most 60 minutes. Fallback slots 04:02 and 16:02 only replace a lost package; they are not scheduled by default.
 - Before and after every package, record the quota (5-hour, weekly, reset time) from an official in-app source. Local JSONL or ccusage is analysis, not the balance.
-- If the balance cannot be read from an official source, do not start new development. Only answer review findings and write the handoff.
+- **Unreadable balance (owner directive 2026-10-24, replaces the earlier stop rule):** if the balance cannot be read, keep fixing open review findings inside the two daily packages (10:02 and 22:02 Tehran, each at most 60 minutes), with at most two implementing agents at once and only the roles needed. Do not claim the 20% reserve is guaranteed without real data. Stop project work if a visible weekly usage reaches 80%. On a real service limit, save state and continue in the next allowed package. No re-approval from the owner is needed for this.
+- Confirmed P0/P1 findings come before any new feature. Directive summary: `docs/agents/reports/2026-10-24.md`, section «دستور مالک ۱۴:۰۰».
 - No paid overage, no credit purchase, no automatic switch to API billing.
 - Subagents get a task, scope, acceptance criteria and only the references they need. Use the cheapest model that fits (see rule 6).
 - Full plan text: GitHub issue #54, comment «QUOTA-PLAN-20261022-v1».
