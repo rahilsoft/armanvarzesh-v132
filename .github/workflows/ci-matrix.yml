@@ -15,9 +15,17 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: pnpm install --frozen-lockfile=false
-      - run: pnpm -w run build || true
-      - run: pnpm -w run test || true
+      # REV-20261021-04: no `|| true`. Build and test only this service (and the
+      # workspace packages it depends on) so a failure turns the job red. The
+      # old `pnpm -w run build` built the whole monorepo and its failure was
+      # swallowed, so this check proved nothing.
+      - run: pnpm install --frozen-lockfile
+      - name: Prisma generate
+        run: pnpm exec prisma generate --schema prisma/schema.prisma
+      - name: Build (service and its workspace dependencies)
+        run: pnpm --filter "@arman/${{ matrix.service }}..." run --if-present build
+      - name: Test
+        run: pnpm run test
   contracts:
     runs-on: ubuntu-latest
     steps:
