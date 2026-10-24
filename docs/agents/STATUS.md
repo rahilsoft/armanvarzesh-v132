@@ -58,9 +58,19 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-23)
+- **Quota observability not established (last checked 2026-10-24 10:02 Tehran, unchanged).** Method tried in the scheduled cloud run: `claude -p "/usage"` (Claude Code 2.1.308). It returns only the local process cost ($0, 0 tokens), no 5-hour or weekly percentage and no reset time. No in-app usage tool is exposed to the run. No credential extraction or private endpoint was tried. Result: balance unreadable, so packages start no new development (CLAUDE.md «Quota budget»). Owner-only unblock: post the 5-hour and weekly figures from the Claude app in issue #54 before a package, or approve a bounded rule for unreadable balance.
+- **REV-20261022-01 (P1), reservation endpoints without authentication or ownership:** `ReservationsController` takes `userId` from the body and cancel has no owner check. Authorised fix (JWT identity, owner check, DTO validation, regression tests). **Ready to run, blocked by quota observability** (not started).
+- **PR #56** (`claude/e2e-gate-fix`, draft): backend-e2e run 39748123448 on fc64f05 green, 6 E2E suites / 20 tests passed (this branch only, not on develop). Head now 03da135 (STATUS line only). Not merged. backend-e2e on develop d085ca6 still fails (run 39749493192). Remaining weak assertion in checkout-webhook e2e (REV-20261021-03 continuation).
+- **PR #55** (`claude/chat-service-auth-hardening`, draft, target main): open, not merged, not audited in depth.
+
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-23 | Package with unreadable quota answers REVs and writes handoff only; no code | CLAUDE.md «Quota budget» rule; Speko billing tools are not Claude quota |
+| 2026-10-22 | Owner quota plan: two packages per day (10:02, 22:02 Tehran, ≤60 min each), 80% project cap, 20% owner reserve, quota-stop rule when balance is unreadable | Team cost per full shift is too high for the five-hour reset; full text in GitHub issue #54 |
+| 2026-10-22 | `docs/agents/reports/` was git-ignored (`.gitignore` rule `reports/`), so the 2026-10-21 report never reached develop; exception added | Handoff report must be in git to be reviewed |
+| 2026-10-22 | Fallback slots 04:02 and 16:02 documented but not scheduled | Spend less until three days of measured data exist |
 | 2026-10-21 | Owner: nightly window moves to 22:00–00:00 Tehran and is reduced to two hours (was 21:00–24:00) | Owner instruction; runbook updated, scheduled task moved to 22:02 |
 | 2026-10-19 | Path A: `app/backend` monolith is production | Hardened, all gates green; services carried P0 defects |
 | 2026-10-19 | Work lands on `develop`, `main` only via owner-approved release | Keeps production stable |
@@ -99,6 +109,25 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-24 10:02 package (10:02–10:20 Tehran) — quota-blocked, review answer + handoff only
+- Quota before and after: unreadable from an official in-app source. Speko usage tools show another vendor's account, not Claude quota. No new development.
+- Issue #54: new finding REV-20261024-01 (P2, Playwright runner `ubuntu-latest` fails browser install on Ubuntu 26.04). Accepted, fix planned (pin runner, prove browser install + real test run), blocked by quota. All REV-20261021-01…07 and REV-20261022-01 still open.
+- Handoff: `docs/agents/reports/2026-10-24.md`. No code changed, no tests run (docs only), no merge, no deploy.
+### 2026-10-23 22:02 package (22:02–22:10 Tehran) — quota-blocked, delta reply + handoff only
+- Quota before and after: unreadable (`claude -p "/usage"` re-checked 22:03, local cost only). No new development.
+- Issue #54: no new GPT finding since 2026-10-22T20:36Z. Short delta reply ([comment](https://github.com/rahilsoft/armanvarzesh-v132/issues/54#issuecomment-6372050061)), REV statuses unchanged.
+- CI on develop a2d5d81 (metadata): backend-e2e, Trivy, grype, CI Integration Services failure, rest success. No code changed, no tests run, no merge, no deploy.
+### 2026-10-23 10:02 package (10:02–11:02 Tehran) — quota-blocked, review answers + handoff only
+- Quota before and after: unreadable from an official source. No in-app usage tool in this run; Speko billing tools show another vendor's account. No new development.
+- Issue #54: answered REV-20261022-01 and REV-20261021-01…07 ([comment](https://github.com/rahilsoft/armanvarzesh-v132/issues/54#issuecomment-6359006004)). All open, all blocked by quota observability except REV-03 (open on PR #56).
+- Verified on develop 49dc13f: `ci-matrix.yml:19-20` still has `|| true`; `checkout.service.ts:56` still has `pay.example`.
+- CI on 49dc13f (metadata): CI Matrix, gitleaks, trufflehog success; Trivy, CI Integration Services, grype failure. Logs not reviewed this package.
+- Handoff: `docs/agents/reports/2026-10-23.md`. No code changed, no tests run (docs only), no merge, no deploy.
+### 2026-10-22 22:02 package (22:02–22:20 Tehran) — quota-blocked, review answers + handoff only
+- Quota before and after: unreadable from an official source (method above). No new development.
+- Issue #54: replied to REV-20261021-01…07 and REV-20261022-01 ([comment](https://github.com/rahilsoft/armanvarzesh-v132/issues/54#issuecomment-6348313301)). All accepted, P1/P2 blocked by quota observability, REV-03 fixed on PR #56 (not merged).
+- Docs: runbook title and COLLABORATION_GPT GPT slots corrected (GPT-DOC-CHECK leftovers).
+- No code changed, no tests run (nothing to test), no merge, no deploy.
 ### 2026-10-21 night (21:02–04:25 Tehran, report pushed late) — nightly session 3
 Report pushed at 04:25 Tehran, after the 23:55 deadline. Owner then changed the window to 22:00–00:00 and two hours.
 GPT review issue «Independent technical review — GPT / Claude handoff» does not exist yet (searched open + closed issues), no REV findings to answer.

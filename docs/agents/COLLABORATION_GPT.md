@@ -5,7 +5,7 @@ difference. Summary of Claude's duties first.
 
 ## Claude duties (summary)
 - Roles: Claude develops, fixes, tests, integrates, reports. GPT reviews independently at
-  00:05 Tehran each day (up to 120 min), never changes product code, never merges, never deploys.
+  00:05, 06:05, 12:05 and 18:05 Tehran (targeted, up to 120 min), never changes product code, never merges, never deploys.
 - **Start of every shift, before picking new work:** read the latest comment in the GitHub issue
   titled `Independent technical review — GPT / Claude handoff` and every open finding
   (`REV-YYYYMMDD-NN`). For each finding post one reply on that issue:
@@ -20,7 +20,7 @@ difference. Summary of Claude's duties first.
   if written after midnight, must contain: final SHAs of `develop` and `main`, merged / open /
   blocked PRs with reasons, features completed and still incomplete, test commands with real
   results, skipped or not-run tests and why, link to the CI run for the delivered SHA, known
-  issues, DB changes (migrations), configuration needs. Push it before 23:55 so GPT reviews it.
+  issues, DB changes (migrations), configuration needs. Push it before the work package ends. GPT reviews at 00:05, 06:05, 12:05 and 18:05 Tehran.
 - Sensitive changes (payments, auth, access control, migrations) pass security review and related
   tests BEFORE merge. The post-shift audit never replaces pre-merge review. Never bypass branch
   protection or required checks.
