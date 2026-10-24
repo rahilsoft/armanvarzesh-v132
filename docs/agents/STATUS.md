@@ -59,7 +59,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
 ## Open items (2026-10-23)
-- **Quota observability not established (last checked 2026-10-23 22:03 Tehran, unchanged).** Method tried in the scheduled cloud run: `claude -p "/usage"` (Claude Code 2.1.308). It returns only the local process cost ($0, 0 tokens), no 5-hour or weekly percentage and no reset time. No in-app usage tool is exposed to the run. No credential extraction or private endpoint was tried. Result: balance unreadable, so packages start no new development (CLAUDE.md «Quota budget»). Owner-only unblock: post the 5-hour and weekly figures from the Claude app in issue #54 before a package, or approve a bounded rule for unreadable balance.
+- **Quota observability not established (last checked 2026-10-24 10:02 Tehran, unchanged).** Method tried in the scheduled cloud run: `claude -p "/usage"` (Claude Code 2.1.308). It returns only the local process cost ($0, 0 tokens), no 5-hour or weekly percentage and no reset time. No in-app usage tool is exposed to the run. No credential extraction or private endpoint was tried. Result: balance unreadable, so packages start no new development (CLAUDE.md «Quota budget»). Owner-only unblock: post the 5-hour and weekly figures from the Claude app in issue #54 before a package, or approve a bounded rule for unreadable balance.
 - **REV-20261022-01 (P1), reservation endpoints without authentication or ownership:** `ReservationsController` takes `userId` from the body and cancel has no owner check. Authorised fix (JWT identity, owner check, DTO validation, regression tests). **Ready to run, blocked by quota observability** (not started).
 - **PR #56** (`claude/e2e-gate-fix`, draft): backend-e2e run 39748123448 on fc64f05 green, 6 E2E suites / 20 tests passed (this branch only, not on develop). Head now 03da135 (STATUS line only). Not merged. backend-e2e on develop d085ca6 still fails (run 39749493192). Remaining weak assertion in checkout-webhook e2e (REV-20261021-03 continuation).
 - **PR #55** (`claude/chat-service-auth-hardening`, draft, target main): open, not merged, not audited in depth.
@@ -109,6 +109,10 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-24 10:02 package (10:02–10:20 Tehran) — quota-blocked, review answer + handoff only
+- Quota before and after: unreadable from an official in-app source. Speko usage tools show another vendor's account, not Claude quota. No new development.
+- Issue #54: new finding REV-20261024-01 (P2, Playwright runner `ubuntu-latest` fails browser install on Ubuntu 26.04). Accepted, fix planned (pin runner, prove browser install + real test run), blocked by quota. All REV-20261021-01…07 and REV-20261022-01 still open.
+- Handoff: `docs/agents/reports/2026-10-24.md`. No code changed, no tests run (docs only), no merge, no deploy.
 ### 2026-10-23 22:02 package (22:02–22:10 Tehran) — quota-blocked, delta reply + handoff only
 - Quota before and after: unreadable (`claude -p "/usage"` re-checked 22:03, local cost only). No new development.
 - Issue #54: no new GPT finding since 2026-10-22T20:36Z. Short delta reply ([comment](https://github.com/rahilsoft/armanvarzesh-v132/issues/54#issuecomment-6372050061)), REV statuses unchanged.
