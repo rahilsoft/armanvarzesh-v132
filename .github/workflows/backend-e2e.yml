@@ -94,4 +94,4 @@ jobs:
         # deliberately not used here (it would hide a leaked handle). Arguments go to jest
         # directly via `exec`: after `pnpm run x -- args` they reached jest as path patterns.
         timeout-minutes: 12
-        run: pnpm --filter ./app/backend exec jest test/e2e --runInBand --testTimeout=60000
+        run: pnpm --filter ./app/backend exec jest test/e2e --runInBand --testTimeout=60000 --reporters=default --reporters=github-actions
