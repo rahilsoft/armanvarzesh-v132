@@ -3,7 +3,8 @@ import { Module } from '@nestjs/common';
 import { JwksController } from './auth/jwks.controller';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { AppThrottlerGuard } from './common/guards/app-throttler.guard';
 import { RolesGuard } from './auth/roles.guard';
 import { LoggerModule } from 'nestjs-pino';
 import { HealthController } from './common/controllers/health.controller';
@@ -58,6 +59,8 @@ import { NotificationsModule } from './notifications/notifications.module';
       csrfPrevention: true,
       playground: false,
       introspection: process.env.NODE_ENV !== 'production',
+      // Expose the HTTP request/response to guards (JWT, throttling) on resolvers.
+      context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),
     }),
     MatchingModule,
     CorrectiveModule,
@@ -79,6 +82,6 @@ import { NotificationsModule } from './notifications/notifications.module';
     NotificationsModule,
   ],
   controllers: [AdminController,  JwksController, HealthController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
+  providers: [{ provide: APP_GUARD, useClass: AppThrottlerGuard }, { provide: APP_GUARD, useClass: RolesGuard }],
 })
 export class AppModule {}
