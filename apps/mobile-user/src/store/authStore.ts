@@ -45,6 +45,8 @@ type AuthState = {
 // Single-flight: the backend treats reuse of a rotated refresh token as theft and
 // revokes every session, so concurrent 401s must share one refresh call.
 let inflightRefresh: Promise<boolean> | null = null;
+// Generation the in-flight refresh belongs to: a new session never joins an old session's refresh.
+let inflightGeneration = -1;
 
 // Session generation: bumped by every signIn/signOut. A refresh captures it at start and
 // discards its result if it changed (sign-out or account switch while the call was in flight).
@@ -146,11 +148,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   refreshSession: () => {
-    if (inflightRefresh) return inflightRefresh;
-    inflightRefresh = (async () => {
+    if (inflightRefresh && inflightGeneration === sessionGeneration) return inflightRefresh;
+    const generation = sessionGeneration;
+    inflightGeneration = generation;
+    const current: Promise<boolean> = (async () => {
       const { refreshToken, user } = get();
       if (!refreshToken) return false;
-      const generation = sessionGeneration;
       try {
         const session = await authApi.refresh(refreshToken, user?.name);
         if (generation !== sessionGeneration) return false;
@@ -170,8 +173,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return false;
       }
     })().finally(() => {
-      inflightRefresh = null;
+      if (inflightRefresh === current) inflightRefresh = null;
     });
-    return inflightRefresh;
+    inflightRefresh = current;
+    return current;
   },
 }));

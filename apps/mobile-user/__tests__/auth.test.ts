@@ -271,6 +271,40 @@ describe('review hardening', () => {
     ss.setItemAsync.mockImplementation(realSet);
   });
 
+  it('a stale 401 from the old account refresh does not sign out the new account', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: userA });
+    let reject!: (r: unknown) => void;
+    (global as any).fetch = jest.fn(() => new Promise((r) => (reject = r)));
+    const pending = useAuthStore.getState().refreshSession();
+    await useAuthStore.getState().signIn({
+      accessToken: 'b-access',
+      refreshToken: 'b-refresh',
+      refreshExpiresAt: null,
+      user: { id: '9', name: 'b', email: 'b@b.com' },
+    });
+    reject({ ok: false, status: 401, json: async () => ({ message: 'revoked' }) });
+    expect(await pending).toBe(false);
+    expect(useAuthStore.getState().token).toBe('b-access');
+    expect(secure[ACCESS_KEY]).toBe('b-access');
+  });
+
+  it('a refresh for the new account does not join the old account refresh', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: userA });
+    (global as any).fetch = jest.fn(() => new Promise(() => undefined)); // A's refresh never returns
+    const stale = useAuthStore.getState().refreshSession();
+    await useAuthStore.getState().signIn({
+      accessToken: 'b-access',
+      refreshToken: 'b-refresh',
+      refreshExpiresAt: null,
+      user: { id: '9', name: 'b', email: 'b@b.com' },
+    });
+    mockFetch(200, { ...backendBody, accessToken: 'b-renewed', refreshToken: 'b-renewed-refresh' });
+    const fresh = useAuthStore.getState().refreshSession();
+    expect(fresh).not.toBe(stale);
+    expect(await fresh).toBe(true);
+    expect(useAuthStore.getState().token).toBe('b-renewed');
+  });
+
   it('hydrate drops a session whose refresh token expired', async () => {
     secure[ACCESS_KEY] = 'a';
     secure[REFRESH_KEY] = 'r';
