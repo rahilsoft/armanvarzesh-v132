@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Query, Req, UseGuards, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query, Req, UseGuards, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
 import { SanitizePipe } from '../common/security/sanitize.pipe';
 import { JwtAuthGuard } from '../auth/jwt.guard';
-import { CreatePaymentBodyDto } from './dto/create-payment.dto';
 import { ListPaymentsDto } from './dto/list-payments.dto';
 import { PaymentsService } from './payments.service';
 
@@ -11,16 +10,8 @@ import { PaymentsService } from './payments.service';
 export class PaymentsController {
   constructor(private readonly payments: PaymentsService) {}
 
-/** @deprecated AUTO-MARKED (Stage17): Unused route per Stage 06 census. Keep until cleanup. */
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: CreatePaymentBodyDto, @Req() req: any, @Headers('Idempotency-Key') idem?: string) {
-    // Payer id comes only from the verified JWT, never from the body.
-    const userId: string | undefined = req.user?.sub != null ? String(req.user.sub) : undefined;
-    if (!userId) throw new UnauthorizedException('unauthenticated');
-    const res = await this.payments.create({ ...body, userId, idempotencyKey: body.idempotencyKey || idem || undefined });
-    return { ok: true, data: res };
-  }
+  // POST /payments was retired (REV-20261021-07): it wrote to a legacy `payments` table that
+  // no migration creates, so it could only fail. Payments start at POST /payments/zarinpal/request.
 
   @Get()
 /** @deprecated AUTO-MARKED (Stage19): GQL op 'cursor' is unused per Stage 07 census. */
