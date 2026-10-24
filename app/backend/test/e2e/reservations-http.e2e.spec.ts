@@ -142,6 +142,21 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
     expect(again.status).toBe(409);
   });
 
+  it('concurrent cancels by the owner: exactly one succeeds and the version moves once', async () => {
+    const slot = await newSlot();
+    const server = app.getHttpServer();
+    const made = await request(server).post('/reservations/reserve').set(auth(alice)).send({ slotId: slot.id });
+    expect(made.status).toBe(201);
+    const id = Number(made.body.reservation.id);
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () => request(server).post('/reservations/cancel').set(auth(alice)).send({ reservationId: id })),
+    );
+    expect(results.filter((r) => r.status === 201)).toHaveLength(1);
+    expect(results.filter((r) => r.status === 409)).toHaveLength(4);
+    expect(await prisma.reservation.findUniqueOrThrow({ where: { id } })).toMatchObject({ status: 'CANCELED', version: 2, userId: alice.id });
+  });
+
   it('an admin principal may cancel another user’s reservation', async () => {
     const slot = await newSlot();
     const server = app.getHttpServer();
