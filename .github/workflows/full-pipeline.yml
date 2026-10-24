@@ -115,7 +115,8 @@ jobs:
   # ---------------------------------------------------------------------------
   e2e:
     name: e2e (Playwright, best-effort)
-    runs-on: ubuntu-latest
+    # REV-20261024-01: Playwright Chromium is not supported on ubuntu-latest (26.04).
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     needs: verify
     steps:
