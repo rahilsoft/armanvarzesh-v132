@@ -239,6 +239,38 @@ describe('review hardening', () => {
     expect(secure[REFRESH_KEY]).toBe('b-refresh');
   });
 
+  it('signOut during a stale refresh write still leaves storage empty (writes and clears are ordered)', async () => {
+    useAuthStore.setState({ token: 'old', refreshToken: 'r1', user: userA });
+    const ss = jest.requireMock('expo-secure-store');
+    const realSet = ss.setItemAsync.getMockImplementation();
+    let releaseWrite!: () => void;
+    const gate = new Promise<void>((r) => {
+      releaseWrite = r;
+    });
+    let writeStarted!: () => void;
+    const started = new Promise<void>((r) => {
+      writeStarted = r;
+    });
+    // First SecureStore write of the refresh blocks until released.
+    ss.setItemAsync.mockImplementationOnce(async (k: string, v: string) => {
+      writeStarted();
+      await gate;
+      secure[k] = v;
+    });
+    mockFetch(200, { ...backendBody, accessToken: 'renewed-access', refreshToken: 'renewed-refresh' });
+    const pending = useAuthStore.getState().refreshSession();
+    await started; // refresh passed its generation check and is inside the storage write
+    const out = useAuthStore.getState().signOut();
+    releaseWrite();
+    await out;
+    expect(await pending).toBe(false);
+    expect(useAuthStore.getState().token).toBeNull();
+    expect(secure[ACCESS_KEY]).toBeUndefined();
+    expect(secure[REFRESH_KEY]).toBeUndefined();
+    expect(mem[PROFILE_KEY]).toBeUndefined();
+    ss.setItemAsync.mockImplementation(realSet);
+  });
+
   it('hydrate drops a session whose refresh token expired', async () => {
     secure[ACCESS_KEY] = 'a';
     secure[REFRESH_KEY] = 'r';

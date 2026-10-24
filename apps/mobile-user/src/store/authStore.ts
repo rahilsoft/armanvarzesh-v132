@@ -50,6 +50,16 @@ let inflightRefresh: Promise<boolean> | null = null;
 // discards its result if it changed (sign-out or account switch while the call was in flight).
 let sessionGeneration = 0;
 
+// Every session write and clear runs through one queue, in call order. A stale refresh checks
+// the generation inside its queued step, so its writes can never land after a later sign-out
+// or after another account's sign-in has been queued.
+let storageQueue: Promise<unknown> = Promise.resolve();
+function enqueueStorage<T>(op: () => Promise<T>): Promise<T> {
+  const next = storageQueue.then(op, op);
+  storageQueue = next.catch(() => undefined);
+  return next;
+}
+
 function isExpired(iso: string | null | undefined): boolean {
   if (!iso) return false;
   const t = Date.parse(iso);
@@ -74,19 +84,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signIn: async (session) => {
     sessionGeneration += 1;
-    await persistSession(session);
+    await enqueueStorage(() => persistSession(session));
     set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
   },
 
   signOut: async () => {
     sessionGeneration += 1;
-    await Promise.all([
-      SecureStore.deleteItemAsync(ACCESS_KEY),
-      SecureStore.deleteItemAsync(REFRESH_KEY),
-      AsyncStorage.removeItem(PROFILE_KEY),
-      AsyncStorage.removeItem(SESSION_KEY),
-      AsyncStorage.removeItem(LEGACY_TOKEN_KEY),
-    ]);
+    set({ token: null, refreshToken: null, user: null });
+    await enqueueStorage(() =>
+      Promise.all([
+        SecureStore.deleteItemAsync(ACCESS_KEY),
+        SecureStore.deleteItemAsync(REFRESH_KEY),
+        AsyncStorage.removeItem(PROFILE_KEY),
+        AsyncStorage.removeItem(SESSION_KEY),
+        AsyncStorage.removeItem(LEGACY_TOKEN_KEY),
+      ]),
+    );
     set({ token: null, refreshToken: null, user: null });
   },
 
@@ -141,8 +154,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       try {
         const session = await authApi.refresh(refreshToken, user?.name);
         if (generation !== sessionGeneration) return false;
-        await persistSession(session);
-        if (generation !== sessionGeneration) return false;
+        const written = await enqueueStorage(async () => {
+          if (generation !== sessionGeneration) return false;
+          await persistSession(session);
+          return true;
+        });
+        if (!written || generation !== sessionGeneration) return false;
         set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
         return true;
       } catch (e) {
