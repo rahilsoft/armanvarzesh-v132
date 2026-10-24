@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { IsInt, Min } from 'class-validator';
+import { IsInt, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ReservationService } from './reservation.service';
 import { withSpan } from '../observability/tracing';
@@ -15,11 +15,11 @@ import { CurrentUser, AuthPrincipal } from '../common/auth/current-user.decorato
  * (REV-20261022-01)
  */
 class ReserveDto {
-  @Type(() => Number) @IsInt() @Min(1) slotId!: number;
+  @Type(() => Number) @IsInt() @Min(1) @Max(2147483647) slotId!: number;
 }
 
 class CancelDto {
-  @Type(() => Number) @IsInt() @Min(1) reservationId!: number;
+  @Type(() => Number) @IsInt() @Min(1) @Max(2147483647) reservationId!: number;
 }
 
 @Controller('reservations')
