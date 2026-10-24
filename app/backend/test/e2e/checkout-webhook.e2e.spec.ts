@@ -97,8 +97,25 @@ describe('Checkout webhook (e2e, real PostgreSQL)', () => {
     const results = await Promise.all(
       Array.from({ length: 4 }, () => request(server).post('/payments/checkout/webhook').send(body)),
     );
-    // each delivery gets a definite answer, never a 5xx
-    for (const r of results) expect(r.status).toBeLessThan(500);
+    // Every delivery is accepted with 201 (a 4xx would make the PSP retry or
+    // give up). Exactly one applies the event, every other one reports it as a
+    // duplicate. (REV-20261021-03: no `< 500` catch-all.)
+    for (const r of results) expect(r.status).toBe(201);
+    const applied = results.filter((r) => r.body.ok === true && r.body.duplicate === undefined && r.body.idempotent === undefined);
+    const dupes = results.filter((r) => r.body.ok === true && r.body.duplicate === true);
+    expect(applied).toHaveLength(1);
+    expect(applied[0].body).toEqual({ ok: true });
+    expect(dupes).toHaveLength(results.length - 1);
+    for (const d of dupes) expect(d.body).toEqual({ ok: true, duplicate: true });
+
+    expect(await prisma.paymentEvent.count({ where: { eventId: `ev-race-${RUN}` } })).toBe(1);
     expect(await prisma.order.count({ where: { paymentRef: `pay-ev-race-${RUN}` } })).toBe(1);
+    const session = await prisma.checkoutSession.findUniqueOrThrow({ where: { providerSessionId: sessionId } });
+    expect(session.status).toBe('paid');
+    const sub = await prisma.subscription.findUniqueOrThrow({
+      where: { provider_externalId: { provider: 'internal', externalId: String(userId) } },
+    });
+    expect(sub).toMatchObject({ status: 'active', planId: 'plan-e2e' });
+    expect(sub.currentPeriodEnd!.getTime()).toBeGreaterThan(Date.now());
   });
 });
