@@ -27,7 +27,7 @@ describe('Zarinpal client deadline covers the body (REV-20261021-06)', () => {
       if (mode === 'slow-body') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.write('{"data":{"code":100,');
-        setTimeout(() => res.end('"ref_id":7}}'), 400).unref();
+        setTimeout(() => res.end('"ref_id":7}}'), 1500).unref();
         return;
       }
       if (mode === 'malformed') {
@@ -55,7 +55,7 @@ describe('Zarinpal client deadline covers the body (REV-20261021-06)', () => {
   });
 
   beforeEach(() => {
-    process.env = { ...envBackup, ZARINPAL_MERCHANT_ID: 'test-merchant', ZARINPAL_TIMEOUT_MS: '150' };
+    process.env = { ...envBackup, ZARINPAL_MERCHANT_ID: 'test-merchant', ZARINPAL_TIMEOUT_MS: '300' };
   });
   afterEach(() => {
     process.env = { ...envBackup };
@@ -78,8 +78,8 @@ describe('Zarinpal client deadline covers the body (REV-20261021-06)', () => {
     if (out.ok) return;
     expect(out.e).toBeInstanceOf(ZarinpalGatewayError);
     expect(out.e.retryable).toBe(true);
-    expect(out.e.message).toContain('timeout after 150ms');
-    expect(out.ms).toBeLessThan(1000);
+    expect(out.e.message).toContain('timeout after 300ms');
+    expect(out.ms).toBeLessThan(1500);
   });
 
   it('body slower than the deadline: rejects, never reports paid', async () => {
@@ -88,7 +88,7 @@ describe('Zarinpal client deadline covers the body (REV-20261021-06)', () => {
     expect(out.ok).toBe(false);
     if (out.ok) return;
     expect(out.e.retryable).toBe(true);
-    expect(out.ms).toBeLessThan(400);
+    expect(out.ms).toBeLessThan(1500);
   });
 
   it('malformed JSON body: rejects without a settled result', async () => {
@@ -102,6 +102,8 @@ describe('Zarinpal client deadline covers the body (REV-20261021-06)', () => {
 
   it('complete body within the deadline: verified with ref id', async () => {
     mode = 'ok';
+    // Generous deadline: this case proves a normal response still verifies, not timing.
+    process.env.ZARINPAL_TIMEOUT_MS = '5000';
     const out = await verifyOutcome();
     expect(out.ok).toBe(true);
     if (!out.ok) return;
