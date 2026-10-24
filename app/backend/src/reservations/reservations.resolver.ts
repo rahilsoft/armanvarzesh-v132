@@ -1,10 +1,20 @@
+import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { Reservation } from './entities/reservation.entity';
 import { AvailabilitySlot } from './entities/availability.entity';
 import { CreateReservationInput } from './dto/reservation.input';
 import { CreateAvailabilityInput } from './dto/availability.input';
 import { ReservationService, AvailabilityService } from './reservation.service';
+import { GqlJwtAuthGuard } from '../matching/gql-jwt-auth.guard';
+import { GqlCurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
+const isAdmin = (u: AuthPrincipal) => u.role === 'admin';
+
+/**
+ * GraphQL reservations surface. Every mutation and every per-user query needs a
+ * verified JWT, the acting user comes from the token, and cross-user access is
+ * limited to admin principals. (REV-20261022-01)
+ */
 @Resolver()
 export class ReservationsResolver {
   constructor(
@@ -12,8 +22,12 @@ export class ReservationsResolver {
     private readonly avail: AvailabilityService
   ) {}
 
+  // Access tokens carry no coach claim yet, so publishing availability for an
+  // arbitrary coachId is admin-only until coach identity is in the token.
+  @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => AvailabilitySlot)
-  async createAvailability(@Args('input') input: CreateAvailabilityInput) {
+  async createAvailability(@GqlCurrentUser() user: AuthPrincipal, @Args('input') input: CreateAvailabilityInput) {
+    if (!isAdmin(user)) throw new ForbiddenException('admin only');
     return this.avail.createAvailability(input as any);
   }
 
@@ -22,34 +36,41 @@ export class ReservationsResolver {
     return this.avail.listCoachAvailability(coachId);
   }
 
+  @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Reservation)
-  async bookReservation(@Args('input') input: CreateReservationInput) {
-    const _data = await this.resv.reserve(input.userId, input.slotId);
+  async bookReservation(@GqlCurrentUser() user: AuthPrincipal, @Args('input') input: CreateReservationInput) {
+    const r = await this.resv.reserve(String(user.userId), input.slotId);
     return {
-      id: 'resv_'+Date.now(),
-      userId: input.userId,
+      id: r.id,
+      userId: r.userId,
       coachId: input.coachId,
-      slotId: input.slotId,
-      status: 'CONFIRMED',
-      start: new Date(),
-      end: new Date(Date.now()+60*60*1000),
-      createdAt: new Date()
+      slotId: r.slotId,
+      status: r.status,
+      start: r.startsAt ?? new Date(0),
+      end: r.endsAt ?? new Date(0),
+      createdAt: r.createdAt ?? new Date(),
     };
   }
 
+  @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Boolean)
-  async cancelReservation(@Args('id') id: string) {
-    await this.resv.cancel(id);
+  async cancelReservation(@GqlCurrentUser() user: AuthPrincipal, @Args('id') id: string) {
+    await this.resv.cancel(id, { userId: String(user.userId), isAdmin: isAdmin(user) });
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard)
   @Query(() => [Reservation])
-  async userReservations(@Args('userId') userId: string) {
-    return this.resv.listByUser(Number(userId));
+  async userReservations(@GqlCurrentUser() user: AuthPrincipal, @Args('userId', { nullable: true }) userId?: string) {
+    const target = userId ? Number(userId) : user.userId;
+    if (target !== user.userId && !isAdmin(user)) throw new ForbiddenException('not your reservations');
+    return this.resv.listByUser(target);
   }
 
+  @UseGuards(GqlJwtAuthGuard)
   @Query(() => [Reservation])
-  async coachReservations(@Args('coachId') coachId: string) {
+  async coachReservations(@GqlCurrentUser() user: AuthPrincipal, @Args('coachId') coachId: string) {
+    if (!isAdmin(user)) throw new ForbiddenException('admin only');
     return this.resv.listByCoach(Number(coachId));
   }
 }
