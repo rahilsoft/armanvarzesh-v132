@@ -114,9 +114,6 @@ jobs:
       - name: Seed all (optional)
         run: pnpm db:seed:all || true
 
-      - name: Backend Unit tests
-        run: pnpm --filter ./app/backend test -- --reporter=dot || true
-
-      - name: Backend E2E tests (conditional)
-        if: hashFiles('app/backend/**.e2e.*') != ''
-        run: pnpm --filter ./app/backend test:e2e || true
+      # Backend unit and e2e tests are not run here: they ran with `|| true`, so
+      # they could never fail this job. backend-e2e.yml runs them for real
+      # (real PostgreSQL + Redis, non-zero exit fails, 0 executed tests fails).

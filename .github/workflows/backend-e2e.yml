@@ -3,6 +3,8 @@ name: backend-e2e
 # Backend unit + e2e tests against a real PostgreSQL 16 and Redis 7.
 # No test double replaces the database or the cache here.
 
+# No paths filter on purpose: a PR that only touches workflows, the lockfile or
+# .claude/hooks must still run the gate, and a required check must never stay pending.
 on:
   push:
     branches: [develop, main]
@@ -78,6 +80,9 @@ jobs:
         # may be used ONLY against this throwaway CI database. ROADMAP 0.5 owns the
         # migration baseline and will replace any such fallback.
 
+      - name: Lint
+        run: pnpm --filter ./app/backend exec eslint .
+
       - name: Typecheck
         run: pnpm --filter ./app/backend typecheck
 
@@ -96,6 +101,17 @@ jobs:
         timeout-minutes: 12
         run: pnpm --filter ./app/backend exec jest test/e2e --runInBand --testTimeout=60000 --reporters=default --reporters=github-actions --json --outputFile=$RUNNER_TEMP/e2e-results.json
 
+      - name: Fail when no test executed
+        # Zero executed tests is not a pass: a moved test folder, a wrong
+        # pattern or a blanket skip would otherwise turn this job green.
+        run: |
+          for kind in unit e2e; do
+            f="$RUNNER_TEMP/$kind-results.json"
+            ran=$(jq '.numTotalTests - .numPendingTests - (.numTodoTests // 0)' "$f")
+            echo "$kind: $ran executed"
+            if [ "${ran:-0}" -le 0 ]; then echo "::error title=$kind::0 tests executed"; exit 1; fi
+          done
+
       - name: Publish test counts as annotations
         # Read-only summary so the pass/fail/skip counts are visible from the
         # check-run API. It never changes the job result: the test steps above
@@ -110,3 +126,20 @@ jobs:
               echo "::notice title=$kind counts::no results file (step did not run or crashed)"
             fi
           done
+
+  claude-hooks:
+    # Tests of the Claude Code hooks (.claude/hooks): guard, post-edit check, stop gate.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Hook tests
+        run: |
+          set -o pipefail
+          node --test --test-reporter=tap .claude/hooks/tests/*.test.mjs | tee "$RUNNER_TEMP/hooks.tap"
+          tests=$(sed -n 's/^# tests //p' "$RUNNER_TEMP/hooks.tap")
+          echo "::notice title=hook tests::$(grep -E '^# (tests|pass|fail|skipped)' "$RUNNER_TEMP/hooks.tap" | tr '\n' ' ')"
+          [ "${tests:-0}" -gt 0 ] || { echo "::error::0 hook tests executed"; exit 1; }
