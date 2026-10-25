@@ -40,6 +40,42 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
 6. Small, reviewable commits with Conventional Commit messages.
 7. Keep `docs/agents/STATUS.md` truthful: only claim what was verified by running it.
 
+## Definition of done and evidence (owner instruction 2026-10-25, binding)
+"Code written", "error fixed", "author's tests green" and "the user's real need is met" are four
+different claims. Never report one as another.
+1. **Start from the real state.** Record base branch, commit SHA, worktree status, related open PRs
+   and the baseline result of the checks you will rely on, so old failures are not blamed on you
+   and yours are not hidden. Never take the current state from an earlier report.
+2. **Acceptance criteria before code.** For each task write: current behaviour, expected behaviour
+   and its source (product need, API contract, REV finding, CLAUDE.md rule — never the current
+   code), inputs and preconditions, expected output, stored state and side effects, error, edge
+   and unauthorized-access cases, and how success is proven. Put them in the PR body.
+3. **Reproducible bug → failing test first.** The test must fail on the broken code and pass after
+   the fix (say so in the PR with both runs). If it cannot be reproduced, write why and what the
+   proof does not cover.
+4. **Test levels by architecture.** Unit for isolated logic, integration for DB, auth and service
+   contracts (no mock at the boundary under test), e2e for main user paths from the public entry
+   to the stored result (`backend-e2e` on real PostgreSQL + Redis). For external providers use
+   their sandbox or a controlled simulator and state what was not really exercised. Cover
+   timeout, invalid response, retry, concurrency, permission and resource ownership where they
+   apply. Tests own their data and clean up. Do not build features that do not exist just to test them.
+5. **Automatic feedback.** `.claude/hooks/` (see its README) checks every change, from any tool
+   including the shell, and blocks a turn from ending on failing or unrun checks. If a check
+   cannot pass for an environment reason, end with a line `CHECKS: FAILED` or `CHECKS: NOT RUN`
+   and the reason. Never edit the hooks to get past them.
+6. **Independent review for important changes** (auth, payments, access control, migrations, CI,
+   hooks, anything a REV finding covers). The reviewer is a separate agent that first derives its
+   own test scenarios from the requirement and acceptance criteria, then reads the code and the
+   author's tests, runs the real behaviour and tries to break it. Findings carry severity, file,
+   line, reproduction and expected result. Fix valid findings and re-review, reject others with
+   technical evidence. A self re-read is never called "independent review".
+7. **CI is the merge condition.** Results count only for the exact head SHA delivered. No
+   `continue-on-error`, `|| true`, removed assertions, unexplained skips or hidden coverage drops
+   on gating jobs. Zero executed tests is a failure. Re-validate after a base change or conflict.
+8. **Traceability and wording.** Each task links: need → acceptance criteria → commits → tests →
+   independent review → CI run (PR body and the shift report). Report "recorded", "implemented",
+   "verified" and "merged" separately.
+
 ## Decision authority (owner delegated 2026-10-19)
 The owner delegated technical and product-implementation decisions to the team. The
 `coordinator-architect` decides on its own — architecture, priorities, libraries, UX choices,
