@@ -14,7 +14,7 @@ Quota rules (CLAUDE.md «Quota budget») apply before the package starts and bef
    then use `$HOME/.local/bin/rtk` once it exists (Apache-2.0 edition, no telemetry needed).
    Follow the «Token budget rules» in `CLAUDE.md` for the whole session.
 1. `git fetch origin && git checkout develop && git pull --ff-only` (create `develop` from `main` only if it does not exist).
-2. Read `CLAUDE.md`, `docs/agents/COLLABORATION_GPT.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
+2. Read `CLAUDE.md`, `docs/agents/OWNER_DIRECTIVES.md` (D0 merge rule, D1 process, D2 cleanup, order of work), `docs/agents/COLLABORATION_GPT.md`, `docs/agents/STATUS.md`, `docs/agents/ROADMAP.md`.
 2b. **GPT findings first:** read the latest comment and all open `REV-…` findings in the issue
    `Independent technical review — GPT / Claude handoff`. Reply on the issue to each one: accepted + plan,
    fixed + commit + test result, rejected + evidence, or blocked + blocker + action. Confirmed P0/P1
