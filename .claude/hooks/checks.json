@@ -1,0 +1,50 @@
+{
+  "$comment": "Checks the Claude Code hooks run on files an agent changed. quick = per edit (PostToolUse), full + tests = before the agent may stop (Stop gate). {files} = changed files relative to root, {file} = run once per changed file, {json} = jest results path. Commands run with cwd = root. Never point a check at a package script that masks failures (for example `eslint . || echo`).",
+  "commandTimeoutSec": 300,
+  "packages": [
+    {
+      "name": "backend",
+      "root": "app/backend",
+      "match": "\\.(ts|js)$",
+      "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
+      "full": ["pnpm exec tsc -p tsconfig.build.json --noEmit", "pnpm exec eslint ."],
+      "tests": "pnpm exec jest --findRelatedTests {files} --testPathIgnorePatterns /test/e2e/ /test/integration/ /test/legacy/ --forceExit --json --outputFile {json}"
+    },
+    {
+      "name": "admin-web",
+      "root": "apps/admin-web",
+      "match": "\\.(ts|tsx|js|jsx)$",
+      "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
+      "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
+      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+    },
+    {
+      "name": "mobile-user",
+      "root": "apps/mobile-user",
+      "match": "\\.(ts|tsx|js|jsx)$",
+      "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
+      "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
+      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+    },
+    {
+      "name": "web-site",
+      "root": "apps/web-site",
+      "match": "\\.(ts|tsx|js|jsx)$",
+      "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
+      "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
+      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+    },
+    {
+      "name": "claude-hooks",
+      "root": ".claude/hooks",
+      "match": "\\.(mjs|js)$",
+      "quick": ["node --check {file}"],
+      "full": [],
+      "tests": "node --test --test-reporter=tap tests/*.test.mjs",
+      "testsFormat": "tap",
+      "testsRunAll": true
+    }
+  ],
+  "codePattern": "\\.(ts|tsx|js|jsx|mjs|cjs)$",
+  "ignore": ["^\\.claude/\\.hook-state/", "^\\.claude/worktrees/", "(^|/)node_modules/", "(^|/)dist/", "(^|/)\\.next/", "(^|/)coverage/"]
+}
