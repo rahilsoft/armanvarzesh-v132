@@ -20,7 +20,14 @@ import {
   sessionChanges, stateDir, withLock, emit,
 } from './lib.mjs';
 
-const BLOCK_CAP = Number(process.env.ARMAN_STOP_GATE_BLOCK_CAP || 4);
+// A declaration is honest only if the message does not also claim success.
+const SUCCESS_CLAIM = /\b(all|every)\b[^.\n]{0,40}\b(green|pass(es|ed|ing)?|succe(ss|ssful|eded)|ok)\b|\b(checks?|tests?|build|typecheck|lint)\s+(is|are|now|all)\s+(green|passing|passed|pass(es)?)\b|همه[^.\n]{0,30}(موفق|سبز)/i;
+function declares(text, ev) {
+  const marked = DECLARE.FAILED.some((re) => re.test(text)) || (ev.overall === 'NOT_RUN' && DECLARE.NOT_RUN.some((re) => re.test(text)));
+  if (!marked) return false;
+  const rest = text.split('\n').filter((l) => !/CHECKS:|کنترل‌?ها:/i.test(l)).join('\n');
+  return !SUCCESS_CLAIM.test(rest);
+}
 const DECLARE = {
   FAILED: [/^\s*[*_`]*CHECKS:\s*FAILED\b/im, /کنترل‌?ها:\s*ناموفق/],
   NOT_RUN: [/^\s*[*_`]*CHECKS:\s*NOT[ _]RUN\b/im, /کنترل‌?ها:\s*اجرا\s*نشد/],
@@ -191,8 +198,7 @@ function main() {
       return;
     }
     const text = lastAssistantText(input);
-    const declared =
-      DECLARE.FAILED.some((re) => re.test(text)) || (ev.overall === 'NOT_RUN' && DECLARE.NOT_RUN.some((re) => re.test(text)));
+    const declared = declares(text, ev);
     if (declared) {
       state.blocks = 0;
       saveState(dir, input.session_id, state);
@@ -201,22 +207,16 @@ function main() {
     }
     state.blocks = state.lastBlockKey === ev.changeKey ? (state.blocks || 0) + 1 : 1;
     state.lastBlockKey = ev.changeKey;
-    if (state.blocks > BLOCK_CAP) {
-      state.blocks = 0;
-      saveState(dir, input.session_id, state);
-      emit({
-        systemMessage: `STOP GATE OVERRIDDEN after ${BLOCK_CAP} blocks: checks ${ev.overall} at ${sha} and the final message did not declare it. Treat any success claim in this turn as unverified. ${summary(ev)}. Report: ${reportPath}`,
-      });
-      return;
-    }
+    // No override: an unverified stop is never let through. The honest exit is
+    // a declaration that does not claim success.
     saveState(dir, input.session_id, state);
     const marker = ev.overall === 'FAIL' ? 'CHECKS: FAILED' : 'CHECKS: NOT RUN';
     emit({
       decision: 'block',
       reason:
         `Stop gate: required checks are ${ev.overall} for files changed in this session (HEAD ${sha}). ${summary(ev)}. ` +
-        `Full output: ${reportPath}. Fix the cause and finish again. If it cannot be fixed here (for example an environment problem), ` +
-        `end with a final message that does not claim success and contains a line \`${marker}\` naming the check and the reason.`,
+        `Full output: ${reportPath}. Fix the cause and finish again (block #${state.blocks}). If it cannot be fixed here (for example an environment problem), ` +
+        `end with a final message that does not claim success and contains a line \`${marker}\` naming the check and the reason. A message that also claims the checks pass is rejected.`,
     });
   });
 }

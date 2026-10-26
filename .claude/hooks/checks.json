@@ -8,7 +8,7 @@
       "match": "\\.(ts|js)$",
       "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
       "full": ["pnpm exec tsc -p tsconfig.build.json --noEmit", "pnpm exec eslint ."],
-      "tests": "pnpm exec jest --findRelatedTests {files} --testPathIgnorePatterns /test/e2e/ /test/integration/ /test/legacy/ --forceExit --json --outputFile {json}"
+      "tests": "pnpm exec jest --findRelatedTests {files} --testPathIgnorePatterns /test/e2e/ /test/integration/ /test/legacy/ --forceExit --passWithNoTests --json --outputFile {json}"
     },
     {
       "name": "admin-web",
@@ -16,7 +16,7 @@
       "match": "\\.(ts|tsx|js|jsx)$",
       "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
       "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
-      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+      "tests": "pnpm exec jest --findRelatedTests {files} --passWithNoTests --json --outputFile {json}"
     },
     {
       "name": "mobile-user",
@@ -24,7 +24,7 @@
       "match": "\\.(ts|tsx|js|jsx)$",
       "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
       "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
-      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+      "tests": "pnpm exec jest --findRelatedTests {files} --passWithNoTests --json --outputFile {json}"
     },
     {
       "name": "web-site",
@@ -32,7 +32,7 @@
       "match": "\\.(ts|tsx|js|jsx)$",
       "quick": ["pnpm exec eslint --no-warn-ignored {files}"],
       "full": ["pnpm exec tsc -p tsconfig.json --noEmit"],
-      "tests": "pnpm exec jest --findRelatedTests {files} --json --outputFile {json}"
+      "tests": "pnpm exec jest --findRelatedTests {files} --passWithNoTests --json --outputFile {json}"
     },
     {
       "name": "claude-hooks",

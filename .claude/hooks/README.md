@@ -20,9 +20,12 @@ directly (`pnpm exec eslint`, `pnpm exec tsc`) instead of package scripts that m
   `FAIL`. Zero executed tests is NOT_RUN, never PASS (node:test counts a file without tests as
   one passing test, the gate subtracts it).
 - **Honest environment problems are not blocked.** Declaring the failure ends the turn.
-- **No endless loop.** After 4 consecutive blocks with no new change (`ARMAN_STOP_GATE_BLOCK_CAP`)
-  the turn may end with a visible `STOP GATE OVERRIDDEN … unverified` system message. Claude
-  Code's own cap is 8 blocks.
+- **No silent override.** The gate keeps blocking an unverified stop, however many times. The exit
+  is an honest final message with `CHECKS: FAILED` or `CHECKS: NOT RUN` that does not also claim
+  the checks pass (a declaration next to a success claim is rejected).
+- **Baseline before the first tool.** `baseline.mjs` (SessionStart, SubagentStart) and the
+  PreToolUse guard record HEAD and pre-existing dirty files before any tool runs, so the
+  session's first edit is checked. `.claude/.hook-state` is deny-listed for agents.
 - **Cost.** Change detection is two git commands (~50 ms). Quick checks run only for changed
   files. Full checks run at stop and are cached per package for identical file contents.
 - **Concurrency.** Parallel hook runs serialize on `.claude/.hook-state/lock` (stale after 15 min).

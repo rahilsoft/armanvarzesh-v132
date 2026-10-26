@@ -52,7 +52,7 @@ function hook(dir, name, extra = {}) {
   const r = spawnSync(process.execPath, [path.join(HOOKS, `${name}.mjs`)], {
     input: JSON.stringify(input),
     encoding: 'utf8',
-    env: { ...process.env, ARMAN_HOOKS_CONFIG: path.join(dir, 'config.json'), ARMAN_STOP_GATE_BLOCK_CAP: '2' },
+    env: { ...process.env, ARMAN_HOOKS_CONFIG: path.join(dir, 'config.json') },
   });
   const json = r.stdout.trim() ? JSON.parse(r.stdout) : null;
   return { code: r.status, json, stderr: r.stderr };
@@ -161,16 +161,13 @@ test('code outside any configured package is reported as unchecked', () => {
   assert.match(r.json.reason, /no check configured/);
 });
 
-test('repeated blocks without new work end with a visible override, not an endless loop', () => {
+test('repeated blocks without new work keep blocking: there is no silent override', () => {
   const dir = fixture();
   post(dir);
   write(dir, 'pkg/src/a.js', 'export const a = TYPE_ERROR;\n');
-  assert.equal(stop(dir).json?.decision, 'block');
-  assert.equal(stop(dir).json?.decision, 'block');
-  const third = stop(dir); // cap is 2 in tests
-  assert.equal(third.json?.decision, undefined);
-  assert.match(third.json.systemMessage, /STOP GATE OVERRIDDEN/);
-  assert.match(third.json.systemMessage, /unverified/);
+  for (let i = 0; i < 6; i++) assert.equal(stop(dir).json?.decision, 'block', `stop #${i + 1}`);
+  // The honest exit still works.
+  assert.equal(stop(dir, 'Typecheck fails.\nCHECKS: FAILED node check.cjs').json?.decision, undefined);
 });
 
 test('a passing result is cached for identical files', () => {

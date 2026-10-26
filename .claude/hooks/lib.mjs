@@ -125,13 +125,19 @@ function dirtyPaths(top) {
  * the fingerprint of every file that was already dirty, so other people's
  * uncommitted work is never attributed to the agent.
  */
+export function ensureBaseline(top, state) {
+  if (state.baseline) return false;
+  const head = git(top, ['rev-parse', 'HEAD']).out.trim() || null;
+  const dirty = {};
+  for (const p of dirtyPaths(top)) dirty[p] = fingerprint(path.join(top, p));
+  state.baseline = { head, dirty, at: new Date().toISOString() };
+  return true;
+}
+
 export function sessionChanges(top, state, config) {
-  if (!state.baseline) {
-    const head = git(top, ['rev-parse', 'HEAD']).out.trim() || null;
-    const dirty = {};
-    for (const p of dirtyPaths(top)) dirty[p] = fingerprint(path.join(top, p));
-    state.baseline = { head, dirty, at: new Date().toISOString() };
-  }
+  // Normally the baseline already exists: PreToolUse and SessionStart take it
+  // before any tool runs. This is only the fallback.
+  ensureBaseline(top, state);
   const { head, dirty } = state.baseline;
   const paths = new Set(dirtyPaths(top));
   if (head) {
