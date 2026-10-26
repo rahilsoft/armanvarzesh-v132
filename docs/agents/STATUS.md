@@ -59,6 +59,10 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-26 22:02 package)
+- **PR #65 merged** into develop (merge 40bbe16): REV-20261021-05 fix. Evidence: CI run 40280993101 mobile job 27 passed on head 8f3124f, local typecheck 0 / jest 27 passed / eslint exit 0, independent review APPROVED. Red on PR and develop alike: integration (MinIO pull), scan (grype/trivy), Workers Builds.
+- **PR #64** now at dfa48f0 (draft, not merged): 4 fix rounds tonight, hook tests 34 pass / 0 fail / 0 skip, independent re-review (security-reviewer opus, separate agent) APPROVED dfa48f0 for the reviewed fixes (comment 6424827044). Still blocking merge: original-review P1 worst-case Stop timeout (3600 s < 5 packages x 3 cmds x 300 s, needs a total time budget), CI on dfa48f0 was still running at package end. Open P2: success claims with words not covered ("Type checking succeeded", "LGTM"), `rm -rf $(echo .claude)`, unzip/tar into .claude, skipped tests pass silently, check configs unprotected, malformed stdin fails open.
+
 ## Open items (2026-10-25)
 - **PR #64** (`agent/coordinator-architect/dod-hooks-ci`, draft, D1): hooks + CI gate + CLAUDE.md rules. Independent review (security-reviewer, opus): CHANGES REQUIRED, 1 P0 + 8 P1 findings posted on the PR. Not merged. Next package fixes them first after REV replies.
 - **Branch protection:** `develop` and `main` have no protection, required checks or rulesets (reviewer, 2026-10-25). Owner action: require `backend-e2e` and `claude-hooks`.
@@ -74,6 +78,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
+| 2026-10-26 | PR #65 merged with integration/scan/Workers red | Same checks red on develop, diff only in apps/mobile-user, mobile job + local lint green |
 | 2026-10-24 | Legacy `POST /payments` retired instead of migrated (PR #63) | It wrote a table no migration creates and never started a gateway payment, the real start is `POST /payments/zarinpal/request` on `"Payment"` |
 | 2026-10-24 | Mobile session writes and clears go through one ordered queue with a session generation (PR #62) | A generation check alone still let a refresh already inside its SecureStore writes land after sign-out |
 | 2026-10-23 | Package with unreadable quota answers REVs and writes handoff only; no code | CLAUDE.md «Quota budget» rule; Speko billing tools are not Claude quota |
