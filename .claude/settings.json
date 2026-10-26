@@ -29,7 +29,7 @@
             "type": "command",
             "command": "node",
             "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/post-tool-check.mjs"],
-            "timeout": 150
+            "timeout": 600
           }
         ]
       }

@@ -134,3 +134,15 @@ test('P1: every jest test command in checks.json passes with no tests so the gat
   assert.ok(jest.length >= 4);
   for (const p of jest) assert.match(p.tests, /--passWithNoTests/, p.name);
 });
+
+test('P2: a lock left by a killed hook is taken over at once, not after 30 s', () => {
+  const dir = fixture();
+  pre(dir, 'Bash', { command: 'true' });
+  const dead = spawnSync(process.execPath, ['-e', 'process.stdout.write(String(process.pid))'], { encoding: 'utf8' }).stdout;
+  const lock = path.join(dir, '.claude/.hook-state/lock');
+  fs.mkdirSync(lock);
+  fs.writeFileSync(path.join(lock, 'pid'), dead);
+  const t0 = Date.now();
+  stop(dir, 'Done.');
+  assert.ok(Date.now() - t0 < 10000, `took ${Date.now() - t0} ms`);
+});

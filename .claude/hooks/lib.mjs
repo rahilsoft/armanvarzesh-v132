@@ -60,12 +60,24 @@ function sleep(ms) {
  * PostToolUse concurrently). A lock older than staleMs is taken over, so a
  * killed hook cannot wedge later runs.
  */
+function ownerDead(lock) {
+  try {
+    const pid = Number(fs.readFileSync(path.join(lock, 'pid'), 'utf8'));
+    if (!pid) return false;
+    process.kill(pid, 0);
+    return false;
+  } catch (e) {
+    return e?.code === 'ESRCH';
+  }
+}
+
 export function withLock(dir, fn, { waitMs = 30000, staleMs = 15 * 60 * 1000 } = {}) {
   const lock = path.join(dir, 'lock');
   const start = Date.now();
   for (;;) {
     try {
       fs.mkdirSync(lock);
+      try { fs.writeFileSync(path.join(lock, 'pid'), String(process.pid)); } catch { /* best effort */ }
       break;
     } catch {
       let age = 0;
@@ -74,7 +86,7 @@ export function withLock(dir, fn, { waitMs = 30000, staleMs = 15 * 60 * 1000 } =
       } catch {
         continue;
       }
-      if (age > staleMs) {
+      if (age > staleMs || ownerDead(lock)) {
         fs.rmSync(lock, { recursive: true, force: true });
         continue;
       }
