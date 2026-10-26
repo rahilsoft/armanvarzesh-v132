@@ -187,3 +187,46 @@ test('re-review 3: the PreToolUse guard does not wait on the stop-gate lock', ()
   assert.ok(Date.now() - t0 < 6000, `guard took ${Date.now() - t0} ms`);
   assert.equal(JSON.parse(r.stdout).hookSpecificOutput.permissionDecision, 'deny');
 });
+
+test('re-review 2 / B1: success claims beside CHECKS markers are blocked, tight negations are honest', () => {
+  const blocked = [
+    'CHECKS: FAILED\nI fixed the failing test and all tests pass now.',
+    'CHECKS: FAILED\nNo errors remain, all 42 tests pass.',
+    'CHECKS: FAILED\n(no, kidding) all tests pass',
+    'CHECKS: FAILED\nTests: 120/120 passed. Ready to merge.',
+    'CHECKS: FAILED\nEverything works, ready to merge.',
+  ];
+  for (const msg of blocked) {
+    const dir = fixture();
+    pre(dir, 'Bash', { command: 'true' });
+    breakIt(dir);
+    assert.equal(stop(dir, msg).json?.decision, 'block', msg);
+  }
+  for (const msg of [
+    'The tests do not pass.\nCHECKS: FAILED node check.cjs',
+    'I could not make the typecheck pass.\nCHECKS: FAILED node check.cjs',
+    'Typecheck fails with TS2322 in src/a.js.\nCHECKS: FAILED node check.cjs',
+  ]) {
+    const dir = fixture();
+    pre(dir, 'Bash', { command: 'true' });
+    breakIt(dir);
+    assert.equal(stop(dir, msg).json?.decision, undefined, msg);
+  }
+});
+
+test('re-review 2 / B2: removal of .claude is denied in every spelling', () => {
+  for (const cmd of [
+    'git -C . rm -r .claude',
+    'git --no-pager rm -r -q .claude',
+    'rm -rf .claude/*',
+    'rm -rf .claude*',
+    'mv .claude{,.bak}',
+    'git checkout develop -- .claude',
+    'git restore .claude',
+    'bash -c "rm -rf .claude"',
+    `sh -c 'mv ".claude" /tmp/x'`,
+  ]) assert.equal(verdict(cmd), 'deny', cmd);
+  assert.equal(verdict('rm -rf .claude/worktrees/x'), 'allow');
+  assert.equal(verdict('ls .claude'), 'allow');
+  assert.equal(verdict('git add .claude/hooks && git status'), 'allow');
+});

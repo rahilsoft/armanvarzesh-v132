@@ -21,22 +21,32 @@ import {
 } from './lib.mjs';
 
 // A declaration is honest only if the message does not also claim success.
+// Any word that says "it works / it passed". Deliberately broad: a false block
+// is cheaper than a false success. Persian claims are matched separately.
 const SUCCESS_CLAIM = new RegExp(
   [
-    String.raw`\b(all|every|everything)\b[^.\n]{0,40}\b(green|pass(es|ed|ing)?|succe(ss|ssful|eded)|ok|fine|good)\b`,
-    String.raw`\b(checks?|tests?|build|typecheck|lint)\s+(is\s+|are\s+|now\s+|all\s+)?(green|passing|passed|pass(es)?)\b`,
-    String.raw`\b(is|are|now)\s+(all\s+)?green\b`,
-    String.raw`همه[^.\n]{0,30}(موفق|سبز)`,
+    String.raw`\b(?:pass(?:es|ed|ing)?|green|works?|working|fixed|succe(?:ss|ssful|eded)|all good|ready(?: to merge)?|ok(?:ay)?|fine|good|resolved)\b`,
+    String.raw`\d+\s*\/\s*\d+`,
+    String.raw`همه[^.\n]{0,30}(?:موفق|سبز)`,
   ].join('|'),
   'gi',
 );
-const NEGATION = /\b(not|no|never|cannot|unable|fail(s|ed|ing)?|isn't|aren't|don't|doesn't|didn't|couldn't|can't|won't)\b|n't\b/i;
+// A negation counts only when it sits in the same clause, at most 4 words
+// before the claim word ("could not make the tests pass", "does not pass").
+const NEGATOR = /^(?:not|no|never|cannot|without|unable|fails?|failed|failing|isn't|aren't|don't|doesn't|didn't|couldn't|can't|won't|wasn't|weren't)$|n't$/i;
+const CLAUSE_BREAK = /[.,;:!?()\n]|\b(?:and|but|so|then|now|although|though)\b/gi;
+function negated(before) {
+  let last = 0;
+  for (const m of before.matchAll(CLAUSE_BREAK)) last = m.index + m[0].length;
+  const words = before.slice(last).trim().split(/\s+/).filter(Boolean).slice(-4);
+  return words.some((w) => NEGATOR.test(w));
+}
 /** True when the text claims success anywhere, including on the marker line. */
 function claimsSuccess(text) {
   const clean = text.replace(/CHECKS:\s*(FAILED|NOT[ _]RUN)/gi, ' ').replace(/کنترل‌?ها:\s*(ناموفق|اجرا\s*نشد)/g, ' ');
   for (const m of clean.matchAll(SUCCESS_CLAIM)) {
-    const before = clean.slice(Math.max(0, m.index - 40), m.index + m[0].length).split(/[.\n]/).pop();
-    if (!NEGATION.test(before)) return true;
+    if (/^\d/.test(m[0]) && !/^\d+\s*\/\s*\d+\s*(?:tests?\s*)?pass/i.test(clean.slice(m.index))) continue;
+    if (!negated(clean.slice(0, m.index))) return true;
   }
   return false;
 }

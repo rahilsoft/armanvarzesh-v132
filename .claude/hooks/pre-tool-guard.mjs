@@ -79,17 +79,33 @@ const DENY = [
 const WRITER = /^\s*(sudo\s+)?(tee|sed\s+(-[a-zA-Z]*\s+)*-[a-zA-Z]*i|perl\s+-[a-zA-Z]*i|mv|cp|rm|truncate|install|ln|chmod|chown|git\s+(checkout|restore|rm|mv|apply|am)|patch|dd|python3?\b[^;&|\n]*\s-c|node\s+(-\S+\s+)*(-e|--eval|-p)|ruby\s+-e|perl\s+-e)\b/;
 const PROTECTED_IN_CMD = /\.claude\/settings(\.local)?\.json|\.claude\/hooks(\/|\b)|\.github\/workflows(\/|\b)|CODEOWNERS/;
 
-const CONTROL_ROOT = String.raw`(?:\S*\/)?\.claude(?:\/hooks|\/settings(?:\.local)?\.json)?\/?(?=\s|$)`;
-const CONTROL_REMOVE = new RegExp(String.raw`^\s*(?:sudo\s+)?(?:rm|rmdir|unlink|mv|git\s+rm|git\s+mv)\s+(?:-\S+\s+)*(?:--\s+)?(?:\S+\s+)*?${CONTROL_ROOT}`);
+const CONTROL_VERB = /^\s*(?:sudo\s+)?(?:rm|rmdir|unlink|mv|git\s+(?:rm|mv|checkout|restore))\b/;
+// .claude, .claude*, .claude{,.bak}, .claude/, .claude/*, .claude/hooks, .claude/settings*.json
+const CONTROL_TARGET = /(?:^|\/)\.claude(?:[^/]*|\/(?:hooks)?|\/settings(?:\.local)?\.json|\/[^/]*[*?{[][^/]*)$/;
+
+/** Command text as the shell sees it: git global options dropped, bash -c bodies exposed, quotes removed. */
+function shellView(cmd) {
+  return cmd
+    .replace(/(\b(?:bash|sh|zsh)\s+-l?c\s+|\beval\s+)(["'])([\s\S]*?)\2/g, (_m, pre, _q, body) => `${pre} ; ${body} ; `)
+    .replace(/\bgit\s+((-C|-c|--git-dir|--work-tree)(\s+|=)\S+\s+|--[\w-]+\s+)+/g, 'git ')
+    .replace(/["']/g, '');
+}
+function removesControl(cmd) {
+  for (const seg of shellView(cmd).split(/&&|\|\||;|\||\n/)) {
+    if (!CONTROL_VERB.test(seg)) continue;
+    if (seg.trim().split(/\s+/).slice(1).some((t) => CONTROL_TARGET.test(t))) return true;
+  }
+  return false;
+}
 const READ_ONLY = /^\s*(sudo\s+)?(cat|ls|head|tail|grep|rg|wc|stat|less|file|git\s+(log|diff|show|status))\b/;
 
 export function checkCommand(cmd) {
   // `git -C dir`, `git -c k=v` and `--no-pager` must not hide the subcommand.
   let code = stripData(cmd).replace(/\bgit\s+((-C|-c|--git-dir|--work-tree)(\s+|=)\S+\s+|--[\w-]+\s+)+/g, 'git ');
+  if (removesControl(cmd)) {
+    return { decision: 'deny', reason: 'Removing or moving .claude, .claude/hooks or settings.json would switch the safety hooks off. Blocked.' };
+  }
   for (const seg of cmd.split(/&&|\|\||;|\||\n/)) {
-    if (CONTROL_REMOVE.test(seg.replace(/["']/g, ''))) {
-      return { decision: 'deny', reason: 'Removing or moving .claude, .claude/hooks or settings.json would switch the safety hooks off. Blocked.' };
-    }
     if (/\.hook-state\b/.test(seg) && !READ_ONLY.test(seg)) {
       return { decision: 'deny', reason: 'The hook state (.claude/.hook-state) is written only by the hooks: erasing it would hide this session’s edits.' };
     }
