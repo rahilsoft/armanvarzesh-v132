@@ -43,4 +43,4 @@ against throwaway git repos (injected error caught and fed back, false success b
 failure allowed, committed changes still checked, zero tests, timeout, cache, lock).
 CI runs the same command in the `claude-hooks` job of `backend-e2e.yml`.
 
-Known limit: while checks are FAIL or NOT_RUN, any success-sounding word in the final message (pass, green, works, fixed, ready) blocks the stop unless tightly negated, so a partial report such as «lint passes, typecheck fails» may need rewording.
+Declaration rule: with the marker and checks FAIL or NOT_RUN, the stop is blocked only for an overall success claim (all/every/everything + tests/checks/green/pass, ready to merge, CI green, no errors, N/N passed, done) or for a claim that a check the gate reports as failed passes (matched by package or command name). Narrow claims about other checks are allowed, so «lint passes, typecheck fails» is fine. The block reason quotes the offending clause.
