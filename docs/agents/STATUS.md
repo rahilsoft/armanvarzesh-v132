@@ -50,6 +50,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 | Production domain + TLS, hosting/k8s access | deploy | missing |
 
 ## Owner decisions
+- 2026-10-25: Owner set standing directives D0 (merge ready PRs at the end of every stage, all prompt rules respected), D1 (four separate claims, hooks, independent review, CI as merge condition) and D2 (documented cleanup of every tracked file). Text: `docs/agents/OWNER_DIRECTIVES.md`. Owner asked for no development in the session that recorded them, work continues in the scheduled packages.
 - 2026-10-19: Team of 9 agents created. Nightly window 22:00–23:00 Tehran. Work lands on `develop`.
 - 2026-10-19: Owner approved deleting the deprecated `services/*`. Done: 14 folders with `DEPRECATED.md` removed (affiliate, assessments, challenges, coaches, content, courses, inbox, kpis, medical, nutrition, payments, physio, rewards, users), plus their k8s manifests/secrets, `helm/users-service`, and entries in docker-bake, CI matrix, Prometheus, deploy/helm values, compose.elite. 11 active services remain.
 - 2026-10-20: Owner set the Claude ↔ GPT collaboration protocol (`docs/agents/COLLABORATION_GPT.md`): GPT reviews daily 00:05 Tehran in a fixed GitHub issue, Claude answers every finding at shift start. Owner also instructed: no questions to him unless he asks, development continues without his approval even if he is offline.
@@ -57,6 +58,10 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner made integration a standing duty every shift and granted permission to merge ready PRs (incl. `develop → main`), never bypassing branch protection. Responsibility ends at merge + target CI check. Assigned to `qa-test-engineer` (integration owner).
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
+
+## Open items (2026-10-25)
+- **PR #64** (`agent/coordinator-architect/dod-hooks-ci`, draft, D1): hooks + CI gate + CLAUDE.md rules. Independent review (security-reviewer, opus): CHANGES REQUIRED, 1 P0 + 8 P1 findings posted on the PR. Not merged. Next package fixes them first after REV replies.
+- **Branch protection:** `develop` and `main` have no protection, required checks or rulesets (reviewer, 2026-10-25). Owner action: require `backend-e2e` and `claude-hooks`.
 
 ## Open items (2026-10-24 22:02 package)
 - **Quota observability not established.** Official in-app balance still unreadable from the scheduled run (`claude -p "/usage"` gives local cost only). Owner directive 2026-10-24 (CLAUDE.md «Quota budget») lets REV fixes continue, 20% reserve not claimed.

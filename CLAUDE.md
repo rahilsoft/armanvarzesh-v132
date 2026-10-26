@@ -21,6 +21,11 @@ chat, live sessions (LiveKit), challenges/rewards/gamification (XP, badges), cou
   Port anything still needed into `app/backend`. (14 deprecated services were removed on 2026-10-19.)
 - Known audit: `FINAL-CERTIFICATION.md` + `MASTER-REMEDIATION-PLAN.md` (P0 security items).
 
+## Owner standing directives (2026-10-25, binding)
+Read `docs/agents/OWNER_DIRECTIVES.md` at the start of every work package, right after this file. It holds
+the owner's directives D0 (merge ready PRs at the end of every stage), D1 (definition of done, hooks,
+independent review, CI as merge condition) and D2 (documented repository cleanup), plus the order of work.
+
 ## Non-negotiable rules
 1. **Everything must really work.** No mocks, fake data, `TODO`-returning stubs or placeholder
    handlers in production paths. Every feature talks to the real provider through an adapter:
