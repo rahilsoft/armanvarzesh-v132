@@ -146,3 +146,44 @@ test('P2: a lock left by a killed hook is taken over at once, not after 30 s', (
   stop(dir, 'Done.');
   assert.ok(Date.now() - t0 < 10000, `took ${Date.now() - t0} ms`);
 });
+
+test('re-review 1: a success claim anywhere beside a CHECKS marker blocks the stop', () => {
+  for (const msg of [
+    'Tests pass and everything is green\nCHECKS: FAILED',
+    'CHECKS: FAILED was a flake, all checks are green now',
+    'CHECKS: FAILED but the typecheck passed and all is good\nAll tests pass.',
+  ]) {
+    const dir = fixture();
+    pre(dir, 'Bash', { command: 'true' });
+    breakIt(dir);
+    assert.equal(stop(dir, msg).json?.decision, 'block', msg);
+  }
+  const dir = fixture();
+  pre(dir, 'Bash', { command: 'true' });
+  breakIt(dir);
+  const honest = stop(dir, 'I could not make the tests pass.\nCHECKS: FAILED node check.cjs reports bad a.js');
+  assert.equal(honest.json?.decision, undefined);
+});
+
+test('re-review 2: removing or moving .claude, its hooks dir or settings is denied', () => {
+  for (const cmd of ['rm -rf .claude', 'rm -rf .claude/', 'mv .claude /tmp/x', 'rm -rf .claude/hooks', 'rm -f .claude/settings.json', 'git rm -r .claude', 'rm -rf /repo/.claude']) {
+    assert.equal(verdict(cmd), 'deny', cmd);
+  }
+  assert.equal(verdict('rm -rf .claude/worktrees/x'), 'allow');
+  assert.equal(verdict('ls .claude'), 'allow');
+});
+
+test('re-review 3: the PreToolUse guard does not wait on the stop-gate lock', () => {
+  const dir = fixture();
+  pre(dir, 'Bash', { command: 'true' });
+  const lock = path.join(dir, '.claude/.hook-state/lock');
+  fs.mkdirSync(lock);
+  fs.writeFileSync(path.join(lock, 'pid'), String(process.pid)); // live owner
+  const t0 = Date.now();
+  const r = spawnSync(process.execPath, [path.join(HOOKS, 'pre-tool-guard.mjs')], {
+    input: JSON.stringify({ session_id: 'other', cwd: dir, hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command: 'git reset --hard' } }),
+    encoding: 'utf8', timeout: 8000,
+  });
+  assert.ok(Date.now() - t0 < 6000, `guard took ${Date.now() - t0} ms`);
+  assert.equal(JSON.parse(r.stdout).hookSpecificOutput.permissionDecision, 'deny');
+});

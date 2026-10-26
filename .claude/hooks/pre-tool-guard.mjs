@@ -79,12 +79,17 @@ const DENY = [
 const WRITER = /^\s*(sudo\s+)?(tee|sed\s+(-[a-zA-Z]*\s+)*-[a-zA-Z]*i|perl\s+-[a-zA-Z]*i|mv|cp|rm|truncate|install|ln|chmod|chown|git\s+(checkout|restore|rm|mv|apply|am)|patch|dd|python3?\b[^;&|\n]*\s-c|node\s+(-\S+\s+)*(-e|--eval|-p)|ruby\s+-e|perl\s+-e)\b/;
 const PROTECTED_IN_CMD = /\.claude\/settings(\.local)?\.json|\.claude\/hooks(\/|\b)|\.github\/workflows(\/|\b)|CODEOWNERS/;
 
+const CONTROL_ROOT = String.raw`(?:\S*\/)?\.claude(?:\/hooks|\/settings(?:\.local)?\.json)?\/?(?=\s|$)`;
+const CONTROL_REMOVE = new RegExp(String.raw`^\s*(?:sudo\s+)?(?:rm|rmdir|unlink|mv|git\s+rm|git\s+mv)\s+(?:-\S+\s+)*(?:--\s+)?(?:\S+\s+)*?${CONTROL_ROOT}`);
 const READ_ONLY = /^\s*(sudo\s+)?(cat|ls|head|tail|grep|rg|wc|stat|less|file|git\s+(log|diff|show|status))\b/;
 
 export function checkCommand(cmd) {
   // `git -C dir`, `git -c k=v` and `--no-pager` must not hide the subcommand.
   let code = stripData(cmd).replace(/\bgit\s+((-C|-c|--git-dir|--work-tree)(\s+|=)\S+\s+|--[\w-]+\s+)+/g, 'git ');
   for (const seg of cmd.split(/&&|\|\||;|\||\n/)) {
+    if (CONTROL_REMOVE.test(seg.replace(/["']/g, ''))) {
+      return { decision: 'deny', reason: 'Removing or moving .claude, .claude/hooks or settings.json would switch the safety hooks off. Blocked.' };
+    }
     if (/\.hook-state\b/.test(seg) && !READ_ONLY.test(seg)) {
       return { decision: 'deny', reason: 'The hook state (.claude/.hook-state) is written only by the hooks: erasing it would hide this session’s edits.' };
     }
@@ -127,6 +132,7 @@ export function decide(input) {
 
 /** Record the session baseline before the tool runs, so its own first edit counts. */
 function recordBaseline(input) {
+  // Never wait long: a stop gate may hold the lock for minutes and this hook has a 10 s timeout.
   try {
     const top = gitTop(input);
     if (!top) return;
@@ -134,7 +140,7 @@ function recordBaseline(input) {
     withLock(dir, () => {
       const state = loadState(dir, input.session_id);
       if (ensureBaseline(top, state)) saveState(dir, input.session_id, state);
-    });
+    }, { waitMs: 1500 });
   } catch {
     /* the Stop gate falls back to its own baseline */
   }

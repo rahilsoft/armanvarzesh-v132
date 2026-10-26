@@ -21,12 +21,28 @@ import {
 } from './lib.mjs';
 
 // A declaration is honest only if the message does not also claim success.
-const SUCCESS_CLAIM = /\b(all|every)\b[^.\n]{0,40}\b(green|pass(es|ed|ing)?|succe(ss|ssful|eded)|ok)\b|\b(checks?|tests?|build|typecheck|lint)\s+(is|are|now|all)\s+(green|passing|passed|pass(es)?)\b|همه[^.\n]{0,30}(موفق|سبز)/i;
+const SUCCESS_CLAIM = new RegExp(
+  [
+    String.raw`\b(all|every|everything)\b[^.\n]{0,40}\b(green|pass(es|ed|ing)?|succe(ss|ssful|eded)|ok|fine|good)\b`,
+    String.raw`\b(checks?|tests?|build|typecheck|lint)\s+(is\s+|are\s+|now\s+|all\s+)?(green|passing|passed|pass(es)?)\b`,
+    String.raw`\b(is|are|now)\s+(all\s+)?green\b`,
+    String.raw`همه[^.\n]{0,30}(موفق|سبز)`,
+  ].join('|'),
+  'gi',
+);
+const NEGATION = /\b(not|no|never|cannot|unable|fail(s|ed|ing)?|isn't|aren't|don't|doesn't|didn't|couldn't|can't|won't)\b|n't\b/i;
+/** True when the text claims success anywhere, including on the marker line. */
+function claimsSuccess(text) {
+  const clean = text.replace(/CHECKS:\s*(FAILED|NOT[ _]RUN)/gi, ' ').replace(/کنترل‌?ها:\s*(ناموفق|اجرا\s*نشد)/g, ' ');
+  for (const m of clean.matchAll(SUCCESS_CLAIM)) {
+    const before = clean.slice(Math.max(0, m.index - 40), m.index + m[0].length).split(/[.\n]/).pop();
+    if (!NEGATION.test(before)) return true;
+  }
+  return false;
+}
 function declares(text, ev) {
   const marked = DECLARE.FAILED.some((re) => re.test(text)) || (ev.overall === 'NOT_RUN' && DECLARE.NOT_RUN.some((re) => re.test(text)));
-  if (!marked) return false;
-  const rest = text.split('\n').filter((l) => !/CHECKS:|کنترل‌?ها:/i.test(l)).join('\n');
-  return !SUCCESS_CLAIM.test(rest);
+  return marked && !claimsSuccess(text);
 }
 const DECLARE = {
   FAILED: [/^\s*[*_`]*CHECKS:\s*FAILED\b/im, /کنترل‌?ها:\s*ناموفق/],
