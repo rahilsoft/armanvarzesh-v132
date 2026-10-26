@@ -21,47 +21,69 @@ import {
 } from './lib.mjs';
 
 // A declaration is honest only if the message does not also claim success.
-// Any word that says "it works / it passed". Deliberately broad: a false block
-// is cheaper than a false success. Persian claims are matched separately.
-const SUCCESS_CLAIM = new RegExp(
-  [
-    String.raw`\b(?:pass(?:es|ed|ing)?|green|works?|working|fixed|succe(?:ss|ssful|eded)|all good|ready(?: to merge)?|ok(?:ay)?|fine|good|resolved)\b`,
-    String.raw`\d+\s*\/\s*\d+`,
-    String.raw`همه[^.\n]{0,30}(?:موفق|سبز)`,
-  ].join('|'),
-  'gi',
-);
-// A negation counts only when it sits in the same clause, at most 4 words
-// before the claim word ("could not make the tests pass", "does not pass").
-const NEGATOR = /^(?:not|no|never|cannot|without|unable|fails?|failed|failing|isn't|aren't|don't|doesn't|didn't|couldn't|can't|won't|wasn't|weren't)$|n't$/i;
-const CLAUSE_BREAK = /[.,;:!?()\n]|\b(?:and|but|so|then|now|although|though)\b/gi;
+// Honest-report rule. With checks FAIL/NOT_RUN the final message is blocked only for
+//  (a) an OVERALL success claim: all/every/everything/both + tests/checks/green/pass/works,
+//      "ready to merge", "CI is green", "no errors/failures", N/N passed, "done"/"complete",
+//      whatever else the clause says, and
+//  (b) a claim that a check the gate reports FAIL/NOT_RUN passes (matched by package or
+//      command name). Narrow claims about checks that passed or are not named are allowed.
+// Claims are judged per clause, so "lint passes, typecheck fails" is not one claim.
+const SUCCESS_WORD = /\b(?:pass(?:es|ed|ing)?|green|works?|working|ok(?:ay)?|fine|clean|fixed|resolved|succe(?:ss|ssful|eded)|good)\b/i;
+const OVERALL = [
+  /\b(?:all|every|everything|both)\b[^.\n]{0,40}\b(?:tests?|checks?|green|pass(?:es|ed|ing)?|works?|working|good|fine|ok|done|complete[d]?|clean)\b/i,
+  /\bready(?:\s+to\s+(?:merge|ship))?\b/i,
+  /\bci\b[^.\n]{0,15}\bgreen\b/i,
+  /\bno\s+(?:\w+\s+)?(?:errors?|failures?)\b/i,
+  /\d+\s*\/\s*\d+\s*(?:tests?\s*)?pass(?:ed)?/i,
+  /\b(?:done|complete[d]?|finished)\b/i,
+  /همه[^.\n]{0,30}(?:موفق|سبز)/,
+];
+const NEGATOR = /^(?:not|no|never|cannot|without|unable|isn't|aren't|don't|doesn't|didn't|couldn't|can't|won't|wasn't|weren't)$|n't$/i;
+const CLAUSE_BREAK = /\.(?=\s|$)|[,;:!?()\n]|\b(?:and|but|so|then|now|although|though)\b/gi;
 function negated(before) {
   let last = 0;
   for (const m of before.matchAll(CLAUSE_BREAK)) last = m.index + m[0].length;
-  const words = before.slice(last).trim().split(/\s+/).filter(Boolean).slice(-4);
-  return words.some((w) => NEGATOR.test(w));
+  return before.slice(last).trim().split(/\s+/).filter(Boolean).slice(-4).some((w) => NEGATOR.test(w));
 }
-// Words that make a sentence a partial report ("lint passes, typecheck fails").
-// "fixed the failing test" and "no errors" name what was fixed, not a failure.
-const FAILURE_WORD = /\b(?:fail(?:s|ed|ing|ure|ures)?|errors?|except|still|red|broken)\b/i;
-function hasFailureWord(sentence) {
-  const s = sentence
-    .replace(/\b(?:fix(?:ed|es|ing)?|repair(?:ed)?|resolve[ds]?)\s+(?:the\s+|a\s+|all\s+)?(?:failing|broken|red)\b/gi, ' ')
-    .replace(/\b(?:no|zero|0|without|fewer)\s+(?:\w+\s+)?(?:errors?|failures?)\b/gi, ' ');
-  return FAILURE_WORD.test(s);
+const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const STOP_TOKENS = new Set(['node', 'pnpm', 'exec', 'npx', 'yarn', 'run', 'tests', 'test', 'json', 'files', 'file', 'tap', 'reporter', 'outputFile', 'forceExit', 'passWithNoTests']);
+/** Name patterns of the checks the gate reports as FAIL or NOT_RUN. */
+function failingNames(ev) {
+  const out = [];
+  for (const r of ev.results || []) {
+    if (r.status === 'PASS') continue;
+    if (r.name && !r.name.startsWith('(')) out.push(esc(r.name));
+    for (const st of r.steps || []) {
+      if (st.status === 'PASS') continue;
+      const cmd = st.cmd || '';
+      if (/\btsc\b/.test(cmd)) out.push('typecheck', 'type[- ]?check', 'tsc');
+      if (/\beslint\b/.test(cmd)) out.push('lint', 'eslint');
+      if (/\bjest\b|--test\b|related tests/.test(cmd)) out.push('tests?', 'specs?', 'jest');
+      for (const t of cmd.split(/[^\w.-]+/)) if (t.length >= 4 && !STOP_TOKENS.has(t) && !t.startsWith('-') && !t.startsWith('{')) out.push(esc(t));
+    }
+  }
+  return [...new Set(out)];
 }
-/**
- * The first sentence that claims success without naming a failure, or null.
- * A sentence with both a success and a failure word is a partial report.
- */
-function successSentence(text) {
+/** The first clause that breaks the rule above, or null. */
+function successSentence(text, ev) {
   const clean = text.replace(/CHECKS:\s*(FAILED|NOT[ _]RUN)/gi, ' ').replace(/کنترل‌?ها:\s*(ناموفق|اجرا\s*نشد)/g, ' ');
-  for (const sentence of clean.split(/[.!?]+(?=\s|$)|\n/)) {
-    for (const m of sentence.matchAll(SUCCESS_CLAIM)) {
-      if (/^\d/.test(m[0]) && !/^\d+\s*\/\s*\d+\s*(?:tests?\s*)?pass/i.test(sentence.slice(m.index))) continue;
-      if (negated(sentence.slice(0, m.index))) continue;
-      if (hasFailureWord(sentence)) break;
-      return sentence.trim();
+  const names = failingNames(ev);
+  const nameRe = names.length ? new RegExp(`(?<![\\w-])(?:${names.join('|')})(?![\\w-])`, 'i') : null;
+  const clauses = [];
+  let start = 0;
+  for (const m of clean.matchAll(CLAUSE_BREAK)) {
+    clauses.push(clean.slice(start, m.index));
+    start = m.index + (/^[a-z]/i.test(m[0]) ? 0 : m[0].length);
+  }
+  clauses.push(clean.slice(start));
+  for (const clause of clauses) {
+    for (const re of OVERALL) {
+      const m = re.exec(clause);
+      if (m && !negated(clause.slice(0, m.index))) return clause.trim();
+    }
+    if (nameRe && nameRe.test(clause)) {
+      const m = SUCCESS_WORD.exec(clause);
+      if (m && !negated(clause.slice(0, m.index))) return clause.trim();
     }
   }
   return null;
@@ -69,7 +91,7 @@ function successSentence(text) {
 function declares(text, ev) {
   const marked = DECLARE.FAILED.some((re) => re.test(text)) || (ev.overall === 'NOT_RUN' && DECLARE.NOT_RUN.some((re) => re.test(text)));
   if (!marked) return { ok: false, claim: null };
-  const claim = successSentence(text);
+  const claim = successSentence(text, ev);
   return { ok: !claim, claim };
 }
 const DECLARE = {

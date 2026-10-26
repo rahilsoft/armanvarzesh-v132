@@ -235,7 +235,8 @@ test('B3: honest partial reports end the turn, pure success claims still block, 
   const honest = [
     'CHECKS: FAILED\nI fixed the wallet bug but lint still fails on x.ts:3.',
     'lint passes, typecheck fails with 2 errors.\nCHECKS: FAILED',
-    'All tests pass except wallet.spec.ts, which fails.\nCHECKS: FAILED',
+    'Backend tests pass. Admin-web build is still red: vite error in x.tsx.\nCHECKS: FAILED',
+    'Typecheck of other packages is fine, the backend one fails.\nCHECKS: FAILED',
     'Typecheck works locally only with node 22, in CI it fails.\nCHECKS: FAILED',
   ];
   for (const msg of honest) {
@@ -248,6 +249,11 @@ test('B3: honest partial reports end the turn, pure success claims still block, 
     'CHECKS: FAILED\nI fixed the failing test and all tests pass now.',
     'CHECKS: FAILED\nNo errors remain, all 42 tests pass.',
     'CHECKS: FAILED\nlint still fails. Everything works, ready to merge.',
+    'All tests pass, nothing still fails.\nCHECKS: FAILED',
+    'Everything is green except my mood.\nCHECKS: FAILED',
+    'The previously failing lint is fixed, all checks pass.\nCHECKS: FAILED',
+    'All tests pass except wallet.spec.ts, which fails.\nCHECKS: FAILED',
+    'The check.cjs check passes.\nCHECKS: FAILED',
   ]) {
     const dir = fixture();
     pre(dir, 'Bash', { command: 'true' });
