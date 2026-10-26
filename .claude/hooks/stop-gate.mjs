@@ -8,9 +8,9 @@
 //   NOT_RUN  -> a required check could not run (timeout, missing tool,
 //               0 tests executed, no check configured). Stop blocked unless the
 //               final message declares `CHECKS: NOT RUN` or `CHECKS: FAILED`.
-// The gate never blocks an honest report of a problem it cannot fix, and after
-// BLOCK_CAP blocks without new changes it lets the turn end with a visible
-// warning instead of looping.
+// An honest report ends the turn: the marker plus a message with no sentence
+// that claims success without naming a failure. There is no override cap: an
+// unverified stop is never let through, the declaration is the only exit.
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -41,18 +41,36 @@ function negated(before) {
   const words = before.slice(last).trim().split(/\s+/).filter(Boolean).slice(-4);
   return words.some((w) => NEGATOR.test(w));
 }
-/** True when the text claims success anywhere, including on the marker line. */
-function claimsSuccess(text) {
+// Words that make a sentence a partial report ("lint passes, typecheck fails").
+// "fixed the failing test" and "no errors" name what was fixed, not a failure.
+const FAILURE_WORD = /\b(?:fail(?:s|ed|ing|ure|ures)?|errors?|except|still|red|broken)\b/i;
+function hasFailureWord(sentence) {
+  const s = sentence
+    .replace(/\b(?:fix(?:ed|es|ing)?|repair(?:ed)?|resolve[ds]?)\s+(?:the\s+|a\s+|all\s+)?(?:failing|broken|red)\b/gi, ' ')
+    .replace(/\b(?:no|zero|0|without|fewer)\s+(?:\w+\s+)?(?:errors?|failures?)\b/gi, ' ');
+  return FAILURE_WORD.test(s);
+}
+/**
+ * The first sentence that claims success without naming a failure, or null.
+ * A sentence with both a success and a failure word is a partial report.
+ */
+function successSentence(text) {
   const clean = text.replace(/CHECKS:\s*(FAILED|NOT[ _]RUN)/gi, ' ').replace(/کنترل‌?ها:\s*(ناموفق|اجرا\s*نشد)/g, ' ');
-  for (const m of clean.matchAll(SUCCESS_CLAIM)) {
-    if (/^\d/.test(m[0]) && !/^\d+\s*\/\s*\d+\s*(?:tests?\s*)?pass/i.test(clean.slice(m.index))) continue;
-    if (!negated(clean.slice(0, m.index))) return true;
+  for (const sentence of clean.split(/[.!?]+(?=\s|$)|\n/)) {
+    for (const m of sentence.matchAll(SUCCESS_CLAIM)) {
+      if (/^\d/.test(m[0]) && !/^\d+\s*\/\s*\d+\s*(?:tests?\s*)?pass/i.test(sentence.slice(m.index))) continue;
+      if (negated(sentence.slice(0, m.index))) continue;
+      if (hasFailureWord(sentence)) break;
+      return sentence.trim();
+    }
   }
-  return false;
+  return null;
 }
 function declares(text, ev) {
   const marked = DECLARE.FAILED.some((re) => re.test(text)) || (ev.overall === 'NOT_RUN' && DECLARE.NOT_RUN.some((re) => re.test(text)));
-  return marked && !claimsSuccess(text);
+  if (!marked) return { ok: false, claim: null };
+  const claim = successSentence(text);
+  return { ok: !claim, claim };
 }
 const DECLARE = {
   FAILED: [/^\s*[*_`]*CHECKS:\s*FAILED\b/im, /کنترل‌?ها:\s*ناموفق/],
@@ -224,7 +242,8 @@ function main() {
       return;
     }
     const text = lastAssistantText(input);
-    const declared = declares(text, ev);
+    const decl = declares(text, ev);
+    const declared = decl.ok;
     if (declared) {
       state.blocks = 0;
       saveState(dir, input.session_id, state);
@@ -241,7 +260,7 @@ function main() {
       decision: 'block',
       reason:
         `Stop gate: required checks are ${ev.overall} for files changed in this session (HEAD ${sha}). ${summary(ev)}. ` +
-        `Full output: ${reportPath}. Fix the cause and finish again (block #${state.blocks}). If it cannot be fixed here (for example an environment problem), ` +
+        `Full output: ${reportPath}. ${decl.claim ? `Your final message has the marker but claims success: "${decl.claim}". Failed or unrun checks are listed above. ` : ''}Fix the cause and finish again (block #${state.blocks}). If it cannot be fixed here (for example an environment problem), ` +
         `end with a final message that does not claim success and contains a line \`${marker}\` naming the check and the reason. A message that also claims the checks pass is rejected.`,
     });
   });

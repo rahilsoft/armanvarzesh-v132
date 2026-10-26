@@ -81,7 +81,7 @@ const PROTECTED_IN_CMD = /\.claude\/settings(\.local)?\.json|\.claude\/hooks(\/|
 
 const CONTROL_VERB = /^\s*(?:sudo\s+)?(?:rm|rmdir|unlink|mv|git\s+(?:rm|mv|checkout|restore))\b/;
 // .claude, .claude*, .claude{,.bak}, .claude/, .claude/*, .claude/hooks, .claude/settings*.json
-const CONTROL_TARGET = /(?:^|\/)\.claude(?:[^/]*|\/(?:hooks)?|\/settings(?:\.local)?\.json|\/[^/]*[*?{[][^/]*)$/;
+const CONTROL_TARGET = /(?:^|\/)\.claude(?:(?:[*?{\[][^/]*)?|\/(?:hooks\/?)?|\/settings(?:\.local)?\.json|\/[^/]*[*?{[][^/]*)$/;
 
 /** Command text as the shell sees it: git global options dropped, bash -c bodies exposed, quotes removed. */
 function shellView(cmd) {
@@ -92,6 +92,7 @@ function shellView(cmd) {
 }
 function removesControl(cmd) {
   for (const seg of shellView(cmd).split(/&&|\|\||;|\||\n/)) {
+    if (/^\s*(?:sudo\s+)?rsync\b/.test(seg) && /--(?:delete|remove-source-files)/.test(seg) && seg.trim().split(/\s+/).some((t) => CONTROL_TARGET.test(t))) return true;
     if (!CONTROL_VERB.test(seg)) continue;
     if (seg.trim().split(/\s+/).slice(1).some((t) => CONTROL_TARGET.test(t))) return true;
   }

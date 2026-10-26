@@ -230,3 +230,36 @@ test('re-review 2 / B2: removal of .claude is denied in every spelling', () => {
   assert.equal(verdict('ls .claude'), 'allow');
   assert.equal(verdict('git add .claude/hooks && git status'), 'allow');
 });
+
+test('B3: honest partial reports end the turn, pure success claims still block, reason quotes the sentence', () => {
+  const honest = [
+    'CHECKS: FAILED\nI fixed the wallet bug but lint still fails on x.ts:3.',
+    'lint passes, typecheck fails with 2 errors.\nCHECKS: FAILED',
+    'All tests pass except wallet.spec.ts, which fails.\nCHECKS: FAILED',
+    'Typecheck works locally only with node 22, in CI it fails.\nCHECKS: FAILED',
+  ];
+  for (const msg of honest) {
+    const dir = fixture();
+    pre(dir, 'Bash', { command: 'true' });
+    breakIt(dir);
+    assert.equal(stop(dir, msg).json?.decision, undefined, msg);
+  }
+  for (const msg of [
+    'CHECKS: FAILED\nI fixed the failing test and all tests pass now.',
+    'CHECKS: FAILED\nNo errors remain, all 42 tests pass.',
+    'CHECKS: FAILED\nlint still fails. Everything works, ready to merge.',
+  ]) {
+    const dir = fixture();
+    pre(dir, 'Bash', { command: 'true' });
+    breakIt(dir);
+    const r = stop(dir, msg);
+    assert.equal(r.json?.decision, 'block', msg);
+    assert.match(r.json.reason, /claims success: "/);
+    assert.match(r.json.reason, /node check\.cjs/);
+  }
+});
+
+test('B3: only .claude as a whole path segment is protected; rsync --delete into it is denied', () => {
+  for (const cmd of ['rm -rf .claude-tmp', 'rm .claude.bak', 'rm -f .claude.json', 'mv x .claude-old']) assert.equal(verdict(cmd), 'allow', cmd);
+  for (const cmd of ['rsync -a --delete src/ .claude/', 'rsync --delete -a empty/ .claude/hooks/', 'rm -rf .claude{,.bak}', 'rm -rf .claude*']) assert.equal(verdict(cmd), 'deny', cmd);
+});
