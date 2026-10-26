@@ -51,6 +51,11 @@ let inflightGeneration = -1;
 // Session generation: bumped by every signIn/signOut. A refresh captures it at start and
 // discards its result if it changed (sign-out or account switch while the call was in flight).
 let sessionGeneration = 0;
+// Generation that the published identity (token/refreshToken/user in state) belongs to.
+// It lags sessionGeneration while a signIn is still persisting: during that window the state
+// still holds the previous account, so a refresh must not run (it would renew the previous
+// account under the new generation and its write would land after the new sign-in).
+let publishedGeneration = 0;
 
 // Every session write and clear runs through one queue, in call order. A stale refresh checks
 // the generation inside its queued step, so its writes can never land after a later sign-out
@@ -85,14 +90,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   hydrated: false,
 
   signIn: async (session) => {
-    sessionGeneration += 1;
-    await enqueueStorage(() => persistSession(session));
+    const generation = ++sessionGeneration;
+    try {
+      await enqueueStorage(() => persistSession(session));
+    } catch (e) {
+      // Persist failed and nothing newer started: the identity in state is still the truth.
+      if (generation === sessionGeneration) publishedGeneration = generation;
+      throw e;
+    }
+    // A newer signIn/signOut owns the state now: never overwrite it with this older result.
+    if (generation !== sessionGeneration) return;
     set({ token: session.accessToken, refreshToken: session.refreshToken, user: session.user });
+    publishedGeneration = generation;
   },
 
   signOut: async () => {
-    sessionGeneration += 1;
+    const generation = ++sessionGeneration;
     set({ token: null, refreshToken: null, user: null });
+    publishedGeneration = generation;
     await enqueueStorage(() =>
       Promise.all([
         SecureStore.deleteItemAsync(ACCESS_KEY),
@@ -102,10 +117,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         AsyncStorage.removeItem(LEGACY_TOKEN_KEY),
       ]),
     );
-    set({ token: null, refreshToken: null, user: null });
+    if (generation === sessionGeneration) set({ token: null, refreshToken: null, user: null });
   },
 
   hydrate: async () => {
+    const generation = sessionGeneration;
+    // A signIn/signOut started before or during hydration owns the identity, not storage.
+    const superseded = () => generation !== sessionGeneration || publishedGeneration !== generation;
     try {
       await AsyncStorage.removeItem(LEGACY_TOKEN_KEY);
 
@@ -137,23 +155,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         AsyncStorage.getItem(PROFILE_KEY),
       ]);
       const profile = rawProfile ? (JSON.parse(rawProfile) as StoredProfile) : null;
+      if (superseded()) {
+        // A signIn/signOut ran meanwhile and owns the identity: only mark hydration done.
+        set({ hydrated: true });
+        return;
+      }
       if (accessToken && refreshToken && profile && !isExpired(profile.refreshExpiresAt)) {
         set({ token: accessToken, refreshToken, user: profile.user, hydrated: true });
+        publishedGeneration = generation;
         return;
       }
     } catch {
       // corrupt or unreadable storage: treat as signed out
     }
+    if (superseded()) {
+      set({ hydrated: true });
+      return;
+    }
     set({ token: null, refreshToken: null, user: null, hydrated: true });
+    publishedGeneration = generation;
   },
 
   refreshSession: () => {
     if (inflightRefresh && inflightGeneration === sessionGeneration) return inflightRefresh;
+    // Capture generation and identity together, synchronously. If a signIn is still persisting
+    // the published identity belongs to an older generation: do nothing rather than renew it.
     const generation = sessionGeneration;
+    if (publishedGeneration !== generation) return Promise.resolve(false);
+    const { refreshToken, user } = get();
+    if (!refreshToken) return Promise.resolve(false);
     inflightGeneration = generation;
     const current: Promise<boolean> = (async () => {
-      const { refreshToken, user } = get();
-      if (!refreshToken) return false;
       try {
         const session = await authApi.refresh(refreshToken, user?.name);
         if (generation !== sessionGeneration) return false;
