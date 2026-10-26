@@ -18,7 +18,7 @@
     "sbom": "npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --json --output-file sbom.json"
   },
   "dependencies": {
-    "@apollo/server": "^4.10.0",
+    "@apollo/server": "^5.5.1",
     "@apollo/subgraph": "^2.7.6",
     "graphql": "^16.9.0",
     "express": "^4.19.2",
