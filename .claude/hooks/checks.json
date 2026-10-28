@@ -1,6 +1,7 @@
 {
   "$comment": "Checks the Claude Code hooks run on files an agent changed. quick = per edit (PostToolUse), full + tests = before the agent may stop (Stop gate). {files} = changed files relative to root, {file} = run once per changed file, {json} = jest results path. Commands run with cwd = root. Never point a check at a package script that masks failures (for example `eslint . || echo`).",
   "commandTimeoutSec": 300,
+  "totalBudgetSec": 3000,
   "packages": [
     {
       "name": "backend",

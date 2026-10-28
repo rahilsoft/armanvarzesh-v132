@@ -151,6 +151,25 @@ test('a check that times out is NOT RUN, not PASS', () => {
   assert.match(r.json.reason, /timed out/);
 });
 
+test('the gate total budget bounds the whole run, later checks are NOT RUN', () => {
+  // Two checks of 5 s each, but the run budget is 2 s: the first is cut at the
+  // budget, the second is not started. The gate must end before the Stop hook
+  // timeout (settings.json) and must never report these checks as PASS.
+  const dir = fixture({ timeoutSec: 60 });
+  const cfg = JSON.parse(fs.readFileSync(path.join(dir, 'config.json'), 'utf8'));
+  cfg.packages[0].full = ['node slow.js', 'node slow.js'];
+  cfg.totalBudgetSec = 2;
+  fs.writeFileSync(path.join(dir, 'config.json'), JSON.stringify(cfg));
+  post(dir);
+  write(dir, 'pkg/src/a.js', 'export const a = 4;\n');
+  const started = Date.now();
+  const r = stop(dir);
+  assert.ok(Date.now() - started < 8000, 'gate must stop at the budget, not after every check');
+  assert.equal(r.json?.decision, 'block');
+  assert.match(r.json.reason, /total budget exhausted/);
+  assert.doesNotMatch(r.json.reason, /Stop gate PASS/);
+});
+
 test('code outside any configured package is reported as unchecked', () => {
   const dir = fixture();
   post(dir);

@@ -139,14 +139,31 @@ function testCounts(pkg, r, jsonFile) {
   }
 }
 
+// Total wall-clock budget of one gate run. The Stop hook timeout in settings.json
+// is larger than this budget, so the gate always finishes and reports before the
+// harness kills it. Without a budget, the worst case (packages x commands x
+// commandTimeoutSec) can exceed the Stop hook timeout and the gate is killed.
+let budgetEnd = Infinity;
+
+function runWithinBudget(cmd, cwd, timeout) {
+  const left = Math.floor((budgetEnd - Date.now()) / 1000);
+  if (left < 1) return { code: null, timedOut: true, budget: true, out: '', tail: '' };
+  return run(cmd, cwd, Math.min(timeout, left));
+}
+
+function whyNotRun(r, timeout) {
+  if (r.budget) return 'gate total budget exhausted before this check could run';
+  return r.timedOut ? `timed out after ${timeout}s` : '';
+}
+
 function checkPackage(top, pkg, items, config) {
   const timeout = config.commandTimeoutSec || 300;
   const cwd = path.join(top, pkg.root);
   const steps = [];
   for (const cmd of pkg.full || []) {
-    const r = run(cmd, cwd, timeout);
+    const r = runWithinBudget(cmd, cwd, timeout);
     if (r.timedOut || r.code === 127 || r.spawnError) {
-      steps.push({ cmd, status: 'NOT_RUN', why: r.timedOut ? `timed out after ${timeout}s` : `could not run (${r.spawnError || 'exit 127'})`, tail: r.tail });
+      steps.push({ cmd, status: 'NOT_RUN', why: r.timedOut ? whyNotRun(r, timeout) : `could not run (${r.spawnError || 'exit 127'})`, tail: r.tail });
     } else {
       steps.push({ cmd, status: r.code === 0 ? 'PASS' : 'FAIL', code: r.code, tail: r.code === 0 ? '' : r.tail });
     }
@@ -159,13 +176,13 @@ function checkPackage(top, pkg, items, config) {
       const jsonFile = path.join(os.tmpdir(), `arman-gate-${process.pid}-${pkg.name}.json`);
       fs.rmSync(jsonFile, { force: true });
       const [cmd] = expand(pkg.tests, src, jsonFile);
-      const r = run(cmd, cwd, timeout);
+      const r = runWithinBudget(cmd, cwd, timeout);
       const counts = testCounts(pkg, r, jsonFile);
       fs.rmSync(jsonFile, { force: true });
       const executed = counts ? counts.total - counts.skipped : 0;
       let status;
       let why;
-      if (r.timedOut) [status, why] = ['NOT_RUN', `timed out after ${timeout}s`];
+      if (r.timedOut) [status, why] = ['NOT_RUN', whyNotRun(r, timeout)];
       else if (r.code === 127 || r.spawnError) [status, why] = ['NOT_RUN', 'test runner could not start'];
       else if (r.code !== 0 || (counts && counts.failed > 0)) [status, why] = ['FAIL', `exit ${r.code}`];
       else if (!counts) [status, why] = ['NOT_RUN', 'test counts unreadable, cannot prove tests ran'];
@@ -179,6 +196,7 @@ function checkPackage(top, pkg, items, config) {
 }
 
 function evaluate(top, state, config) {
+  budgetEnd = Date.now() + (config.totalBudgetSec || 3000) * 1000;
   const changes = sessionChanges(top, state, config);
   const codeRe = new RegExp(config.codePattern);
   const byPkg = new Map();
