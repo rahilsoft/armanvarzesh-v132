@@ -196,7 +196,10 @@ function checkPackage(top, pkg, items, config) {
 }
 
 function evaluate(top, state, config) {
-  budgetEnd = Date.now() + (config.totalBudgetSec || 3000) * 1000;
+  // Finite, positive, and never above the Stop hook timeout (3600 s in settings.json).
+  const cfgBudget = Number(config.totalBudgetSec);
+  const budgetSec = Number.isFinite(cfgBudget) && cfgBudget > 0 ? Math.min(cfgBudget, 3300) : 3000;
+  budgetEnd = Date.now() + budgetSec * 1000;
   const changes = sessionChanges(top, state, config);
   const codeRe = new RegExp(config.codePattern);
   const byPkg = new Map();
