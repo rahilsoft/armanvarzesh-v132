@@ -124,6 +124,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-28 10:02 package (10:02–11:02 Tehran) — PR #64 budget fix, review, handoff
+- Quota before and after: unreadable from an official in-app source. No new development beyond one REV-independent finding on PR #64.
+- PR #64 `64160db` (draft, not merged): total run budget for the Stop gate (`totalBudgetSec`, capped at 3300 s, below the 3600 s Stop hook timeout). Hook tests 35 pass / 0 fail / 0 skip locally. Independent review (security-reviewer, opus, separate agent) on `1d85fe6`: APPROVED, no P0-P2, four P3; two fixed in `64160db`, two open. CI on `64160db` not reported in this package.
+- Not done: REV-20261021-01, 02, REV-20261022-01 (GraphQL), REV-20261024-02, REV-20261025-01/02. Handoff: `docs/agents/reports/2026-10-28.md`.
+
 ### 2026-10-27 10:02 package (10:02 Tehran, scheduled) — review answers + handoff only
 - Quota before and after: unreadable from an official in-app source. No code changed, no tests run, no merge, no deploy.
 - Issue #54: answered every open REV (comment 6435431906). REV-01, 02, REV-24-01 and REV-25-02 accepted, not started. REV-21-03 to 07 and REV-22-01 evidence merged, waiting for GPT close. REV-24-02 and REV-25-01 on PR #64.
