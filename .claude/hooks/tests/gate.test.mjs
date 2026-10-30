@@ -157,7 +157,7 @@ test('the gate total budget bounds the whole run, later checks are NOT RUN', () 
   // timeout (settings.json) and must never report these checks as PASS.
   const dir = fixture({ timeoutSec: 60 });
   const cfg = JSON.parse(fs.readFileSync(path.join(dir, 'config.json'), 'utf8'));
-  cfg.packages[0].full = ['node slow.js', 'node slow.js'];
+  cfg.packages[0].full = ['node slow.js', "node -e \"require('fs').writeFileSync('ran2.txt','')\""];
   cfg.totalBudgetSec = 2;
   fs.writeFileSync(path.join(dir, 'config.json'), JSON.stringify(cfg));
   post(dir);
@@ -166,7 +166,12 @@ test('the gate total budget bounds the whole run, later checks are NOT RUN', () 
   const r = stop(dir);
   assert.ok(Date.now() - started < 8000, 'gate must stop at the budget, not after every check');
   assert.equal(r.json?.decision, 'block');
-  assert.match(r.json.reason, /total budget exhausted/);
+  // Each step is reported on its own: the first was cut at the budget (the message
+  // names the applied limit, not the configured 60 s), the second never started.
+  assert.match(r.json.reason, /NOT_RUN: node slow\.js cut after [12]s by the gate total budget of 2s, command timeout 60s;/);
+  assert.match(r.json.reason, /; node -e "[^"]*ran2\.txt[^"]*" gate total budget exhausted before this check could run;/);
+  assert.doesNotMatch(r.json.reason, /timed out after 60s/);
+  assert.equal(fs.existsSync(path.join(dir, 'pkg/ran2.txt')), false, 'the second check must not have run');
   assert.doesNotMatch(r.json.reason, /Stop gate PASS/);
 });
 

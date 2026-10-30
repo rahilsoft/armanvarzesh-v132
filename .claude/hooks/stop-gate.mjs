@@ -144,16 +144,24 @@ function testCounts(pkg, r, jsonFile) {
 // harness kills it. Without a budget, the worst case (packages x commands x
 // commandTimeoutSec) can exceed the Stop hook timeout and the gate is killed.
 let budgetEnd = Infinity;
+let budgetSec = 0;
 
 function runWithinBudget(cmd, cwd, timeout) {
   const left = Math.floor((budgetEnd - Date.now()) / 1000);
   if (left < 1) return { code: null, timedOut: true, budget: true, out: '', tail: '' };
-  return run(cmd, cwd, Math.min(timeout, left));
+  const applied = Math.min(timeout, left);
+  return { ...run(cmd, cwd, applied), applied };
 }
 
+// The message names the limit that actually stopped the command: the configured
+// command timeout, or the shorter time left in the gate total budget.
 function whyNotRun(r, timeout) {
   if (r.budget) return 'gate total budget exhausted before this check could run';
-  return r.timedOut ? `timed out after ${timeout}s` : '';
+  if (!r.timedOut) return '';
+  if (r.applied !== undefined && r.applied < timeout) {
+    return `cut after ${r.applied}s by the gate total budget of ${budgetSec}s, command timeout ${timeout}s`;
+  }
+  return `timed out after ${timeout}s`;
 }
 
 function checkPackage(top, pkg, items, config) {
@@ -198,7 +206,7 @@ function checkPackage(top, pkg, items, config) {
 function evaluate(top, state, config) {
   // Finite, positive, and never above the Stop hook timeout (3600 s in settings.json).
   const cfgBudget = Number(config.totalBudgetSec);
-  const budgetSec = Number.isFinite(cfgBudget) && cfgBudget > 0 ? Math.min(cfgBudget, 3300) : 3000;
+  budgetSec = Number.isFinite(cfgBudget) && cfgBudget > 0 ? Math.min(cfgBudget, 3300) : 3000;
   budgetEnd = Date.now() + budgetSec * 1000;
   const changes = sessionChanges(top, state, config);
   const codeRe = new RegExp(config.codePattern);
