@@ -15,10 +15,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfitsvc?schema=public
       REDIS_URL: redis://localhost:6379
-      MINIO_ENDPOINT: http://localhost:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-      MINIO_BUCKET: armanfit-ci
     services:
       postgres:
         image: postgres:16-alpine
@@ -77,24 +73,11 @@ jobs:
           done
           echo "::error::Redis not ready after 60 s"; exit 1
 
-      # GitHub service containers cannot pass a command, so `minio server /data` never
-      # started and the job died in "Initialize containers". Start it as a step instead.
-      # Docker Hub `minio/minio` now answers "pull access denied" (run 40645101335),
-      # the same release is pulled from MinIO's own registry on quay.io.
-      - name: Start MinIO
-        run: |
-          docker run -d --name minio -p 9000:9000 -p 9001:9001 \
-            -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
-            quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z server /data --console-address ":9001"
-
-      - name: Wait for MinIO
-        run: |
-          for i in {1..30}; do
-            curl -fsS http://localhost:9000/minio/health/live && { echo "MinIO is ready"; exit 0; }
-            sleep 2
-          done
-          docker logs minio || true
-          echo "::error::MinIO not ready after 60 s"; exit 1
+      # MinIO is not started here. No step of this job starts a service or runs a test
+      # that talks to S3 (Prisma generate/migrate and seeds only), and the pinned image is
+      # no longer public: Docker Hub minio/minio gave "pull access denied" (run 40645101335)
+      # and quay.io/minio/minio gave 401 (run 41108328223). Add an S3 store back only
+      # together with a test that uses it.
 
       - name: Prisma generate (all services)
         run: |
