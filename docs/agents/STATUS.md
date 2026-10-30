@@ -59,6 +59,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-30 22:02 package)
+- **PR #64** head 8b3e650, ready for review: budget P3s fixed (3db22eb, red-before test), integration job MinIO removed (image no longer pullable, unused) and wait loops fail-closed (0460693, 8b3e650). Hook tests 35/0/0. Independent review APPROVED (security-reviewer opus, qa-test-engineer sonnet). CI 8b3e650: integration, backend-e2e, claude-hooks green. **Not merged:** grype (High, also red on develop), sast-semgrep (semgrep-core OOM), Workers Builds red. Next: triage grype + semgrep in own PR.
+- **PR #75** (REV-20261025-02) head ad8dffe, ready: fixed instant + day-boundary test, jest 8/0/0, review APPROVED. Not merged: same red checks plus integration until #64 lands.
+- REV-20261022-01 GraphQL part is open (the 10:02 reply wrongly said fixed, corrected in issue #54 comment 6530942565).
+
 ## Open items (2026-10-26 22:02 package)
 - **PR #65 merged** into develop (merge 40bbe16): REV-20261021-05 fix. Evidence: CI run 40280993101 mobile job 27 passed on head 8f3124f, local typecheck 0 / jest 27 passed / eslint exit 0, independent review APPROVED. Red on PR and develop alike: integration (MinIO pull), scan (grype/trivy), Workers Builds.
 - **PR #64** now at dfa48f0 (draft, not merged): 4 fix rounds tonight, hook tests 34 pass / 0 fail / 0 skip, independent re-review (security-reviewer opus, separate agent) APPROVED dfa48f0 for the reviewed fixes (comment 6424827044). Still blocking merge: original-review P1 worst-case Stop timeout (3600 s < 5 packages x 3 cmds x 300 s, needs a total time budget), CI on dfa48f0 was still running at package end. Open P2: success claims with words not covered ("Type checking succeeded", "LGTM"), `rm -rf $(echo .claude)`, unzip/tar into .claude, skipped tests pass silently, check configs unprotected, malformed stdin fails open.
@@ -78,6 +83,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
+| 2026-10-30 | PR #64 not merged although review approved | grype, semgrep and Workers Builds red on the head SHA, GPT: red-before is no merge license |
 | 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
 | 2026-10-26 | PR #65 merged with integration/scan/Workers red | Same checks red on develop, diff only in apps/mobile-user, mobile job + local lint green |
 | 2026-10-24 | Legacy `POST /payments` retired instead of migrated (PR #63) | It wrote a table no migration creates and never started a gateway payment, the real start is `POST /payments/zarinpal/request` on `"Payment"` |
