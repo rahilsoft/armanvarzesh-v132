@@ -192,7 +192,7 @@ describe('ChallengesService (Gamification fold)', () => {
   it('marks completion with a timestamp', async () => {
     const prisma = makePrismaMock();
     const svc = new ChallengesService(prisma as any);
-    const ch = await svc.createChallenge({ name: 'c', description: '', startAt: new Date(), endAt: new Date(Date.now() + day) });
+    const ch = await svc.createChallenge({ name: 'c', description: '', startAt: new Date(T0), endAt: new Date(T0 + day) });
     await svc.joinChallenge(ch.id, 3);
     const done = await svc.complete(ch.id, 3);
     expect(done.status).toBe('completed');
