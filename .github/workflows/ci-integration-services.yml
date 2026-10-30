@@ -64,34 +64,37 @@ jobs:
       - name: Wait for Postgres
         run: |
           for i in {1..30}; do
-            pg_isready -h localhost -p 5432 -U postgres && break
+            pg_isready -h localhost -p 5432 -U postgres && { echo "Postgres is ready"; exit 0; }
             sleep 2
           done
-          echo "Postgres is ready"
+          echo "::error::Postgres not ready after 60 s"; exit 1
 
       - name: Wait for Redis
         run: |
           for i in {1..30}; do
-            (echo PING | nc -w 1 localhost 6379 | grep -q PONG) && break
+            (echo PING | nc -w 1 localhost 6379 | grep -q PONG) && { echo "Redis is ready"; exit 0; }
             sleep 2
           done
-          echo "Redis is ready"
+          echo "::error::Redis not ready after 60 s"; exit 1
 
       # GitHub service containers cannot pass a command, so `minio server /data` never
       # started and the job died in "Initialize containers". Start it as a step instead.
+      # Docker Hub `minio/minio` now answers "pull access denied" (run 40645101335),
+      # the same release is pulled from MinIO's own registry on quay.io.
       - name: Start MinIO
         run: |
           docker run -d --name minio -p 9000:9000 -p 9001:9001 \
             -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
-            minio/minio:RELEASE.2024-12-18T13-15-44Z server /data --console-address ":9001"
+            quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z server /data --console-address ":9001"
 
       - name: Wait for MinIO
         run: |
           for i in {1..30}; do
-            curl -fsS http://localhost:9000/minio/health/live && break
+            curl -fsS http://localhost:9000/minio/health/live && { echo "MinIO is ready"; exit 0; }
             sleep 2
           done
-          echo "MinIO is ready"
+          docker logs minio || true
+          echo "::error::MinIO not ready after 60 s"; exit 1
 
       - name: Prisma generate (all services)
         run: |
