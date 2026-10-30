@@ -151,10 +151,13 @@ describe('RewardsService (Gamification fold)', () => {
 
 describe('ChallengesService (Gamification fold)', () => {
   const day = 86_400_000;
+  // One fixed instant for every window. Two separate Date.now() calls can differ by
+  // a millisecond, and ceil() then turns 30 days into 31 (REV-20261025-02).
+  const T0 = Date.UTC(2026, 0, 1, 0, 0, 0, 0);
   it('creates a windowed challenge (legacy duration kept in sync) and runs a leaderboard', async () => {
     const prisma = makePrismaMock();
     const svc = new ChallengesService(prisma as any);
-    const ch = await svc.createChallenge({ name: '30d', description: 'push', startAt: new Date(Date.now()), endAt: new Date(Date.now() + 30 * day) });
+    const ch = await svc.createChallenge({ name: '30d', description: 'push', startAt: new Date(T0), endAt: new Date(T0 + 30 * day) });
     expect(ch.duration).toBe(30);
     await svc.joinChallenge(ch.id, 1);
     await svc.joinChallenge(ch.id, 2);
@@ -170,14 +173,26 @@ describe('ChallengesService (Gamification fold)', () => {
     const prisma = makePrismaMock();
     const svc = new ChallengesService(prisma as any);
     await expect(svc.joinChallenge(404, 1)).rejects.toBeInstanceOf(NotFoundException);
-    const ch = await svc.createChallenge({ name: 'x', description: '', startAt: new Date(), endAt: new Date(Date.now() + day) });
+    const ch = await svc.createChallenge({ name: 'x', description: '', startAt: new Date(T0), endAt: new Date(T0 + day) });
     await expect(svc.addPoints(ch.id, 99, 5)).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('counts a started day as a whole day in the legacy duration (day boundary)', async () => {
+    // Current contract of createChallenge: duration = ceil(window / 1 day), minimum 1.
+    const svc = new ChallengesService(makePrismaMock() as any);
+    const duration = async (ms: number) =>
+      (await svc.createChallenge({ name: 'b', description: '', startAt: new Date(T0), endAt: new Date(T0 + ms) })).duration;
+    expect(await duration(30 * day)).toBe(30);
+    expect(await duration(30 * day + 1)).toBe(31);
+    expect(await duration(30 * day - 1)).toBe(30);
+    expect(await duration(1)).toBe(1);
+    expect(await duration(0)).toBe(1);
   });
 
   it('marks completion with a timestamp', async () => {
     const prisma = makePrismaMock();
     const svc = new ChallengesService(prisma as any);
-    const ch = await svc.createChallenge({ name: 'c', description: '', startAt: new Date(), endAt: new Date(Date.now() + day) });
+    const ch = await svc.createChallenge({ name: 'c', description: '', startAt: new Date(T0), endAt: new Date(T0 + day) });
     await svc.joinChallenge(ch.id, 3);
     const done = await svc.complete(ch.id, 3);
     expect(done.status).toBe('completed');
