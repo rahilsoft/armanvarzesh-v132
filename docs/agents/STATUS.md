@@ -59,6 +59,10 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-26 22:02 package)
+- **PR #65 merged** into develop (merge 40bbe16): REV-20261021-05 fix. Evidence: CI run 40280993101 mobile job 27 passed on head 8f3124f, local typecheck 0 / jest 27 passed / eslint exit 0, independent review APPROVED. Red on PR and develop alike: integration (MinIO pull), scan (grype/trivy), Workers Builds.
+- **PR #64** now at dfa48f0 (draft, not merged): 4 fix rounds tonight, hook tests 34 pass / 0 fail / 0 skip, independent re-review (security-reviewer opus, separate agent) APPROVED dfa48f0 for the reviewed fixes (comment 6424827044). Still blocking merge: original-review P1 worst-case Stop timeout (3600 s < 5 packages x 3 cmds x 300 s, needs a total time budget), CI on dfa48f0 was still running at package end. Open P2: success claims with words not covered ("Type checking succeeded", "LGTM"), `rm -rf $(echo .claude)`, unzip/tar into .claude, skipped tests pass silently, check configs unprotected, malformed stdin fails open.
+
 ## Open items (2026-10-25)
 - **PR #64** (`agent/coordinator-architect/dod-hooks-ci`, draft, D1): hooks + CI gate + CLAUDE.md rules. Independent review (security-reviewer, opus): CHANGES REQUIRED, 1 P0 + 8 P1 findings posted on the PR. Not merged. Next package fixes them first after REV replies.
 - **Branch protection:** `develop` and `main` have no protection, required checks or rulesets (reviewer, 2026-10-25). Owner action: require `backend-e2e` and `claude-hooks`.
@@ -74,6 +78,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
+| 2026-10-26 | PR #65 merged with integration/scan/Workers red | Same checks red on develop, diff only in apps/mobile-user, mobile job + local lint green |
 | 2026-10-24 | Legacy `POST /payments` retired instead of migrated (PR #63) | It wrote a table no migration creates and never started a gateway payment, the real start is `POST /payments/zarinpal/request` on `"Payment"` |
 | 2026-10-24 | Mobile session writes and clears go through one ordered queue with a session generation (PR #62) | A generation check alone still let a refresh already inside its SecureStore writes land after sign-out |
 | 2026-10-23 | Package with unreadable quota answers REVs and writes handoff only; no code | CLAUDE.md «Quota budget» rule; Speko billing tools are not Claude quota |
@@ -118,6 +124,23 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-30 10:02 package (10:02 Tehran, scheduled) — REV replies, PR #64 status, handoff
+- Quota before and after: unreadable from an official in-app source. No implementing agent started.
+- REV replies posted on issue #54 (comment 6516585452). Fixed by merged PR or commit (not re-run this package): REV-03 (PR #56), 04 (PR #58), 05 (PR #65), 06 (PR #60), 07 (PR #63), REV-22-01 (PR #57), REV-24-01 (PR #59). Open, not started: REV-21-01, 02, 24-02, 25-01 (partly addressed by the handoff), 25-02.
+- PR #64 head `64160db`: hook tests 35 pass / 0 fail / 0 skip (worktree). CI: backend-e2e and claude-hooks green, integration and Workers Builds red. Not merged: draft, integration red on the exact head, two P3 open. Handoff: `docs/agents/reports/2026-10-30.md`.
+- Owner-only: branch protection on develop and main not applied.
+
+### 2026-10-28 10:02 package (10:02–11:02 Tehran) — PR #64 budget fix, review, handoff
+- Quota before and after: unreadable from an official in-app source. No new development beyond one REV-independent finding on PR #64.
+- PR #64 `64160db` (draft, not merged): total run budget for the Stop gate (`totalBudgetSec`, capped at 3300 s, below the 3600 s Stop hook timeout). Hook tests 35 pass / 0 fail / 0 skip locally. Independent review (security-reviewer, opus, separate agent) on `1d85fe6`: APPROVED, no P0-P2, four P3; two fixed in `64160db`, two open. CI on `64160db` not reported in this package.
+- Not done: REV-20261021-01, 02, REV-20261022-01 (GraphQL), REV-20261024-02, REV-20261025-01/02. Handoff: `docs/agents/reports/2026-10-28.md`.
+
+### 2026-10-27 10:02 package (10:02 Tehran, scheduled) — review answers + handoff only
+- Quota before and after: unreadable from an official in-app source. No code changed, no tests run, no merge, no deploy.
+- Issue #54: answered every open REV (comment 6435431906). REV-01, 02, REV-24-01 and REV-25-02 accepted, not started. REV-21-03 to 07 and REV-22-01 evidence merged, waiting for GPT close. REV-24-02 and REV-25-01 on PR #64.
+- PR #64 (`dfa48f0`, draft): not merged. Blocker: worst-case Stop timeout P1 from the first review. CI on dfa48f0: integration, scan and Workers Builds red, same as develop.
+- Handoff: `docs/agents/reports/2026-10-27.md`.
+
 ### 2026-10-24 22:02 package (22:02–23:00 Tehran) — REV-05, 06, 07 fixed, REV-22-01 evidence
 - Quota before and after: unreadable from an official in-app source (`claude -p "/usage"` gives local cost only). Owner directive 2026-10-24 applies: REV fixes continue, at most two implementing agents, 20% reserve not claimed.
 - Merged into develop: #61 (REV-20261022-01 concurrent owner cancel e2e, squash 7dd4b1b, CI e2e 26 passed), #60 (REV-20261021-06 Zarinpal deadline covers body, squash 53fe8f2, security review: code correct, test margins widened, CI unit 316 passed / 69 skipped, e2e 25 passed).

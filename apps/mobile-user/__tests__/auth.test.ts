@@ -305,6 +305,101 @@ describe('review hardening', () => {
     expect(useAuthStore.getState().token).toBe('b-renewed');
   });
 
+  it('refresh started while signIn(B) is persisting never renews A under B generation (REV-20261021-05)', async () => {
+    const ss = jest.requireMock('expo-secure-store');
+    const realSet = ss.setItemAsync.getMockImplementation();
+    const userB = { id: '9', name: 'b', email: 'b@b.com' };
+    await useAuthStore.getState().signIn({
+      accessToken: 'A-access',
+      refreshToken: 'A-refresh',
+      refreshExpiresAt: null,
+      user: userA,
+    });
+    let releaseWrite!: () => void;
+    const gate = new Promise<void>((r) => {
+      releaseWrite = r;
+    });
+    let writeStarted!: () => void;
+    const started = new Promise<void>((r) => {
+      writeStarted = r;
+    });
+    // B's first SecureStore write is held: A's identity is still published while B is pending.
+    ss.setItemAsync.mockImplementationOnce(async (k: string, v: string) => {
+      writeStarted();
+      await gate;
+      secure[k] = v;
+    });
+    const refreshSpy = jest.spyOn(authApi, 'refresh').mockImplementation(async (token: string) => ({
+      accessToken: `${token.split('-')[0]}-renewed`,
+      refreshToken: `${token.split('-')[0]}-renewed-refresh`,
+      refreshExpiresAt: null,
+      user: token.startsWith('A') ? userA : userB,
+    }));
+    try {
+      const signingB = useAuthStore.getState().signIn({
+        accessToken: 'B-access',
+        refreshToken: 'B-refresh',
+        refreshExpiresAt: null,
+        user: userB,
+      });
+      await started;
+      const refreshing = useAuthStore.getState().refreshSession();
+      releaseWrite();
+      await signingB;
+      await refreshing; // a refresh awaits its own queued write, so storage is settled here
+      const s = useAuthStore.getState();
+      expect(refreshSpy).not.toHaveBeenCalledWith('A-refresh', expect.anything());
+      expect(refreshSpy.mock.calls.map((c) => c[0])).not.toContain('A-refresh');
+      expect(s.user?.id).toBe('9');
+      expect(s.token).toBe('B-access');
+      expect(s.refreshToken).toBe('B-refresh');
+      expect(secure[ACCESS_KEY]).toBe('B-access');
+      expect(secure[REFRESH_KEY]).toBe('B-refresh');
+      expect(JSON.parse(mem[PROFILE_KEY]).user.id).toBe('9');
+    } finally {
+      ss.setItemAsync.mockImplementation(realSet);
+      refreshSpy.mockRestore();
+    }
+  });
+
+  it('an older signIn finishing after a newer one never publishes its identity', async () => {
+    const userB = { id: '9', name: 'b', email: 'b@b.com' };
+    const a = useAuthStore.getState().signIn({
+      accessToken: 'A-access',
+      refreshToken: 'A-refresh',
+      refreshExpiresAt: null,
+      user: userA,
+    });
+    const b = useAuthStore.getState().signIn({
+      accessToken: 'B-access',
+      refreshToken: 'B-refresh',
+      refreshExpiresAt: null,
+      user: userB,
+    });
+    // Observe every publication: A must never appear once B was requested.
+    const seen: Array<string | null> = [];
+    const unsub = useAuthStore.subscribe((st) => seen.push(st.token));
+    await Promise.all([a, b]);
+    unsub();
+    expect(seen).not.toContain('A-access');
+    expect(useAuthStore.getState().token).toBe('B-access');
+    expect(secure[ACCESS_KEY]).toBe('B-access');
+  });
+
+  it('a signIn superseded by signOut leaves the store signed out', async () => {
+    const pending = useAuthStore.getState().signIn({
+      accessToken: 'A-access',
+      refreshToken: 'A-refresh',
+      refreshExpiresAt: null,
+      user: userA,
+    });
+    const out = useAuthStore.getState().signOut();
+    await Promise.all([pending, out]);
+    expect(useAuthStore.getState().token).toBeNull();
+    expect(useAuthStore.getState().user).toBeNull();
+    expect(secure[ACCESS_KEY]).toBeUndefined();
+  });
+
   it('hydrate drops a session whose refresh token expired', async () => {
     secure[ACCESS_KEY] = 'a';
     secure[REFRESH_KEY] = 'r';
