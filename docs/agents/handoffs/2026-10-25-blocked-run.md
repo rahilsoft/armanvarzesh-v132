@@ -3,7 +3,8 @@
 ## Outcome
 - No development started. The shell tool (Bash) returned an auto-mode classifier error on every call, so git, typecheck, lint and tests could not run.
 - REV findings on issue #54 were not answered. The issue body and thread were loaded (23 comments), but the full comment text was too large to read in this run.
-- Quota balance: not recorded. CLAUDE.md in this repo has no «Quota budget» section, and no in-app quota source was available. Per the package rules, no new development was started.
+- Quota balance: not recorded, no in-app quota source was available.
+- **Correction (2026-10-25, later session):** an earlier version of this file said CLAUDE.md has no «Quota budget» section. That was wrong: the local clone was a stale `main` checkout (828077f). `develop` has the section, and under the owner directive of 2026-10-24 an unreadable balance does not stop REV fixes.
 - Local clone: not verified in this run. Branch `develop` was not checked out or pulled.
 
 ## Next package
