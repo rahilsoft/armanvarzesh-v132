@@ -4,7 +4,7 @@ import { Reservation } from './entities/reservation.entity';
 import { AvailabilitySlot } from './entities/availability.entity';
 import { CreateReservationInput } from './dto/reservation.input';
 import { CreateAvailabilityInput } from './dto/availability.input';
-import { ReservationService, AvailabilityService } from './reservation.service';
+import { ReservationService, AvailabilityService, parseIntId } from './reservation.service';
 import { GqlJwtAuthGuard } from '../matching/gql-jwt-auth.guard';
 import { GqlCurrentUser, AuthPrincipal } from '../common/auth/current-user.decorator';
 
@@ -28,7 +28,12 @@ export class ReservationsResolver {
   @Mutation(() => AvailabilitySlot)
   async createAvailability(@GqlCurrentUser() user: AuthPrincipal, @Args('input') input: CreateAvailabilityInput) {
     if (!isAdmin(user)) throw new ForbiddenException('admin only');
-    return this.avail.createAvailability(input as any);
+    return this.avail.createAvailability({
+      coachId: input.coachId,
+      startsAt: input.start,
+      endsAt: input.end,
+      rrule: input.recurrence ?? null,
+    });
   }
 
   @Query(() => [AvailabilitySlot])
@@ -40,15 +45,16 @@ export class ReservationsResolver {
   @Mutation(() => Reservation)
   async bookReservation(@GqlCurrentUser() user: AuthPrincipal, @Args('input') input: CreateReservationInput) {
     const r = await this.resv.reserve(String(user.userId), input.slotId);
+    // The coach is the owner of the booked slot, never the client's coachId.
     return {
       id: r.id,
       userId: r.userId,
-      coachId: input.coachId,
+      coachId: r.coachId ?? input.coachId,
       slotId: r.slotId,
       status: r.status,
-      start: r.startsAt ?? new Date(0),
-      end: r.endsAt ?? new Date(0),
-      createdAt: r.createdAt ?? new Date(),
+      start: r.startsAt ?? r.createdAt,
+      end: r.endsAt ?? r.createdAt,
+      createdAt: r.createdAt ?? null,
     };
   }
 
@@ -62,8 +68,11 @@ export class ReservationsResolver {
   @UseGuards(GqlJwtAuthGuard)
   @Query(() => [Reservation])
   async userReservations(@GqlCurrentUser() user: AuthPrincipal, @Args('userId', { nullable: true }) userId?: string) {
-    const target = userId ? Number(userId) : user.userId;
-    if (target !== user.userId && !isAdmin(user)) throw new ForbiddenException('not your reservations');
+    // A client-supplied userId only matters for admins; anyone else may name only themselves.
+    if (userId !== undefined && userId !== null && userId !== '' && !isAdmin(user)) {
+      if (String(userId) !== String(user.userId)) throw new ForbiddenException('not your reservations');
+    }
+    const target = userId ? parseIntId(userId, 'userId') : user.userId;
     return this.resv.listByUser(target);
   }
 
@@ -71,6 +80,6 @@ export class ReservationsResolver {
   @Query(() => [Reservation])
   async coachReservations(@GqlCurrentUser() user: AuthPrincipal, @Args('coachId') coachId: string) {
     if (!isAdmin(user)) throw new ForbiddenException('admin only');
-    return this.resv.listByCoach(Number(coachId));
+    return this.resv.listByCoach(parseIntId(coachId, 'coachId'));
   }
 }
