@@ -59,6 +59,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-10-31 22:02 package)
+- **PR #78** (REV-20261022-01 GraphQL part) head 9f84d56: resolver ownership tests (24 in the spec, red before fix 7 failed), fixes for non-existent columns `Reservation.createdAt`/`coachId` in queries, client `coachId` echoed back, `CreateAvailabilityInput` without validators, strict id parsing. `npx jest src/reservations` 34/0/0, typecheck exit 0, eslint 0 errors. Independent review (security-reviewer opus): CHANGES REQUIRED on f728910 (owner filter in the write untested, mutation M1 survived), fixed in 9f84d56, re-review APPROVED. Not merged at package end, see report for CI.
+- **PR #76** head 4cee016: semgrep crash root cause is not memory. Last green scan used Python 3.14.8 + semgrep 1.182.0, crash started with Python 3.15.1 + 1.183.0 and also happened with `--jobs 1 --max-memory 4096`. Pinned to 3.14 + 1.182.0, cap removed. Review APPROVED.
+- Follow-ups found in review (already on develop): cancelled reservation blocks rebooking the same slot (`@@unique(resourceId,startsAt,endsAt)`), `AvailabilitySlot` vs `Slot` split means admin-created availability cannot be booked, `MEMORY_DB` in-memory fallback in `ReservationService`.
+
 ## Open items (2026-10-30 22:02 package)
 - **PR #64** head 8b3e650, ready for review: budget P3s fixed (3db22eb, red-before test), integration job MinIO removed (image no longer pullable, unused) and wait loops fail-closed (0460693, 8b3e650). Hook tests 35/0/0. Independent review APPROVED (security-reviewer opus, qa-test-engineer sonnet). CI 8b3e650: integration, backend-e2e, claude-hooks green. **Not merged:** grype (High, also red on develop), sast-semgrep (semgrep-core OOM), Workers Builds red. Next: triage grype + semgrep in own PR.
 - **PR #75** (REV-20261025-02) head ad8dffe, ready: fixed instant + day-boundary test, jest 8/0/0, review APPROVED. Not merged: same red checks plus integration until #64 lands.
@@ -83,6 +88,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-10-31 | semgrep pinned to Python 3.14 + semgrep 1.182.0, memory cap removed (PR #76) | Crash -11 started with the floating 3.15.1 + 1.183.0 and was not fixed by caps, a cap can skip files and still exit 0 |
+| 2026-10-31 | Reservation queries reach the coach through `Slot` and order by `startsAt` (PR #78) | `Reservation` has no `createdAt`/`coachId` columns, both queries failed with a Prisma error |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
 | 2026-10-30 | PR #64 not merged although review approved | grype, semgrep and Workers Builds red on the head SHA, GPT: red-before is no merge license |
 | 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
@@ -131,6 +138,9 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-10-31 22:02 package (22:02 Tehran, scheduled) — REV-20261022-01 GraphQL, semgrep root cause
+- Quota before and after: unreadable from an official in-app source. One implementing agent (backend-engineer opus) plus coordinator fixes, one separate reviewer.
+- Details, tests and CI: `docs/agents/reports/2026-10-31.md` section 22:02.
 ### 2026-10-30 10:02 package (10:02 Tehran, scheduled) — REV replies, PR #64 status, handoff
 - Quota before and after: unreadable from an official in-app source. No implementing agent started.
 - REV replies posted on issue #54 (comment 6516585452). Fixed by merged PR or commit (not re-run this package): REV-03 (PR #56), 04 (PR #58), 05 (PR #65), 06 (PR #60), 07 (PR #63), REV-22-01 (PR #57), REV-24-01 (PR #59). Open, not started: REV-21-01, 02, 24-02, 25-01 (partly addressed by the handoff), 25-02.
