@@ -252,6 +252,8 @@ jobs:
 
       # `semgrep ci` dropped --strict/--enable-metrics and now requires an
       # app token, so run a plain scan with the public p/ci ruleset instead,
-      # blocking only on ERROR-severity findings.
+      # blocking only on ERROR-severity findings. semgrep-core was killed
+      # (exit -11, out of memory) on the 7 GB runner, so parallelism is capped
+      # at 1 job and memory at 4 GiB per pass. The scan still blocks on ERROR.
       - name: Semgrep scan (blocking at ERROR severity)
-        run: semgrep scan --config p/ci --metrics=off --severity ERROR --error
+        run: semgrep scan --config p/ci --metrics=off --severity ERROR --jobs 1 --max-memory 4096 --error
