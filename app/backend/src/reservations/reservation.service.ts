@@ -112,9 +112,8 @@ export class ReservationService {
       return r;
     }
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
-    const id = Number(reservationId);
+    const id = parseIntId(reservationId, 'reservationId');
     const ownerId = Number(actor.userId);
-    if (!Number.isInteger(id) || id <= 0) throw new NotFoundException('Reservation not found');
     const ownerFilter = actor.isAdmin ? {} : { userId: ownerId };
     const found = await this.prisma.reservation.findFirst({ where: { id, ...ownerFilter } });
     if (!found) throw new NotFoundException('Reservation not found');

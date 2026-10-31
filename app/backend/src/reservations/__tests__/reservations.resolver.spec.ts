@@ -167,6 +167,27 @@ describe('ReservationsResolver ownership', () => {
     await expect(resolver.cancelReservation(admin, a2.id)).resolves.toBe(true);
   });
 
+  it('the ownership check is part of the cancel write, not only the read', async () => {
+    const { prisma, resolver } = setup();
+    const a1 = await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });
+    // Simulate a read that no longer filters by owner (or ownership changing
+    // between read and write): only the updateMany filter can stop user B.
+    const realFindFirst = prisma.reservation.findFirst;
+    prisma.reservation.findFirst = async ({ where }: any) => {
+      const { userId: _ignored, ...rest } = where;
+      return realFindFirst({ where: rest });
+    };
+    const spy = jest.spyOn(prisma.reservation, 'updateMany');
+    await expect(resolver.cancelReservation(userB, a1.id)).rejects.toThrow('Reservation changed concurrently');
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ where: expect.objectContaining({ userId: 2 }) }));
+    expect(prisma._reservations.find((r: any) => String(r.id) === a1.id).status).not.toBe('CANCELED');
+  });
+
+  it.each(['1e2', '0x64', '2147483648', 'abc'])('cancel rejects malformed reservation id %s with 400', async (bad) => {
+    const { resolver } = setup();
+    await expect(resolver.cancelReservation(userA, bad)).rejects.toBeInstanceOf(BadRequestException);
+  });
+
   it('userReservations returns only the caller rows in the GraphQL shape', async () => {
     const { resolver } = setup();
     await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });
