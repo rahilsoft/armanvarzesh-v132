@@ -1,9 +1,30 @@
-import { Injectable, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
-type Reservation = { id: string; userId: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
+type Reservation = { id: string; userId: string; coachId?: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
 
 export type CancelActor = { userId: string; isAdmin?: boolean };
+
+/** Reservation as exposed over GraphQL (entities/reservation.entity.ts). */
+export type ReservationView = {
+  id: string; userId: string; coachId: string; slotId: string; status: string;
+  start: Date; end: Date; createdAt?: Date | null;
+};
+
+/** Availability slot as exposed over GraphQL (entities/availability.entity.ts). */
+export type AvailabilityView = {
+  id: string; coachId: string; start: Date; end: Date; recurrence?: string | null; createdAt: Date;
+};
+
+const PG_INT_MAX = 2147483647;
+
+/** Parse a client-supplied numeric id, rejecting anything that is not a positive Postgres Int. */
+export function parseIntId(raw: string | number, name: string): number {
+  const s = String(raw ?? '').trim();
+  const n = /^[1-9]\d*$/.test(s) ? Number(s) : NaN;
+  if (!Number.isSafeInteger(n) || n > PG_INT_MAX) throw new BadRequestException(`${name} must be a positive integer id`);
+  return n;
+}
 
 const mem = { reservations: new Map<string, Reservation>(), slots: new Set<string>() };
 
@@ -63,7 +84,7 @@ export class ReservationService {
           version: 1,
         },
       });
-      return toLegacyReservation(created);
+      return { ...toLegacyReservation(created), coachId: String(slot.coachId) };
     } catch (e) {
       // The unique (resourceId, startsAt, endsAt) key is the double-booking guard;
       // losing that race is a conflict, not a server error.
@@ -91,9 +112,8 @@ export class ReservationService {
       return r;
     }
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
-    const id = Number(reservationId);
+    const id = parseIntId(reservationId, 'reservationId');
     const ownerId = Number(actor.userId);
-    if (!Number.isInteger(id) || id <= 0) throw new NotFoundException('Reservation not found');
     const ownerFilter = actor.isAdmin ? {} : { userId: ownerId };
     const found = await this.prisma.reservation.findFirst({ where: { id, ...ownerFilter } });
     if (!found) throw new NotFoundException('Reservation not found');
@@ -109,16 +129,45 @@ export class ReservationService {
     return toLegacyReservation(updated);
   }
 
-  async listByUser(userId: number) {
-    if (this.isMemory()) {
-      return Array.from(mem.reservations.values()).filter((r) => String(r.userId) === String(userId));
-    }
-    return (this.prisma as any).reservation.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
+  /** Map canonical reservation rows to the GraphQL shape. The coach is the owner of the booked slot. */
+  private async toViews(rows: Array<{ id: number; userId: number; resourceId: number; status: string; startsAt: Date; endsAt: Date }>): Promise<ReservationView[]> {
+    if (!rows.length) return [];
+    const ids = Array.from(new Set(rows.map((r) => r.resourceId)));
+    const slots: Array<{ id: number; coachId: number }> = await (this.prisma as any).slot.findMany({ where: { id: { in: ids } } });
+    const coachBySlot = new Map(slots.map((s) => [s.id, String(s.coachId)]));
+    return rows.map((r) => ({
+      id: String(r.id),
+      userId: String(r.userId),
+      coachId: coachBySlot.get(r.resourceId) ?? '',
+      slotId: String(r.resourceId),
+      status: r.status,
+      start: r.startsAt,
+      end: r.endsAt,
+      createdAt: null,
+    }));
   }
 
-  async listByCoach(coachId: number) {
+  async listByUser(userId: number): Promise<ReservationView[]> {
+    if (this.isMemory()) {
+      return Array.from(mem.reservations.values())
+        .filter((r) => String(r.userId) === String(userId))
+        .map((r) => ({ id: r.id, userId: r.userId, coachId: r.coachId ?? '', slotId: r.slotId, status: r.status, start: r.startsAt ?? r.createdAt!, end: r.endsAt ?? r.createdAt!, createdAt: r.createdAt ?? null }));
+    }
+    // The canonical Reservation has no createdAt column: newest session first.
+    const rows = await (this.prisma as any).reservation.findMany({ where: { userId }, orderBy: { startsAt: 'desc' } });
+    return this.toViews(rows);
+  }
+
+  /** Reservations on slots owned by `coachId` (Reservation.resourceId is Slot.id). */
+  async listByCoach(coachId: number): Promise<ReservationView[]> {
     if (this.isMemory()) return [];
-    return (this.prisma as any).reservation.findMany({ where: { coachId }, orderBy: { createdAt: 'desc' } });
+    const slots: Array<{ id: number }> = await (this.prisma as any).slot.findMany({ where: { coachId } });
+    if (!slots.length) return [];
+    const rows = await (this.prisma as any).reservation.findMany({
+      where: { resourceId: { in: slots.map((s) => s.id) } },
+      orderBy: { startsAt: 'desc' },
+    });
+    return this.toViews(rows);
   }
 
   async findUpcomingSessions(rangeStart?: Date, rangeEnd?: Date) {
@@ -131,7 +180,7 @@ export class ReservationService {
       if (rangeStart) where.startsAt.gte = rangeStart;
       if (rangeEnd) where.startsAt.lt = rangeEnd;
     }
-    return (this.prisma as any).reservation.findMany({ where, orderBy: { createdAt: 'asc' } });
+    return (this.prisma as any).reservation.findMany({ where, orderBy: { startsAt: 'asc' } });
   }
 }
 
@@ -139,21 +188,40 @@ export class ReservationService {
 export class AvailabilityService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createAvailability(input: { coachId: number | string; startsAt: Date | string; endsAt: Date | string; rrule?: string }) {
-    return (this.prisma as any).availabilitySlot.create({
-      data: {
-        coachId: Number(input.coachId),
-        startsAt: new Date(input.startsAt),
-        endsAt: new Date(input.endsAt),
-        rrule: input.rrule ?? null,
-      },
-    });
+  async createAvailability(input: { coachId: number | string; startsAt: Date | string; endsAt: Date | string; rrule?: string | null }): Promise<AvailabilityView> {
+    const coachId = parseIntId(input.coachId, 'coachId');
+    const startsAt = new Date(input.startsAt);
+    const endsAt = new Date(input.endsAt);
+    if (isNaN(+startsAt) || isNaN(+endsAt)) throw new BadRequestException('start and end must be valid dates');
+    if (endsAt <= startsAt) throw new BadRequestException('end must be after start');
+    try {
+      const row = await (this.prisma as any).availabilitySlot.create({
+        data: { coachId, startsAt, endsAt, rrule: input.rrule ?? null },
+      });
+      return toAvailabilityView(row);
+    } catch (e) {
+      if ((e as { code?: string })?.code === 'P2002') throw new ConflictException('Availability slot already exists');
+      throw e;
+    }
   }
 
-  async listCoachAvailability(coachId: number | string) {
-    return (this.prisma as any).availabilitySlot.findMany({
-      where: { coachId: Number(coachId) },
+  async listCoachAvailability(coachId: number | string): Promise<AvailabilityView[]> {
+    const id = parseIntId(coachId, 'coachId');
+    const rows = await (this.prisma as any).availabilitySlot.findMany({
+      where: { coachId: id },
       orderBy: { startsAt: 'asc' },
     });
+    return rows.map(toAvailabilityView);
   }
+}
+
+function toAvailabilityView(row: { id: number; coachId: number; startsAt: Date; endsAt: Date; rrule?: string | null; createdAt: Date }): AvailabilityView {
+  return {
+    id: String(row.id),
+    coachId: String(row.coachId),
+    start: row.startsAt,
+    end: row.endsAt,
+    recurrence: row.rrule ?? null,
+    createdAt: row.createdAt,
+  };
 }
