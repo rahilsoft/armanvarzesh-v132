@@ -15,10 +15,6 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/armanfitsvc?schema=public
       REDIS_URL: redis://localhost:6379
-      MINIO_ENDPOINT: http://localhost:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-      MINIO_BUCKET: armanfit-ci
     services:
       postgres:
         image: postgres:16-alpine
@@ -64,34 +60,24 @@ jobs:
       - name: Wait for Postgres
         run: |
           for i in {1..30}; do
-            pg_isready -h localhost -p 5432 -U postgres && break
+            pg_isready -h localhost -p 5432 -U postgres && { echo "Postgres is ready"; exit 0; }
             sleep 2
           done
-          echo "Postgres is ready"
+          echo "::error::Postgres not ready after 60 s"; exit 1
 
       - name: Wait for Redis
         run: |
           for i in {1..30}; do
-            (echo PING | nc -w 1 localhost 6379 | grep -q PONG) && break
+            (echo PING | nc -w 1 localhost 6379 | grep -q PONG) && { echo "Redis is ready"; exit 0; }
             sleep 2
           done
-          echo "Redis is ready"
+          echo "::error::Redis not ready after 60 s"; exit 1
 
-      # GitHub service containers cannot pass a command, so `minio server /data` never
-      # started and the job died in "Initialize containers". Start it as a step instead.
-      - name: Start MinIO
-        run: |
-          docker run -d --name minio -p 9000:9000 -p 9001:9001 \
-            -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
-            minio/minio:RELEASE.2024-12-18T13-15-44Z server /data --console-address ":9001"
-
-      - name: Wait for MinIO
-        run: |
-          for i in {1..30}; do
-            curl -fsS http://localhost:9000/minio/health/live && break
-            sleep 2
-          done
-          echo "MinIO is ready"
+      # MinIO is not started here. No step of this job starts a service or runs a test
+      # that talks to S3 (Prisma generate/migrate and seeds only), and the pinned image is
+      # no longer public: Docker Hub minio/minio gave "pull access denied" (run 40645101335)
+      # and quay.io/minio/minio gave 401 (run 41108328223). Add an S3 store back only
+      # together with a test that uses it.
 
       - name: Prisma generate (all services)
         run: |
@@ -114,9 +100,6 @@ jobs:
       - name: Seed all (optional)
         run: pnpm db:seed:all || true
 
-      - name: Backend Unit tests
-        run: pnpm --filter ./app/backend test -- --reporter=dot || true
-
-      - name: Backend E2E tests (conditional)
-        if: hashFiles('app/backend/**.e2e.*') != ''
-        run: pnpm --filter ./app/backend test:e2e || true
+      # Backend unit and e2e tests are not run here: they ran with `|| true`, so
+      # they could never fail this job. backend-e2e.yml runs them for real
+      # (real PostgreSQL + Redis, non-zero exit fails, 0 executed tests fails).
