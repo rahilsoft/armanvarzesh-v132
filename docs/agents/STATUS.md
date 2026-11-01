@@ -83,6 +83,9 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-11-01 | PR #78 admin-role and CANCELED-unique items moved to separate follow-ups | both fail closed with no data exposure, admin token model (HS256 sign vs RS256 guard) needs its own design, the unique fix needs a migration; independent reviewer agreed |
+| 2026-11-01 | grype gate kept at `high`, report made visible (PR #80) instead of allowlisting | 143 high/critical rows are real dependency advisories, the fix is version bumps, not a weaker gate |
+| 2026-11-01 | D2 starts with `.github/workflows_archived/` (79 files, PR #81) | not read by Actions, no reference in the tree, history keeps the content |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
 | 2026-10-30 | PR #64 not merged although review approved | grype, semgrep and Workers Builds red on the head SHA, GPT: red-before is no merge license |
 | 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
@@ -131,6 +134,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+
+### 2026-11-01 22:02 package
+- Implemented: PR #78 `7ba8ae3` (slotId strict parse, red then green). PR #80 `526cfd5` (grype table). PR #81 `5d8f7c7` (D2 archive removal). D2 baseline inventory `docs/agents/cleanup/inventory.tsv` (3628 files at `c5a5878`).
+- Verified: `npx jest src/reservations` 35 pass, 0 fail, 0 skip; backend typecheck exit 0; eslint on changed files exit 0. Independent review APPROVED on #78 (opus) and #81 (sonnet).
+- Merged: none. Every PR is red on grype `scan` and Cloudflare `Workers Builds`.
 ### 2026-10-30 10:02 package (10:02 Tehran, scheduled) — REV replies, PR #64 status, handoff
 - Quota before and after: unreadable from an official in-app source. No implementing agent started.
 - REV replies posted on issue #54 (comment 6516585452). Fixed by merged PR or commit (not re-run this package): REV-03 (PR #56), 04 (PR #58), 05 (PR #65), 06 (PR #60), 07 (PR #63), REV-22-01 (PR #57), REV-24-01 (PR #59). Open, not started: REV-21-01, 02, 24-02, 25-01 (partly addressed by the handoff), 25-02.
