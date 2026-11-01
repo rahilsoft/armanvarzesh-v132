@@ -9,8 +9,29 @@ jobs:
         # v3 bundles grype 0.74, which can no longer load the current
         # vulnerability DB ("db could not be loaded: built 17 weeks ago"),
         # so every run failed before scanning anything.
+        id: grype
         uses: anchore/scan-action@v6
         with:
           path: .
           fail-build: true
           severity-cutoff: high
+          # A table report makes the failing packages visible for triage.
+          # The gate itself (fail-build at high) is unchanged.
+          output-format: table
+          output-file: grype-report.txt
+      - name: Show grype findings
+        if: always()
+        run: |
+          if [ -f grype-report.txt ]; then
+            grep -E '^NAME|High|Critical' grype-report.txt || true
+            echo "rows: $(grep -cE 'High|Critical' grype-report.txt || true) high or critical"
+          else
+            echo "grype-report.txt missing" && exit 1
+          fi
+      - name: Upload grype report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grype-report
+          path: grype-report.txt
+          if-no-files-found: warn
