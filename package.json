@@ -201,7 +201,9 @@
       "find-my-way@9": "^9.7.0",
       "@opentelemetry/propagator-jaeger@2": "^2.9.0",
       "vite@6": "^6.4.4",
-      "next@15": "^15.5.28"
+      "next@15": "^15.5.28",
+      "storybook@8": "^8.6.19",
+      "@storybook/core@8": "^8.6.19"
     }
   },
   "devDependencies": {
