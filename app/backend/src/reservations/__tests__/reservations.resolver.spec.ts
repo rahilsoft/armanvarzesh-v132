@@ -158,6 +158,18 @@ describe('ReservationsResolver ownership', () => {
     expect(r.coachId).toBe('70');
   });
 
+  it('bookReservation rejects a malformed or out-of-range slotId as a client error before any query', async () => {
+    const { resolver, prisma } = setup();
+    const findUnique = jest.spyOn(prisma.slot, 'findUnique');
+    for (const bad of ['2147483648', '99999999999999999999', 'abc', '0', '-1', '1.5', '']) {
+      await expect(resolver.bookReservation(userA, { slotId: bad, coachId: '70' })).rejects.toBeInstanceOf(BadRequestException);
+    }
+    expect(findUnique).not.toHaveBeenCalled();
+    const ok = await resolver.bookReservation(userA, { slotId: '2147483647', coachId: '70' }).catch((e: unknown) => e);
+    expect(ok).not.toBeInstanceOf(BadRequestException);
+    expect(findUnique).toHaveBeenCalledWith({ where: { id: 2147483647 } });
+  });
+
   it('user B cannot cancel user A reservation, owner and admin can', async () => {
     const { resolver } = setup();
     const a1 = await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });

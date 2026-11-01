@@ -71,7 +71,7 @@ export class ReservationService {
     // reservation window, and the (resourceId, startsAt, endsAt) unique key
     // rejects double-booking at the database.
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
-    const slot = await this.prisma.slot.findUnique({ where: { id: Number(slotId) } });
+    const slot = await this.prisma.slot.findUnique({ where: { id: parseIntId(slotId, 'slotId') } });
     if (!slot) throw new ConflictException('Slot not found');
     try {
       const created = await this.prisma.reservation.create({
