@@ -115,6 +115,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Integration (PR sweep, updated every shift)
 | PR | Target | State | Blocker / action |
 |---|---|---|---|
+| #82 grype floors | develop | open, draft, head 629f938 | grype 15 rows (majors: sharp, @graphql-tools/utils, image-size, webpack-dev-middleware, decode-uri-component, zod) + Workers Builds. Next: storybook migration |
+| #83 REV-05 authStore tests | develop | open, draft, head b95b6ce, review APPROVED | shared blockers: grype + Workers Builds |
 | #52 claude/project-review-improvement → main | main | closed 2026-10-21 (superseded) | Still-relevant fixes ported to develop (webhook guard fail-closed, live socket + gateway CORS allowlists). Follow-up: api-gateway CORS allowlist or retire api-gateway |
 | develop → main release | main | not opened tonight | develop 74818f9 green locally, but backend-e2e not yet green in CI and deploy gates red. Action: open release PR when backend-e2e passes |
 | #53 develop → main | main | merged 828077f | — |
@@ -131,6 +133,13 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-02 22:02 package (22:02 Tehran, scheduled) — grype 20 → 15, REV-05 tests
+- Quota before and after: unreadable from an official in-app source. Two reviewer agents, no implementing agent.
+- PR #82 head `629f938`: unused `@lhci/cli` and dead `ci:lh-*` scripts removed, vitest 4 in integration and service-kit, unused vitest removed in three services. grype 20 → 15 rows (CI run 41504076162). Independent review APPROVED. Not merged: `scan` and Workers Builds red.
+- PR #83 head `b95b6ce` (draft): 14 authStore tests for REV-20261021-05, mutation-checked. Independent review APPROVED after one CHANGES REQUIRED round. mobile-user jest 41 pass. Not merged: shared CI blockers.
+- Correction: REV-20261021-06 (PR #60) and REV-20261021-07 (PR #63) are in develop; the 10:02 reply that called them open was wrong.
+- Handoff: `docs/agents/reports/2026-11-02.md` (22:02 section).
+
 ### 2026-10-30 10:02 package (10:02 Tehran, scheduled) — REV replies, PR #64 status, handoff
 - Quota before and after: unreadable from an official in-app source. No implementing agent started.
 - REV replies posted on issue #54 (comment 6516585452). Fixed by merged PR or commit (not re-run this package): REV-03 (PR #56), 04 (PR #58), 05 (PR #65), 06 (PR #60), 07 (PR #63), REV-22-01 (PR #57), REV-24-01 (PR #59). Open, not started: REV-21-01, 02, 24-02, 25-01 (partly addressed by the handoff), 25-02.
