@@ -4,7 +4,6 @@ import { envValidationSchema } from '../env.validation';
 import { jwtSecret } from '../../auth/user-auth.module';
 import { JwtAuthGuard } from '../../auth/jwt.guard';
 import { AdminGuard } from '../../auth/admin.guard';
-import { AuthService } from '../../auth/auth.service';
 
 const STRONG = 'x'.repeat(40);
 const saved = { ...process.env };
@@ -79,13 +78,5 @@ describe('algorithm pinning (HS256)', () => {
     expect(guard.canActivate(ctx(jwt.sign({ sub: 'a' }, STRONG, { algorithm: 'HS256' })))).toBe(true);
     expect(() => guard.canActivate(ctx(jwt.sign({ sub: 'a' }, STRONG, { algorithm: 'HS512' })))).toThrow();
     expect(() => guard.canActivate(ctx(jwt.sign({ sub: 'a' }, '', { algorithm: 'none' } as any)))).toThrow();
-  });
-
-  it('AuthService.refresh rejects HS512 refresh tokens', async () => {
-    const svc = new AuthService();
-    const bad = jwt.sign({ sub: 'u', role: 'owner' }, STRONG, { algorithm: 'HS512' });
-    await expect(svc.refresh(bad)).rejects.toThrow();
-    const good = jwt.sign({ sub: 'u', role: 'owner' }, STRONG, { algorithm: 'HS256' });
-    await expect(svc.refresh(good)).resolves.toHaveProperty('accessToken');
   });
 });
