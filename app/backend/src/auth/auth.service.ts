@@ -86,18 +86,4 @@ export class AuthService {
     else if (found.p) ok = password === found.p;
     return ok ? { sub: found.u, role: found.r } : null;
   }
-
-  /**
-   * Register flow. This env-driven AuthService has no persistent user store,
-   * so it simply issues tokens for the supplied identity to satisfy the API.
-   */
-  async register(body: LoginDto): Promise<Tokens> {
-    const jti = crypto.randomUUID();
-    const payload: JwtPayload = { sub: body.username, role: 'coach', jti };
-    const accessToken = this.signAccess(payload);
-    const refreshToken = this.signRefresh(payload);
-    const decoded: any = jwt.decode(accessToken);
-    const expiresIn = Math.max(0, Number(decoded?.exp || 0) - Math.floor(Date.now() / 1000));
-    return { accessToken, refreshToken, expiresIn };
-  }
 }
