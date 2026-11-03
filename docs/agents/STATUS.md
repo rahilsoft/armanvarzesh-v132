@@ -59,6 +59,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-11-03 22:02 package)
+- **PR #84** (`fix/auth-remove-credentialless-register`, head e61d552, ready): removes `AuthService.register` (coach token for any username) + unregistered `AuthResolver`. Red-before spec (2 of 5 failed on old code). Local: typecheck 0, lint 0, unit 315 passed / 69 skipped / 0 failed on a3a9078. Independent review (security-reviewer opus) APPROVED a3a9078 and e61d552. CI e61d552: backend-e2e green (run 41696513677). Not merged: Workers Builds (owner), scan (grype), sast-semgrep, integration red, same checks red on develop.
+- **PR #85** (`chore/d2-remove-dead-admin-authservice`, head c289be4, draft, stacked on #84): D2 removal of dead `AuthService`, `LocalStrategy`, `passport-local`. Adds bcrypt admin login tests (mutation-checked). Local: unit 309 passed / 69 skipped / 0 failed, typecheck 0, lint 0, frozen install 0. Independent review (security-reviewer sonnet) APPROVED 3d92c3b and c289be4. Next: retarget to develop after #84, CI on head.
+- Decision: delete the env-driven `AuthService` instead of fixing its refresh fallback (review N1), because no module registers it and admin login lives in `AdminController`.
+
 ## Open items (2026-10-30 22:02 package)
 - **PR #64** head 8b3e650, ready for review: budget P3s fixed (3db22eb, red-before test), integration job MinIO removed (image no longer pullable, unused) and wait loops fail-closed (0460693, 8b3e650). Hook tests 35/0/0. Independent review APPROVED (security-reviewer opus, qa-test-engineer sonnet). CI 8b3e650: integration, backend-e2e, claude-hooks green. **Not merged:** grype (High, also red on develop), sast-semgrep (semgrep-core OOM), Workers Builds red. Next: triage grype + semgrep in own PR.
 - **PR #75** (REV-20261025-02) head ad8dffe, ready: fixed instant + day-boundary test, jest 8/0/0, review APPROVED. Not merged: same red checks plus integration until #64 lands.
