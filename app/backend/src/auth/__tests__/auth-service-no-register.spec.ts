@@ -27,8 +27,13 @@ describe('AuthService issues tokens only for verified credentials', () => {
       .rejects.toBeInstanceOf(UnauthorizedException);
   });
 
-  it('rejects a wrong password', async () => {
+  it('rejects a wrong password of a different length', async () => {
     await expect(new AuthService().login({ username: 'admin', password: 'wrong-passwor' } as any))
+      .rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
+  it('rejects a wrong password of the same length (constant-time compare path)', async () => {
+    await expect(new AuthService().login({ username: 'admin', password: 'wrong-password' } as any))
       .rejects.toBeInstanceOf(UnauthorizedException);
   });
 
@@ -38,14 +43,14 @@ describe('AuthService issues tokens only for verified credentials', () => {
     expect(t.expiresIn).toBeGreaterThan(0);
   });
 
-  it('no resolver in src calls authService.register', () => {
+  it('no source file in src calls authService.register', () => {
     const root = path.resolve(__dirname, '..', '..');
     const hits: string[] = [];
     const walk = (dir: string) => {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const p = path.join(dir, e.name);
         if (e.isDirectory()) { if (e.name !== '__tests__' && e.name !== 'node_modules') walk(p); }
-        else if (/\.resolver\.ts$/.test(e.name) && /authService\.register\(/.test(fs.readFileSync(p, 'utf8'))) hits.push(p);
+        else if (/\.ts$/.test(e.name) && !/\.spec\.ts$/.test(e.name) && /\bauthService\.register\(/.test(fs.readFileSync(p, 'utf8'))) hits.push(p);
       }
     };
     walk(root);
