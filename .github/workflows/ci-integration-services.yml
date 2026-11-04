@@ -109,7 +109,7 @@ jobs:
         run: |
           for d in services/* app/* packages/*; do
             if [ -f "$d/prisma/schema.prisma" ]; then
-              if [ -d "$d/prisma/migrations" ] && [ -n "$(ls -A "$d/prisma/migrations")" ]; then
+              if [ -n "$(find "$d/prisma/migrations" -mindepth 2 -maxdepth 2 -name migration.sql 2>/dev/null)" ]; then
                 echo "Applying migrations in $d"
                 (cd "$d" && npx prisma migrate deploy)
               else
