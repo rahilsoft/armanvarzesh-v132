@@ -15,6 +15,10 @@ jobs:
           path: .
           fail-build: true
           severity-cutoff: high
+          # Only fail on vulnerabilities that have a published fix. Findings
+          # with no fix cannot be resolved by an upgrade, so they must not
+          # block the build. Fixable high/critical findings still fail it.
+          only-fixed: true
           # A table report makes the failing packages visible for triage.
           # The gate itself (fail-build at high) is unchanged.
           output-format: table
