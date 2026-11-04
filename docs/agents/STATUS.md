@@ -88,6 +88,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-11-04 | Seed step removed from the integration job instead of fixing `seed_domain.js` (PR #86) | All 7 schemas generate to `./generated/client`, the seeder never seeded anything, no step reads seeded data |
+| 2026-11-04 | Backend unit/e2e steps removed from the integration job (PR #86, same text as #64) | e2e `if:` never matched, both steps duplicated `backend-e2e.yml`, which runs them for real |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
 | 2026-10-30 | PR #64 not merged although review approved | grype, semgrep and Workers Builds red on the head SHA, GPT: red-before is no merge license |
 | 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
@@ -138,6 +140,13 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
+- Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
+- PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
+- PR #64 head `35a8948`: both Codex P2 threads fixed (deletion-only NOT_RUN, executed-test count via `tap-executed.mjs`), resolved. Hook tests 39/0/0. Review APPROVE (round 2). CI on head not complete at report time.
+- Local backend unit on `3d9b722`: 53 suites pass, 2 skip, 310 tests pass, 69 skip, 0 fail.
+- Merged: none. Handoff: `docs/agents/reports/2026-11-04.md` (22:02 section).
+
 ### 2026-11-03 10:02 package (10:02 Tehran, scheduled) — PR status, REV replies, handoff
 - Quota before and after: not readable, no official in-app usage source among the tools available in this run. No new development started, 20% reserve not claimed.
 - Merged: none. Blocker shared by every ready PR: `Workers Builds: armanvarzesh` (Cloudflare) fails in seconds on each commit, owner item. PR #64 also blocked by grype (High) and sast-semgrep on its old run.
