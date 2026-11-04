@@ -68,8 +68,9 @@ export class ReservationService {
     }
     // Prisma path (Booking fold): Slot is now a canonical model and
     // Reservation is addressed with Int keys. The slot's time range fills the
-    // reservation window, and the (resourceId, startsAt, endsAt) unique key
-    // rejects double-booking at the database.
+    // reservation window, and the partial unique index on (resourceId,
+    // startsAt, endsAt) WHERE status <> 'CANCELED' rejects double-booking at
+    // the database while letting a cancelled slot be booked again.
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
     const slot = await this.prisma.slot.findUnique({ where: { id: parseIntId(slotId, 'slotId') } });
     if (!slot) throw new ConflictException('Slot not found');
@@ -86,8 +87,8 @@ export class ReservationService {
       });
       return { ...toLegacyReservation(created), coachId: String(slot.coachId) };
     } catch (e) {
-      // The unique (resourceId, startsAt, endsAt) key is the double-booking guard;
-      // losing that race is a conflict, not a server error.
+      // The partial unique index "uq_Reservation_active_slot" is the
+      // double-booking guard, losing that race is a conflict, not a server error.
       if ((e as { code?: string })?.code === 'P2002') throw new ConflictException('Slot already reserved');
       throw e;
     }

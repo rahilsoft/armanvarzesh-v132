@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { ForbiddenException, NotFoundException, BadRequestException, UnauthorizedException, ExecutionContext } from '@nestjs/common';
+import { ConflictException, ForbiddenException, NotFoundException, BadRequestException, UnauthorizedException, ExecutionContext } from '@nestjs/common';
 import { GUARDS_METADATA } from '@nestjs/common/constants';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
@@ -55,7 +55,8 @@ function makePrisma() {
     },
     reservation: {
       create: async ({ data }: any) => {
-        if (reservations.some((r) => r.resourceId === data.resourceId && +r.startsAt === +data.startsAt)) {
+        // Mirrors the partial unique index uq_Reservation_active_slot (WHERE status <> 'CANCELED').
+        if (reservations.some((r) => r.status !== 'CANCELED' && r.resourceId === data.resourceId && +r.startsAt === +data.startsAt && +r.endsAt === +data.endsAt)) {
           throw Object.assign(new Error('unique'), { code: 'P2002' });
         }
         const r = { id: seq++, ...data };
@@ -177,6 +178,20 @@ describe('ReservationsResolver ownership', () => {
     await expect(resolver.cancelReservation(userB, a1.id)).rejects.toBeInstanceOf(NotFoundException);
     await expect(resolver.cancelReservation(userA, a1.id)).resolves.toBe(true);
     await expect(resolver.cancelReservation(admin, a2.id)).resolves.toBe(true);
+  });
+
+  it('a cancelled slot can be booked again by another user and the cancelled row is kept', async () => {
+    const { prisma, resolver } = setup();
+    const a = await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });
+    await expect(resolver.bookReservation(userB, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    await expect(resolver.cancelReservation(userA, a.id)).resolves.toBe(true);
+    const b = await resolver.bookReservation(userB, { slotId: '1', coachId: '70' });
+    expect(b.userId).toBe('2');
+    expect(b.id).not.toBe(a.id);
+    // A second active booking of the rebooked slot is still a conflict.
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    const rows = prisma._reservations.filter((r: any) => r.resourceId === 1);
+    expect(rows.map((r: any) => r.status).sort()).toEqual(['ACTIVE', 'CANCELED']);
   });
 
   it('the ownership check is part of the cancel write, not only the read', async () => {

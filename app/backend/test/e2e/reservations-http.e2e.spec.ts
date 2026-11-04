@@ -157,6 +157,48 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
     expect(await prisma.reservation.findUniqueOrThrow({ where: { id } })).toMatchObject({ status: 'CANCELED', version: 2, userId: alice.id });
   });
 
+  it('a cancelled slot can be booked again by another user, and the cancelled row is kept', async () => {
+    const slot = await newSlot();
+    const server = app.getHttpServer();
+    const made = await request(server).post('/reservations/reserve').set(auth(alice)).send({ slotId: slot.id });
+    expect(made.status).toBe(201);
+    const firstId = Number(made.body.reservation.id);
+    const cancel = await request(server).post('/reservations/cancel').set(auth(alice)).send({ reservationId: firstId });
+    expect(cancel.status).toBe(201);
+
+    const rebook = await request(server).post('/reservations/reserve').set(auth(bob)).send({ slotId: slot.id });
+    expect(rebook.status).toBe(201);
+    const secondId = Number(rebook.body.reservation.id);
+    expect(secondId).not.toBe(firstId);
+
+    // The rebooked slot is held again: a further active booking is still 409.
+    const third = await request(server).post('/reservations/reserve').set(auth(alice)).send({ slotId: slot.id });
+    expect(third.status).toBe(409);
+
+    const rows = await prisma.reservation.findMany({ where: { resourceId: slot.id }, orderBy: { id: 'asc' } });
+    expect(rows.map((r) => ({ id: r.id, userId: r.userId, status: r.status }))).toEqual([
+      { id: firstId, userId: alice.id, status: 'CANCELED' },
+      { id: secondId, userId: bob.id, status: 'ACTIVE' },
+    ]);
+  });
+
+  it('after a cancel, concurrent rebook attempts still yield exactly one winner', async () => {
+    const slot = await newSlot();
+    const server = app.getHttpServer();
+    const made = await request(server).post('/reservations/reserve').set(auth(alice)).send({ slotId: slot.id });
+    expect(made.status).toBe(201);
+    const cancel = await request(server).post('/reservations/cancel').set(auth(alice)).send({ reservationId: Number(made.body.reservation.id) });
+    expect(cancel.status).toBe(201);
+
+    const results = await Promise.all(
+      extra.map((u) => request(server).post('/reservations/reserve').set(auth(u)).send({ slotId: slot.id })),
+    );
+    expect(results.filter((r) => r.status === 201)).toHaveLength(1);
+    expect(results.filter((r) => r.status === 409)).toHaveLength(4);
+    expect(await prisma.reservation.count({ where: { resourceId: slot.id, status: { not: 'CANCELED' } } })).toBe(1);
+    expect(await prisma.reservation.count({ where: { resourceId: slot.id, status: 'CANCELED' } })).toBe(1);
+  });
+
   it('an admin principal may cancel another user’s reservation', async () => {
     const slot = await newSlot();
     const server = app.getHttpServer();
