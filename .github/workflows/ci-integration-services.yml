@@ -102,21 +102,29 @@ jobs:
             fi
           done
 
+      # Fail closed (REV-20261024-02): a package with real migrations must apply them and
+      # any failure stops the job. `db push` is used only for schema-only packages that
+      # have no migration files, and it is never a fallback for a failed migrate deploy.
       - name: Prisma migrate (deploy or push)
         run: |
           for d in services/* app/* packages/*; do
             if [ -f "$d/prisma/schema.prisma" ]; then
-              echo "Applying migrations in $d"
-              (cd "$d" && (npx prisma migrate deploy || npx prisma db push --skip-generate))
+              if [ -d "$d/prisma/migrations" ] && [ -n "$(ls -A "$d/prisma/migrations")" ]; then
+                echo "Applying migrations in $d"
+                (cd "$d" && npx prisma migrate deploy)
+              else
+                echo "No migrations in $d, schema-only push"
+                (cd "$d" && npx prisma db push --skip-generate)
+              fi
             fi
           done
 
-      - name: Seed all (optional)
-        run: pnpm db:seed:all || true
+      - name: Seed all
+        run: pnpm db:seed:all
 
       - name: Backend Unit tests
-        run: pnpm --filter ./app/backend test -- --reporter=dot || true
+        run: pnpm --filter ./app/backend test -- --reporter=dot
 
       - name: Backend E2E tests (conditional)
         if: hashFiles('app/backend/**.e2e.*') != ''
-        run: pnpm --filter ./app/backend test:e2e || true
+        run: pnpm --filter ./app/backend test:e2e
