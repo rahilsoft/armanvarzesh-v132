@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const EnvSchema = z.object({
   NODE_ENV: z.enum(['development','test','production']).default('development'),
-  PORT: z.string().transform(Number).default('3000'),
+  PORT: z.string().default('3000').transform(Number),
   HOST: z.string().default('0.0.0.0'),
   API_PREFIX: z.string().optional(),
 
@@ -11,7 +11,7 @@ export const EnvSchema = z.object({
   RABBITMQ_URL: z.string().min(1),
 
   MINIO_ENDPOINT: z.string().default('minio'),
-  MINIO_PORT: z.string().transform(Number).default('9000'),
+  MINIO_PORT: z.string().default('9000').transform(Number),
   MINIO_ACCESS_KEY: z.string().min(1),
   MINIO_SECRET_KEY: z.string().min(1),
 
