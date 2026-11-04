@@ -33,7 +33,7 @@ pnpm run start
 | `start` | `node dist/main.js` |
 | `start:dev` | `nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/main.ts || nest start --watch` |
 | `start:prod` | `node dist/main.js` |
-| `test` | `jest --passWithNoTests || vitest run || echo "no tests"` |
+| `test` | `jest --passWithNoTests` |
 | `test:cov` | `jest --coverage --runInBand` |
 | `test:e2e` | `jest --config ./test/jest-e2e.json` |
 | `typecheck` | `tsc -p tsconfig.build.json --noEmit` |
