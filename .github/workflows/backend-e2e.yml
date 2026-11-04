@@ -140,6 +140,5 @@ jobs:
         run: |
           set -o pipefail
           node --test --test-reporter=tap .claude/hooks/tests/*.test.mjs | tee "$RUNNER_TEMP/hooks.tap"
-          tests=$(sed -n 's/^# tests //p' "$RUNNER_TEMP/hooks.tap")
           echo "::notice title=hook tests::$(grep -E '^# (tests|pass|fail|skipped)' "$RUNNER_TEMP/hooks.tap" | tr '\n' ' ')"
-          [ "${tests:-0}" -gt 0 ] || { echo "::error::0 hook tests executed"; exit 1; }
+          node .claude/hooks/tap-executed.mjs "$RUNNER_TEMP/hooks.tap"

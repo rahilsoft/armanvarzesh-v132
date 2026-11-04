@@ -179,7 +179,9 @@ function checkPackage(top, pkg, items, config) {
   if (pkg.tests) {
     const src = items.filter((c) => c.fp !== 'deleted' && new RegExp(pkg.match).test(c.path)).map((c) => relTo(pkg.root, c.path));
     if (!src.length && !pkg.testsRunAll) {
-      steps.push({ cmd: '(related tests)', status: 'PASS', note: 'no changed source files to relate tests to' });
+      // Only deletions or non-source files changed: related tests cannot be selected, so
+      // nothing ran. Zero executed tests is not a pass (Codex review on PR 64).
+      steps.push({ cmd: '(related tests)', status: 'NOT_RUN', why: 'only deleted or non-source files changed, no related tests could be selected (0 tests executed)' });
     } else {
       const jsonFile = path.join(os.tmpdir(), `arman-gate-${process.pid}-${pkg.name}.json`);
       fs.rmSync(jsonFile, { force: true });
