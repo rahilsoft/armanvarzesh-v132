@@ -67,7 +67,16 @@ test('Codex P2: skipped, TODO and empty-file entries are not executed tests', ()
   const empty = tapExecuted(tap(['# Subtest: e.test.mjs', 'ok 1 - e.test.mjs', 'ok 2 - real']));
   assert.equal(empty.executed, 1);
   assert.deepEqual(empty.emptyFiles, ['e.test.mjs']);
-  assert.equal(tapExecuted(tap(['ok 1 - real', '    ok 1 - nested', 'not ok 2 - broken'])).executed, 2);
+  assert.equal(tapExecuted(tap(['ok 1 - real', 'not ok 2 - broken'])).executed, 2);
+});
+
+test('Codex P2 (review round 2): a describe() suite with only skipped or no children counts 0', () => {
+  const suite = (name, body) => [...body, `ok 1 - ${name}`, '  ---', "  type: 'suite'", '  ...'];
+  const skippedOnly = suite('S', ['    ok 1 - x # SKIP', '      ---', "      type: 'test'", '      ...', '    1..1']);
+  assert.equal(tapExecuted(tap(skippedOnly)).executed, 0);
+  assert.equal(tapExecuted(tap(suite('E', []))).executed, 0);
+  const real = suite('S', ['    ok 1 - x', '      ---', "      type: 'test'", '      ...', '    1..1']);
+  assert.equal(tapExecuted(tap(real)).executed, 1);
 });
 
 test('Codex P2: the CI checker exits 1 for a skipped-only or empty-file report and 0 for a real one', () => {

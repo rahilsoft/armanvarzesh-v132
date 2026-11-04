@@ -5,15 +5,26 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 export function tapExecuted(tap) {
+  // Test points at any depth. A describe() suite is reported as its own passing point with
+  // `type: 'suite'` in its YAML block, so suites are skipped and only real tests count.
   let executed = 0;
   const emptyFiles = [];
-  for (const line of tap.split('\n')) {
-    const m = /^(not ok|ok) \d+ - (.*)$/.exec(line);
+  const lines = tap.split('\n');
+  for (let i = 0; i < lines.length; i += 1) {
+    const m = /^(\s*)(not ok|ok) \d+ - (.*)$/.exec(lines[i]);
     if (!m) continue;
-    const name = m[2];
+    const name = m[3].trim();
+    let type = 'test';
+    if (/^\s*---\s*$/.test(lines[i + 1] || '')) {
+      for (let j = i + 2; j < lines.length && !/^\s*\.\.\.\s*$/.test(lines[j]); j += 1) {
+        const t = /^\s*type:\s*'?(\w+)'?/.exec(lines[j]);
+        if (t) type = t[1];
+      }
+    }
+    if (type === 'suite') continue;
     if (/#\s*(SKIP|TODO)\b/i.test(name)) continue;
-    if (/\.test\.m?js$/.test(name.trim())) {
-      emptyFiles.push(name.trim());
+    if (!m[1] && /\.test\.m?js$/.test(name)) {
+      emptyFiles.push(name);
       continue;
     }
     executed += 1;
