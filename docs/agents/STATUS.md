@@ -143,7 +143,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
 - Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
 - PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
-- PR #64 head `35a8948`: both Codex P2 threads fixed (deletion-only NOT_RUN, executed-test count via `tap-executed.mjs`), resolved. Hook tests 39/0/0. Review APPROVE (round 2). CI on head not complete at report time.
+- PR #64 head `35a8948`: both Codex P2 threads fixed (deletion-only NOT_RUN, executed-test count via `tap-executed.mjs`), resolved. Hook tests 39/0/0. Review APPROVE (round 2). CI on head: claude-hooks, backend-e2e, integration green, grype `scan` and Workers Builds red.
 - Local backend unit on `3d9b722`: 53 suites pass, 2 skip, 310 tests pass, 69 skip, 0 fail.
 - Merged: none. Handoff: `docs/agents/reports/2026-11-04.md` (22:02 section).
 
