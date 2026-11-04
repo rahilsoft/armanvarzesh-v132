@@ -59,6 +59,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - 2026-10-20: Owner approved merging `develop` into `main` (PR #53, merge commit 828077f), deploy readiness still NOT READY.
 - 2026-10-19: Owner delegated all technical decisions to the team (see CLAUDE.md «Decision authority»). He reviews nightly reports and sends guidance.
 
+## Open items (2026-11-03 22:02 package)
+- **PR #84** (`fix/auth-remove-credentialless-register`, head e61d552, ready): removes `AuthService.register` (coach token for any username) + unregistered `AuthResolver`. Red-before spec (2 of 5 failed on old code). Local: typecheck 0, lint 0, unit 315 passed / 69 skipped / 0 failed on a3a9078. Independent review (security-reviewer opus) APPROVED a3a9078 and e61d552. CI e61d552: backend-e2e green (run 41696513677). Not merged: Workers Builds (owner), scan (grype), sast-semgrep, integration red, same checks red on develop.
+- **PR #85** (`chore/d2-remove-dead-admin-authservice`, head c289be4, draft, stacked on #84): D2 removal of dead `AuthService`, `LocalStrategy`, `passport-local`. Adds bcrypt admin login tests (mutation-checked). Local: unit 309 passed / 69 skipped / 0 failed, typecheck 0, lint 0, frozen install 0. Independent review (security-reviewer sonnet) APPROVED 3d92c3b and c289be4. Next: retarget to develop after #84, CI on head.
+- Decision: delete the env-driven `AuthService` instead of fixing its refresh fallback (review N1), because no module registers it and admin login lives in `AdminController`.
+
 ## Open items (2026-10-30 22:02 package)
 - **PR #64** head 8b3e650, ready for review: budget P3s fixed (3db22eb, red-before test), integration job MinIO removed (image no longer pullable, unused) and wait loops fail-closed (0460693, 8b3e650). Hook tests 35/0/0. Independent review APPROVED (security-reviewer opus, qa-test-engineer sonnet). CI 8b3e650: integration, backend-e2e, claude-hooks green. **Not merged:** grype (High, also red on develop), sast-semgrep (semgrep-core OOM), Workers Builds red. Next: triage grype + semgrep in own PR.
 - **PR #75** (REV-20261025-02) head ad8dffe, ready: fixed instant + day-boundary test, jest 8/0/0, review APPROVED. Not merged: same red checks plus integration until #64 lands.
@@ -83,6 +88,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-11-04 | Seed step removed from the integration job instead of fixing `seed_domain.js` (PR #86) | All 7 schemas generate to `./generated/client`, the seeder never seeded anything, no step reads seeded data |
+| 2026-11-04 | Backend unit/e2e steps removed from the integration job (PR #86, same text as #64) | e2e `if:` never matched, both steps duplicated `backend-e2e.yml`, which runs them for real |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
 | 2026-10-30 | PR #64 not merged although review approved | grype, semgrep and Workers Builds red on the head SHA, GPT: red-before is no merge license |
 | 2026-10-26 | Stop gate judges only overall success claims and claims about a check the gate reports FAIL/NOT_RUN, no word-list heuristics (PR #64 dfa48f0) | Three review rounds showed word lists either let false success through or blocked honest partial reports |
@@ -115,6 +122,8 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Integration (PR sweep, updated every shift)
 | PR | Target | State | Blocker / action |
 |---|---|---|---|
+| #82 grype floors | develop | open, draft, head 629f938 | grype 15 rows (majors: sharp, @graphql-tools/utils, image-size, webpack-dev-middleware, decode-uri-component, zod) + Workers Builds. Next: storybook migration |
+| #83 REV-05 authStore tests | develop | open, draft, head b95b6ce, review APPROVED | shared blockers: grype + Workers Builds |
 | #52 claude/project-review-improvement → main | main | closed 2026-10-21 (superseded) | Still-relevant fixes ported to develop (webhook guard fail-closed, live socket + gateway CORS allowlists). Follow-up: api-gateway CORS allowlist or retire api-gateway |
 | develop → main release | main | not opened tonight | develop 74818f9 green locally, but backend-e2e not yet green in CI and deploy gates red. Action: open release PR when backend-e2e passes |
 | #53 develop → main | main | merged 828077f | — |
@@ -131,6 +140,26 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
+- Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
+- PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
+- PR #64 head `35a8948`: both Codex P2 threads fixed (deletion-only NOT_RUN, executed-test count via `tap-executed.mjs`), resolved. Hook tests 39/0/0. Review APPROVE (round 2). CI on head: claude-hooks, backend-e2e, integration green, grype `scan` and Workers Builds red.
+- Local backend unit on `3d9b722`: 53 suites pass, 2 skip, 310 tests pass, 69 skip, 0 fail.
+- Merged: none. Handoff: `docs/agents/reports/2026-11-04.md` (22:02 section).
+
+### 2026-11-03 10:02 package (10:02 Tehran, scheduled) — PR status, REV replies, handoff
+- Quota before and after: not readable, no official in-app usage source among the tools available in this run. No new development started, 20% reserve not claimed.
+- Merged: none. Blocker shared by every ready PR: `Workers Builds: armanvarzesh` (Cloudflare) fails in seconds on each commit, owner item. PR #64 also blocked by grype (High) and sast-semgrep on its old run.
+- Issue #54: replies posted. REV-20261022-01 (GraphQL part), REV-20261021-01, 02, REV-20261024-02 (partial), REV-20261025-02 (on PR #75), REV-20261025-01 (P3) open.
+- Code changed: none. Tests run: none. Handoff: `docs/agents/reports/2026-11-03.md`.
+
+### 2026-11-02 22:02 package (22:02 Tehran, scheduled) — grype 20 → 15, REV-05 tests
+- Quota before and after: unreadable from an official in-app source. Two reviewer agents, no implementing agent.
+- PR #82 head `629f938`: unused `@lhci/cli` and dead `ci:lh-*` scripts removed, vitest 4 in integration and service-kit, unused vitest removed in three services. grype 20 → 15 rows (CI run 41504076162). Independent review APPROVED. Not merged: `scan` and Workers Builds red.
+- PR #83 head `b95b6ce` (draft): 14 authStore tests for REV-20261021-05, mutation-checked. Independent review APPROVED after one CHANGES REQUIRED round. mobile-user jest 41 pass. Not merged: shared CI blockers.
+- Correction: REV-20261021-06 (PR #60) and REV-20261021-07 (PR #63) are in develop; the 10:02 reply that called them open was wrong.
+- Handoff: `docs/agents/reports/2026-11-02.md` (22:02 section).
+
 ### 2026-10-30 10:02 package (10:02 Tehran, scheduled) — REV replies, PR #64 status, handoff
 - Quota before and after: unreadable from an official in-app source. No implementing agent started.
 - REV replies posted on issue #54 (comment 6516585452). Fixed by merged PR or commit (not re-run this package): REV-03 (PR #56), 04 (PR #58), 05 (PR #65), 06 (PR #60), 07 (PR #63), REV-22-01 (PR #57), REV-24-01 (PR #59). Open, not started: REV-21-01, 02, 24-02, 25-01 (partly addressed by the handoff), 25-02.
