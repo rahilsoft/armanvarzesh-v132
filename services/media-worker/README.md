@@ -30,8 +30,8 @@ pnpm run start
 | `start` | `node dist/main.js` |
 | `start:dev` | `tsx src/main.ts` |
 | `start:prod` | `node dist/main.js` |
-| `test` | `jest --passWithNoTests || vitest run || echo "no tests"` |
-| `test:cov` | `vitest run --coverage` |
+| `test` | `jest --passWithNoTests` |
+| `test:cov` | `jest --coverage --passWithNoTests` |
 | `test:e2e` | `echo "e2e placeholder"` |
 | `typecheck` | `tsc -p tsconfig.build.json --noEmit` |
 
