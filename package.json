@@ -116,7 +116,7 @@
       "@apollo/server@5": "^5.5.0",
       "@grpc/grpc-js@1": "^1.14.5",
       "@isaacs/brace-expansion@5": "^5.0.1",
-      "@xmldom/xmldom@<0.8.13": "0.8.13",
+      "@xmldom/xmldom@<0.8.13": "^0.8.15",
       "axios@<1.16.0": "^1.16.0",
       "fast-uri@3": "^3.1.7",
       "fast-xml-parser@5": "^5.10.1",
