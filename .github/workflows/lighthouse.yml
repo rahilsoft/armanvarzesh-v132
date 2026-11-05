@@ -12,5 +12,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: 'pnpm' }
       - run: pnpm install --frozen-lockfile=false
-      - run: pnpm build --filter ./apps/site-web || true
+      # REV-20261021-04: the old path ./apps/site-web does not exist and the
+      # failure was hidden with `|| true`. Build the real site, fail closed.
+      - run: pnpm --filter ./apps/web-site run build
       - run: npx @lhci/cli autorun --config=.lighthouserc.json || true
