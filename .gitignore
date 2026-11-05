@@ -99,3 +99,4 @@ src/database/prisma/generated/
 
 # agent worktrees (local only)
 .claude/worktrees/
+.claude/.hook-state/
