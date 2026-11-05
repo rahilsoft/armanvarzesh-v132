@@ -3,7 +3,8 @@
  * Dynamic, best-effort domain seeder.
  * It tries to locate Prisma clients generated in services/app folders
  * and creates minimal demo records ONLY if the models exist.
- * Non-fatal on errors. Safe to run repeatedly (uses upsert-like patterns).
+ * Fail closed (REV-20261024-02): any seeding error exits non-zero so CI turns red.
+ * Safe to run repeatedly (uses upsert-like patterns).
  */
 const fs = require('fs');
 const path = require('path');
@@ -16,8 +17,8 @@ async function trySeedService(serviceDir) {
   try {
     ({ PrismaClient } = require(prismaClientPath));
   } catch (e) {
-    console.log(`[seed] skip (no Prisma client yet): ${serviceDir}`);
-    return;
+    console.error(`[seed] Prisma client present but not loadable in ${serviceDir}:`, e.message);
+    throw e;
   }
 
   const prisma = new PrismaClient();
@@ -52,7 +53,7 @@ async function trySeedService(serviceDir) {
           title: 'Demo Plan — 4 Weeks',
           weeks: 4
         }
-      }).catch(()=>{});
+      });
       console.log(`[seed] workoutPlan seeded in ${serviceDir}`);
     }
     if (has('nutritionPlan')) {
@@ -61,7 +62,7 @@ async function trySeedService(serviceDir) {
           title: 'Demo Nutrition — High Protein',
           kcal: 2200
         }
-      }).catch(()=>{});
+      });
       console.log(`[seed] nutritionPlan seeded in ${serviceDir}`);
     }
     if (has('payment')) {
@@ -71,11 +72,12 @@ async function trySeedService(serviceDir) {
           currency: 'IRR',
           status: 'PAID'
         }
-      }).catch(()=>{});
+      });
       console.log(`[seed] payment seeded in ${serviceDir}`);
     }
   } catch (e) {
-    console.log(`[seed] non-fatal in ${serviceDir}:`, e.message);
+    console.error(`[seed] failed in ${serviceDir}:`, e.message);
+    throw e;
   } finally {
     try { await prisma.$disconnect(); } catch {}
   }
@@ -100,5 +102,5 @@ async function main() {
 
 main().catch(e => {
   console.error(e);
-  process.exit(0); // non-fatal
+  process.exit(1);
 });
