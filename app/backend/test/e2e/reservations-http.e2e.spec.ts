@@ -44,13 +44,26 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
   });
 
   let hourOffset = 0;
-  async function newSlot() {
+  async function newSlot(capacity = 1) {
     hourOffset += 2;
     const start = new Date(Date.UTC(2031, 0, 1, 0, 0, 0) + hourOffset * 3_600_000 + Math.floor(Math.random() * 1e6) * 60_000);
     return prisma.slot.create({
-      data: { coachId: 1, startUTC: start, endUTC: new Date(start.getTime() + 3_600_000) },
+      data: { coachId: 1, startUTC: start, endUTC: new Date(start.getTime() + 3_600_000), capacity },
     });
   }
+
+  async function seats(slotId: number) {
+    const [bookings, reservations] = await Promise.all([
+      prisma.booking.count({ where: { slotId, status: { in: ['PENDING', 'CONFIRMED'] } } }),
+      prisma.reservation.count({ where: { resourceId: slotId, status: { not: 'CANCELED' } } }),
+    ]);
+    return { bookings, reservations, total: bookings + reservations };
+  }
+
+  const book = (a: Actor, slotId: number) =>
+    request(app.getHttpServer()).post('/booking/create').set(auth(a)).send({ coachId: 1, slotId, mode: 'online' });
+  const reserve = (a: Actor, slotId: number) =>
+    request(app.getHttpServer()).post('/reservations/reserve').set(auth(a)).send({ slotId });
 
   it('rejects reserve and cancel without a token, and with an invalid token, with 401 and no DB change', async () => {
     const slot = await newSlot();
@@ -209,6 +222,51 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
     const res = await request(server).post('/reservations/cancel').set('Authorization', `Bearer ${adminToken}`).send({ reservationId: id });
     expect(res.status).toBe(201);
     expect(await prisma.reservation.findUniqueOrThrow({ where: { id } })).toMatchObject({ status: 'CANCELED', version: 2 });
+  });
+
+  // REV-20261106-02: Booking and Reservation share the seats of one Slot.
+  describe('mixed Booking and Reservation entry points', () => {
+    it('a Booking takes the seat: a Reservation on the same slot is 409 and writes nothing', async () => {
+      const slot = await newSlot();
+      expect((await book(alice, slot.id)).status).toBe(201);
+      expect((await reserve(bob, slot.id)).status).toBe(409);
+      expect(await seats(slot.id)).toEqual({ bookings: 1, reservations: 0, total: 1 });
+    });
+
+    it('a Reservation takes the seat: a Booking on the same slot is rejected and writes nothing', async () => {
+      const slot = await newSlot();
+      expect((await reserve(alice, slot.id)).status).toBe(201);
+      const second = await book(bob, slot.id);
+      expect(second.status).toBe(400);
+      expect(second.body.message).toBe('SLOT_FULL');
+      expect(await seats(slot.id)).toEqual({ bookings: 0, reservations: 1, total: 1 });
+    });
+
+    it('an active hold blocks a Reservation', async () => {
+      const slot = await newSlot();
+      expect((await request(app.getHttpServer()).post('/booking/hold').set(auth(alice)).send({ slotId: slot.id })).status).toBe(201);
+      expect((await reserve(bob, slot.id)).status).toBe(409);
+      expect((await seats(slot.id)).total).toBe(0);
+    });
+
+    it('capacity 2 admits one Booking and one Reservation, the third attempt on either path is rejected', async () => {
+      const slot = await newSlot(2);
+      expect((await book(alice, slot.id)).status).toBe(201);
+      expect((await reserve(bob, slot.id)).status).toBe(201);
+      expect([400, 409]).toContain((await book(extra[0], slot.id)).status);
+      expect((await reserve(extra[1], slot.id)).status).toBe(409);
+      expect(await seats(slot.id)).toEqual({ bookings: 1, reservations: 1, total: 2 });
+    });
+
+    it('concurrent mixed attempts on a capacity-1 slot yield exactly one seat in total', async () => {
+      const slot = await newSlot();
+      const results = await Promise.all(
+        [alice, bob, ...extra].map((u, i) => (i % 2 === 0 ? book(u, slot.id) : reserve(u, slot.id))),
+      );
+      expect(results.filter((r) => r.status === 201)).toHaveLength(1);
+      for (const r of results) expect([201, 400, 409]).toContain(r.status);
+      expect((await seats(slot.id)).total).toBe(1);
+    });
   });
 
   // GraphQL is not covered here on purpose: every resolver call currently

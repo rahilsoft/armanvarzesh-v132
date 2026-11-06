@@ -9,12 +9,16 @@ import { BookingService } from '../booking.service';
 function makePrismaMock() {
   const slots: any[] = [];
   const bookings: any[] = [];
+  const reservations: any[] = [];
   let seq = 1;
 
   const matchStatus = (b: any, cond: any) => (cond?.in ? cond.in.includes(b.status) : b.status === cond);
 
   const mock: any = {
-    _slots: slots, _bookings: bookings,
+    _slots: slots, _bookings: bookings, _reservations: reservations,
+    reservation: {
+      count: async ({ where }: any) => reservations.filter((r) => r.resourceId === where.resourceId && r.status !== where.status.not).length,
+    },
     // Interactive transaction: run the callback against this same mock (the
     // in-memory store has no real rollback, which is fine for these unit tests).
     $transaction: async (arg: any) => (Array.isArray(arg) ? Promise.all(arg) : arg(mock)),
@@ -125,5 +129,39 @@ describe('BookingService (Booking domain fold)', () => {
     await svc.expireStale();
     expect(prisma._slots[0].holdToken).toBeNull();
     expect(prisma._bookings.find((x: any) => x.id === b.id).status).toBe('CANCELLED');
+  });
+
+  // REV-20261106-02: seats are shared with the Reservation table and an active hold blocks other bookers.
+  it('counts active Reservation rows against slot capacity, cancelled ones free the seat', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25), 1);
+    prisma._reservations.push({ id: 500, resourceId: slot.id, status: 'ACTIVE' });
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toThrow('SLOT_FULL');
+    prisma._reservations[0].status = 'CANCELED';
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).resolves.toMatchObject({ status: 'PENDING' });
+  });
+
+  it('an unexpired hold blocks booking without its token and admits the token holder', async () => {
+    const { svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25), 2);
+    const hold = await svc.holdSlot(slot.id);
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toThrow('SLOT_HELD');
+    await expect(svc.createBooking(10, 1, slot.id, 'online', 'wrong-token')).rejects.toThrow('SLOT_HELD');
+    await expect(svc.createBooking(10, 1, slot.id, 'online', hold.token)).resolves.toMatchObject({ status: 'PENDING' });
+  });
+
+  it('rejects a coachId that does not own the slot and stores the slot owner', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(7, future(24), future(25));
+    await expect(svc.createBooking(10, 8, slot.id, 'online')).rejects.toThrow('COACH_MISMATCH');
+    await svc.createBooking(10, 7, slot.id, 'online');
+    expect(prisma._bookings[0].coachId).toBe(7);
+  });
+
+  it('maps a PostgreSQL serialization abort to a 409 conflict, not a 500', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25));
+    prisma.$transaction = async () => { throw Object.assign(new Error('could not serialize'), { code: 'P2034' }); };
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toMatchObject({ status: 409 });
   });
 });

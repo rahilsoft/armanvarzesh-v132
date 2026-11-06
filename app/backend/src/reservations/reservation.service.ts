@@ -1,5 +1,7 @@
 import { Injectable, BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { countActiveSeats, isHeldByOther, isSerializationFailure } from './booking.service';
 
 type Reservation = { id: string; userId: string; coachId?: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
 
@@ -55,7 +57,15 @@ export class ReservationService {
     mem.slots.add('slot-2');
   }
 
-  async reserve(userId: string, slotId: string): Promise<Reservation> {
+  /**
+   * Reserve a seat on a canonical Slot for `userId` (from the verified JWT).
+   * When the caller names a coach (GraphQL input), it must own the slot.
+   * Seats are shared with the Booking table: capacity, an unexpired hold and
+   * the insert run in one Serializable transaction, so REST Booking, REST
+   * Reservation and GraphQL cannot together overbook a slot
+   * (REV-20261106-01, REV-20261106-02).
+   */
+  async reserve(userId: string, slotId: string, coachId?: string): Promise<Reservation> {
     if (this.isMemory()) {
       if (!mem.slots.has(slotId)) mem.slots.add(slotId);
       // optimistic: no duplicate ACTIVE for same slot
@@ -66,30 +76,34 @@ export class ReservationService {
       mem.reservations.set(r.id, r);
       return r;
     }
-    // Prisma path (Booking fold): Slot is now a canonical model and
-    // Reservation is addressed with Int keys. The slot's time range fills the
-    // reservation window, and the partial unique index on (resourceId,
-    // startsAt, endsAt) WHERE status <> 'CANCELED' rejects double-booking at
-    // the database while letting a cancelled slot be booked again.
     if (!this.prisma) throw new ConflictException('Persistence unavailable');
-    const slot = await this.prisma.slot.findUnique({ where: { id: parseIntId(slotId, 'slotId') } });
-    if (!slot) throw new ConflictException('Slot not found');
+    const prisma = this.prisma;
+    const id = parseIntId(slotId, 'slotId');
+    const expectedCoach = coachId === undefined || coachId === null || coachId === '' ? undefined : parseIntId(coachId, 'coachId');
     try {
-      const created = await this.prisma.reservation.create({
-        data: {
-          userId: Number(userId),
-          resourceId: slot.id,
-          startsAt: slot.startUTC,
-          endsAt: slot.endUTC,
-          status: 'ACTIVE',
-          version: 1,
-        },
-      });
-      return { ...toLegacyReservation(created), coachId: String(slot.coachId) };
+      return await prisma.$transaction(async (tx) => {
+        const slot = await tx.slot.findUnique({ where: { id } });
+        if (!slot) throw new ConflictException('Slot not found');
+        if (expectedCoach !== undefined && slot.coachId !== expectedCoach) throw new ConflictException('Slot does not belong to this coach');
+        if (isHeldByOther(slot)) throw new ConflictException('Slot is held');
+        if ((await countActiveSeats(tx, slot.id)) >= slot.capacity) throw new ConflictException('Slot already reserved');
+        // The partial unique index "uq_Reservation_active_slot" stays as a
+        // second guard inside the Reservation table.
+        const created = await tx.reservation.create({
+          data: {
+            userId: Number(userId),
+            resourceId: slot.id,
+            startsAt: slot.startUTC,
+            endsAt: slot.endUTC,
+            status: 'ACTIVE',
+            version: 1,
+          },
+        });
+        return { ...toLegacyReservation(created), coachId: String(slot.coachId) };
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (e) {
-      // The partial unique index "uq_Reservation_active_slot" is the
-      // double-booking guard, losing that race is a conflict, not a server error.
-      if ((e as { code?: string })?.code === 'P2002') throw new ConflictException('Slot already reserved');
+      // Losing the race (unique index or serialization abort) is a conflict, not a server error.
+      if ((e as { code?: string })?.code === 'P2002' || isSerializationFailure(e)) throw new ConflictException('Slot already reserved');
       throw e;
     }
   }
@@ -185,6 +199,13 @@ export class ReservationService {
   }
 }
 
+/**
+ * Availability as served over GraphQL is the canonical Slot table, the same
+ * rows bookReservation reserves, so an id from coachAvailability always names
+ * that coach's slot and time (REV-20261106-01). The legacy AvailabilitySlot
+ * table is no longer read or written by this surface. Slot has no recurrence
+ * column, so a recurrence rule is rejected instead of being silently dropped.
+ */
 @Injectable()
 export class AvailabilityService {
   constructor(private readonly prisma: PrismaService) {}
@@ -195,34 +216,30 @@ export class AvailabilityService {
     const endsAt = new Date(input.endsAt);
     if (isNaN(+startsAt) || isNaN(+endsAt)) throw new BadRequestException('start and end must be valid dates');
     if (endsAt <= startsAt) throw new BadRequestException('end must be after start');
-    try {
-      const row = await (this.prisma as any).availabilitySlot.create({
-        data: { coachId, startsAt, endsAt, rrule: input.rrule ?? null },
-      });
-      return toAvailabilityView(row);
-    } catch (e) {
-      if ((e as { code?: string })?.code === 'P2002') throw new ConflictException('Availability slot already exists');
-      throw e;
-    }
+    if (input.rrule) throw new BadRequestException('recurrence is not supported, create one slot per session');
+    const clash = await this.prisma.slot.findFirst({ where: { coachId, startUTC: startsAt, endUTC: endsAt } });
+    if (clash) throw new ConflictException('Availability slot already exists');
+    const row = await this.prisma.slot.create({ data: { coachId, startUTC: startsAt, endUTC: endsAt } });
+    return toAvailabilityView(row);
   }
 
   async listCoachAvailability(coachId: number | string): Promise<AvailabilityView[]> {
     const id = parseIntId(coachId, 'coachId');
-    const rows = await (this.prisma as any).availabilitySlot.findMany({
+    const rows = await this.prisma.slot.findMany({
       where: { coachId: id },
-      orderBy: { startsAt: 'asc' },
+      orderBy: { startUTC: 'asc' },
     });
     return rows.map(toAvailabilityView);
   }
 }
 
-function toAvailabilityView(row: { id: number; coachId: number; startsAt: Date; endsAt: Date; rrule?: string | null; createdAt: Date }): AvailabilityView {
+function toAvailabilityView(row: { id: number; coachId: number; startUTC: Date; endUTC: Date; createdAt: Date }): AvailabilityView {
   return {
     id: String(row.id),
     coachId: String(row.coachId),
-    start: row.startsAt,
-    end: row.endsAt,
-    recurrence: row.rrule ?? null,
+    start: row.startUTC,
+    end: row.endUTC,
+    recurrence: null,
     createdAt: row.createdAt,
   };
 }

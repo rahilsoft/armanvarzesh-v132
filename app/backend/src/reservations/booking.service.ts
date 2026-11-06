@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Booking, Slot, Prisma } from '@prisma/client';
 
@@ -15,6 +15,32 @@ import { Booking, Slot, Prisma } from '@prisma/client';
  */
 
 const ACTIVE = ['PENDING', 'CONFIRMED'];
+
+/**
+ * Seats of a Slot are shared by two entry points: Booking (REST /booking) and
+ * Reservation (REST /reservations and GraphQL bookReservation). Both write
+ * paths call this inside a Serializable transaction, so the capacity check
+ * sees the other table and PostgreSQL aborts one of two racing writers
+ * (REV-20261106-02).
+ */
+export async function countActiveSeats(tx: Prisma.TransactionClient, slotId: number): Promise<number> {
+  const [bookings, reservations] = await Promise.all([
+    tx.booking.count({ where: { slotId, status: { in: ACTIVE } } }),
+    tx.reservation.count({ where: { resourceId: slotId, status: { not: 'CANCELED' } } }),
+  ]);
+  return bookings + reservations;
+}
+
+/** An unexpired hold on the slot blocks every booker that does not present its token. */
+export function isHeldByOther(slot: Pick<Slot, 'holdToken' | 'holdExpires'>, holdToken?: string, now = Date.now()): boolean {
+  return !!slot.holdToken && !!slot.holdExpires && slot.holdExpires.getTime() > now && slot.holdToken !== holdToken;
+}
+
+/** PostgreSQL serialization failure surfaced by Prisma for a losing Serializable transaction. */
+export function isSerializationFailure(e: unknown): boolean {
+  const err = e as { code?: string; meta?: { code?: string } };
+  return err?.code === 'P2034' || err?.meta?.code === '40001';
+}
 
 function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
   return aStart < bEnd && bStart < aEnd;
@@ -40,27 +66,36 @@ export class BookingService {
     return this.prisma.slot.create({ data: { coachId, startUTC: s, endUTC: e, capacity } });
   }
 
-  async createBooking(userId: number, coachId: number, slotId: number, mode: string): Promise<BookingCreated> {
+  async createBooking(userId: number, coachId: number, slotId: number, mode: string, holdToken?: string): Promise<BookingCreated> {
     // Capacity/overlap check and the booking insert run in one serializable
     // transaction so two concurrent requests cannot both pass the capacity
-    // check and overbook the slot.
-    const booking = await this.prisma.$transaction(async (tx) => {
-      const slot = await tx.slot.findUnique({ where: { id: slotId } });
-      if (!slot) throw new BadRequestException('SLOT_NOT_FOUND');
-      if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
+    // check and overbook the slot. Capacity counts Reservation rows too.
+    let booking: Booking;
+    try {
+      booking = await this.prisma.$transaction(async (tx) => {
+        const slot = await tx.slot.findUnique({ where: { id: slotId } });
+        if (!slot) throw new BadRequestException('SLOT_NOT_FOUND');
+        // The coach is the owner of the slot, never the client's claim.
+        if (slot.coachId !== coachId) throw new BadRequestException('COACH_MISMATCH');
+        if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
+        if (isHeldByOther(slot, holdToken)) throw new BadRequestException('SLOT_HELD');
 
-      // Expire a stale hold on this slot.
-      if (slot.holdExpires && slot.holdExpires.getTime() < Date.now()) {
-        await tx.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null } });
-      }
+        // Expire a stale hold on this slot.
+        if (slot.holdExpires && slot.holdExpires.getTime() < Date.now()) {
+          await tx.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null } });
+        }
 
-      const activeCount = await tx.booking.count({ where: { slotId, status: { in: ACTIVE } } });
-      if (activeCount >= slot.capacity) throw new BadRequestException('SLOT_FULL');
+        const activeCount = await countActiveSeats(tx, slotId);
+        if (activeCount >= slot.capacity) throw new BadRequestException('SLOT_FULL');
 
-      await this.assertNoUserOverlap(tx, userId, slot);
+        await this.assertNoUserOverlap(tx, userId, slot);
 
-      return tx.booking.create({ data: { userId, coachId, slotId, status: 'PENDING', mode } });
-    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+        return tx.booking.create({ data: { userId, coachId: slot.coachId, slotId, status: 'PENDING', mode } });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (e) {
+      if (isSerializationFailure(e)) throw new ConflictException('SLOT_BUSY');
+      throw e;
+    }
 
     // Payment checkout is created by the Payments domain; URL shape kept from
     // the former service until PAYMENTS-WIRE exposes the live checkout route.
@@ -82,16 +117,23 @@ export class BookingService {
   async reschedule(userId: number, id: number, newSlotId: number): Promise<Booking> {
     // Same check-then-write race as createBooking: capacity/overlap check and
     // the move are atomic under a serializable transaction.
-    return this.prisma.$transaction(async (tx) => {
-      const b = await tx.booking.findUnique({ where: { id } });
-      if (!b || b.userId !== userId) throw new BadRequestException('NOT_FOUND_OR_FORBIDDEN');
-      const newSlot = await tx.slot.findUnique({ where: { id: newSlotId } });
-      if (!newSlot) throw new BadRequestException('SLOT_NOT_FOUND');
-      const activeCount = await tx.booking.count({ where: { slotId: newSlotId, status: { in: ACTIVE } } });
-      if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
-      await this.assertNoUserOverlap(tx, userId, newSlot, id);
-      return tx.booking.update({ where: { id }, data: { slotId: newSlotId } });
-    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const b = await tx.booking.findUnique({ where: { id } });
+        if (!b || b.userId !== userId) throw new BadRequestException('NOT_FOUND_OR_FORBIDDEN');
+        const newSlot = await tx.slot.findUnique({ where: { id: newSlotId } });
+        if (!newSlot) throw new BadRequestException('SLOT_NOT_FOUND');
+        if (isHeldByOther(newSlot)) throw new BadRequestException('SLOT_HELD');
+        const activeCount = await countActiveSeats(tx, newSlotId);
+        if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
+        await this.assertNoUserOverlap(tx, userId, newSlot, id);
+        // Booking.coachId always follows the slot owner.
+        return tx.booking.update({ where: { id }, data: { slotId: newSlotId, coachId: newSlot.coachId } });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (e) {
+      if (isSerializationFailure(e)) throw new ConflictException('SLOT_BUSY');
+      throw e;
+    }
   }
 
   async holdSlot(slotId: number): Promise<{ token: string; expiresAt: string }> {

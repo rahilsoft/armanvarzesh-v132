@@ -33,25 +33,46 @@ function matches(row: any, where: any): boolean {
       if ('gte' in v || 'lt' in v) return (!v.gte || row[k] >= v.gte) && (!v.lt || row[k] < v.lt);
       return true;
     }
+    if (v instanceof Date) return row[k] instanceof Date && +row[k] === +v;
     return row[k] === v;
   });
 }
 
 function makePrisma() {
   const slots = [
-    { id: 1, coachId: 70, startUTC: new Date('2026-11-01T08:00:00Z'), endUTC: new Date('2026-11-01T09:00:00Z') },
-    { id: 2, coachId: 70, startUTC: new Date('2026-11-02T08:00:00Z'), endUTC: new Date('2026-11-02T09:00:00Z') },
-    { id: 3, coachId: 80, startUTC: new Date('2026-11-03T08:00:00Z'), endUTC: new Date('2026-11-03T09:00:00Z') },
+    { id: 1, coachId: 70, startUTC: new Date('2026-11-01T08:00:00Z'), endUTC: new Date('2026-11-01T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
+    { id: 2, coachId: 70, startUTC: new Date('2026-11-02T08:00:00Z'), endUTC: new Date('2026-11-02T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
+    { id: 3, coachId: 80, startUTC: new Date('2026-11-03T08:00:00Z'), endUTC: new Date('2026-11-03T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
   ];
+  const bookings: any[] = [];
   const reservations: any[] = [];
   const availability: any[] = [];
   let seq = 100;
-  return {
+  const db: any = {
     _reservations: reservations,
     _availability: availability,
+    _slots: slots,
+    _bookings: bookings,
+    // Interactive transaction runs against the same in-memory store.
+    $transaction: async (fn: any) => fn(db),
     slot: {
       findUnique: async ({ where }: any) => slots.find((s) => s.id === where.id) ?? null,
-      findMany: async ({ where }: any) => slots.filter((s) => matches(s, where)),
+      findFirst: async ({ where }: any) => slots.find((s) => matches(s, where)) ?? null,
+      findMany: async ({ where }: any) => {
+        if (where.coachId !== undefined && typeof where.coachId !== 'object' && !Number.isInteger(where.coachId)) throw new Error('Invalid coachId');
+        return slots.filter((s) => matches(s, where)).map((s) => ({ ...s }));
+      },
+      create: async ({ data }: any) => {
+        for (const v of [data.startUTC, data.endUTC]) if (!(v instanceof Date) || isNaN(+v)) throw new Error('Invalid DateTime');
+        if (!Number.isInteger(data.coachId)) throw new Error('Invalid coachId');
+        const row = { id: seq++, capacity: 1, holdToken: null, holdExpires: null, createdAt: new Date(), ...data };
+        slots.push(row);
+        availability.push(row);
+        return { ...row };
+      },
+    },
+    booking: {
+      count: async ({ where }: any) => bookings.filter((b) => b.slotId === where.slotId && where.status.in.includes(b.status)).length,
     },
     reservation: {
       create: async ({ data }: any) => {
@@ -63,6 +84,7 @@ function makePrisma() {
         reservations.push(r);
         return { ...r };
       },
+      count: async ({ where }: any) => reservations.filter((r) => matches(r, where)).length,
       findFirst: async ({ where }: any) => reservations.find((r) => matches(r, where)) ?? null,
       findUniqueOrThrow: async ({ where }: any) => ({ ...reservations.find((r) => r.id === where.id) }),
       findMany: async ({ where, orderBy }: any) => {
@@ -75,20 +97,8 @@ function makePrisma() {
         return { count: hit.length };
       },
     },
-    availabilitySlot: {
-      create: async ({ data }: any) => {
-        for (const v of [data.startsAt, data.endsAt]) if (!(v instanceof Date) || isNaN(+v)) throw new Error('Invalid DateTime');
-        if (!Number.isInteger(data.coachId)) throw new Error('Invalid coachId');
-        const row = { id: seq++, createdAt: new Date(), ...data };
-        availability.push(row);
-        return { ...row };
-      },
-      findMany: async ({ where }: any) => {
-        if (!Number.isInteger(where.coachId)) throw new Error('Invalid coachId');
-        return availability.filter((a) => a.coachId === where.coachId).map((a) => ({ ...a }));
-      },
-    },
   };
+  return db;
 }
 
 const userA: AuthPrincipal = { userId: 1, role: 'user' };
@@ -152,11 +162,50 @@ describe('ReservationsResolver ownership', () => {
   beforeAll(() => { delete process.env.MEMORY_DB; });
   afterAll(() => { if (prevMem !== undefined) process.env.MEMORY_DB = prevMem; });
 
-  it('books for the token user and takes coachId from the slot, not the client', async () => {
+  it('books for the token user, coachId comes from the slot', async () => {
     const { resolver } = setup();
-    const r = await resolver.bookReservation(userA, { slotId: '1', coachId: '999' });
+    const r = await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });
     expect(r.userId).toBe('1');
     expect(r.coachId).toBe('70');
+  });
+
+  // REV-20261106-01: the slot id must name a slot of the requested coach.
+  it('rejects a slot that belongs to another coach and writes nothing', async () => {
+    const { resolver, prisma } = setup();
+    await expect(resolver.bookReservation(userA, { slotId: '3', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '999' })).rejects.toBeInstanceOf(ConflictException);
+    expect(prisma._reservations).toHaveLength(0);
+  });
+
+  it('an id returned by coachAvailability books exactly that coach slot and time', async () => {
+    const { resolver } = setup();
+    const created = await resolver.createAvailability(admin, { coachId: '80', start: new Date('2026-12-01T08:00:00Z'), end: new Date('2026-12-01T09:00:00Z') } as any);
+    const [listed] = (await resolver.coachAvailability('80')).filter((a: any) => a.id === created.id);
+    const r = await resolver.bookReservation(userA, { slotId: listed.id, coachId: '80' });
+    expect(r).toMatchObject({ slotId: listed.id, coachId: '80', start: listed.start, end: listed.end });
+  });
+
+  // REV-20261106-02: seats are shared with the Booking table, and holds apply here too.
+  it('an active Booking on the slot blocks a GraphQL reservation, a cancelled one does not', async () => {
+    const { resolver, prisma } = setup();
+    prisma._bookings.push({ id: 1, slotId: 1, status: 'PENDING' });
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    prisma._bookings[0].status = 'CANCELLED';
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
+  });
+
+  it('an unexpired hold blocks a GraphQL reservation, an expired one does not', async () => {
+    const { resolver, prisma } = setup();
+    Object.assign(prisma._slots[0], { holdToken: 'h', holdExpires: new Date(Date.now() + 60_000) });
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    prisma._slots[0].holdExpires = new Date(Date.now() - 1);
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
+  });
+
+  it('a serialization abort from a racing writer is a 409, not a 500', async () => {
+    const { resolver, prisma } = setup();
+    prisma.$transaction = async () => { throw Object.assign(new Error('could not serialize'), { code: 'P2034' }); };
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('bookReservation rejects a malformed or out-of-range slotId as a client error before any query', async () => {
@@ -271,9 +320,17 @@ describe('Availability slots', () => {
     const { resolver } = setup();
     const created = await resolver.createAvailability(admin, input());
     expect(created).toMatchObject({ coachId: '70', start: new Date('2026-11-05T08:00:00Z'), end: new Date('2026-11-05T09:00:00Z') });
+    // Availability is the canonical Slot table: the seeded slots of coach 70 plus the new one, never coach 80's.
     const listed = await resolver.coachAvailability('70');
-    expect(listed).toHaveLength(1);
-    expect(listed[0]).toMatchObject({ id: String(created.id), coachId: '70' });
+    expect(listed.map((a: any) => a.id)).toEqual(['1', '2', String(created.id)]);
+    expect(listed.every((a: any) => a.coachId === '70')).toBe(true);
+  });
+
+  it('rejects a recurrence rule instead of dropping it, and a duplicate slot is 409', async () => {
+    const { resolver } = setup();
+    await expect(resolver.createAvailability(admin, { ...input(), recurrence: 'FREQ=WEEKLY' } as any)).rejects.toBeInstanceOf(BadRequestException);
+    await resolver.createAvailability(admin, input());
+    await expect(resolver.createAvailability(admin, input())).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('rejects end before start and a malformed coachId', async () => {

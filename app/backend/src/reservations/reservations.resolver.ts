@@ -44,12 +44,12 @@ export class ReservationsResolver {
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Reservation)
   async bookReservation(@GqlCurrentUser() user: AuthPrincipal, @Args('input') input: CreateReservationInput) {
-    const r = await this.resv.reserve(String(user.userId), input.slotId);
+    const r = await this.resv.reserve(String(user.userId), input.slotId, input.coachId);
     // The coach is the owner of the booked slot, never the client's coachId.
     return {
       id: r.id,
       userId: r.userId,
-      coachId: r.coachId ?? input.coachId,
+      coachId: r.coachId ?? '',
       slotId: r.slotId,
       status: r.status,
       start: r.startsAt ?? r.createdAt,
