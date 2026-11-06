@@ -31,15 +31,17 @@ export async function countActiveSeats(tx: Prisma.TransactionClient, slotId: num
   return bookings + reservations;
 }
 
-/** An unexpired hold on the slot blocks every booker that does not present its token. */
-export function isHeldByOther(slot: Pick<Slot, 'holdToken' | 'holdExpires'>, holdToken?: string, now = Date.now()): boolean {
-  return !!slot.holdToken && !!slot.holdExpires && slot.holdExpires.getTime() > now && slot.holdToken !== holdToken;
+/** An unexpired hold on the slot blocks every user except the one who placed it. */
+export function isHeldByOther(slot: Pick<Slot, 'holdExpires' | 'holdUserId'>, userId: number, now = Date.now()): boolean {
+  return !!slot.holdExpires && slot.holdExpires.getTime() > now && slot.holdUserId !== userId;
 }
 
 /** PostgreSQL serialization failure surfaced by Prisma for a losing Serializable transaction. */
 export function isSerializationFailure(e: unknown): boolean {
   const err = e as { code?: string; meta?: { code?: string } };
-  return err?.code === 'P2034' || err?.meta?.code === '40001';
+  // Prisma 5 reports the abort as P2034, or, when PostgreSQL raises it at
+  // COMMIT of an interactive transaction, only through the driver message.
+  return err?.code === 'P2034' || err?.meta?.code === '40001' || /could not serialize access/i.test(String((e as Error)?.message ?? ''));
 }
 
 function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date): boolean {
@@ -66,7 +68,7 @@ export class BookingService {
     return this.prisma.slot.create({ data: { coachId, startUTC: s, endUTC: e, capacity } });
   }
 
-  async createBooking(userId: number, coachId: number, slotId: number, mode: string, holdToken?: string): Promise<BookingCreated> {
+  async createBooking(userId: number, coachId: number, slotId: number, mode: string): Promise<BookingCreated> {
     // Capacity/overlap check and the booking insert run in one serializable
     // transaction so two concurrent requests cannot both pass the capacity
     // check and overbook the slot. Capacity counts Reservation rows too.
@@ -78,11 +80,11 @@ export class BookingService {
         // The coach is the owner of the slot, never the client's claim.
         if (slot.coachId !== coachId) throw new BadRequestException('COACH_MISMATCH');
         if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
-        if (isHeldByOther(slot, holdToken)) throw new BadRequestException('SLOT_HELD');
+        if (isHeldByOther(slot, userId)) throw new BadRequestException('SLOT_HELD');
 
-        // Expire a stale hold on this slot.
-        if (slot.holdExpires && slot.holdExpires.getTime() < Date.now()) {
-          await tx.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null } });
+        // Release the slot's hold: a stale one, or the booker's own (it is used up).
+        if (slot.holdExpires) {
+          await tx.slot.update({ where: { id: slotId }, data: { holdToken: null, holdExpires: null, holdUserId: null } });
         }
 
         const activeCount = await countActiveSeats(tx, slotId);
@@ -123,7 +125,8 @@ export class BookingService {
         if (!b || b.userId !== userId) throw new BadRequestException('NOT_FOUND_OR_FORBIDDEN');
         const newSlot = await tx.slot.findUnique({ where: { id: newSlotId } });
         if (!newSlot) throw new BadRequestException('SLOT_NOT_FOUND');
-        if (isHeldByOther(newSlot)) throw new BadRequestException('SLOT_HELD');
+        if (newSlot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
+        if (isHeldByOther(newSlot, userId)) throw new BadRequestException('SLOT_HELD');
         const activeCount = await countActiveSeats(tx, newSlotId);
         if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
         await this.assertNoUserOverlap(tx, userId, newSlot, id);
@@ -136,14 +139,29 @@ export class BookingService {
     }
   }
 
-  async holdSlot(slotId: number): Promise<{ token: string; expiresAt: string }> {
+  /**
+   * Hold a slot for `userId` for HOLD_TTL. The hold is placed with one
+   * conditional update, so two callers cannot both win, and a user holds at
+   * most one slot at a time: a new hold releases the user's previous one.
+   */
+  async holdSlot(userId: number, slotId: number): Promise<{ token: string; expiresAt: string }> {
     const slot = await this.prisma.slot.findUnique({ where: { id: slotId } });
     if (!slot) throw new BadRequestException('SLOT_NOT_FOUND');
-    const now = Date.now();
-    if (slot.holdExpires && slot.holdExpires.getTime() > now) throw new BadRequestException('HOLD_EXISTS');
+    if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('SLOT_IN_PAST');
+    const now = new Date();
     const token = randomUUID();
-    const expires = new Date(now + this.HOLD_TTL_MS);
-    await this.prisma.slot.update({ where: { id: slotId }, data: { holdToken: token, holdExpires: expires } });
+    const expires = new Date(now.getTime() + this.HOLD_TTL_MS);
+    const [, placed] = await this.prisma.$transaction([
+      this.prisma.slot.updateMany({
+        where: { holdUserId: userId, NOT: { id: slotId } },
+        data: { holdToken: null, holdExpires: null, holdUserId: null },
+      }),
+      this.prisma.slot.updateMany({
+        where: { id: slotId, OR: [{ holdExpires: null }, { holdExpires: { lte: now } }, { holdUserId: userId }] },
+        data: { holdToken: token, holdExpires: expires, holdUserId: userId },
+      }),
+    ]);
+    if (placed.count !== 1) throw new BadRequestException('HOLD_EXISTS');
     return { token, expiresAt: expires.toISOString() };
   }
 
@@ -167,7 +185,7 @@ export class BookingService {
   async expireStale(): Promise<void> {
     await this.prisma.slot.updateMany({
       where: { holdExpires: { lt: new Date() } },
-      data: { holdToken: null, holdExpires: null },
+      data: { holdToken: null, holdExpires: null, holdUserId: null },
     });
     const cutoff = new Date(Date.now() - this.PAYMENT_TTL_MS);
     await this.prisma.booking.updateMany({

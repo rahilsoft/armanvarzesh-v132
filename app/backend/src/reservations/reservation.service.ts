@@ -85,10 +85,9 @@ export class ReservationService {
         const slot = await tx.slot.findUnique({ where: { id } });
         if (!slot) throw new ConflictException('Slot not found');
         if (expectedCoach !== undefined && slot.coachId !== expectedCoach) throw new ConflictException('Slot does not belong to this coach');
-        if (isHeldByOther(slot)) throw new ConflictException('Slot is held');
+        if (isHeldByOther(slot, Number(userId))) throw new ConflictException('Slot is held');
         if ((await countActiveSeats(tx, slot.id)) >= slot.capacity) throw new ConflictException('Slot already reserved');
-        // The partial unique index "uq_Reservation_active_slot" stays as a
-        // second guard inside the Reservation table.
+        if (slot.holdExpires) await tx.slot.update({ where: { id: slot.id }, data: { holdToken: null, holdExpires: null, holdUserId: null } });
         const created = await tx.reservation.create({
           data: {
             userId: Number(userId),

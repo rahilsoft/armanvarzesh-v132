@@ -242,11 +242,40 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
       expect(await seats(slot.id)).toEqual({ bookings: 0, reservations: 1, total: 1 });
     });
 
-    it('an active hold blocks a Reservation', async () => {
+    const hold = (a: Actor, slotId: number) => request(app.getHttpServer()).post('/booking/hold').set(auth(a)).send({ slotId });
+
+    it('an active hold blocks other users on both paths, and the holder can book it', async () => {
       const slot = await newSlot();
-      expect((await request(app.getHttpServer()).post('/booking/hold').set(auth(alice)).send({ slotId: slot.id })).status).toBe(201);
+      expect((await hold(alice, slot.id)).status).toBe(201);
+      expect((await hold(bob, slot.id)).status).toBe(400);
       expect((await reserve(bob, slot.id)).status).toBe(409);
+      expect((await book(bob, slot.id)).status).toBe(400);
       expect((await seats(slot.id)).total).toBe(0);
+      expect((await book(alice, slot.id)).status).toBe(201);
+      expect(await prisma.slot.findUniqueOrThrow({ where: { id: slot.id } })).toMatchObject({ holdUserId: null, holdExpires: null });
+    });
+
+    it('the holder can reserve the held slot', async () => {
+      const slot = await newSlot();
+      expect((await hold(alice, slot.id)).status).toBe(201);
+      expect((await reserve(alice, slot.id)).status).toBe(201);
+      expect(await seats(slot.id)).toEqual({ bookings: 0, reservations: 1, total: 1 });
+    });
+
+    it('capacity 2 admits two Reservations, the third is 409', async () => {
+      const slot = await newSlot(2);
+      expect((await reserve(alice, slot.id)).status).toBe(201);
+      expect((await reserve(bob, slot.id)).status).toBe(201);
+      expect((await reserve(extra[0], slot.id)).status).toBe(409);
+      expect(await seats(slot.id)).toEqual({ bookings: 0, reservations: 2, total: 2 });
+    });
+
+    it('only an admin may publish slots over REST', async () => {
+      const start = new Date(Date.UTC(2032, 0, 1)).toISOString();
+      const end = new Date(Date.UTC(2032, 0, 1, 1)).toISOString();
+      const res = await request(app.getHttpServer()).post('/booking/slots/create').set(auth(alice)).send({ coachId: 1, startUTC: start, endUTC: end });
+      expect(res.status).toBe(403);
+      expect(await prisma.slot.count({ where: { startUTC: new Date(start) } })).toBe(0);
     });
 
     it('capacity 2 admits one Booking and one Reservation, the third attempt on either path is rejected', async () => {

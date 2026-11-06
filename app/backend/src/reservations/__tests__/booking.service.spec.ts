@@ -27,8 +27,16 @@ function makePrismaMock() {
       findUnique: async ({ where }: any) => slots.find((s) => s.id === where.id) ?? null,
       update: async ({ where, data }: any) => { const s = slots.find((x) => x.id === where.id); Object.assign(s, data); return s; },
       updateMany: async ({ where, data }: any) => {
+        const hit = (s: any): boolean => {
+          if (where.holdExpires?.lt) return !!s.holdExpires && s.holdExpires < where.holdExpires.lt;
+          if (where.holdUserId !== undefined) return s.holdUserId === where.holdUserId && s.id !== where.NOT?.id;
+          return s.id === where.id && where.OR.some((c: any) =>
+            ('holdExpires' in c && c.holdExpires === null && s.holdExpires == null) ||
+            (c.holdExpires?.lte && s.holdExpires != null && s.holdExpires <= c.holdExpires.lte) ||
+            ('holdUserId' in c && s.holdUserId != null && s.holdUserId === c.holdUserId));
+        };
         let n = 0;
-        for (const s of slots) if (s.holdExpires && s.holdExpires < where.holdExpires.lt) { Object.assign(s, data); n++; }
+        for (const s of slots) if (hit(s)) { Object.assign(s, data); n++; }
         return { count: n };
       },
     },
@@ -96,12 +104,13 @@ describe('BookingService (Booking domain fold)', () => {
   it('holds a slot once until the hold expires', async () => {
     const { prisma, svc } = make();
     const slot = await svc.createSlot(1, future(24), future(25));
-    const hold = await svc.holdSlot(slot.id);
+    const hold = await svc.holdSlot(10, slot.id);
     expect(hold.token).toBeTruthy();
-    await expect(svc.holdSlot(slot.id)).rejects.toThrow('HOLD_EXISTS');
+    await expect(svc.holdSlot(11, slot.id)).rejects.toThrow('HOLD_EXISTS');
     // expire the hold and retry
     prisma._slots[0].holdExpires = new Date(Date.now() - 1000);
-    await expect(svc.holdSlot(slot.id)).resolves.toHaveProperty('token');
+    await expect(svc.holdSlot(11, slot.id)).resolves.toHaveProperty('token');
+    expect(prisma._slots[0].holdUserId).toBe(11);
   });
 
   it('confirms payment idempotently and reschedule respects capacity', async () => {
@@ -122,7 +131,7 @@ describe('BookingService (Booking domain fold)', () => {
   it('expireStale clears dead holds and cancels stale PENDING bookings', async () => {
     const { prisma, svc } = make();
     const slot = await svc.createSlot(1, future(24), future(25), 5);
-    await svc.holdSlot(slot.id);
+    await svc.holdSlot(10, slot.id);
     prisma._slots[0].holdExpires = new Date(Date.now() - 1000);
     const b = await svc.createBooking(10, 1, slot.id, 'online');
     prisma._bookings.find((x: any) => x.id === b.id).createdAt = new Date(Date.now() - 31 * 60 * 1000);
@@ -141,13 +150,39 @@ describe('BookingService (Booking domain fold)', () => {
     await expect(svc.createBooking(10, 1, slot.id, 'online')).resolves.toMatchObject({ status: 'PENDING' });
   });
 
-  it('an unexpired hold blocks booking without its token and admits the token holder', async () => {
-    const { svc } = make();
+  it('an unexpired hold blocks other users, the holder books it and the hold is used up', async () => {
+    const { prisma, svc } = make();
     const slot = await svc.createSlot(1, future(24), future(25), 2);
-    const hold = await svc.holdSlot(slot.id);
-    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toThrow('SLOT_HELD');
-    await expect(svc.createBooking(10, 1, slot.id, 'online', 'wrong-token')).rejects.toThrow('SLOT_HELD');
-    await expect(svc.createBooking(10, 1, slot.id, 'online', hold.token)).resolves.toMatchObject({ status: 'PENDING' });
+    await svc.holdSlot(10, slot.id);
+    await expect(svc.createBooking(11, 1, slot.id, 'online')).rejects.toThrow('SLOT_HELD');
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).resolves.toMatchObject({ status: 'PENDING' });
+    expect(prisma._slots[0]).toMatchObject({ holdToken: null, holdExpires: null, holdUserId: null });
+    await expect(svc.createBooking(11, 1, slot.id, 'online')).resolves.toMatchObject({ status: 'PENDING' });
+  });
+
+  it('a user holds at most one slot: a new hold releases the previous one', async () => {
+    const { prisma, svc } = make();
+    const a = await svc.createSlot(1, future(24), future(25));
+    const b = await svc.createSlot(1, future(30), future(31));
+    await svc.holdSlot(10, a.id);
+    await svc.holdSlot(10, b.id);
+    expect(prisma._slots.find((s: any) => s.id === a.id)).toMatchObject({ holdUserId: null, holdExpires: null });
+    expect(prisma._slots.find((s: any) => s.id === b.id)).toMatchObject({ holdUserId: 10 });
+  });
+
+  it('reschedule rejects a past slot', async () => {
+    const { svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25));
+    const created = await svc.createBooking(10, 1, slot.id, 'online');
+    const past = await svc.createSlot(1, future(-3), future(-2));
+    await expect(svc.reschedule(10, created.id, past.id)).rejects.toThrow('SLOT_IN_PAST');
+  });
+
+  it('a "could not serialize" driver error at commit is also a 409', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25));
+    prisma.$transaction = async () => { throw new Error('Transaction failed: ERROR: could not serialize access due to read/write dependencies'); };
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toMatchObject({ status: 409 });
   });
 
   it('rejects a coachId that does not own the slot and stores the slot owner', async () => {

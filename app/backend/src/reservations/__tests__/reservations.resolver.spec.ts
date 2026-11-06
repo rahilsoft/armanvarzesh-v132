@@ -40,9 +40,9 @@ function matches(row: any, where: any): boolean {
 
 function makePrisma() {
   const slots = [
-    { id: 1, coachId: 70, startUTC: new Date('2026-11-01T08:00:00Z'), endUTC: new Date('2026-11-01T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
-    { id: 2, coachId: 70, startUTC: new Date('2026-11-02T08:00:00Z'), endUTC: new Date('2026-11-02T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
-    { id: 3, coachId: 80, startUTC: new Date('2026-11-03T08:00:00Z'), endUTC: new Date('2026-11-03T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, createdAt: new Date() },
+    { id: 1, coachId: 70, startUTC: new Date('2026-11-01T08:00:00Z'), endUTC: new Date('2026-11-01T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
+    { id: 2, coachId: 70, startUTC: new Date('2026-11-02T08:00:00Z'), endUTC: new Date('2026-11-02T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
+    { id: 3, coachId: 80, startUTC: new Date('2026-11-03T08:00:00Z'), endUTC: new Date('2026-11-03T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
   ];
   const bookings: any[] = [];
   const reservations: any[] = [];
@@ -57,6 +57,7 @@ function makePrisma() {
     $transaction: async (fn: any) => fn(db),
     slot: {
       findUnique: async ({ where }: any) => slots.find((s) => s.id === where.id) ?? null,
+      update: async ({ where, data }: any) => Object.assign(slots.find((s) => s.id === where.id)!, data),
       findFirst: async ({ where }: any) => slots.find((s) => matches(s, where)) ?? null,
       findMany: async ({ where }: any) => {
         if (where.coachId !== undefined && typeof where.coachId !== 'object' && !Number.isInteger(where.coachId)) throw new Error('Invalid coachId');
@@ -196,10 +197,17 @@ describe('ReservationsResolver ownership', () => {
 
   it('an unexpired hold blocks a GraphQL reservation, an expired one does not', async () => {
     const { resolver, prisma } = setup();
-    Object.assign(prisma._slots[0], { holdToken: 'h', holdExpires: new Date(Date.now() + 60_000) });
+    Object.assign(prisma._slots[0], { holdToken: 'h', holdExpires: new Date(Date.now() + 60_000), holdUserId: 2 });
     await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
     prisma._slots[0].holdExpires = new Date(Date.now() - 1);
     await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
+  });
+
+  it('the holder may reserve the held slot, which uses up the hold', async () => {
+    const { resolver, prisma } = setup();
+    Object.assign(prisma._slots[0], { holdToken: 'h', holdExpires: new Date(Date.now() + 60_000), holdUserId: 1 });
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
+    expect(prisma._slots[0]).toMatchObject({ holdExpires: null, holdUserId: null });
   });
 
   it('a serialization abort from a racing writer is a 409, not a 500', async () => {

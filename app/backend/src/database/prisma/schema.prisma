@@ -327,11 +327,11 @@ model Reservation {
   // Optimistic locking: updates address rows by (id, version) so a stale
   // writer misses and can retry (folded Booking domain requirement).
   @@unique([id, version], map: "uq_Reservation_id_version")
-  // Double-booking guard: a PARTIAL unique index on (resourceId, startsAt,
-  // endsAt) WHERE status <> 'CANCELED' ("uq_Reservation_active_slot"), created
-  // by hand in migration 20261104000000_reservation_active_slot_unique. Prisma 5
-  // cannot model partial indexes, so it is intentionally absent here. Do not add
-  // a full @@unique on these columns: cancelled rows would block re-booking.
+  // Seat guard: Slot.capacity shared with Booking, checked in a Serializable
+  // transaction by every writer (migration 20261106000000). Do not add a
+  // @@unique on (resourceId, startsAt, endsAt): it would cap every slot at one
+  // reservation and cancelled rows would block re-booking.
+  @@index([resourceId, status], map: "idx_Reservation_resource_status")
   @@index([userId, startsAt, endsAt])
   @@index([resourceId])  // added by phase5
 }
@@ -838,6 +838,7 @@ model Slot {
   capacity    Int       @default(1)
   holdToken   String?
   holdExpires DateTime?
+  holdUserId  Int?      // owner of the active hold (REV-20261106-02)
   createdAt   DateTime  @default(now())
   bookings    Booking[]
   @@index([coachId, startUTC], map: "idx_Slot_coach_start")
