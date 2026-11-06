@@ -18,6 +18,7 @@ function makePrismaMock() {
     _slots: slots, _bookings: bookings, _reservations: reservations,
     reservation: {
       count: async ({ where }: any) => reservations.filter((r) => r.resourceId === where.resourceId && r.status !== where.status.not).length,
+      findFirst: async ({ where }: any) => reservations.find((r) => r.userId === where.userId && r.status !== where.status.not && r.startsAt < where.startsAt.lt && r.endsAt > where.endsAt.gt) ?? null,
     },
     // Interactive transaction: run the callback against this same mock (the
     // in-memory store has no real rollback, which is fine for these unit tests).
@@ -32,8 +33,7 @@ function makePrismaMock() {
           if (where.holdUserId !== undefined) return s.holdUserId === where.holdUserId && s.id !== where.NOT?.id;
           return s.id === where.id && where.OR.some((c: any) =>
             ('holdExpires' in c && c.holdExpires === null && s.holdExpires == null) ||
-            (c.holdExpires?.lte && s.holdExpires != null && s.holdExpires <= c.holdExpires.lte) ||
-            ('holdUserId' in c && s.holdUserId != null && s.holdUserId === c.holdUserId));
+            (c.holdExpires?.lte && s.holdExpires != null && s.holdExpires <= c.holdExpires.lte));
         };
         let n = 0;
         for (const s of slots) if (hit(s)) { Object.assign(s, data); n++; }
@@ -50,7 +50,10 @@ function makePrismaMock() {
         .map((b) => (include?.slot ? { ...b, slot: slots.find((s) => s.id === b.slotId) } : b)),
       updateMany: async ({ where, data }: any) => {
         let n = 0;
-        for (const b of bookings) if (b.status === where.status && b.createdAt < where.createdAt.lt) { Object.assign(b, data); n++; }
+        for (const b of bookings) {
+          const hit = where.id !== undefined ? b.id === where.id && b.status === where.status : b.status === where.status && b.createdAt < where.createdAt.lt;
+          if (hit) { Object.assign(b, data); n++; }
+        }
         return { count: n };
       },
     },
@@ -198,5 +201,34 @@ describe('BookingService (Booking domain fold)', () => {
     const slot = await svc.createSlot(1, future(24), future(25));
     prisma.$transaction = async () => { throw Object.assign(new Error('could not serialize'), { code: 'P2034' }); };
     await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toMatchObject({ status: 409 });
+  });
+
+  it('a late payment for a cancelled booking is a 409 and never takes a released seat', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(25), 1);
+    const a = await svc.createBooking(10, 1, slot.id, 'online');
+    await svc.cancelBooking(10, a.id);
+    await svc.createBooking(11, 1, slot.id, 'online');
+    await expect(svc.confirmPayment(a.id, 'late')).rejects.toMatchObject({ status: 409 });
+    expect(prisma._bookings.find((b: any) => b.id === a.id).status).toBe('CANCELLED');
+  });
+
+  it('an active hold cannot be renewed, and a failed hold keeps the user\'s previous hold', async () => {
+    const { prisma, svc } = make();
+    const a = await svc.createSlot(1, future(24), future(25));
+    const b = await svc.createSlot(1, future(30), future(31));
+    await svc.holdSlot(10, a.id);
+    await expect(svc.holdSlot(10, a.id)).rejects.toThrow('HOLD_EXISTS');
+    await svc.holdSlot(11, b.id);
+    await expect(svc.holdSlot(10, b.id)).rejects.toThrow('HOLD_EXISTS');
+    expect(prisma._slots.find((s: any) => s.id === a.id)).toMatchObject({ holdUserId: 10 });
+  });
+
+  it('a user with an overlapping active Reservation cannot book', async () => {
+    const { prisma, svc } = make();
+    const slot = await svc.createSlot(1, future(24), future(26), 3);
+    prisma._reservations.push({ id: 600, userId: 10, resourceId: 999, status: 'ACTIVE', startsAt: new Date(future(25)), endsAt: new Date(future(27)) });
+    await expect(svc.createBooking(10, 1, slot.id, 'online')).rejects.toThrow('USER_OVERLAP');
+    await expect(svc.createBooking(11, 1, slot.id, 'online')).resolves.toMatchObject({ status: 'PENDING' });
   });
 });

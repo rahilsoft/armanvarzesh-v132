@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { countActiveSeats, isHeldByOther, isSerializationFailure } from './booking.service';
+import { countActiveSeats, hasOverlappingBooking, hasOverlappingReservation, isHeldByOther, isSerializationFailure } from './booking.service';
 
 type Reservation = { id: string; userId: string; coachId?: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
 
@@ -85,7 +85,12 @@ export class ReservationService {
         const slot = await tx.slot.findUnique({ where: { id } });
         if (!slot) throw new ConflictException('Slot not found');
         if (expectedCoach !== undefined && slot.coachId !== expectedCoach) throw new ConflictException('Slot does not belong to this coach');
+        if (slot.endUTC.getTime() <= Date.now()) throw new BadRequestException('Slot is in the past');
         if (isHeldByOther(slot, Number(userId))) throw new ConflictException('Slot is held');
+        // One seat per user per time range, across both tables.
+        if (await hasOverlappingReservation(tx, Number(userId), slot) || await hasOverlappingBooking(tx, Number(userId), slot)) {
+          throw new ConflictException('User already has a session at this time');
+        }
         if ((await countActiveSeats(tx, slot.id)) >= slot.capacity) throw new ConflictException('Slot already reserved');
         if (slot.holdExpires) await tx.slot.update({ where: { id: slot.id }, data: { holdToken: null, holdExpires: null, holdUserId: null } });
         const created = await tx.reservation.create({

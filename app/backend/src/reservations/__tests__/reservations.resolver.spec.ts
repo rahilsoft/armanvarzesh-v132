@@ -30,7 +30,7 @@ function matches(row: any, where: any): boolean {
     if (v && typeof v === 'object' && !(v instanceof Date)) {
       if ('in' in v) return v.in.includes(row[k]);
       if ('not' in v) return row[k] !== v.not;
-      if ('gte' in v || 'lt' in v) return (!v.gte || row[k] >= v.gte) && (!v.lt || row[k] < v.lt);
+      if ('gte' in v || 'lt' in v || 'gt' in v) return (!v.gte || row[k] >= v.gte) && (!v.lt || row[k] < v.lt) && (!v.gt || row[k] > v.gt);
       return true;
     }
     if (v instanceof Date) return row[k] instanceof Date && +row[k] === +v;
@@ -40,9 +40,9 @@ function matches(row: any, where: any): boolean {
 
 function makePrisma() {
   const slots = [
-    { id: 1, coachId: 70, startUTC: new Date('2026-11-01T08:00:00Z'), endUTC: new Date('2026-11-01T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
-    { id: 2, coachId: 70, startUTC: new Date('2026-11-02T08:00:00Z'), endUTC: new Date('2026-11-02T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
-    { id: 3, coachId: 80, startUTC: new Date('2026-11-03T08:00:00Z'), endUTC: new Date('2026-11-03T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
+    { id: 1, coachId: 70, startUTC: new Date('2031-11-01T08:00:00Z'), endUTC: new Date('2031-11-01T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
+    { id: 2, coachId: 70, startUTC: new Date('2031-11-02T08:00:00Z'), endUTC: new Date('2031-11-02T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
+    { id: 3, coachId: 80, startUTC: new Date('2031-11-03T08:00:00Z'), endUTC: new Date('2031-11-03T09:00:00Z'), capacity: 1, holdToken: null as string | null, holdExpires: null as Date | null, holdUserId: null as number | null, createdAt: new Date() },
   ];
   const bookings: any[] = [];
   const reservations: any[] = [];
@@ -73,14 +73,12 @@ function makePrisma() {
       },
     },
     booking: {
+      findFirst: async ({ where }: any) => bookings.find((b) => b.userId === where.userId && where.status.in.includes(b.status)) ?? null,
       count: async ({ where }: any) => bookings.filter((b) => b.slotId === where.slotId && where.status.in.includes(b.status)).length,
     },
     reservation: {
       create: async ({ data }: any) => {
-        // Mirrors the partial unique index uq_Reservation_active_slot (WHERE status <> 'CANCELED').
-        if (reservations.some((r) => r.status !== 'CANCELED' && r.resourceId === data.resourceId && +r.startsAt === +data.startsAt && +r.endsAt === +data.endsAt)) {
-          throw Object.assign(new Error('unique'), { code: 'P2002' });
-        }
+        // No unique index on the slot any more (migration 20261106000000): the shared seat count is the guard.
         const r = { id: seq++, ...data };
         reservations.push(r);
         return { ...r };
@@ -201,6 +199,16 @@ describe('ReservationsResolver ownership', () => {
     await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
     prisma._slots[0].holdExpires = new Date(Date.now() - 1);
     await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
+  });
+
+  it('rejects a past slot, and one user cannot take two overlapping seats', async () => {
+    const { resolver, prisma } = setup();
+    prisma._slots.push({ id: 4, coachId: 70, startUTC: new Date('2020-01-01T08:00:00Z'), endUTC: new Date('2020-01-01T09:00:00Z'), capacity: 1, holdToken: null, holdExpires: null, holdUserId: null, createdAt: new Date() });
+    await expect(resolver.bookReservation(userA, { slotId: '4', coachId: '70' })).rejects.toBeInstanceOf(BadRequestException);
+    prisma._slots[0].capacity = 2;
+    await resolver.bookReservation(userA, { slotId: '1', coachId: '70' });
+    await expect(resolver.bookReservation(userA, { slotId: '1', coachId: '70' })).rejects.toBeInstanceOf(ConflictException);
+    await expect(resolver.bookReservation(userB, { slotId: '1', coachId: '70' })).resolves.toMatchObject({ slotId: '1' });
   });
 
   it('the holder may reserve the held slot, which uses up the hold', async () => {

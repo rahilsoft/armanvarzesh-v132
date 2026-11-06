@@ -36,6 +36,32 @@ export function isHeldByOther(slot: Pick<Slot, 'holdExpires' | 'holdUserId'>, us
   return !!slot.holdExpires && slot.holdExpires.getTime() > now && slot.holdUserId !== userId;
 }
 
+/**
+ * True when `userId` already holds an active Reservation overlapping the
+ * slot's time. Booking-vs-Booking overlap is checked by BookingService;
+ * this covers the other table so a user cannot hold two overlapping seats
+ * through the two entry points.
+ */
+export async function hasOverlappingReservation(tx: Prisma.TransactionClient, userId: number, slot: Pick<Slot, 'startUTC' | 'endUTC'>): Promise<boolean> {
+  const r = await tx.reservation.findFirst({
+    where: { userId, status: { not: 'CANCELED' }, startsAt: { lt: slot.endUTC }, endsAt: { gt: slot.startUTC } },
+  });
+  return !!r;
+}
+
+/** True when `userId` already holds an active Booking overlapping the slot's time. */
+export async function hasOverlappingBooking(tx: Prisma.TransactionClient, userId: number, slot: Pick<Slot, 'startUTC' | 'endUTC'>, excludeBookingId?: number): Promise<boolean> {
+  const b = await tx.booking.findFirst({
+    where: {
+      userId,
+      status: { in: ACTIVE },
+      slot: { startUTC: { lt: slot.endUTC }, endUTC: { gt: slot.startUTC } },
+      ...(excludeBookingId ? { NOT: { id: excludeBookingId } } : {}),
+    },
+  });
+  return !!b;
+}
+
 /** PostgreSQL serialization failure surfaced by Prisma for a losing Serializable transaction. */
 export function isSerializationFailure(e: unknown): boolean {
   const err = e as { code?: string; meta?: { code?: string } };
@@ -141,8 +167,9 @@ export class BookingService {
 
   /**
    * Hold a slot for `userId` for HOLD_TTL. The hold is placed with one
-   * conditional update, so two callers cannot both win, and a user holds at
-   * most one slot at a time: a new hold releases the user's previous one.
+   * conditional update, so two callers cannot both win, an active hold is not
+   * renewable, and a user holds at most one slot: a new hold releases the
+   * user's previous one.
    */
   async holdSlot(userId: number, slotId: number): Promise<{ token: string; expiresAt: string }> {
     const slot = await this.prisma.slot.findUnique({ where: { id: slotId } });
@@ -151,25 +178,34 @@ export class BookingService {
     const now = new Date();
     const token = randomUUID();
     const expires = new Date(now.getTime() + this.HOLD_TTL_MS);
-    const [, placed] = await this.prisma.$transaction([
-      this.prisma.slot.updateMany({
-        where: { holdUserId: userId, NOT: { id: slotId } },
-        data: { holdToken: null, holdExpires: null, holdUserId: null },
-      }),
-      this.prisma.slot.updateMany({
-        where: { id: slotId, OR: [{ holdExpires: null }, { holdExpires: { lte: now } }, { holdUserId: userId }] },
+    // Place the hold first, release the user's other holds only if it was
+    // placed. An active hold, the caller's own included, cannot be renewed.
+    const placed = await this.prisma.$transaction(async (tx) => {
+      const p = await tx.slot.updateMany({
+        where: { id: slotId, OR: [{ holdExpires: null }, { holdExpires: { lte: now } }] },
         data: { holdToken: token, holdExpires: expires, holdUserId: userId },
-      }),
-    ]);
+      });
+      if (p.count === 1) {
+        await tx.slot.updateMany({
+          where: { holdUserId: userId, NOT: { id: slotId } },
+          data: { holdToken: null, holdExpires: null, holdUserId: null },
+        });
+      }
+      return p;
+    });
     if (placed.count !== 1) throw new BadRequestException('HOLD_EXISTS');
     return { token, expiresAt: expires.toISOString() };
   }
 
   async confirmPayment(bookingId: number, paymentRef: string): Promise<Booking> {
+    // Only a PENDING booking can be confirmed, in one conditional write. A
+    // booking cancelled (by the user or expireStale) may have released its
+    // seat to someone else: confirming it would overbook the slot.
+    const res = await this.prisma.booking.updateMany({ where: { id: bookingId, status: 'PENDING' }, data: { status: 'CONFIRMED', paymentRef } });
     const b = await this.prisma.booking.findUnique({ where: { id: bookingId } });
     if (!b) throw new BadRequestException('BOOKING_NOT_FOUND');
-    if (b.status === 'CONFIRMED') return b;
-    return this.prisma.booking.update({ where: { id: bookingId }, data: { status: 'CONFIRMED', paymentRef } });
+    if (res.count === 1 || b.status === 'CONFIRMED') return b;
+    throw new ConflictException('BOOKING_NOT_PENDING');
   }
 
   async listMy(userId: number): Promise<{ items: (Booking & { slot: Slot })[] }> {
@@ -216,5 +252,6 @@ export class BookingService {
         throw new BadRequestException('USER_OVERLAP');
       }
     }
+    if (await hasOverlappingReservation(tx, userId, slot)) throw new BadRequestException('USER_OVERLAP');
   }
 }
