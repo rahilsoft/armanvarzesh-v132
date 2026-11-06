@@ -88,6 +88,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-11-06 | `Slot` is the canonical availability and seat table for GraphQL and REST. Booking and Reservation keep their tables but share `Slot.capacity`, holds and per-user overlap in one Serializable transaction (PR #78) | Smallest change that closes REV-20261106-01/02 without a data migration between Booking and Reservation, SSI race proven on PostgreSQL 16. Merging the two tables stays a follow-up |
 | 2026-11-04 | Seed step removed from the integration job instead of fixing `seed_domain.js` (PR #86) | All 7 schemas generate to `./generated/client`, the seeder never seeded anything, no step reads seeded data |
 | 2026-11-04 | Backend unit/e2e steps removed from the integration job (PR #86, same text as #64) | e2e `if:` never matched, both steps duplicated `backend-e2e.yml`, which runs them for real |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
@@ -140,6 +141,12 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-06 22:02 package (22:02 Tehran, scheduled) — REV-20261106-01/02 on PR #78
+- Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer (coordinator) plus independent reviewers, 20% reserve not claimed.
+- PR #78: develop merged (`d13683d`), fixes `071f17a`, `27ba5fb`, `cb87218`, test fix `1d13cf6`. Migration `20261106000000_slot_hold_owner_shared_capacity` (adds `Slot.holdUserId`, drops `uq_Reservation_active_slot`, adds `idx_Reservation_resource_status`).
+- Independent review: round 1 (`071f17a`) CHANGES REQUIRED, round 2 (`27ba5fb`) CHANGES REQUIRED, round 3 (`cb87218`) APPROVE with no P0/P1. Each round was a separate agent.
+- Local: backend unit 55 suites pass, 2 skip, 360 tests pass, 69 skip, 0 fail. typecheck, e2e tsc, eslint exit 0. Prisma e2e not runnable locally (no engines), runs on CI.
+- Handoff: `docs/agents/reports/2026-11-06.md`.
 ### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
 - Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
 - PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
