@@ -46,7 +46,7 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
   let hourOffset = 0;
   async function newSlot(capacity = 1) {
     hourOffset += 2;
-    const start = new Date(Date.UTC(2031, 0, 1, 0, 0, 0) + hourOffset * 3_600_000 + Math.floor(Math.random() * 1e6) * 60_000);
+    const start = new Date(Date.UTC(2031, 0, 1, 0, 0, 0) + hourOffset * 3_600_000);
     return prisma.slot.create({
       data: { coachId: 1, startUTC: start, endUTC: new Date(start.getTime() + 3_600_000), capacity },
     });
