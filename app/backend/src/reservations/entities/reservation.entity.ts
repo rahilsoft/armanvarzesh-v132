@@ -9,5 +9,6 @@ export class Reservation {
   @Field() status: string; // PENDING|CONFIRMED|CANCELED|COMPLETED
   @Field() start: Date;
   @Field() end: Date;
-  @Field() createdAt: Date;
+  // The canonical Reservation row has no creation timestamp.
+  @Field({ nullable: true }) createdAt?: Date;
 }
