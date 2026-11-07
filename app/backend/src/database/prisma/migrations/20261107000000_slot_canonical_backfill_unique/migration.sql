@@ -5,11 +5,18 @@
 -- "_SlotCanonicalMigration" so an operator can see it and rollback.sql (in
 -- this folder) can undo what is undoable. Rollback limits are listed there.
 
+-- prisma migrate sends this file as one query, which PostgreSQL runs as one
+-- implicit transaction, so the lock below holds until the end of the file.
 -- Writers that run during the migration (for example old pods in a rolling
 -- deploy) must not book a duplicate row between the repoint and the delete:
 -- Booking.slotId cascades on delete. Readers are not blocked.
-BEGIN;
-LOCK TABLE "Slot", "Booking", "Reservation" IN EXCLUSIVE MODE;
+-- Old pods keep writing AvailabilitySlot after this migration: run
+-- post-deploy-backfill.sql (same step 3, idempotent) once the last old pod
+-- is gone.
+-- Child tables first, the same order as a Booking insert (row lock on
+-- Booking, then the FK check on Slot), so a concurrent writer waits instead
+-- of deadlocking.
+LOCK TABLE "Booking", "Reservation", "Slot", "AvailabilitySlot" IN EXCLUSIVE MODE;
 
 -- Ledger. kind / ref:
 --   'keeper'          ref = Slot id kept for a duplicate group, capacity = its capacity before the merge
@@ -17,6 +24,7 @@ LOCK TABLE "Slot", "Booking", "Reservation" IN EXCLUSIVE MODE;
 --   'backfill'        ref = Slot id created from AvailabilitySlot "availabilitySlotId"
 --   'skipped'         ref = AvailabilitySlot id not copied (end <= start)
 --   'rrule_truncated' ref = AvailabilitySlot id copied as one occurrence, rule in "note"
+--   'existing'        ref = AvailabilitySlot id whose range already had a Slot "keeperId"
 CREATE TABLE IF NOT EXISTS "_SlotCanonicalMigration" (
   "kind"               TEXT    NOT NULL,
   "ref"                INTEGER NOT NULL,
@@ -97,4 +105,9 @@ FROM ins JOIN "AvailabilitySlot" a
   ON a."coachId" = ins."coachId" AND a."startsAt" = ins."startUTC" AND a."endsAt" = ins."endUTC"
 ON CONFLICT DO NOTHING;
 
-COMMIT;
+INSERT INTO "_SlotCanonicalMigration" ("kind", "ref", "keeperId", "availabilitySlotId", "coachId", "startUTC", "endUTC")
+SELECT 'existing', a."id", sl."id", a."id", a."coachId", a."startsAt", a."endsAt"
+FROM "AvailabilitySlot" a
+JOIN "Slot" sl ON sl."coachId" = a."coachId" AND sl."startUTC" = a."startsAt" AND sl."endUTC" = a."endsAt"
+WHERE NOT EXISTS (SELECT 1 FROM "_SlotCanonicalMigration" m WHERE m."kind" = 'backfill' AND m."ref" = sl."id")
+ON CONFLICT DO NOTHING;

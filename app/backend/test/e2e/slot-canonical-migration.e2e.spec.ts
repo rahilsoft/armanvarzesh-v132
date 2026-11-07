@@ -97,6 +97,8 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     expect(ledger.filter((x) => x.kind === 'rrule_truncated').map((x) => [x.ref, x.note])).toEqual([[2, 'FREQ=WEEKLY']]);
     expect(ledger.find((x) => x.kind === 'merged' && x.ref === 21)).toMatchObject({ holdUserId: 2 });
     expect(ledger.filter((x) => x.kind === 'keeper').map((x) => x.ref)).toEqual([10, 20]);
+    // AvailabilitySlot 4 matched existing Slot 10: traced, not copied.
+    expect(ledger.filter((x) => x.kind === 'existing').map((x) => x.ref)).toEqual([4]);
   });
 
   it('is a no-op when applied again', async () => {
@@ -121,6 +123,15 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
       await other.end();
     }
     await expect(insert()).rejects.toMatchObject({ code: '23505' });
+  });
+
+  it('post-deploy-backfill.sql carries AvailabilitySlot rows written after the migration, once', async () => {
+    await db.query(`INSERT INTO "AvailabilitySlot" ("id", "coachId", "startsAt", "endsAt") VALUES (50, 3, '2030-04-01T08:00:00Z', '2030-04-01T09:00:00Z')`);
+    const backfill = sql(TARGET, 'post-deploy-backfill.sql');
+    await db.query(`BEGIN; ${backfill} COMMIT;`);
+    await db.query(`BEGIN; ${backfill} COMMIT;`);
+    const rows = (await slots()).filter((r) => r.coachId === 3);
+    expect(rows.map((r) => [r.startUTC.toISOString(), r.capacity])).toEqual([['2030-04-01T08:00:00.000Z', 1]]);
   });
 
   it('a booking written by another session while the migration runs is never lost silently', async () => {
@@ -159,11 +170,16 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     const rows = await slots();
     expect(rows.some((r) => r.coachId === 7)).toBe(false);
     // Duplicates are back and the keepers have their capacity from before the merge.
-    expect(rows.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 1], [11, 3], [12, 1]]);
-    expect(rows.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 1], [21, 1]]);
+    // Moved seats stay on the keeper, so its capacity covers them: 10 holds 2 seats.
+    expect(rows.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 2], [11, 3], [12, 1]]);
+    expect(rows.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 2], [21, 1]]);
+    const over = await db.query(`SELECT s."id" FROM "Slot" s WHERE s."capacity" <
+      (SELECT COUNT(*) FROM "Booking" b WHERE b."slotId" = s."id" AND b."status" IN ('PENDING', 'CONFIRMED')) +
+      (SELECT COUNT(*) FROM "Reservation" r WHERE r."resourceId" = s."id" AND r."status" <> 'CANCELED')`);
+    expect(over.rowCount).toBe(0);
     const idx = await db.query(`SELECT 1 FROM pg_indexes WHERE indexname = 'uq_Slot_coach_time'`);
     expect(idx.rowCount).toBe(0);
     // The legacy table was never touched.
-    expect((await db.query(`SELECT count(*)::int AS n FROM "AvailabilitySlot"`)).rows[0].n).toBe(4);
+    expect((await db.query(`SELECT count(*)::int AS n FROM "AvailabilitySlot"`)).rows[0].n).toBe(5);
   });
 });
