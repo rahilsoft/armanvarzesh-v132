@@ -24,7 +24,12 @@ function makePrismaMock() {
     // in-memory store has no real rollback, which is fine for these unit tests).
     $transaction: async (arg: any) => (Array.isArray(arg) ? Promise.all(arg) : arg(mock)),
     slot: {
-      create: async ({ data }: any) => { const s = { id: seq++, capacity: 1, holdToken: null, holdExpires: null, createdAt: new Date(), ...data }; slots.push(s); return s; },
+      create: async ({ data }: any) => {
+        // Models the uq_Slot_coach_time unique index (P2002 like Prisma).
+        if (slots.some((x) => x.coachId === data.coachId && +x.startUTC === +data.startUTC && +x.endUTC === +data.endUTC)) {
+          throw Object.assign(new Error('Unique constraint failed'), { code: 'P2002' });
+        }
+        const s = { id: seq++, capacity: 1, holdToken: null, holdExpires: null, createdAt: new Date(), ...data }; slots.push(s); return s; },
       findUnique: async ({ where }: any) => slots.find((s) => s.id === where.id) ?? null,
       update: async ({ where, data }: any) => { const s = slots.find((x) => x.id === where.id); Object.assign(s, data); return s; },
       updateMany: async ({ where, data }: any) => {
@@ -171,6 +176,28 @@ describe('BookingService (Booking domain fold)', () => {
     await svc.holdSlot(10, b.id);
     expect(prisma._slots.find((s: any) => s.id === a.id)).toMatchObject({ holdUserId: null, holdExpires: null });
     expect(prisma._slots.find((s: any) => s.id === b.id)).toMatchObject({ holdUserId: 10 });
+  });
+
+  it('a second slot for the same coach and range is 409 SLOT_EXISTS (REV-20261107-02)', async () => {
+    const { prisma, svc } = make();
+    const start = future(24), end = future(25);
+    await svc.createSlot(1, start, end, 2);
+    await expect(svc.createSlot(1, start, end, 2)).rejects.toMatchObject({ status: 409, message: 'SLOT_EXISTS' });
+    await expect(svc.createSlot(2, start, end)).resolves.toHaveProperty('id');
+    expect(prisma._slots).toHaveLength(2);
+    await expect(svc.createSlot(1, future(30), future(31), 0)).rejects.toThrow('capacity must be a positive integer');
+  });
+
+  it('reschedule uses up the mover\'s own hold so the free seat stays bookable (REV-20261106-02)', async () => {
+    const { prisma, svc } = make();
+    const from = await svc.createSlot(1, future(24), future(25));
+    const to = await svc.createSlot(1, future(48), future(49), 2);
+    const booked = await svc.createBooking(10, 1, from.id, 'online');
+    await svc.holdSlot(10, to.id);
+    await svc.reschedule(10, booked.id, to.id);
+    expect(prisma._slots.find((x: any) => x.id === to.id)).toMatchObject({ holdToken: null, holdExpires: null, holdUserId: null });
+    await expect(svc.createBooking(11, 1, to.id, 'online')).resolves.toHaveProperty('id');
+    await expect(svc.createBooking(12, 1, to.id, 'online')).rejects.toThrow('SLOT_FULL');
   });
 
   it('reschedule rejects a past slot', async () => {

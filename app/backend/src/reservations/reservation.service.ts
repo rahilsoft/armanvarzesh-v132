@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { createCanonicalSlot } from './slot-store';
 import { countActiveSeats, hasOverlappingBooking, hasOverlappingReservation, isHeldByOther, isSerializationFailure } from './booking.service';
 
 type Reservation = { id: string; userId: string; coachId?: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
@@ -207,7 +208,8 @@ export class ReservationService {
  * Availability as served over GraphQL is the canonical Slot table, the same
  * rows bookReservation reserves, so an id from coachAvailability always names
  * that coach's slot and time (REV-20261106-01). The legacy AvailabilitySlot
- * table is no longer read or written by this surface. Slot has no recurrence
+ * table is no longer read or written by this surface, its rows were copied
+ * into Slot by migration 20261107000000. Slot has no recurrence
  * column, so a recurrence rule is rejected instead of being silently dropped.
  */
 @Injectable()
@@ -216,14 +218,9 @@ export class AvailabilityService {
 
   async createAvailability(input: { coachId: number | string; startsAt: Date | string; endsAt: Date | string; rrule?: string | null }): Promise<AvailabilityView> {
     const coachId = parseIntId(input.coachId, 'coachId');
-    const startsAt = new Date(input.startsAt);
-    const endsAt = new Date(input.endsAt);
-    if (isNaN(+startsAt) || isNaN(+endsAt)) throw new BadRequestException('start and end must be valid dates');
-    if (endsAt <= startsAt) throw new BadRequestException('end must be after start');
     if (input.rrule) throw new BadRequestException('recurrence is not supported, create one slot per session');
-    const clash = await this.prisma.slot.findFirst({ where: { coachId, startUTC: startsAt, endUTC: endsAt } });
-    if (clash) throw new ConflictException('Availability slot already exists');
-    const row = await this.prisma.slot.create({ data: { coachId, startUTC: startsAt, endUTC: endsAt } });
+    // Same write path and database uniqueness guard as REST slot creation.
+    const row = await createCanonicalSlot(this.prisma, { coachId, start: new Date(input.startsAt), end: new Date(input.endsAt) });
     return toAvailabilityView(row);
   }
 

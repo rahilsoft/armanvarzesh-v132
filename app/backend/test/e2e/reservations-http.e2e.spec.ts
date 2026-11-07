@@ -278,6 +278,34 @@ describe('Reservations (e2e, real PostgreSQL)', () => {
       expect(await prisma.slot.count({ where: { startUTC: new Date(start) } })).toBe(0);
     });
 
+    // REV-20261107-02: one Slot per coach and range, enforced by uq_Slot_coach_time.
+    it('concurrent admin publishes of the same coach and range create one Slot, the rest are 409', async () => {
+      const adminToken = jwt.sign({ sub: String(alice.id), role: 'admin' }, process.env.JWT_SECRET as string, { algorithm: 'HS256', expiresIn: '5m' });
+      const start = new Date(Date.UTC(2033, 0, 1)).toISOString();
+      const end = new Date(Date.UTC(2033, 0, 1, 1)).toISOString();
+      const publish = () => request(app.getHttpServer()).post('/booking/slots/create')
+        .set('Authorization', `Bearer ${adminToken}`).send({ coachId: 1, startUTC: start, endUTC: end, capacity: 2 });
+      const results = await Promise.all([publish(), publish(), publish(), publish()]);
+      expect(results.filter((r) => r.status === 201)).toHaveLength(1);
+      expect(results.filter((r) => r.status === 409)).toHaveLength(3);
+      expect(await prisma.slot.count({ where: { coachId: 1, startUTC: new Date(start), endUTC: new Date(end) } })).toBe(1);
+      expect((await publish()).status).toBe(409);
+    });
+
+    // REV-20261106-02: a reschedule uses up the mover's own hold on the target.
+    it('reschedule onto a slot the mover holds releases the hold, and the second seat stays bookable', async () => {
+      const from = await newSlot();
+      const to = await newSlot(2);
+      const created = await book(alice, from.id);
+      expect(created.status).toBe(201);
+      expect((await hold(alice, to.id)).status).toBe(201);
+      const moved = await request(app.getHttpServer()).post('/booking/reschedule').set(auth(alice)).send({ id: created.body.id, newSlotId: to.id });
+      expect(moved.status).toBe(201);
+      expect(await prisma.slot.findUniqueOrThrow({ where: { id: to.id } })).toMatchObject({ holdToken: null, holdExpires: null, holdUserId: null });
+      expect((await book(bob, to.id)).status).toBe(201);
+      expect(await seats(to.id)).toEqual({ bookings: 2, reservations: 0, total: 2 });
+    });
+
     it('capacity 2 admits one Booking and one Reservation, the third attempt on either path is rejected', async () => {
       const slot = await newSlot(2);
       expect((await book(alice, slot.id)).status).toBe(201);

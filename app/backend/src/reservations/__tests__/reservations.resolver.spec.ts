@@ -66,6 +66,10 @@ function makePrisma() {
       create: async ({ data }: any) => {
         for (const v of [data.startUTC, data.endUTC]) if (!(v instanceof Date) || isNaN(+v)) throw new Error('Invalid DateTime');
         if (!Number.isInteger(data.coachId)) throw new Error('Invalid coachId');
+        // Models the uq_Slot_coach_time unique index (P2002 like Prisma).
+        if (slots.some((s) => s.coachId === data.coachId && +s.startUTC === +data.startUTC && +s.endUTC === +data.endUTC)) {
+          throw Object.assign(new Error('Unique constraint failed'), { code: 'P2002' });
+        }
         const row = { id: seq++, capacity: 1, holdToken: null, holdExpires: null, createdAt: new Date(), ...data };
         slots.push(row);
         availability.push(row);

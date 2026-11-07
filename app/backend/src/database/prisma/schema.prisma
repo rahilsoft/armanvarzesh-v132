@@ -843,6 +843,24 @@ model Slot {
   bookings    Booking[]
   @@index([coachId, startUTC], map: "idx_Slot_coach_start")
   @@index([holdExpires], map: "idx_Slot_holdExpires")
+  // One slot per coach and time range (REV-20261107-02, migration 20261107000000).
+  @@unique([coachId, startUTC, endUTC], map: "uq_Slot_coach_time")
+}
+
+/// Ledger of migration 20261107000000 (AvailabilitySlot backfill and Slot
+/// duplicate merge), read only by its rollback.sql.
+model SlotCanonicalMigration {
+  slotId             Int
+  kind               String
+  availabilitySlotId Int?
+  keeperId           Int?
+  coachId            Int?
+  startUTC           DateTime?
+  endUTC             DateTime?
+  capacity           Int?
+  createdAt          DateTime?
+  @@id([slotId, kind])
+  @@map("_SlotCanonicalMigration")
 }
 
 model Booking {

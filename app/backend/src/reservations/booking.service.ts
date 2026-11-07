@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { Injectable, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Booking, Slot, Prisma } from '@prisma/client';
+import { createCanonicalSlot } from './slot-store';
 
 /**
  * Coach-slot booking with holds, capacity and user-overlap protection —
@@ -89,9 +90,7 @@ export class BookingService {
   readonly PAYMENT_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
   async createSlot(coachId: number, startUTC: string, endUTC: string, capacity = 1): Promise<Slot> {
-    const s = new Date(startUTC), e = new Date(endUTC);
-    if (!(s < e)) throw new BadRequestException('RANGE_INVALID');
-    return this.prisma.slot.create({ data: { coachId, startUTC: s, endUTC: e, capacity } });
+    return createCanonicalSlot(this.prisma, { coachId, start: new Date(startUTC), end: new Date(endUTC), capacity });
   }
 
   async createBooking(userId: number, coachId: number, slotId: number, mode: string): Promise<BookingCreated> {
@@ -156,6 +155,11 @@ export class BookingService {
         const activeCount = await countActiveSeats(tx, newSlotId);
         if (activeCount >= newSlot.capacity) throw new BadRequestException('SLOT_FULL');
         await this.assertNoUserOverlap(tx, userId, newSlot, id);
+        // The mover's own hold on the target slot is used up by this move
+        // (REV-20261106-02), the same as in createBooking.
+        if (newSlot.holdExpires && newSlot.holdUserId === userId) {
+          await tx.slot.update({ where: { id: newSlotId }, data: { holdToken: null, holdExpires: null, holdUserId: null } });
+        }
         // Booking.coachId always follows the slot owner.
         return tx.booking.update({ where: { id }, data: { slotId: newSlotId, coachId: newSlot.coachId } });
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
