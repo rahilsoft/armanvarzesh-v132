@@ -140,6 +140,13 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-07 22:02 package (22:02 Tehran, scheduled) — PR #78 Slot migration, four reviews
+- Implemented on PR #78 (`833a9b5`): AvailabilitySlot → Slot data migration with ledger, rollback.sql and post-deploy-backfill.sql, unique `uq_Slot_coach_time`, one `createCanonicalSlot` path (409 `SLOT_EXISTS`), reschedule consumes own hold (REV-20261107-01, REV-20261107-02, REV-20261106-02).
+- Verified: local reservations unit 56/56, PostgreSQL migration spec 6/6; CI backend-e2e job 128497331004 unit 362 pass / 69 skip, e2e 7 suites / 46 tests pass. Independent review: CHANGES REQUIRED ×3, APPROVE on `833a9b5`.
+- Merged: none. Blocker: `ios` (Mobile Detox placeholder, macos-14) cancelled on the head.
+- Decision: keep `AvailabilitySlot` table read-only after the backfill instead of dropping it, so rollback is lossless.
+- Open (PAYMENTS-WIRE): `booking.service.ts` returns a `payments.example` checkout URL in a production path.
+
 ### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
 - Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
 - PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
