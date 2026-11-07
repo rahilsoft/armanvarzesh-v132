@@ -847,19 +847,22 @@ model Slot {
   @@unique([coachId, startUTC, endUTC], map: "uq_Slot_coach_time")
 }
 
-/// Ledger of migration 20261107000000 (AvailabilitySlot backfill and Slot
-/// duplicate merge), read only by its rollback.sql.
+/// Ledger of migration 20261107000000 (AvailabilitySlot backfill, Slot
+/// duplicate merge, skipped rows), read by operators and its rollback.sql.
 model SlotCanonicalMigration {
-  slotId             Int
   kind               String
-  availabilitySlotId Int?
+  ref                Int
   keeperId           Int?
+  availabilitySlotId Int?
   coachId            Int?
   startUTC           DateTime?
   endUTC             DateTime?
   capacity           Int?
   createdAt          DateTime?
-  @@id([slotId, kind])
+  holdUserId         Int?
+  holdExpires        DateTime?
+  note               String?
+  @@id([kind, ref])
   @@map("_SlotCanonicalMigration")
 }
 
