@@ -13,9 +13,13 @@
 -- Old pods keep writing AvailabilitySlot after this migration: run
 -- post-deploy-backfill.sql (same step 3, idempotent) once the last old pod
 -- is gone.
--- Child tables first, the same order as a Booking insert (row lock on
--- Booking, then the FK check on Slot), so a concurrent writer waits instead
--- of deadlocking.
+-- Lock order: child tables first, the order of a plain Booking insert (FK
+-- check on Slot last). A writer that updates a Slot hold first and then
+-- inserts can still deadlock with this lock. PostgreSQL then aborts one side
+-- and everything rolls back, no data is changed. If the migration is the
+-- victim, `prisma migrate deploy` fails: run `prisma migrate resolve
+-- --rolled-back 20261107000000_slot_canonical_backfill_unique` and deploy
+-- again, ideally while booking traffic is low.
 LOCK TABLE "Booking", "Reservation", "Slot", "AvailabilitySlot" IN EXCLUSIVE MODE;
 
 -- Ledger. kind / ref:

@@ -170,15 +170,22 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     const rows = await slots();
     expect(rows.some((r) => r.coachId === 7)).toBe(false);
     // Duplicates are back and the keepers have their capacity from before the merge.
-    // Moved seats stay on the keeper, so its capacity covers them: 10 holds 2 seats.
-    expect(rows.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 2], [11, 3], [12, 1]]);
-    expect(rows.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 2], [21, 1]]);
+    // Moved seats stay on the keeper, so its capacity covers them (10 holds 2
+    // seats), and the raise is taken off the restored duplicate: each coach
+    // and range offers the same total as before the migration (9: 1+3, 6: 1+1).
+    expect(rows.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 2], [11, 2], [12, 1]]);
+    expect(rows.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 2], [21, 0]]);
     const over = await db.query(`SELECT s."id" FROM "Slot" s WHERE s."capacity" <
       (SELECT COUNT(*) FROM "Booking" b WHERE b."slotId" = s."id" AND b."status" IN ('PENDING', 'CONFIRMED')) +
       (SELECT COUNT(*) FROM "Reservation" r WHERE r."resourceId" = s."id" AND r."status" <> 'CANCELED')`);
     expect(over.rowCount).toBe(0);
     const idx = await db.query(`SELECT 1 FROM pg_indexes WHERE indexname = 'uq_Slot_coach_time'`);
     expect(idx.rowCount).toBe(0);
+    // Re-applying after the rollback gives the same capacity as the first apply.
+    await db.query(sql(TARGET));
+    const again = await slots();
+    expect(again.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 4], [12, 1]]);
+    expect(again.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 2]]);
     // The legacy table was never touched.
     expect((await db.query(`SELECT count(*)::int AS n FROM "AvailabilitySlot"`)).rows[0].n).toBe(5);
   });
