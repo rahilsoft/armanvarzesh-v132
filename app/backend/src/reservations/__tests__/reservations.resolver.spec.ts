@@ -348,20 +348,24 @@ describe('Availability slots', () => {
 
   it('expands a recurrence rule into one Slot per occurrence (REV-20261107-01)', async () => {
     const { resolver } = setup();
-    const created = await resolver.createAvailability(admin, { ...input(), recurrence: 'FREQ=WEEKLY;COUNT=3' } as any);
-    expect(created).toMatchObject({ coachId: '70', start: new Date('2026-11-05T08:00:00Z'), recurrence: 'FREQ=WEEKLY;COUNT=3' });
+    const future = { ...input(), start: new Date('2032-03-03T08:00:00Z'), end: new Date('2032-03-03T09:00:00Z'), recurrence: 'FREQ=WEEKLY;COUNT=3' };
+    const created = await resolver.createAvailability(admin, future as any);
+    expect(created).toMatchObject({ coachId: '70', start: new Date('2032-03-03T08:00:00Z'), recurrence: 'FREQ=WEEKLY;COUNT=3' });
     const starts = (await resolver.coachAvailability('70')).map((a: any) => a.start.toISOString());
-    expect(starts).toEqual(expect.arrayContaining(['2026-11-05T08:00:00.000Z', '2026-11-12T08:00:00.000Z', '2026-11-19T08:00:00.000Z']));
-    expect(starts.filter((x: string) => x < '2027')).toHaveLength(3);
+    expect(starts.filter((x: string) => x >= '2032')).toEqual(['2032-03-03T08:00:00.000Z', '2032-03-10T08:00:00.000Z', '2032-03-17T08:00:00.000Z']);
+    // A recurring series cannot start in the past (no unbounded backfill of old occurrences).
+    await expect(resolver.createAvailability(admin, { ...input(), recurrence: 'FREQ=DAILY' } as any)).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('rejects an unsupported recurrence rule instead of shortening it, and a duplicate slot is 409', async () => {
     const { resolver } = setup();
-    await expect(resolver.createAvailability(admin, { ...input(), recurrence: 'FREQ=MONTHLY' } as any)).rejects.toBeInstanceOf(BadRequestException);
+    const f = { start: new Date('2032-05-05T08:00:00Z'), end: new Date('2032-05-05T09:00:00Z') };
+    await expect(resolver.createAvailability(admin, { ...input(), ...f, recurrence: 'FREQ=MONTHLY' } as any)).rejects.toBeInstanceOf(BadRequestException);
     await resolver.createAvailability(admin, input());
     await expect(resolver.createAvailability(admin, input())).rejects.toBeInstanceOf(ConflictException);
-    // A series that hits a taken range is refused as a whole.
-    await expect(resolver.createAvailability(admin, { ...input(), recurrence: 'FREQ=DAILY;COUNT=2' } as any)).rejects.toBeInstanceOf(ConflictException);
+    // A series that hits a taken range is refused (409).
+    await resolver.createAvailability(admin, { ...input(), ...f } as any);
+    await expect(resolver.createAvailability(admin, { ...input(), ...f, recurrence: 'FREQ=DAILY;COUNT=2' } as any)).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('rejects end before start and a malformed coachId', async () => {

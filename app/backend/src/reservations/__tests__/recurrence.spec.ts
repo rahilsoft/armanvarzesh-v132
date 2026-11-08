@@ -19,12 +19,15 @@ describe('recurrence policy (REV-20261107-01)', () => {
     expect(out.every((o) => +o.end - +o.start === 3_600_000)).toBe(true);
   });
 
-  it('horizon starts at now when DTSTART is in the past', () => {
+  it('horizon starts at now when DTSTART is in the past, past occurrences after DTSTART are not created', () => {
     const past = new Date('2026-11-01T08:00:00Z');
     const out = expandRecurrence(past, new Date(+past + 3_600_000), 'FREQ=DAILY', NOW);
     expect(out[0].start.toISOString()).toBe('2026-11-01T08:00:00.000Z');
     expect(+out[out.length - 1].start).toBeLessThan(+NOW + 90 * 86_400_000);
-    expect(out).toHaveLength(97); // Nov 1 .. Feb 5 inclusive
+    expect(out).toHaveLength(91); // DTSTART Nov 1, then Nov 8 .. Feb 5
+    expect(out[1].start.toISOString()).toBe('2026-11-08T08:00:00.000Z');
+    // COUNT still numbers from DTSTART: 10 daily from Nov 1 end on Nov 10.
+    expect(iso(expandRecurrence(past, new Date(+past + 3_600_000), 'FREQ=DAILY;COUNT=10', NOW))).toEqual(['2026-11-01T08:00:00.000Z', '2026-11-08T08:00:00.000Z', '2026-11-09T08:00:00.000Z', '2026-11-10T08:00:00.000Z']);
   });
 
   it('COUNT includes DTSTART, INTERVAL skips', () => {
@@ -58,7 +61,11 @@ describe('recurrence policy (REV-20261107-01)', () => {
     expect(iso(out)).toEqual(['2021-09-20T04:30:00.000Z', '2021-09-21T04:30:00.000Z', '2021-09-22T05:30:00.000Z']);
   });
 
-  it.each(['FREQ=MONTHLY', 'FREQ=WEEKLY;BYSETPOS=1', 'FREQ=DAILY;BYDAY=MO', 'FREQ=WEEKLY;COUNT=2;UNTIL=20300101', 'INTERVAL=2', 'FREQ=WEEKLY;FREQ=DAILY', 'FREQ=WEEKLY;WKST=SU', 'FREQ=WEEKLY;INTERVAL=0'])(
+  it('strips any number of trailing semicolons, like the SQL step', () => {
+    expect(expandRecurrence(S, E, 'freq=daily;count=2;;', NOW)).toHaveLength(2);
+  });
+
+  it.each(['FREQ=MONTHLY', 'FREQ=WEEKLY;BYSETPOS=1', 'FREQ=DAILY;BYDAY=MO', 'FREQ=WEEKLY;COUNT=2;UNTIL=20300101', 'INTERVAL=2', 'FREQ=WEEKLY;FREQ=DAILY', 'FREQ=WEEKLY;WKST=SU', 'FREQ=WEEKLY;INTERVAL=0', 'FREQ=DAILY;UNTIL=20261399', 'FREQ=DAILY;UNTIL=20260230', 'FREQ=DAILY;UNTIL=20261201T256199Z'])(
     'rejects unsupported rule %s',
     (r) => expect(() => parseRecurrence(r)).toThrow(BadRequestException),
   );

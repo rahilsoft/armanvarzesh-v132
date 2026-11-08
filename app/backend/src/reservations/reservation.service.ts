@@ -228,6 +228,8 @@ export class AvailabilityService {
       return toAvailabilityView(row);
     }
     if (isNaN(+start) || isNaN(+end) || !(start < end)) throw new BadRequestException('RANGE_INVALID');
+    // A series starts now or later, so a past DTSTART cannot expand decades of rows.
+    if (+start < Date.now()) throw new BadRequestException('RECURRENCE_START_IN_PAST');
     const occurrences = expandRecurrence(start, end, input.rrule);
     // All occurrences or none: one taken range (409 SLOT_EXISTS) rolls back the series.
     const rows = await this.prisma.$transaction(async (tx) => {

@@ -91,8 +91,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS "uq_Slot_coach_time" ON "Slot" ("coachId", "st
 --    src/reservations/recurrence.ts: FREQ=DAILY|WEEKLY, INTERVAL, COUNT or
 --    UNTIL, BYDAY with WEEKLY, WKST=MO. Occurrences are computed on
 --    Asia/Tehran wall-clock time, DTSTART is occurrence 1 and counts toward
---    COUNT, and the horizon is max(now, DTSTART) + 90 days. A rule outside
---    this subset stops the migration with the row ids, nothing is shortened.
+--    COUNT, and the horizon is max(now, DTSTART) + 90 days. Past occurrences
+--    after DTSTART (end <= now) are not created, they still count for COUNT.
+--    A rule outside this subset stops the migration with the row ids,
+--    nothing is shortened.
 INSERT INTO "_SlotCanonicalMigration" ("kind", "ref", "coachId", "startUTC", "endUTC", "note")
 SELECT 'skipped', a."id", a."coachId", a."startsAt", a."endsAt", 'end <= start'
 FROM "AvailabilitySlot" a WHERE a."endsAt" <= a."startsAt"
@@ -105,7 +107,7 @@ SELECT a."id", a."coachId", a."startsAt", a."endsAt", a."createdAt", a."rrule",
 FROM "AvailabilitySlot" a WHERE a."endsAt" > a."startsAt";
 
 DO $$
-DECLARE bad TEXT;
+DECLARE bad TEXT; rec RECORD;
 BEGIN
   SELECT string_agg(x."id"::text || ' (' || x."rrule" || ')', ', ' ORDER BY x."id") INTO bad
   FROM "_SlotRule" x
@@ -116,6 +118,14 @@ BEGIN
     AND NOT (x.r ~ '(^|;)COUNT=' AND x.r ~ '(^|;)UNTIL=')
     AND NOT (x.r ~ '(^|;)BYDAY=' AND x.r !~ '(^|;)FREQ=WEEKLY')
   );
+  -- UNTIL must be a real date and time (the regex only checks digits).
+  FOR rec IN SELECT x."id", x."rrule", substring(x.r from 'UNTIL=([0-9T]+Z?)') AS u FROM "_SlotRule" x WHERE x.r ~ '(^|;)UNTIL=' ORDER BY x."id" LOOP
+    BEGIN
+      PERFORM (substr(rec.u, 1, 8) || CASE WHEN length(rec.u) > 8 THEN ' ' || substr(rec.u, 10, 6) ELSE '' END)::timestamp;
+    EXCEPTION WHEN others THEN
+      bad := concat_ws(', ', bad, rec."id"::text || ' (' || rec."rrule" || ')');
+    END;
+  END LOOP;
   IF bad IS NOT NULL THEN
     RAISE EXCEPTION 'REV-20261107-01: AvailabilitySlot rows with an RRULE outside the supported subset, not migrated: %', bad;
   END IF;
@@ -165,7 +175,8 @@ WITH p AS (
 ), numbered AS (
   SELECT occ.*, row_number() OVER (PARTITION BY occ."id" ORDER BY occ.st) AS n FROM occ
 )
-SELECT "id", "coachId", "createdAt", st, en, n FROM numbered WHERE cnt IS NULL OR n <= cnt;
+SELECT "id", "coachId", "createdAt", st, en, n FROM numbered
+WHERE (cnt IS NULL OR n <= cnt) AND (n = 1 OR en > (now() AT TIME ZONE 'UTC'));
 
 INSERT INTO "_SlotCanonicalMigration" ("kind", "ref", "coachId", "startUTC", "endUTC", "note")
 SELECT 'rrule_expanded', x."id", x."coachId", x."startsAt", x."endsAt",

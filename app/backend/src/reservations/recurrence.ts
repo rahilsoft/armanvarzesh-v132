@@ -14,6 +14,8 @@ import { BadRequestException } from '@nestjs/common';
  * - DTSTART (the given start) is always occurrence 1 and counts toward COUNT.
  * - Horizon: occurrences start before max(now, DTSTART) + 90 days. A longer
  *   series is published again by the coach before the horizon ends.
+ * - Past occurrences (end <= now) after DTSTART are not created, they are
+ *   still counted for COUNT. DTSTART itself is always kept.
  *
  * The SQL in migration 20261107000000 (step 3) implements the same policy for
  * legacy AvailabilitySlot rows. test/e2e/slot-canonical-migration.e2e.spec.ts
@@ -35,7 +37,7 @@ export type ParsedRule = {
 };
 
 export function parseRecurrence(raw: string): ParsedRule {
-  const r = raw.trim().replace(/^RRULE:/i, '').toUpperCase().replace(/;$/, '');
+  const r = raw.trim().replace(/^RRULE:/i, '').toUpperCase().replace(/;+$/, '');
   const parts = r.split(';');
   const seen = new Map<string, string>();
   for (const p of parts) {
@@ -48,6 +50,8 @@ export function parseRecurrence(raw: string): ParsedRule {
   if (!freq) throw new BadRequestException('RRULE_UNSUPPORTED: FREQ is required');
   if (seen.has('COUNT') && seen.has('UNTIL')) throw new BadRequestException('RRULE_UNSUPPORTED: COUNT and UNTIL together');
   if (seen.has('BYDAY') && freq !== 'WEEKLY') throw new BadRequestException('RRULE_UNSUPPORTED: BYDAY needs FREQ=WEEKLY');
+  const until = seen.get('UNTIL');
+  if (until && !validUntil(until)) throw new BadRequestException(`RRULE_UNSUPPORTED: UNTIL=${until} is not a valid date`);
   return {
     freq,
     interval: Number(seen.get('INTERVAL') ?? 1),
@@ -55,6 +59,13 @@ export function parseRecurrence(raw: string): ParsedRule {
     until: seen.get('UNTIL'),
     byDay: seen.get('BYDAY')?.split(','),
   };
+}
+
+function validUntil(u: string): boolean {
+  const y = +u.slice(0, 4), m = +u.slice(4, 6) - 1, d = +u.slice(6, 8);
+  const t = new Date(Date.UTC(y, m, d));
+  if (t.getUTCFullYear() !== y || t.getUTCMonth() !== m || t.getUTCDate() !== d) return false;
+  return u.length === 8 || (+u.slice(9, 11) < 24 && +u.slice(11, 13) < 60 && +u.slice(13, 15) < 60);
 }
 
 const fmt = new Intl.DateTimeFormat('en-US', {
@@ -109,5 +120,5 @@ export function expandRecurrence(
     else ok = rule.byDay.includes(DAYS[isoDow(local) - 1]) && ((weekStartDay(local) - week0) / 7) % rule.interval === 0;
     if (ok) out.push({ start: new Date(st), end: new Date(st + dur) });
   }
-  return out;
+  return [first, ...out.slice(1).filter((o) => +o.end > +now)];
 }
