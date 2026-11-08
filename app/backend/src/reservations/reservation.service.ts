@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, ConflictException, ForbiddenException,
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { createCanonicalSlot } from './slot-store';
+import { expandRecurrence } from './recurrence';
 import { countActiveSeats, hasOverlappingBooking, hasOverlappingReservation, isHeldByOther, isSerializationFailure } from './booking.service';
 
 type Reservation = { id: string; userId: string; coachId?: string; slotId: string; status: 'ACTIVE'|'CANCELED'; version: number; createdAt?: Date; startsAt?: Date; endsAt?: Date };
@@ -209,8 +210,9 @@ export class ReservationService {
  * rows bookReservation reserves, so an id from coachAvailability always names
  * that coach's slot and time (REV-20261106-01). The legacy AvailabilitySlot
  * table is no longer read or written by this surface, its rows were copied
- * into Slot by migration 20261107000000. Slot has no recurrence
- * column, so a recurrence rule is rejected instead of being silently dropped.
+ * into Slot by migration 20261107000000. Slot has one row per occurrence: a
+ * recurrence rule is expanded by expandRecurrence (recurrence.ts) and all
+ * occurrences are created in one transaction, or none (REV-20261107-01).
  */
 @Injectable()
 export class AvailabilityService {
@@ -218,10 +220,22 @@ export class AvailabilityService {
 
   async createAvailability(input: { coachId: number | string; startsAt: Date | string; endsAt: Date | string; rrule?: string | null }): Promise<AvailabilityView> {
     const coachId = parseIntId(input.coachId, 'coachId');
-    if (input.rrule) throw new BadRequestException('recurrence is not supported, create one slot per session');
-    // Same write path and database uniqueness guard as REST slot creation.
-    const row = await createCanonicalSlot(this.prisma, { coachId, start: new Date(input.startsAt), end: new Date(input.endsAt) });
-    return toAvailabilityView(row);
+    const start = new Date(input.startsAt);
+    const end = new Date(input.endsAt);
+    if (!input.rrule || !input.rrule.trim()) {
+      // Same write path and database uniqueness guard as REST slot creation.
+      const row = await createCanonicalSlot(this.prisma, { coachId, start, end });
+      return toAvailabilityView(row);
+    }
+    if (isNaN(+start) || isNaN(+end) || !(start < end)) throw new BadRequestException('RANGE_INVALID');
+    const occurrences = expandRecurrence(start, end, input.rrule);
+    // All occurrences or none: one taken range (409 SLOT_EXISTS) rolls back the series.
+    const rows = await this.prisma.$transaction(async (tx) => {
+      const created = [];
+      for (const o of occurrences) created.push(await createCanonicalSlot(tx, { coachId, start: o.start, end: o.end }));
+      return created;
+    });
+    return { ...toAvailabilityView(rows[0]), recurrence: input.rrule.trim() };
   }
 
   async listCoachAvailability(coachId: number | string): Promise<AvailabilityView[]> {

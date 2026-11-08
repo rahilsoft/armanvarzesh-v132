@@ -11,6 +11,7 @@
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { Client } from 'pg';
+import { expandRecurrence } from '../../src/reservations/recurrence';
 
 const MIGRATIONS = join(__dirname, '../../src/database/prisma/migrations');
 const TARGET = '20261107000000_slot_canonical_backfill_unique';
@@ -46,7 +47,9 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
       (1, 7, '2030-01-01T08:00:00Z', '2030-01-01T09:00:00Z', NULL),
       (2, 7, '2030-01-02T08:00:00Z', '2030-01-02T09:00:00Z', 'FREQ=WEEKLY'),
       (3, 8, '2030-01-03T08:00:00Z', '2030-01-03T08:00:00Z', NULL),
-      (4, 9, '2030-01-04T08:00:00Z', '2030-01-04T09:00:00Z', NULL)`);
+      (4, 9, '2030-01-04T08:00:00Z', '2030-01-04T09:00:00Z', NULL),
+      (5, 11, '2030-01-02T08:00:00Z', '2030-01-02T09:00:00Z', 'RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE;COUNT=4'),
+      (6, 11, '2030-02-10T20:45:00Z', '2030-02-10T21:45:00Z', 'FREQ=DAILY;UNTIL=20300212')`);
     // Slot 10 and 11 are duplicates (coach 9, same range as AvailabilitySlot 4), 12 is unrelated.
     await db.query(`INSERT INTO "Slot" ("id", "coachId", "startUTC", "endUTC", "capacity") VALUES
       (10, 9, '2030-01-04T08:00:00Z', '2030-01-04T09:00:00Z', 1),
@@ -76,10 +79,26 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
   it('carries legacy availability into Slot and merges duplicates without losing a seat', async () => {
     await db.query(sql(TARGET));
     const rows = await slots();
-    // coach 7: both stored occurrences, capacity 1. coach 8: invalid range skipped.
+    // coach 7: the single row plus every occurrence of FREQ=WEEKLY inside the
+    // 90-day horizon from DTSTART (REV-20261107-01), capacity 1, duration kept.
+    // coach 8: invalid range skipped.
     const coach7 = rows.filter((r) => r.coachId === 7);
-    expect(coach7.map((r) => r.startUTC.toISOString())).toEqual(['2030-01-01T08:00:00.000Z', '2030-01-02T08:00:00.000Z']);
-    expect(coach7.every((r) => r.capacity === 1)).toBe(true);
+    const weekly = Array.from({ length: 13 }, (_, i) => new Date(Date.parse('2030-01-02T08:00:00Z') + i * 7 * 86_400_000).toISOString());
+    expect(coach7.map((r) => r.startUTC.toISOString())).toEqual(['2030-01-01T08:00:00.000Z', ...weekly]);
+    expect(coach7.every((r) => r.capacity === 1 && +r.endUTC - +r.startUTC === 3_600_000)).toBe(true);
+    // coach 11: BYDAY + INTERVAL + COUNT, and a date UNTIL that is a Tehran day
+    // (20:45 UTC is 00:15 the next day in Tehran).
+    expect(rows.filter((r) => r.coachId === 11).map((r) => r.startUTC.toISOString())).toEqual([
+      '2030-01-02T08:00:00.000Z', '2030-01-14T08:00:00.000Z', '2030-01-16T08:00:00.000Z', '2030-01-28T08:00:00.000Z',
+      '2030-02-10T20:45:00.000Z', '2030-02-11T20:45:00.000Z',
+    ]);
+    // The SQL expansion and the GraphQL write path (recurrence.ts) follow one policy.
+    // Coaches 7 and 11 only have legacy availability, so their Slot rows are exactly the expansion.
+    const legacy = (await db.query(`SELECT "coachId", "startsAt", "endsAt", "rrule" FROM "AvailabilitySlot" WHERE "coachId" IN (7, 11) ORDER BY "id"`)).rows;
+    const fromTs = legacy.flatMap((a) => expandRecurrence(a.startsAt, a.endsAt, a.rrule).map((o) => `${a.coachId} ${o.start.toISOString()} ${o.end.toISOString()}`));
+    const coaches = new Set([7, 11]);
+    const fromSql = rows.filter((r) => coaches.has(r.coachId)).map((r) => `${r.coachId} ${r.startUTC.toISOString()} ${r.endUTC.toISOString()}`);
+    expect(fromSql.sort()).toEqual([...new Set(fromTs)].sort());
     expect(rows.some((r) => r.coachId === 8)).toBe(false);
     // coach 9: duplicates merged into id 10 with the group's summed capacity
     // (1 + 3), the legacy row did not add a third copy.
@@ -94,7 +113,11 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     // Nothing is dropped silently: skipped rows, truncated rules and dropped holds are in the ledger.
     const ledger = (await db.query(`SELECT "kind", "ref", "holdUserId", "note" FROM "_SlotCanonicalMigration" ORDER BY "kind", "ref"`)).rows;
     expect(ledger.filter((x) => x.kind === 'skipped').map((x) => x.ref)).toEqual([3]);
-    expect(ledger.filter((x) => x.kind === 'rrule_truncated').map((x) => [x.ref, x.note])).toEqual([[2, 'FREQ=WEEKLY']]);
+    expect(ledger.filter((x) => x.kind === 'rrule_expanded').map((x) => [x.ref, x.note])).toEqual([
+      [2, 'FREQ=WEEKLY => 13 occurrences'],
+      [5, 'RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=MO,WE;COUNT=4 => 4 occurrences'],
+      [6, 'FREQ=DAILY;UNTIL=20300212 => 2 occurrences'],
+    ]);
     expect(ledger.find((x) => x.kind === 'merged' && x.ref === 21)).toMatchObject({ holdUserId: 2 });
     expect(ledger.filter((x) => x.kind === 'keeper').map((x) => x.ref)).toEqual([10, 20]);
     // AvailabilitySlot 4 matched existing Slot 10: traced, not copied.
@@ -134,6 +157,18 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     expect(rows.map((r) => [r.startUTC.toISOString(), r.capacity])).toEqual([['2030-04-01T08:00:00.000Z', 1]]);
   });
 
+  it('a rule outside the supported subset stops the backfill with its id, nothing is shortened', async () => {
+    const before = await slots();
+    await db.query('BEGIN');
+    try {
+      await db.query(`INSERT INTO "AvailabilitySlot" ("id", "coachId", "startsAt", "endsAt", "rrule") VALUES (60, 3, '2030-05-01T08:00:00Z', '2030-05-01T09:00:00Z', 'FREQ=MONTHLY;BYMONTHDAY=1')`);
+      await expect(db.query(sql(TARGET, 'post-deploy-backfill.sql'))).rejects.toThrow(/REV-20261107-01.*60 \(FREQ=MONTHLY;BYMONTHDAY=1\)/);
+    } finally {
+      await db.query('ROLLBACK');
+    }
+    expect(await slots()).toEqual(before);
+  });
+
   it('a booking written by another session while the migration runs is never lost silently', async () => {
     // Fresh duplicate pair, then the migration and a booking on the duplicate
     // race from two sessions. Either the booking lands first and is moved to
@@ -168,7 +203,7 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     await db.query(`DELETE FROM "Slot" WHERE "coachId" = 5`);
     await db.query(sql(TARGET, 'rollback.sql'));
     const rows = await slots();
-    expect(rows.some((r) => r.coachId === 7)).toBe(false);
+    expect(rows.some((r) => r.coachId === 7 || r.coachId === 11)).toBe(false);
     // Duplicates are back and the keepers have their capacity from before the merge.
     // Moved seats stay on the keeper, so its capacity covers them (10 holds 2
     // seats), and the raise is taken off the restored duplicate: each coach
@@ -187,6 +222,6 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     expect(again.filter((r) => r.coachId === 9).map((r) => [r.id, r.capacity])).toEqual([[10, 4], [12, 1]]);
     expect(again.filter((r) => r.coachId === 6).map((r) => [r.id, r.capacity])).toEqual([[20, 2]]);
     // The legacy table was never touched.
-    expect((await db.query(`SELECT count(*)::int AS n FROM "AvailabilitySlot"`)).rows[0].n).toBe(5);
+    expect((await db.query(`SELECT count(*)::int AS n FROM "AvailabilitySlot"`)).rows[0].n).toBe(7);
   });
 });
