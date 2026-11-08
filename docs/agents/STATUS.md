@@ -88,6 +88,7 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 ## Decisions log
 | Date | Decision | Rationale |
 |---|---|---|
+| 2026-11-08 | Recurring availability: RRULE expanded into one Slot per occurrence (subset DAILY/WEEKLY, INTERVAL, COUNT or UNTIL, BYDAY with WEEKLY), Asia/Tehran wall-clock, horizon max(now, DTSTART) + 90 days, past occurrences skipped, unsupported rule fails loudly (PR #78) | Slot has no recurrence column, expansion keeps every bookable occurrence without a schema redesign, a loud failure never shortens data (REV-20261107-01) |
 | 2026-11-04 | Seed step removed from the integration job instead of fixing `seed_domain.js` (PR #86) | All 7 schemas generate to `./generated/client`, the seeder never seeded anything, no step reads seeded data |
 | 2026-11-04 | Backend unit/e2e steps removed from the integration job (PR #86, same text as #64) | e2e `if:` never matched, both steps duplicated `backend-e2e.yml`, which runs them for real |
 | 2026-10-30 | MinIO removed from the integration job instead of swapping the image | Docker Hub and quay.io both refuse the pull, no step uses S3; real S3 adapter coverage must come with a test |
@@ -140,6 +141,11 @@ Set them as environment / CI / EAS secrets. Agents add rows as they discover nee
 - `helm/graphql-gateway/values.yaml` still federates subgraph URLs of removed services (users, coaches, nutrition, content). Repoint to `app/backend` in ROADMAP 0.1.
 
 ## Session log
+### 2026-11-08 22:02 package (22:02 Tehran, scheduled) — REV-20261107-01 implemented on PR #78
+- Quota before and after: not readable from an official in-app source, 20% reserve not claimed. One implementer (coordinator) plus three separate independent reviewer agents.
+- PR #78 heads: `a19eadb` (RRULE expansion, review CHANGES REQUIRED, 3 P2 + 4 P3), `13df58a` (fixes, review APPROVE, 1 P3), `df705d7` (P3 fix, review APPROVE).
+- Local on `df705d7`: backend unit 383 pass, 69 skip, 0 fail. slot-canonical-migration e2e on PostgreSQL 16: 7/7 pass (2 fail on old `833a9b5`). typecheck, e2e typecheck, eslint: exit 0. Other e2e suites not run locally (Prisma engine blocked).
+- Not merged: CI on `df705d7` still running at handoff, `ios` (Mobile Detox placeholder) cancelled again (REV-20261021-04).
 ### 2026-11-04 22:02 package (22:02 Tehran, scheduled) — REV-20261024-02 green on #86, Codex findings on #64
 - Quota before and after: not readable from an official in-app source. Review-finding work only, one implementer plus one independent reviewer, 20% reserve not claimed.
 - PR #86 head `6ade478`: MinIO step removed, seeder fatal then seed step removed, never-running backend test steps removed. `integration` green for the first time on this branch, `backend-e2e` green. Review APPROVE (round 3). Blocked: grype `scan`, Workers Builds.
