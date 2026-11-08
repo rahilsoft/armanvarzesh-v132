@@ -174,8 +174,9 @@ describe('migration 20261107000000 Slot canonical backfill and uniqueness (Postg
     await db.query('BEGIN');
     try {
       await db.query(`INSERT INTO "AvailabilitySlot" ("id", "coachId", "startsAt", "endsAt", "rrule") VALUES (60, 3, '2030-05-01T08:00:00Z', '2030-05-01T09:00:00Z', 'FREQ=MONTHLY;BYMONTHDAY=1')`);
-      await db.query(`INSERT INTO "AvailabilitySlot" ("id", "coachId", "startsAt", "endsAt", "rrule") VALUES (61, 3, '2030-05-02T08:00:00Z', '2030-05-02T09:00:00Z', 'FREQ=DAILY;UNTIL=20301399')`);
-      await expect(db.query(sql(TARGET, 'post-deploy-backfill.sql'))).rejects.toThrow(/REV-20261107-01.*60 \(FREQ=MONTHLY;BYMONTHDAY=1\).*61 \(FREQ=DAILY;UNTIL=20301399\)/);
+      await db.query(`INSERT INTO "AvailabilitySlot" ("id", "coachId", "startsAt", "endsAt", "rrule") VALUES (61, 3, '2030-05-02T08:00:00Z', '2030-05-02T09:00:00Z', 'FREQ=DAILY;UNTIL=20301399'),
+        (62, 3, '2030-05-03T08:00:00Z', '2030-05-03T09:00:00Z', 'FREQ=DAILY;UNTIL=20301201T240000Z')`);
+      await expect(db.query(sql(TARGET, 'post-deploy-backfill.sql'))).rejects.toThrow(/REV-20261107-01.*60 \(FREQ=MONTHLY;BYMONTHDAY=1\).*61 \(FREQ=DAILY;UNTIL=20301399\), 62 \(FREQ=DAILY;UNTIL=20301201T240000Z\)/);
     } finally {
       await db.query('ROLLBACK');
     }

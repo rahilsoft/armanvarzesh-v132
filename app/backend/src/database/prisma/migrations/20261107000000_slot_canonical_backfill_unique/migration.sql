@@ -122,6 +122,10 @@ BEGIN
   FOR rec IN SELECT x."id", x."rrule", substring(x.r from 'UNTIL=([0-9T]+Z?)') AS u FROM "_SlotRule" x WHERE x.r ~ '(^|;)UNTIL=' ORDER BY x."id" LOOP
     BEGIN
       PERFORM (substr(rec.u, 1, 8) || CASE WHEN length(rec.u) > 8 THEN ' ' || substr(rec.u, 10, 6) ELSE '' END)::timestamp;
+      -- The cast rolls 24:00:00 or :60 over, recurrence.ts rejects them, so does this.
+      IF length(rec.u) > 8 AND (substr(rec.u, 10, 2) >= '24' OR substr(rec.u, 12, 2) >= '60' OR substr(rec.u, 14, 2) >= '60') THEN
+        RAISE EXCEPTION 'UNTIL time out of range';
+      END IF;
     EXCEPTION WHEN others THEN
       bad := concat_ws(', ', bad, rec."id"::text || ' (' || rec."rrule" || ')');
     END;
