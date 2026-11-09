@@ -19,7 +19,7 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: armanfit_ci
+          POSTGRES_DB: armanfitsvc
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
@@ -88,17 +88,28 @@ jobs:
             fi
           done
 
+      # Fail closed (REV-20261024-02): a package with real migrations must apply them and
+      # any failure stops the job. `db push` is used only for schema-only packages that
+      # have no migration files, and it is never a fallback for a failed migrate deploy.
       - name: Prisma migrate (deploy or push)
         run: |
           for d in services/* app/* packages/*; do
             if [ -f "$d/prisma/schema.prisma" ]; then
-              echo "Applying migrations in $d"
-              (cd "$d" && (npx prisma migrate deploy || npx prisma db push --skip-generate))
+              if [ -n "$(find "$d/prisma/migrations" -mindepth 2 -maxdepth 2 -name migration.sql 2>/dev/null)" ]; then
+                echo "Applying migrations in $d"
+                (cd "$d" && npx prisma migrate deploy)
+              else
+                echo "No migrations in $d, schema-only push"
+                (cd "$d" && npx prisma db push --skip-generate)
+              fi
             fi
           done
 
-      - name: Seed all (optional)
-        run: pnpm db:seed:all || true
+      # No seed step here. scripts/seed_domain.js loads each package's
+      # node_modules/@prisma/client, but every schema in this loop generates to a custom
+      # output, so that default client is never generated. Before REV-20261024-02 the
+      # seeder swallowed the MODULE_NOT_FOUND and seeded nothing. Once it was made fatal
+      # it failed (run 41889677154). No later step reads seeded data.
 
       # Backend unit and e2e tests are not run here: they ran with `|| true`, so
       # they could never fail this job. backend-e2e.yml runs them for real
