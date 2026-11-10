@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { IsIn, IsInt, IsISO8601, IsOptional, IsString, Min } from 'class-validator';
 import { BookingService } from './booking.service';
 import { JwtAuthGuard } from '../auth/jwt.guard';
@@ -50,8 +51,11 @@ class PaymentSuccessDto {
 export class BookingController {
   constructor(private readonly booking: BookingService) {}
 
+  // Slots are the availability GraphQL serves: admin-only, like
+  // createAvailability, until coach identity is in the token.
   @Post('slots/create')
-  createSlot(@Body() dto: CreateSlotDto) {
+  createSlot(@CurrentUser() user: AuthPrincipal, @Body() dto: CreateSlotDto) {
+    if (user.role !== 'admin') throw new ForbiddenException('admin only');
     return this.booking.createSlot(dto.coachId, dto.startUTC, dto.endUTC, dto.capacity ?? 1);
   }
 
@@ -70,9 +74,10 @@ export class BookingController {
     return this.booking.reschedule(user.userId, dto.id, dto.newSlotId);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('hold')
-  hold(@Body() dto: HoldDto) {
-    return this.booking.holdSlot(dto.slotId);
+  hold(@CurrentUser() user: AuthPrincipal, @Body() dto: HoldDto) {
+    return this.booking.holdSlot(user.userId, dto.slotId);
   }
 
   // Public: receiving end of the Payments-domain BOOKING_PAYMENT_SUCCEEDED
@@ -94,7 +99,8 @@ export class BookingController {
   }
 
   @Post('cron/expire')
-  async expire() {
+  async expire(@CurrentUser() user: AuthPrincipal) {
+    if (user.role !== 'admin') throw new ForbiddenException('admin only');
     await this.booking.expireStale();
     return { ok: true };
   }

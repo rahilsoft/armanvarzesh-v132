@@ -327,7 +327,11 @@ model Reservation {
   // Optimistic locking: updates address rows by (id, version) so a stale
   // writer misses and can retry (folded Booking domain requirement).
   @@unique([id, version], map: "uq_Reservation_id_version")
-  @@unique([resourceId, startsAt, endsAt])
+  // Seat guard: Slot.capacity shared with Booking, checked in a Serializable
+  // transaction by every writer (migration 20261106000000). Do not add a
+  // @@unique on (resourceId, startsAt, endsAt): it would cap every slot at one
+  // reservation and cancelled rows would block re-booking.
+  @@index([resourceId, status], map: "idx_Reservation_resource_status")
   @@index([userId, startsAt, endsAt])
   @@index([resourceId])  // added by phase5
 }
@@ -834,10 +838,32 @@ model Slot {
   capacity    Int       @default(1)
   holdToken   String?
   holdExpires DateTime?
+  holdUserId  Int?      // owner of the active hold (REV-20261106-02)
   createdAt   DateTime  @default(now())
   bookings    Booking[]
   @@index([coachId, startUTC], map: "idx_Slot_coach_start")
   @@index([holdExpires], map: "idx_Slot_holdExpires")
+  // One slot per coach and time range (REV-20261107-02, migration 20261107000000).
+  @@unique([coachId, startUTC, endUTC], map: "uq_Slot_coach_time")
+}
+
+/// Ledger of migration 20261107000000 (AvailabilitySlot backfill, Slot
+/// duplicate merge, skipped rows), read by operators and its rollback.sql.
+model SlotCanonicalMigration {
+  kind               String
+  ref                Int
+  keeperId           Int?
+  availabilitySlotId Int?
+  coachId            Int?
+  startUTC           DateTime?
+  endUTC             DateTime?
+  capacity           Int?
+  createdAt          DateTime?
+  holdUserId         Int?
+  holdExpires        DateTime?
+  note               String?
+  @@id([kind, ref])
+  @@map("_SlotCanonicalMigration")
 }
 
 model Booking {
